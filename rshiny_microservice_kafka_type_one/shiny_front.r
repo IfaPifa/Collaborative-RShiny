@@ -23,9 +23,6 @@ consumer$subscribe("output")
 
 sum_num <- 0
 current_values <- list(num1 = 0, num2 = 0)
-message_temp <- data.frame(key = c("output"), 
-                           value = c(sum_num), 
-                           stringsAsFactors = FALSE)
 
 # Define the UI
 ui <- fluidPage(
