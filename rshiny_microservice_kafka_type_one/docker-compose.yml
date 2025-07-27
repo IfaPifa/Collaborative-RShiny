@@ -30,7 +30,7 @@ services:
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE= true
       - KAFKA_CREATE_TOPICS= "input, output"
     depends_on:
-      - zookeeper   
+      - zookeeper
 
   shiny_front:
     image: rocker/rstudio:4.5.0
