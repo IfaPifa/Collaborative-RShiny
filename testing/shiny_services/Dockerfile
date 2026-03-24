@@ -1,4 +1,4 @@
-# Base R Shiny image
+# Base R Shiny image (Ubuntu 22.04 Jammy based)
 FROM rocker/shiny:4.4.0
 
 # Install system dependencies
@@ -20,16 +20,18 @@ RUN apt-get -y update && apt-get install -y \
 # Configure Java for R so rJava compiles cleanly
 RUN R CMD javareconf
 
-# Update Rcpp first (Required by 'units' and 'terra')
-RUN R -e "install.packages('Rcpp', repos='https://cloud.r-project.org')"
+# Set CRAN repository to Posit Public Package Manager (Ubuntu Jammy Binaries)
+# This completely bypasses the massive C++ compilation times!
+ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
-# Install R packages
-RUN R -e "install.packages(c('jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet'), repos='https://cloud.r-project.org', Ncpus=4)"
+# Install R packages including Arrow and DuckDB for CSV Advanced features 
+RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
 
-# Install the kafka package
+# Install the kafka package from GitHub
 RUN R -e "remotes::install_github('INWTlab/r-kafka')"
 
-# Bulletproof Check: Force Docker to fail if Leaflet is missing
+# Bulletproof Check: Force Docker to fail if core packages are missing
 RUN R -e "if (!requireNamespace('leaflet', quietly = TRUE)) stop('FATAL: Leaflet failed to install!')"
+RUN R -e "if (!requireNamespace('arrow', quietly = TRUE)) stop('FATAL: Arrow failed to install!')"
 
 EXPOSE 3838

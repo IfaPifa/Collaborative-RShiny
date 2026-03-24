@@ -66,6 +66,11 @@ public class DataInitializer {
                     "Collaborative mapping and POI dropping using Leaflet.",
                     "http://localhost:8084"
                 ));
+                appRepository.save(new ShinyApp(
+                    "Climate Anomaly Detector",
+                    "SOTA Out-of-core processing for massive ecological sensor datasets.",
+                    "http://localhost:8086" 
+                ));
             }
         };
     }

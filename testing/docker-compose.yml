@@ -79,6 +79,7 @@ services:
       - "8082:82"
       - "8083:83"
       - "8084:84"  
+      - "8086:85"
     volumes:
       - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -87,99 +88,125 @@ services:
       - shiny_front_csv
       - shiny_front_mc
       - shiny_front_map
+      - shiny_front_csv_advanced
 
+  # --- APP 1: CALCULATOR ---
   shiny_front:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated to parent folder
     container_name: shiny_front
     volumes:
-      - ./shiny_services/shiny_front.r:/app/app.R
+      - ./shiny_services/calculator/shiny_front.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_back
     volumes:
-      - ./shiny_services/shiny_back.r:/app/back.R
+      - ./shiny_services/calculator/shiny_back.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
+  # --- APP 2: VISUAL ANALYTICS ---
   shiny_front_analytics:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_front_analytics
     volumes:
-      - ./shiny_services/shiny_front_analytics.r:/app/app.R
+      - ./shiny_services/visual_analytics/shiny_front_analytics.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_analytics:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_back_analytics
     volumes:
-      - ./shiny_services/shiny_back_analytics.r:/app/back.R
+      - ./shiny_services/visual_analytics/shiny_back_analytics.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
-  # --- APP 2: DATA EXCHANGE (CSV) ---
+  # --- APP 3: DATA EXCHANGE (CSV) ---
   shiny_front_csv:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_front_csv
     volumes:
-      - ./shiny_services/shiny_front_csv.r:/app/app.R
+      - ./shiny_services/data_exchange/shiny_front_csv.r:/app/app.R
+      - shared_data:/app/shared_data
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_csv:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_back_csv
     volumes:
-      - ./shiny_services/shiny_back_csv.r:/app/back.R
+      - ./shiny_services/data_exchange/shiny_back_csv.r:/app/back.R
+      - shared_data:/app/shared_data
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+  shiny_front_csv_advanced:
+    build: ./shiny_services  # <-- Updated
+    container_name: shiny_front_csv_advanced
+    volumes:
+      - ./shiny_services/data_exchange/shiny_front_csv_advanced.r:/app/app.R
+      - shared_data:/app/shared_data
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back_csv_advanced:
+    build: ./shiny_services  # <-- Updated
+    container_name: shiny_back_csv_advanced
+    volumes:
+      - ./shiny_services/data_exchange/shiny_back_csv_advanced.r:/app/back.R
+      - shared_data:/app/shared_data
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
   # --- APP 4: MONTE CARLO SIMULATOR ---
   shiny_front_mc:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_front_mc
     volumes:
-      - ./shiny_services/shiny_front_mc.r:/app/app.R
+      - ./shiny_services/monte_carlo/shiny_front_mc.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_mc:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_back_mc
     volumes:
-      - ./shiny_services/shiny_back_mc.r:/app/back.R
+      - ./shiny_services/monte_carlo/shiny_back_mc.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
-  # --- APP 3: GEOSPATIAL EDITOR ---
+  # --- APP 5: GEOSPATIAL EDITOR ---
   shiny_front_map:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_front_map
     volumes:
-      - ./shiny_services/shiny_front_map.r:/app/app.R
+      - ./shiny_services/map/shiny_front_map.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_map:
-    build: ./shiny_services
+    build: ./shiny_services  # <-- Updated
     container_name: shiny_back_map
     volumes:
-      - ./shiny_services/shiny_back_map.r:/app/back.R
+      - ./shiny_services/map/shiny_back_map.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
 volumes:
   postgres_data:
+  shared_data:
