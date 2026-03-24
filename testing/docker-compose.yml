@@ -1,0 +1,185 @@
+services:
+  # --- CONFLUENT ZOOKEEPER ---
+  zookeeper:
+    container_name: zookeeper
+    restart: always
+    image: confluentinc/cp-zookeeper:7.5.0
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # --- CONFLUENT KAFKA ---
+  kafka:
+    container_name: kafka-server
+    restart: always
+    image: confluentinc/cp-kafka:7.5.0
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  # --- POSTGRES DATABASE ---
+  db:
+    container_name: postgres_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: shinyswarm
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- JAVA BACKEND ---
+  backend:
+    container_name: spring_backend
+    build: ./shinyswarm
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/shinyswarm
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      APP_JWT_SECRET: IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI=
+      # --- ADD THIS LINE ---
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create 
+      # ---------------------
+    depends_on:
+      - db
+      - kafka
+
+  # --- ANGULAR FRONTEND ---
+  frontend:
+    container_name: angular_frontend
+    build: ./angular_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+  # --- RSHINY SERVICES ---
+  nginx_proxy:
+    container_name: nginx_proxy
+    image: nginx:1.25-alpine
+    ports:
+      - "8080:80"
+      - "8081:81"
+      - "8082:82"
+      - "8083:83"
+      - "8084:84"  
+    volumes:
+      - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - shiny_front
+      - shiny_front_analytics
+      - shiny_front_csv
+      - shiny_front_mc
+      - shiny_front_map
+
+  shiny_front:
+    build: ./shiny_services
+    container_name: shiny_front
+    volumes:
+      - ./shiny_services/shiny_front.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back:
+    build: ./shiny_services
+    container_name: shiny_back
+    volumes:
+      - ./shiny_services/shiny_back.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+  shiny_front_analytics:
+    build: ./shiny_services
+    container_name: shiny_front_analytics
+    volumes:
+      - ./shiny_services/shiny_front_analytics.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back_analytics:
+    build: ./shiny_services
+    container_name: shiny_back_analytics
+    volumes:
+      - ./shiny_services/shiny_back_analytics.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+  # --- APP 2: DATA EXCHANGE (CSV) ---
+  shiny_front_csv:
+    build: ./shiny_services
+    container_name: shiny_front_csv
+    volumes:
+      - ./shiny_services/shiny_front_csv.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back_csv:
+    build: ./shiny_services
+    container_name: shiny_back_csv
+    volumes:
+      - ./shiny_services/shiny_back_csv.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+  # --- APP 4: MONTE CARLO SIMULATOR ---
+  shiny_front_mc:
+    build: ./shiny_services
+    container_name: shiny_front_mc
+    volumes:
+      - ./shiny_services/shiny_front_mc.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back_mc:
+    build: ./shiny_services
+    container_name: shiny_back_mc
+    volumes:
+      - ./shiny_services/shiny_back_mc.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+  # --- APP 3: GEOSPATIAL EDITOR ---
+  shiny_front_map:
+    build: ./shiny_services
+    container_name: shiny_front_map
+    volumes:
+      - ./shiny_services/shiny_front_map.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      - kafka
+
+  shiny_back_map:
+    build: ./shiny_services
+    container_name: shiny_back_map
+    volumes:
+      - ./shiny_services/shiny_back_map.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      - kafka
+
+volumes:
+  postgres_data:
