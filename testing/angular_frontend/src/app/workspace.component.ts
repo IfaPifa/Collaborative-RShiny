@@ -412,7 +412,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   handleSaveState() {
-    // Read from the service
     const app = this.dataService.selectedApp(); 
     const name = this.saveStateName();
     const currentSession = this.collabService.activeSession();
@@ -420,23 +419,24 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     if (!app || !name) return;
 
     if (currentSession) {
+      // Collaborative Save (Uses the CollabService)
       this.collabService.saveSessionState(currentSession.id, name).subscribe({
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Session Snapshot Saved!');
+          alert('Team Snapshot Saved securely from Kafka!');
         },
         error: (err) => alert('Error saving session: ' + (err.error || 'Unknown error'))
       });
     } else {
-      const mockState = JSON.stringify({ savedAt: new Date().toISOString() });
-      this.dataService.saveState(app.id, name, mockState).subscribe({
+      // Solo Save (Backend will look up the Kafka state using the Username)
+      this.dataService.saveState(app.id, name, null).subscribe({
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Solo State Saved!');
+          alert('Solo State Saved securely from Kafka!');
         },
-        error: () => alert('Error saving state.')
+        error: (err) => alert('Error saving state: ' + (err.error || 'Unknown error'))
       });
     }
   }

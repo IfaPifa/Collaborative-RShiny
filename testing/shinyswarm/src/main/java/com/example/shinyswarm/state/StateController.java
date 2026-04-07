@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate; // <-- New Import
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping; // <-- New Import
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +22,8 @@ import com.example.shinyswarm.user.User;
 import com.example.shinyswarm.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// DTOs
-record SaveStateRequest(Long appId, String name, String stateData) {}
+// 1. UPDATED DTO: We removed stateData and added sessionId
+record SaveStateRequest(Long appId, String name, String sessionId) {}
 record SavedStateResponse(Long id, String appName, String name, String stateData, String createdAt) {}
 
 @RestController
@@ -34,21 +34,24 @@ public class StateController {
     private final SavedStateRepository savedStateRepository;
     private final UserRepository userRepository;
     private final ShinyAppRepository shinyAppRepository;
-    
-    // Kafka Components
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final ObjectMapper objectMapper; // For JSON processing
+    private final ObjectMapper objectMapper; 
+    
+    // 2. ADDED THE MONITOR
+    private final SessionStateMonitor sessionStateMonitor; 
 
     public StateController(SavedStateRepository savedStateRepository, 
                            UserRepository userRepository, 
                            ShinyAppRepository shinyAppRepository,
                            KafkaTemplate<String, String> kafkaTemplate,
-                           ObjectMapper objectMapper) {
+                           ObjectMapper objectMapper,
+                           SessionStateMonitor sessionStateMonitor) { // Inject it here
         this.savedStateRepository = savedStateRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
+        this.sessionStateMonitor = sessionStateMonitor;
     }
 
     @PostMapping
@@ -60,7 +63,20 @@ public class StateController {
         ShinyApp app = shinyAppRepository.findById(request.appId())
                 .orElseThrow(() -> new RuntimeException("App not found"));
 
-        SavedState newState = new SavedState(request.name(), request.stateData(), user, app);
+        // 3. FETCH REAL STATE FROM KAFKA CACHE
+        // If collaborative, use sessionId. If solo, use username.
+        String kafkaKey = (request.sessionId() != null && !request.sessionId().isEmpty()) 
+                          ? request.sessionId() 
+                          : username;
+                          
+        String latestRealState = sessionStateMonitor.getLatestState(kafkaKey);
+
+        if (latestRealState == null) {
+            return ResponseEntity.badRequest().body("No data generated yet. Run the app analysis first before saving.");
+        }
+
+        // 4. SAVE THE REAL JSON TO POSTGRES
+        SavedState newState = new SavedState(request.name(), latestRealState, user, app);
         savedStateRepository.save(newState);
 
         return ResponseEntity.ok("State saved successfully");
@@ -81,45 +97,35 @@ public class StateController {
                 .collect(Collectors.toList());
     }
 
-    // --- NEW ENDPOINT: Restore State via Kafka ---
     @PostMapping("/{id}/restore")
     public ResponseEntity<?> restoreState(
             @PathVariable Long id, 
             @RequestParam(required = false) String sessionId, 
             Principal principal) {
 
-        // 1. Fetch State
         SavedState state = savedStateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("State not found"));
         
-        // 2. Security Check
         if (!state.getUser().getUsername().equals(principal.getName())) {
              return ResponseEntity.status(403).body("Not your state");
         }
 
         try {
-            // 3. Prepare the Payload
-            // Read the stored JSON: {"num1": 10, "num2": 20}
             Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
-            
-            // Add metadata so R knows this is a system restore
             payload.put("sender", "System Restore");
             payload.put("timestamp", System.currentTimeMillis());
             
-            // Convert back to String: {"num1":10, "num2":20, "sender":"System Restore", ...}
             String kafkaPayload = objectMapper.writeValueAsString(payload);
 
-            // 4. Determine Key (Solo vs Collab)
             String kafkaKey;
             if (sessionId != null && !sessionId.isEmpty()) {
                 kafkaKey = sessionId;
             } else {
                 User currentUser = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-                kafkaKey = currentUser.getUsername(); // <--- NEW WAY
+                kafkaKey = currentUser.getUsername(); 
             }
 
-            // 5. Send
             kafkaTemplate.send("input", kafkaKey, kafkaPayload);
             
             return ResponseEntity.ok("State restored");

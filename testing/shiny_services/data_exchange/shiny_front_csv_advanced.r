@@ -76,18 +76,22 @@ server <- function(input, output, session) {
     }, error = function(e) { print(e$message) })
   })
 
-  # --- INGESTION & KAFKA POINTER SYNC ---
+  # --- INGESTION & KAFKA POINTER SYNC (RACE CONDITION FIX) ---
   observeEvent(input$process_data, {
     req(state$connected, !is.null(state$producer), input$file_upload)
     
-    # 1. Save massive file to the shared volume instead of passing it to Kafka
-    raw_file_path <- file.path(shared_dir, "raw_upload.csv")
+    # 1. Generate Unique Fingerprint to prevent overlapping concurrent uploads
+    unique_fingerprint <- paste0(identity()$userId, "_", as.integer(Sys.time()), "_", sample(1000:9999, 1))
+    raw_filename <- paste0("raw_", unique_fingerprint, ".csv")
+    raw_file_path <- file.path(shared_dir, raw_filename)
+    
+    # 2. Save massive file to the shared volume
     file.copy(input$file_upload$datapath, raw_file_path, overwrite = TRUE)
     
-    # 2. Send the POINTER and PARAMETERS over Kafka
+    # 3. Send the UNIQUE POINTER and PARAMETERS over Kafka
     payload <- list(
       action = "ANALYZE_CLIMATE",
-      file = "raw_upload.csv",
+      file = raw_filename,
       threshold = input$threshold,
       sender = identity()$userId, 
       role = state$permission
@@ -114,7 +118,7 @@ server <- function(input, output, session) {
               state$producer <- if (data$newRole %in% c("EDITOR", "OWNER")) Producer$new(list("bootstrap.servers" = "kafka:9092")) else NULL
           } else if (!is.null(data$action) && data$action == "CLIMATE_READY") {
             
-            # Read the processed summary from the shared volume
+            # Read the EXACT processed summary from the shared volume pointer
             summary_file_path <- file.path(shared_dir, data$file)
             if (file.exists(summary_file_path)) {
               processed_data <- read.csv(summary_file_path)

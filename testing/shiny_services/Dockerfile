@@ -25,7 +25,8 @@ RUN R CMD javareconf
 ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
 # Install R packages including Arrow and DuckDB for CSV Advanced features 
-RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
+# ---> ADDED: 'shinyWidgets' and 'randomForest'
+RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
 
 # Install the kafka package from GitHub
 RUN R -e "remotes::install_github('INWTlab/r-kafka')"
@@ -33,5 +34,6 @@ RUN R -e "remotes::install_github('INWTlab/r-kafka')"
 # Bulletproof Check: Force Docker to fail if core packages are missing
 RUN R -e "if (!requireNamespace('leaflet', quietly = TRUE)) stop('FATAL: Leaflet failed to install!')"
 RUN R -e "if (!requireNamespace('arrow', quietly = TRUE)) stop('FATAL: Arrow failed to install!')"
+RUN R -e "if (!requireNamespace('randomForest', quietly = TRUE)) stop('FATAL: randomForest failed to install!')"
 
 EXPOSE 3838

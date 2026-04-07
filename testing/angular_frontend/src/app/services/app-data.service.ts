@@ -42,14 +42,15 @@ export class AppDataService {
   }
 
   // Note: stateData is a JSON string
-  saveState(appId: number, name: string, stateData: string) {
-    const payload = { appId, name, stateData };
+  // Trigger the backend to pull the latest state from Kafka and save it
+  saveState(appId: number, name: string, sessionId?: string | null) {
+    const payload = { appId, name, sessionId };
     return this.http.post(
       `${this.API_URL}/states`, 
       payload, 
       { 
         headers: this.getHeaders(),
-        responseType: 'text' // <-- ADD THIS LINE
+        responseType: 'text' 
       } 
     );
   }

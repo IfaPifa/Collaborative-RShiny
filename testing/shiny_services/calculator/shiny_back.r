@@ -6,7 +6,7 @@ topic_input <- "input"
 topic_output <- "output"
 broker <- "kafka:9092"
 
-print("R Backend Service Starting...")
+print("Eco Deployment Calculator Backend Starting...")
 
 # Consumer Config
 consumer_config <- list(
@@ -26,7 +26,7 @@ while (!connected) {
     consumer <- Consumer$new(consumer_config)
     consumer$subscribe(topic_input)
     connected <- TRUE
-    print("✅ Successfully subscribed! Waiting for messages...")
+    print("✅ Successfully subscribed! Waiting for mesh events...")
   }, error = function(e) {
     print(paste("⚠️ Kafka not ready yet:", e$message))
     print("Retrying in 5 seconds...")
@@ -47,21 +47,14 @@ process_message <- function(mess) {
   tryCatch({
     payload <- fromJSON(mess$value)
     
-    # --- BONUS ARCHITECTURE: CONSISTENCY CHECK ---
-    # We verify the role to ensure architectural integrity.
-    # If the system architecture says Viewers can't write, the backend enforces it
-    # as a final source of truth.
-    
     sender_role <- if (!is.null(payload$role)) payload$role else "UNKNOWN"
-    
     if (sender_role == "VIEWER") {
       print(paste("⚠️ CONSISTENCY ALERT: Dropped illegal write from Viewer on key:", incoming_key))
       return() # Discard message, do not broadcast update
     }
-    # ---------------------------------------------
     
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
-    print(paste("Processing request on key:", incoming_key, "from sender:", sender))
+    print(paste("Processing sensor sync on key:", incoming_key, "from sender:", sender))
     
     num1 <- as.numeric(payload$num1)
     num2 <- as.numeric(payload$num2)

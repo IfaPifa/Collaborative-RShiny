@@ -1,4 +1,4 @@
-library(jsonlite)
+llibrary(jsonlite)
 library(kafka)
 library(dplyr)
 
@@ -24,14 +24,13 @@ repeat {
         # Check if this is our new ecological action
         if (!is.null(payload$action) && payload$action == "ANALYZE_CLIMATE") {
           
-          # 1. READ RAW DATA FROM VOLUME (Not from Kafka)
+          # 1. READ DYNAMIC RAW DATA FROM VOLUME 
           raw_file_path <- file.path(shared_dir, payload$file)
           
           if (file.exists(raw_file_path)) {
             df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
             
             # 2. ECOLOGICAL MATH (Aggregation & Anomaly Detection)
-            # Ensure Timestamp is readable as Date
             df$Date <- as.Date(df$Timestamp)
             
             summary_df <- df %>%
@@ -45,8 +44,8 @@ repeat {
                 Heatwave_Anomaly = ifelse(Daily_Mean_Temp > payload$threshold, "YES", "NO")
               )
             
-            # 3. SAVE PROCESSED DATA TO VOLUME
-            summary_file_name <- "processed_summary.csv"
+            # 3. SAVE PROCESSED DATA WITH MATCHING FINGERPRINT
+            summary_file_name <- sub("^raw_", "processed_", payload$file)
             write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
             
             # 4. SEND "POINTER" BACK OVER KAFKA
@@ -58,7 +57,7 @@ repeat {
             )
             
             producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
-            print(paste("Processed LTER data for", payload$sender, "with threshold", payload$threshold))
+            print(paste("Processed LTER data for", payload$sender, "with file", summary_file_name))
           }
         }
       }

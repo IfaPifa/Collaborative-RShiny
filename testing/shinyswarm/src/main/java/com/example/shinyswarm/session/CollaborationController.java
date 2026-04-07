@@ -140,7 +140,7 @@ public class CollaborationController {
     public ResponseEntity<?> replayState(@PathVariable String sessionId) {
         String cachedState = stateMonitor.getLatestState(sessionId);
         if (cachedState != null) {
-            kafkaTemplate.send("input", sessionId, cachedState);
+            kafkaTemplate.send("output", sessionId, cachedState);
             return ResponseEntity.ok("State replayed");
         }
         return ResponseEntity.ok("No live state to replay");

@@ -52,6 +52,11 @@ public class DataInitializer {
                     "http://localhost:8081"
                 ));
                 appRepository.save(new ShinyApp(
+                    "Advanced Visual Analytics",
+                    "State-only Kafka synchronization (The 'Big Data' Template).",
+                    "http://localhost:8087" // Ensure this port matches your Nginx/Docker setup
+                ));
+                appRepository.save(new ShinyApp(
                     "Data Exchange",
                     "Collaborative CSV file handling and string manipulation.",
                     "http://localhost:8082"
@@ -70,6 +75,11 @@ public class DataInitializer {
                     "Climate Anomaly Detector",
                     "SOTA Out-of-core processing for massive ecological sensor datasets.",
                     "http://localhost:8086" 
+                ));
+                appRepository.save(new ShinyApp(
+                    "Habitat Suitability AI",
+                    "Asynchronous Random Forest training and real-time inference API.",
+                    "http://localhost:8088" 
                 ));
             }
         };
