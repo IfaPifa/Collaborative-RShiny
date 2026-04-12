@@ -1,0 +1,534 @@
+# ==========================================
+# 1. PERSISTENT STORAGE (PVCs)
+# ==========================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-data-pvc
+spec:
+  accessModes: [ "ReadWriteMany" ] # Required for multiple pods accessing CSVs
+  resources: { requests: { storage: 2Gi } }
+
+---
+# ==========================================
+# 2. INFRASTRUCTURE: ZOOKEEPER & KAFKA
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: zookeeper }
+spec:
+  selector: { matchLabels: { app: zookeeper } }
+  template:
+    metadata: { labels: { app: zookeeper } }
+    spec:
+      containers:
+      - name: zookeeper
+        image: confluentinc/cp-zookeeper:7.5.0
+        ports: [ { containerPort: 2181 } ]
+        env:
+        - name: ZOOKEEPER_CLIENT_PORT
+          value: "2181"
+        - name: ZOOKEEPER_TICK_TIME
+          value: "2000"
+---
+apiVersion: v1
+kind: Service
+metadata: { name: zookeeper }
+spec:
+  selector: { app: zookeeper }
+  ports: [ { port: 2181 } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: kafka }
+spec:
+  selector: { matchLabels: { app: kafka } }
+  template:
+    metadata: { labels: { app: kafka } }
+    spec:
+      containers:
+      - name: kafka
+        image: confluentinc/cp-kafka:7.5.0
+        ports: [ { containerPort: 9092 } ]
+        env:
+        - name: KAFKA_BROKER_ID
+          value: "1"
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: "zookeeper:2181"
+        - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+          value: "PLAINTEXT:PLAINTEXT"
+        - name: KAFKA_INTER_BROKER_LISTENER_NAME
+          value: "PLAINTEXT"
+        - name: KAFKA_ADVERTISED_LISTENERS
+          value: "PLAINTEXT://kafka:9092" # Internal cluster address
+        - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+          value: "1"
+---
+apiVersion: v1
+kind: Service
+metadata: { name: kafka }
+spec:
+  selector: { app: kafka }
+  ports: [ { port: 9092 } ]
+
+---
+# ==========================================
+# 3. DATABASE: POSTGRESQL
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: db }
+spec:
+  selector: { matchLabels: { app: db } }
+  template:
+    metadata: { labels: { app: db } }
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports: [ { containerPort: 5432 } ]
+        env:
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "shinyswarm"
+        volumeMounts:
+        - name: pg-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: pg-data
+        persistentVolumeClaim: { claimName: postgres-data-pvc }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: db }
+spec:
+  selector: { app: db }
+  ports: [ { port: 5432 } ]
+
+---
+# ==========================================
+# 4. CORE BACKEND & FRONTEND
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: spring-backend }
+spec:
+  selector: { matchLabels: { app: spring-backend } }
+  template:
+    metadata: { labels: { app: spring-backend } }
+    spec:
+      containers:
+      - name: backend
+        image: YOUR_REGISTRY/spring-backend:latest # <-- REPLACE
+        ports: [ { containerPort: 8085 } ]
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://db:5432/shinyswarm"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "user"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "password"
+        - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka:9092"
+        - name: APP_JWT_SECRET
+          value: "IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI="
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "create"
+---
+apiVersion: v1
+kind: Service
+metadata: { name: spring-backend }
+spec:
+  selector: { app: spring-backend }
+  ports: [ { port: 8085 } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: angular-frontend }
+spec:
+  selector: { matchLabels: { app: angular-frontend } }
+  template:
+    metadata: { labels: { app: angular-frontend } }
+    spec:
+      containers:
+      - name: frontend
+        image: YOUR_REGISTRY/angular-frontend:latest # <-- REPLACE
+        ports: [ { containerPort: 80 } ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-frontend
+  type: LoadBalancer # Exposes to outside world
+spec:
+  selector: { app: angular-frontend }
+  ports: [ { port: 4200, targetPort: 80 } ]
+
+---
+# ==========================================
+# 5. NGINX PROXY (For Shiny Apps)
+# ==========================================
+# Note: Ensure you create a ConfigMap for nginx.conf before applying this part!
+# Use: kubectl create configmap nginx-config --from-file=nginx.conf
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: nginx-proxy }
+spec:
+  selector: { matchLabels: { app: nginx-proxy } }
+  template:
+    metadata: { labels: { app: nginx-proxy } }
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80
+        - containerPort: 81
+        - containerPort: 82
+        - containerPort: 83
+        - containerPort: 84
+        - containerPort: 85
+        volumeMounts:
+        - name: nginx-config-vol
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config-vol
+        configMap: { name: nginx-config }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy
+  type: LoadBalancer
+spec:
+  selector: { app: nginx-proxy }
+  ports:
+  - { name: p8080, port: 8080, targetPort: 80 }
+  - { name: p8081, port: 8081, targetPort: 81 }
+  - { name: p8082, port: 8082, targetPort: 82 }
+  - { name: p8083, port: 8083, targetPort: 83 }
+  - { name: p8084, port: 8084, targetPort: 84 }
+  - { name: p8086, port: 8086, targetPort: 85 }
+
+---
+# ==========================================
+# 6. SHINY FRONTENDS (ALWAYS RUNNING)
+# ==========================================
+# -- Calculator --
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front }
+spec:
+  selector: { matchLabels: { app: shiny-front } }
+  template:
+    metadata: { labels: { app: shiny-front } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-calc:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front }
+spec: { selector: { app: shiny-front }, ports: [ { port: 3838 } ] }
+
+# -- Analytics --
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-analytics }
+spec:
+  selector: { matchLabels: { app: shiny-front-analytics } }
+  template:
+    metadata: { labels: { app: shiny-front-analytics } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-analytics:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front-analytics }
+spec: { selector: { app: shiny-front-analytics }, ports: [ { port: 3838 } ] }
+
+# -- CSV Exchange (With Volumes) --
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-csv }
+spec:
+  selector: { matchLabels: { app: shiny-front-csv } }
+  template:
+    metadata: { labels: { app: shiny-front-csv } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-csv:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front-csv }
+spec: { selector: { app: shiny-front-csv }, ports: [ { port: 3838 } ] }
+
+# -- Advanced CSV --
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-csv-advanced }
+spec:
+  selector: { matchLabels: { app: shiny-front-csv-advanced } }
+  template:
+    metadata: { labels: { app: shiny-front-csv-advanced } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-csv-advanced:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front-csv-advanced }
+spec: { selector: { app: shiny-front-csv-advanced }, ports: [ { port: 3838 } ] }
+
+# -- Monte Carlo --
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-mc }
+spec:
+  selector: { matchLabels: { app: shiny-front-mc } }
+  template:
+    metadata: { labels: { app: shiny-front-mc } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-mc:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front-mc }
+spec: { selector: { app: shiny-front-mc }, ports: [ { port: 3838 } ] }
+
+# -- Map --
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-map }
+spec:
+  selector: { matchLabels: { app: shiny-front-map } }
+  template:
+    metadata: { labels: { app: shiny-front-map } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-map:latest # <-- REPLACE
+        ports: [ { containerPort: 3838 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: shiny-front-map }
+spec: { selector: { app: shiny-front-map }, ports: [ { port: 3838 } ] }
+
+
+# ==========================================
+# 7. SHINY BACKENDS (WORKERS FOR KEDA)
+# ==========================================
+# Note: These do not need Services because they do not accept incoming HTTP traffic.
+# They only poll Kafka.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back }
+spec:
+  selector: { matchLabels: { app: shiny-back } }
+  template:
+    metadata: { labels: { app: shiny-back } }
+    spec:
+      containers: [ { name: worker, image: "YOUR_REGISTRY/shiny-back-calc:latest" } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-analytics }
+spec:
+  selector: { matchLabels: { app: shiny-back-analytics } }
+  template:
+    metadata: { labels: { app: shiny-back-analytics } }
+    spec:
+      containers: [ { name: worker, image: "YOUR_REGISTRY/shiny-back-analytics:latest" } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-csv }
+spec:
+  selector: { matchLabels: { app: shiny-back-csv } }
+  template:
+    metadata: { labels: { app: shiny-back-csv } }
+    spec:
+      containers:
+      - name: worker
+        image: YOUR_REGISTRY/shiny-back-csv:latest
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-csv-advanced }
+spec:
+  selector: { matchLabels: { app: shiny-back-csv-advanced } }
+  template:
+    metadata: { labels: { app: shiny-back-csv-advanced } }
+    spec:
+      containers:
+      - name: worker
+        image: YOUR_REGISTRY/shiny-back-csv-advanced:latest
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-mc }
+spec:
+  selector: { matchLabels: { app: shiny-back-mc } }
+  template:
+    metadata: { labels: { app: shiny-back-mc } }
+    spec:
+      containers: [ { name: worker, image: "YOUR_REGISTRY/shiny-back-mc:latest" } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-map }
+spec:
+  selector: { matchLabels: { app: shiny-back-map } }
+  template:
+    metadata: { labels: { app: shiny-back-map } }
+    spec:
+      containers: [ { name: worker, image: "YOUR_REGISTRY/shiny-back-map:latest" } ]
+
+# ==========================================
+# 8. KEDA AUTOSCALING RULES (Scale to Zero)
+# ==========================================
+# Requires KEDA installed in Rancher.
+# IMPORTANT: The consumerGroup values MUST exactly match the group.id set inside 
+# your specific R backend scripts! Adjust them below if necessary.
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-calc }
+spec:
+  scaleTargetRef: { name: shiny-back }
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_calc_service_v2 # <-- Check shiny_back.r
+      topic: input
+      lagThreshold: "1"
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-analytics }
+spec:
+  scaleTargetRef: { name: shiny-back-analytics }
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_analytics_group # <-- Check shiny_back_analytics.r
+      topic: input
+      lagThreshold: "1"
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-csv }
+spec:
+  scaleTargetRef: { name: shiny-back-csv }
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_csv_group # <-- Check shiny_back_csv.r
+      topic: input
+      lagThreshold: "1"
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-csv-advanced }
+spec:
+  scaleTargetRef: { name: shiny-back-csv-advanced }
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_csv_adv_group # <-- Check shiny_back_csv_advanced.r
+      topic: input
+      lagThreshold: "1"
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-mc }
+spec:
+  scaleTargetRef: { name: shiny-back-mc }
+  minReplicaCount: 0
+  maxReplicaCount: 10 # Allow more workers for heavy MC simulations
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_mc_group # <-- Check shiny_back_mc.r
+      topic: input
+      lagThreshold: "1"
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata: { name: scaler-map }
+spec:
+  scaleTargetRef: { name: shiny-back-map }
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: kafka:9092
+      consumerGroup: backend_map_group # <-- Check shiny_back_map.r
+      topic: input
+      lagThreshold: "1"

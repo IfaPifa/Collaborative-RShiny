@@ -1,0 +1,359 @@
+# ==========================================
+# 1. PERSISTENT STORAGE (PVCs)
+# ==========================================
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources: { requests: { storage: 5Gi } }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-data-pvc
+spec:
+  accessModes: [ "ReadWriteMany" ] # Required so both front and back can read/write CSVs
+  resources: { requests: { storage: 2Gi } }
+
+---
+# ==========================================
+# 2. INFRASTRUCTURE: REDIS & POSTGRES
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: redis-cache }
+spec:
+  selector: { matchLabels: { app: redis-cache } }
+  template:
+    metadata: { labels: { app: redis-cache } }
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        ports: [ { containerPort: 6379 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: redis-cache }
+spec: { selector: { app: redis-cache }, ports: [ { port: 6379 } ] }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: db }
+spec:
+  selector: { matchLabels: { app: db } }
+  template:
+    metadata: { labels: { app: db } }
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        ports: [ { containerPort: 5432 } ]
+        env:
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "shinyswarm"
+        volumeMounts:
+        - name: pg-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: pg-data
+        persistentVolumeClaim: { claimName: postgres-data-pvc }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: db }
+spec: { selector: { app: db }, ports: [ { port: 5432 } ] }
+
+---
+# ==========================================
+# 3. MESH CORE (Spring, Angular, Nginx)
+# ==========================================
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: spring-backend }
+spec:
+  selector: { matchLabels: { app: spring-backend } }
+  template:
+    metadata: { labels: { app: spring-backend } }
+    spec:
+      containers:
+      - name: backend
+        image: YOUR_REGISTRY/spring-backend:latest # <-- REPLACE
+        ports: [ { containerPort: 8085 } ]
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://db:5432/shinyswarm"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "user"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "password"
+        - name: APP_JWT_SECRET
+          value: "IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI="
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+---
+apiVersion: v1
+kind: Service
+metadata: { name: spring-backend }
+spec: { selector: { app: spring-backend }, ports: [ { port: 8085 } ] }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: angular-frontend }
+spec:
+  selector: { matchLabels: { app: angular-frontend } }
+  template:
+    metadata: { labels: { app: angular-frontend } }
+    spec:
+      containers:
+      - name: frontend
+        image: YOUR_REGISTRY/angular-frontend:latest # <-- REPLACE
+        ports: [ { containerPort: 80 } ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-frontend
+  type: LoadBalancer # Exposes to outside world
+spec:
+  selector: { app: angular-frontend }
+  ports: [ { port: 4200, targetPort: 80 } ]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: nginx-proxy }
+spec:
+  selector: { matchLabels: { app: nginx-proxy } }
+  template:
+    metadata: { labels: { app: nginx-proxy } }
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine
+        ports:
+        - containerPort: 80
+        - containerPort: 81
+        - containerPort: 82
+        - containerPort: 83
+        - containerPort: 84
+        - containerPort: 85
+        - containerPort: 87
+        - containerPort: 88
+        volumeMounts:
+        - name: nginx-config-vol
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+      volumes:
+      - name: nginx-config-vol
+        configMap: { name: nginx-config } # Remember to create this configmap first!
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy
+  type: LoadBalancer
+spec:
+  selector: { app: nginx-proxy }
+  ports:
+  - { name: p8080, port: 8080, targetPort: 80 }
+  - { name: p8081, port: 8081, targetPort: 81 }
+  - { name: p8082, port: 8082, targetPort: 82 }
+  - { name: p8083, port: 8083, targetPort: 83 }
+  - { name: p8084, port: 8084, targetPort: 84 }
+  - { name: p8086, port: 8086, targetPort: 85 }
+  - { name: p8087, port: 8087, targetPort: 87 }
+  - { name: p8088, port: 8088, targetPort: 88 }
+
+# ==========================================
+# 4. SHINY FRONTENDS (Port 3838)
+# ==========================================
+
+# --- Calculator ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front }
+spec: { selector: { matchLabels: { app: shiny-front } }, template: { metadata: { labels: { app: shiny-front } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-calc:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front }
+spec: { selector: { app: shiny-front }, ports: [ { port: 3838 } ] }
+
+# --- Analytics ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front-analytics }
+spec: { selector: { matchLabels: { app: shiny-front-analytics } }, template: { metadata: { labels: { app: shiny-front-analytics } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-analytics:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-analytics }
+spec: { selector: { app: shiny-front-analytics }, ports: [ { port: 3838 } ] }
+
+# --- Map ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front-map }
+spec: { selector: { matchLabels: { app: shiny-front-map } }, template: { metadata: { labels: { app: shiny-front-map } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-map:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-map }
+spec: { selector: { app: shiny-front-map }, ports: [ { port: 3838 } ] }
+
+# --- Monte Carlo ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front-mc }
+spec: { selector: { matchLabels: { app: shiny-front-mc } }, template: { metadata: { labels: { app: shiny-front-mc } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-mc:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-mc }
+spec: { selector: { app: shiny-front-mc }, ports: [ { port: 3838 } ] }
+
+# --- ML Trainer ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front-ml }
+spec: { selector: { matchLabels: { app: shiny-front-ml } }, template: { metadata: { labels: { app: shiny-front-ml } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-ml:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-ml }
+spec: { selector: { app: shiny-front-ml }, ports: [ { port: 3838 } ] }
+
+# --- Advanced Analytics ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-front-analytics-advanced }
+spec: { selector: { matchLabels: { app: shiny-front-analytics-advanced } }, template: { metadata: { labels: { app: shiny-front-analytics-advanced } }, spec: { containers: [ { name: app, image: "YOUR_REGISTRY/shiny-front-analytics-adv:latest", ports: [ { containerPort: 3838 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-analytics-advanced }
+spec: { selector: { app: shiny-front-analytics-advanced }, ports: [ { port: 3838 } ] }
+
+
+# --- CSV & Adv CSV (With Volume Mounts) ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-csv }
+spec:
+  selector: { matchLabels: { app: shiny-front-csv } }
+  template:
+    metadata: { labels: { app: shiny-front-csv } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-csv:latest
+        ports: [ { containerPort: 3838 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-csv }
+spec: { selector: { app: shiny-front-csv }, ports: [ { port: 3838 } ] }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-front-csv-advanced }
+spec:
+  selector: { matchLabels: { app: shiny-front-csv-advanced } }
+  template:
+    metadata: { labels: { app: shiny-front-csv-advanced } }
+    spec:
+      containers:
+      - name: app
+        image: YOUR_REGISTRY/shiny-front-csv-adv:latest
+        ports: [ { containerPort: 3838 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-front-csv-advanced }
+spec: { selector: { app: shiny-front-csv-advanced }, ports: [ { port: 3838 } ] }
+
+
+# ==========================================
+# 5. SHINY BACKENDS (PLUMBER REST APIs - Port 8000)
+# ==========================================
+# In REST mode, every backend needs a Service so the frontend can hit http://[backend-name]:8000
+
+# --- Calculator Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back }
+spec: { selector: { matchLabels: { app: shiny-back } }, template: { metadata: { labels: { app: shiny-back } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-calc:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back }
+spec: { selector: { app: shiny-back }, ports: [ { port: 8000 } ] }
+
+# --- Analytics Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back-analytics }
+spec: { selector: { matchLabels: { app: shiny-back-analytics } }, template: { metadata: { labels: { app: shiny-back-analytics } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-analytics:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-analytics }
+spec: { selector: { app: shiny-back-analytics }, ports: [ { port: 8000 } ] }
+
+# --- Map Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back-map }
+spec: { selector: { matchLabels: { app: shiny-back-map } }, template: { metadata: { labels: { app: shiny-back-map } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-map:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-map }
+spec: { selector: { app: shiny-back-map }, ports: [ { port: 8000 } ] }
+
+# --- Monte Carlo Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back-mc }
+spec: { selector: { matchLabels: { app: shiny-back-mc } }, template: { metadata: { labels: { app: shiny-back-mc } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-mc:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-mc }
+spec: { selector: { app: shiny-back-mc }, ports: [ { port: 8000 } ] }
+
+# --- ML Trainer Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back-ml }
+spec: { selector: { matchLabels: { app: shiny-back-ml } }, template: { metadata: { labels: { app: shiny-back-ml } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-ml:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-ml }
+spec: { selector: { app: shiny-back-ml }, ports: [ { port: 8000 } ] }
+
+# --- Advanced Analytics Backend ---
+---
+apiVersion: apps/v1; kind: Deployment; metadata: { name: shiny-back-analytics-advanced }
+spec: { selector: { matchLabels: { app: shiny-back-analytics-advanced } }, template: { metadata: { labels: { app: shiny-back-analytics-advanced } }, spec: { containers: [ { name: api, image: "YOUR_REGISTRY/shiny-back-analytics-adv:latest", ports: [ { containerPort: 8000 } ] } ] } } }
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-analytics-advanced }
+spec: { selector: { app: shiny-back-analytics-advanced }, ports: [ { port: 8000 } ] }
+
+# --- CSV & Adv CSV Backends (With Volume Mounts) ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-csv }
+spec:
+  selector: { matchLabels: { app: shiny-back-csv } }
+  template:
+    metadata: { labels: { app: shiny-back-csv } }
+    spec:
+      containers:
+      - name: api
+        image: YOUR_REGISTRY/shiny-back-csv:latest
+        ports: [ { containerPort: 8000 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-csv }
+spec: { selector: { app: shiny-back-csv }, ports: [ { port: 8000 } ] }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: shiny-back-csv-advanced }
+spec:
+  selector: { matchLabels: { app: shiny-back-csv-advanced } }
+  template:
+    metadata: { labels: { app: shiny-back-csv-advanced } }
+    spec:
+      containers:
+      - name: api
+        image: YOUR_REGISTRY/shiny-back-csv-adv:latest
+        ports: [ { containerPort: 8000 } ]
+        volumeMounts: [ { name: shared-data, mountPath: /app/shared_data } ]
+      volumes: [ { name: shared-data, persistentVolumeClaim: { claimName: shared-data-pvc } } ]
+---
+apiVersion: v1; kind: Service; metadata: { name: shiny-back-csv-advanced }
+spec: { selector: { app: shiny-back-csv-advanced }, ports: [ { port: 8000 } ] }
