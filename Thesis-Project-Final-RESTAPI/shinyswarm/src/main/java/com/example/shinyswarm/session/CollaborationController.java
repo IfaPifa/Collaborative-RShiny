@@ -86,27 +86,30 @@ public class CollaborationController {
         return ResponseEntity.ok(state);
     }
 
-    //  Removed "Principal" to allow internal R containers to POST without a JWT token
     @PostMapping("/{sessionId}/calculate")
     public ResponseEntity<?> updateCalculatorState(
             @PathVariable String sessionId, 
-            @RequestBody CalculatorStateRequest request) { 
+            @RequestBody String rawJsonPayload) { 
         
-        // FIX: If the user is in "solo" mode, bypass the database permission check!
-        if (!"solo".equals(sessionId)) {
-            CollaborationSession session = sessionRepository.findById(sessionId)
-                    .orElseThrow(() -> new RuntimeException("Session not found"));
+        CollaborationSession session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
 
-            // Validate permissions for collaborative sessions
-            if (!session.canEdit(request.sender())) {
-                return ResponseEntity.status(403).body("Read-only users cannot trigger calculations.");
-            }
-        }
-
-        String rApiUrl = "http://shiny-back:8000/calculate";
+        // DYNAMIC ROUTING
+        String rApiUrl = switch (session.getShinyApp().getName()) {
+            case "Advanced Visual Analytics" -> "http://shiny-back-analytics-advanced:8000/calculate";
+            case "Visual Analytics" -> "http://shiny-back-analytics:8000/calculate";
+            default -> "http://shiny-back:8000/calculate";
+        };
         
         try {
-            ResponseEntity<String> rResponse = restTemplate.postForEntity(rApiUrl, request, String.class);
+            // FIX: Explicitly rebuild the JSON headers so Plumber doesn't ignore the payload!
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            org.springframework.http.HttpEntity<String> requestEntity = 
+                new org.springframework.http.HttpEntity<>(rawJsonPayload, headers);
+
+            // Send the requestEntity instead of the raw string
+            ResponseEntity<String> rResponse = restTemplate.postForEntity(rApiUrl, requestEntity, String.class);
             String finalJsonState = rResponse.getBody();
             
             redisTemplate.opsForValue().set("session_state:" + sessionId, finalJsonState);

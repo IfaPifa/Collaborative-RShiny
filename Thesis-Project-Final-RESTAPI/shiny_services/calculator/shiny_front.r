@@ -3,10 +3,24 @@ library(bslib)
 library(httr)
 library(jsonlite)
 library(shinyjs) 
+library(promises)
+library(future)
+
+# Enable background workers for async HTTP requests
+plan(multisession)
 
 # --- MODERN ECO UI DEFINITION ---
 ui <- page_sidebar(
   useShinyjs(), 
+  # Listen for Angular sending the "ROLE_UPDATE" WebSocket message into the iframe
+  tags$head(tags$script(HTML("
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'ROLE_UPDATE') {
+        Shiny.setInputValue('role_update', event.data.permission, {priority: 'event'});
+      }
+    });
+  "))),
+  
   theme = bs_theme(version = 5, preset = "minty"),
   title = "LTER-LIFE: Sensor Deployment Calculator (REST API)",
   
@@ -37,31 +51,43 @@ ui <- page_sidebar(
   )
 )
 
-# --- SERVER LOGIC (HTTP POLLING) ---
+# --- SERVER LOGIC (ASYNC HTTP POLLING) ---
 server <- function(input, output, session) {
   
-  # Internal Docker-network URL for Spring Boot
   spring_api_base <- "http://spring-backend:8085/api/collab"
+  
+  # Reactive state for permissions to allow dynamic updates
+  permission_state <- reactiveVal("EDITOR")
+  
+  # Update permission state when Angular sends a postMessage
+  observeEvent(input$role_update, {
+    permission_state(input$role_update)
+  })
   
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
+    
+    # Initialize from URL, but let the reactiveVal drive the actual UI lock
+    if (!is.null(query$permission) && permission_state() == "EDITOR") {
+        permission_state(query$permission)
+    }
+    
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
-      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo"
     )
   })
   
   state <- reactiveValues(
-    log = "Initializing HTTP Polling...",
+    log = "Initializing Async HTTP Polling...",
     last_timestamp = 0,
     last_sender = NULL,
     current_sum = 0
   )
 
-  # Permissions check
+  # Dynamic Permissions Enforcer
   observe({
-    if (identity()$permission == "VIEWER") {
+    if (permission_state() == "VIEWER") {
       disable("num1"); disable("num2"); disable("calculate")
     } else {
       enable("num1"); enable("num2"); enable("calculate")
@@ -71,13 +97,13 @@ server <- function(input, output, session) {
   output$session_info_ui <- renderUI({
     id <- identity()
     tagList(
-      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
+      p(strong("Mode: "), span("Async REST Polling", style = "color: #e67e22")),
       p("Session Key: ", code(substr(id$sessionId, 1, 8), "...")),
-      p("Role: ", strong(id$permission))
+      p("Role: ", strong(permission_state()))
     )
   })
 
-  output$connection_status <- renderText({ "🌐 HTTP GET/POST" })
+  output$connection_status <- renderText({ "🌐 Async GET/POST" })
   output$debug_log <- renderText({ state$log })
   output$result <- renderText({ state$current_sum })
   
@@ -86,40 +112,35 @@ server <- function(input, output, session) {
     span(class = "badge bg-success float-end", paste("Vault updated by:", state$last_sender))
   })
 
-  # --- 1. THE HTTP POST (Push State to Vault) ---
+  # --- 1. ASYNC HTTP POST ---
   observeEvent(input$calculate, {
+    if (permission_state() == "VIEWER") return()
+    
     id <- identity()
-    if (id$permission == "VIEWER") return()
-    
-    payload <- list(
-      num1 = input$num1,
-      num2 = input$num2,
-      sender = id$userId
-    )
-    
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/calculate")
-    state$log <- paste("Sending POST request to Spring Boot Vault...\nURL:", post_url)
     
-    tryCatch({
-      res <- httr::POST(
-        url = post_url,
-        body = payload,
-        encode = "json",
-        httr::timeout(5)
-      )
-      
+    # MUST extract reactive inputs BEFORE entering the background future
+    payload <- list(num1 = input$num1, num2 = input$num2, sender = id$userId)
+    
+    state$log <- paste("Sending Async POST request to Vault...\nURL:", post_url)
+    
+    future_promise({
+      # BACKGROUND THREAD (Cannot access input$ or state$ here)
+      httr::POST(url = post_url, body = payload, encode = "json", httr::timeout(5))
+    }) %...>% (function(res) {
+      # BACK ON MAIN THREAD
       if (httr::status_code(res) == 200) {
         state$log <- "✅ Successfully saved to Spring Boot Redis Vault."
       } else {
         state$log <- paste("❌ HTTP Error:", httr::status_code(res))
       }
-    }, error = function(e) {
-      state$log <- paste("❌ Network Error:", e$message)
+    }) %...!% (function(error) {
+      state$log <- paste("❌ Network Error:", error$message)
     })
   })
   
-  # --- 2. THE HTTP GET (Poll Vault for State) ---
-  # This fires twice a second, simulating real-time Kafka
+  # --- 2. ASYNC HTTP GET POLLING ---
+  # Can safely run at 500ms now without choking the main thread
   poll_trigger <- reactiveTimer(500) 
   
   observe({
@@ -127,31 +148,32 @@ server <- function(input, output, session) {
     id <- identity()
     get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
     
-    tryCatch({
+    future_promise({
+      # BACKGROUND THREAD
       res <- httr::GET(get_url, httr::timeout(2))
       if (httr::status_code(res) == 200) {
+        httr::content(res, "text", encoding = "UTF-8")
+      } else {
+        "{}"
+      }
+    }) %...>% (function(raw_text) {
+      # BACK ON MAIN THREAD
+      if (nchar(raw_text) > 2) {
+        data <- fromJSON(raw_text)
         
-        raw_text <- httr::content(res, "text", encoding = "UTF-8")
-        
-        # If Redis is empty, it returns "{}"
-        if (nchar(raw_text) > 2) {
-          data <- fromJSON(raw_text)
+        if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+          state$last_timestamp <- data$timestamp
+          state$current_sum <- data$result
+          state$last_sender <- data$sender
+          state$log <- paste("📥 New Vault Data detected! Sent by:", data$sender)
           
-          # Check if this is a NEW state by comparing timestamps
-          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
-            state$last_timestamp <- data$timestamp
-            state$current_sum <- data$result
-            state$last_sender <- data$sender
-            state$log <- paste("📥 New Vault Data detected! Sent by:", data$sender)
-            
-            # Update local UI inputs (prevent infinite update loops)
+          # Isolate input updates
+          isolate({
             if (input$num1 != data$num1) updateNumericInput(session, "num1", value = data$num1)
             if (input$num2 != data$num2) updateNumericInput(session, "num2", value = data$num2)
-          }
+          })
         }
       }
-    }, error = function(e) {
-      # Fail silently on polling timeouts to avoid spamming the UI log
     })
   })
 }

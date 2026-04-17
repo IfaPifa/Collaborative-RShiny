@@ -25,7 +25,7 @@ RUN R CMD javareconf
 ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 
 # Install R packages
-RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
+RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr', 'promises', 'future'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
 
 # Install the kafka package from GitHub
 RUN R -e "remotes::install_github('INWTlab/r-kafka')"
@@ -36,5 +36,8 @@ RUN R -e "if (!requireNamespace('arrow', quietly = TRUE)) stop('FATAL: Arrow fai
 RUN R -e "if (!requireNamespace('randomForest', quietly = TRUE)) stop('FATAL: randomForest failed to install!')"
 RUN R -e "if (!requireNamespace('httr', quietly = TRUE)) stop('FATAL: httr failed to install! (Check libssl-dev / libcurl4-openssl-dev)')"
 RUN R -e "if (!requireNamespace('plumber', quietly = TRUE)) stop('FATAL: plumber failed to install! (Check libsodium-dev)')"
+# Bulletproof Checks
+RUN R -e "if (!requireNamespace('promises', quietly = TRUE)) stop('FATAL: promises failed to install!')"
+RUN R -e "if (!requireNamespace('future', quietly = TRUE)) stop('FATAL: future failed to install!')"
 
 EXPOSE 3838

@@ -40,8 +40,8 @@ test('REST Real-Time Data Synchronization', async ({ browser }) => {
   const bobFrame = bobPage.frameLocator('iframe');
 
   // FIX: Look for the new REST indicator instead of Kafka's "✅ Online"
-  await expect(aliceFrame.locator('text=🌐 HTTP GET/POST')).toBeVisible({ timeout: 15000 });
-  await expect(bobFrame.locator('text=🌐 HTTP GET/POST')).toBeVisible({ timeout: 15000 });
+  await expect(aliceFrame.locator('text=🌐 Async GET/POST')).toBeVisible({ timeout: 15000 });
+  await expect(bobFrame.locator('text=🌐 Async GET/POST')).toBeVisible({ timeout: 15000 });
 
   // (Removed the 4-second Kafka stabilization wait! REST is instantly ready.)
 

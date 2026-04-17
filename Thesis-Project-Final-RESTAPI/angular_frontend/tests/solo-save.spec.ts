@@ -20,7 +20,7 @@ test('Solo Workspace & Save State Pipeline (REST)', async ({ page }) => {
   await expect(shinyFrame.locator('.navbar-brand', { hasText: 'LTER-LIFE: Sensor Deployment' })).toBeVisible({ timeout: 15000 });
 
   // FIX: Look for the new REST indicator
-  await expect(shinyFrame.locator('text=🌐 HTTP GET/POST')).toBeVisible({ timeout: 15000 });
+  await expect(shinyFrame.locator('text=🌐 Async GET/POST')).toBeVisible({ timeout: 15000 });
 
   // (Removed the 4-second Kafka stabilization wait!)
 
