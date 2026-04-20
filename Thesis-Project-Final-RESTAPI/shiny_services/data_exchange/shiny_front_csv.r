@@ -1,11 +1,11 @@
 library(shiny)
+library(httr)
 library(jsonlite)
-library(kafka)
 library(shinyjs)
 
 ui <- fluidPage(
   useShinyjs(),
-  titlePanel("Benchmark 2: Data Exchange"),
+  titlePanel("Benchmark 2: Data Exchange (REST API)"),
   sidebarLayout(
     sidebarPanel(
       h4("Upload Dataset"),
@@ -15,7 +15,10 @@ ui <- fluidPage(
       hr(),
       downloadButton("download_data", "Download Cleaned CSV"),
       hr(),
-      uiOutput("session_info_ui")
+      uiOutput("session_info_ui"),
+      hr(),
+      h5("Architecture:"),
+      textOutput("connection_status")
     ),
     mainPanel(
       h4("Shared Data View"),
@@ -26,74 +29,108 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  
+  spring_api_base <- "http://spring-backend:8085/api/collab"
+  
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
-    list(userId = if (!is.null(query$userId)) query$userId else "anonymous", sessionId = if (!is.null(query$sessionId)) query$sessionId else NULL)
+    list(
+      userId = if (!is.null(query$userId)) query$userId else "anonymous",
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
+      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
+    )
   })
-  routingKey <- reactive({ id <- identity(); if (!is.null(id$sessionId)) id$sessionId else id$userId })
   
-  state <- reactiveValues(connected = FALSE, consumer = NULL, producer = NULL, permission = "EDITOR", last_sender = NULL)
-  shared_df <- reactiveVal(data.frame(Message="Awaiting Data..."))
+  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
+  shared_df <- reactiveVal(data.frame(Message = "Awaiting Data..."))
 
   observe({
-    if (state$permission == "VIEWER") { disable("file_upload"); disable("process_data") } 
-    else { enable("file_upload"); enable("process_data") }
+    if (identity()$permission == "VIEWER") {
+      disable("file_upload"); disable("process_data")
+    } else {
+      enable("file_upload"); enable("process_data")
+    }
   })
 
-  output$session_info_ui <- renderUI({ p("Role: ", strong(state$permission)) })
-
-  observe({
-    if (state$connected) return()
-    tryCatch({
-      query <- parseQueryString(session$clientData$url_search)
-      state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
-      broker <- "kafka:9092"
-      state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = paste0("front_", sample(10000:99999, 1)), "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
-      state$consumer$subscribe("output")
-      if (state$permission %in% c("EDITOR", "OWNER")) state$producer <- Producer$new(list("bootstrap.servers" = broker))
-      state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
+  output$session_info_ui <- renderUI({
+    id <- identity()
+    tagList(
+      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
+      p("Role: ", strong(id$permission))
+    )
   })
 
+  output$connection_status <- renderText({ "HTTP GET/POST" })
+
+  # --- POST uploaded CSV to Spring Boot ---
   observeEvent(input$process_data, {
-    req(state$connected, !is.null(state$producer), input$file_upload)
+    id <- identity()
+    if (id$permission == "VIEWER") return()
+    req(input$file_upload)
     
-    # Read the uploaded CSV
     df <- read.csv(input$file_upload$datapath, stringsAsFactors = FALSE)
     
-    payload <- list(dataset = df, sender = identity()$userId, role = state$permission)
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    payload <- list(
+      dataset = df,
+      sender = id$userId,
+      appName = "DataExchange"
+    )
+    
+    post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      httr::POST(
+        url = post_url,
+        body = toJSON(payload, auto_unbox = TRUE),
+        encode = "raw",
+        httr::content_type_json(),
+        httr::timeout(10)
+      )
+    }, error = function(e) {
+      print(paste("POST Error:", e$message))
+    })
   })
   
-  poll_trigger <- reactivePoll(500, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))
+  # --- Poll Spring Boot for state every 500ms ---
+  poll_trigger <- reactiveTimer(500)
   
   observe({
     poll_trigger()
-    req(state$connected, !is.null(state$consumer))
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
-          if (!is.null(data$type) && data$type == "SYSTEM" && !is.null(data$targetUser) && data$targetUser == identity()$userId) {
-              state$permission <- data$newRole
-              state$producer <- if (data$newRole %in% c("EDITOR", "OWNER")) Producer$new(list("bootstrap.servers" = "kafka:9092")) else NULL
-          } else if (!is.null(data$dataset)) {
-            shared_df(as.data.frame(data$dataset))
+    id <- identity()
+    get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      res <- httr::GET(get_url, httr::timeout(2))
+      if (httr::status_code(res) == 200) {
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
+          
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
             state$last_sender <- data$sender
+            
+            if (!is.null(data$dataset)) {
+              shared_df(as.data.frame(data$dataset))
+            }
           }
         }
       }
-    }
+    }, error = function(e) {
+      # Fail silently on polling timeouts
+    })
   })
 
   output$data_table <- renderTable({ shared_df() })
   
   output$download_data <- downloadHandler(
-    filename = function() { paste("cleaned_data_", Sys.Date(), ".csv", sep="") },
+    filename = function() { paste("cleaned_data_", Sys.Date(), ".csv", sep = "") },
     content = function(file) { write.csv(shared_df(), file, row.names = FALSE) }
   )
   
-  output$last_update_ui <- renderUI({ req(state$last_sender); p(em(paste("Data uploaded/processed by:", state$last_sender))) })
+  output$last_update_ui <- renderUI({ 
+    req(state$last_sender)
+    p(em(paste("Data uploaded/processed by:", state$last_sender))) 
+  })
 }
 shinyApp(ui = ui, server = server)

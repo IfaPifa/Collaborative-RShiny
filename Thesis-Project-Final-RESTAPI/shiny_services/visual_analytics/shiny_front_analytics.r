@@ -1,12 +1,12 @@
 library(shiny)
+library(httr)
 library(jsonlite)
-library(kafka)
 library(shinyjs)
 library(ggplot2)
 
 ui <- fluidPage(
   useShinyjs(), 
-  titlePanel("Benchmark 1: Visual Analytics"),
+  titlePanel("Benchmark 1: Visual Analytics (REST API)"),
   sidebarLayout(
     sidebarPanel(
       h4("Data Filters"),
@@ -14,7 +14,10 @@ ui <- fluidPage(
       checkboxGroupInput("cyl", "Cylinders:", choices = c(4, 6, 8), selected = c(4, 6, 8)),
       actionButton("update_plot", "Sync Plot"),
       hr(),
-      uiOutput("session_info_ui")
+      uiOutput("session_info_ui"),
+      hr(),
+      h5("Architecture:"),
+      textOutput("connection_status")
     ),
     mainPanel(
       plotOutput("scatter_plot"),
@@ -25,26 +28,22 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  # --- IDENTICAL KAFKA & PERMISSION LOGIC ---
+  spring_api_base <- "http://spring-backend:8085/api/collab"
+  
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else NULL
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
+      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
     )
   })
   
-  routingKey <- reactive({
-    id <- identity()
-    if (!is.null(id$sessionId)) return(id$sessionId)
-    return(id$userId)
-  })
-  
-  state <- reactiveValues(connected = FALSE, consumer = NULL, producer = NULL, last_sender = NULL, permission = "EDITOR")
-  shared_data <- reactiveVal(mtcars) # Default plot state
+  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
+  shared_data <- reactiveVal(mtcars)
 
   observe({
-    if (state$permission == "VIEWER") {
+    if (identity()$permission == "VIEWER") {
       disable("min_hp"); disable("cyl"); disable("update_plot")
     } else {
       enable("min_hp"); enable("cyl"); enable("update_plot")
@@ -53,76 +52,84 @@ server <- function(input, output, session) {
 
   output$session_info_ui <- renderUI({
     id <- identity()
-    tagList(p("Role: ", strong(state$permission)))
+    tagList(
+      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
+      p("Role: ", strong(id$permission))
+    )
   })
 
-  observe({
-    if (state$connected) return()
-    tryCatch({
-      query <- parseQueryString(session$clientData$url_search)
-      state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
-      
-      broker <- "kafka:9092"
-      state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = paste0("front_", sample(10000:99999, 1)), "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
-      state$consumer$subscribe("output")
-      
-      if (state$permission %in% c("EDITOR", "OWNER")) {
-        state$producer <- Producer$new(list("bootstrap.servers" = broker))
-      }
-      state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
-  })
+  output$connection_status <- renderText({ "HTTP GET/POST" })
 
-  # --- SEND DATA TO BACKEND ---
+  # --- POST state to Spring Boot on button click ---
   observeEvent(input$update_plot, {
-    req(state$connected, !is.null(state$producer))
+    id <- identity()
+    if (id$permission == "VIEWER") return()
+    
     payload <- list(
       min_hp = input$min_hp,
       cyl = input$cyl,
-      sender = identity()$userId,
-      role = state$permission
+      sender = id$userId,
+      appName = "Analytics"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    
+    post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      httr::POST(
+        url = post_url,
+        body = toJSON(payload, auto_unbox = TRUE),
+        encode = "raw",
+        httr::content_type_json(),
+        httr::timeout(5)
+      )
+    }, error = function(e) {
+      print(paste("POST Error:", e$message))
+    })
   })
   
-  # --- RECEIVE DATA FROM BACKEND ---
-  poll_trigger <- reactivePoll(500, session, checkFunc = function() { as.numeric(Sys.time()) }, valueFunc = function() { as.numeric(Sys.time()) })
+  # --- Poll Spring Boot for state every 500ms ---
+  poll_trigger <- reactiveTimer(500)
   
   observe({
     poll_trigger()
-    req(state$connected, !is.null(state$consumer))
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
+    id <- identity()
+    get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      res <- httr::GET(get_url, httr::timeout(2))
+      if (httr::status_code(res) == 200) {
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
           
-          if (!is.null(data$type) && data$type == "SYSTEM") {
-            # Handle role changes
-            if (!is.null(data$targetUser) && data$targetUser == identity()$userId) {
-              state$permission <- data$newRole
-              if (data$newRole %in% c("EDITOR", "OWNER")) {
-                state$producer <- Producer$new(list("bootstrap.servers" = "kafka:9092"))
-              } else {
-                state$producer <- NULL
-              }
-            }
-          } else if (!is.null(data$data)) {
-            # Update the plot data and UI sliders to match the sender
-            shared_data(as.data.frame(data$data))
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
             state$last_sender <- data$sender
-            updateSliderInput(session, "min_hp", value = data$min_hp)
-            updateCheckboxGroupInput(session, "cyl", selected = data$cyl)
+            
+            # Update UI inputs to match remote state
+            if (!is.null(data$min_hp) && input$min_hp != data$min_hp) {
+              updateSliderInput(session, "min_hp", value = data$min_hp)
+            }
+            if (!is.null(data$cyl)) {
+              updateCheckboxGroupInput(session, "cyl", selected = as.character(data$cyl))
+            }
+            
+            # Update plot data if the backend returned filtered data
+            if (!is.null(data$data)) {
+              shared_data(as.data.frame(data$data))
+            }
           }
         }
       }
-    }
+    }, error = function(e) {
+      # Fail silently on polling timeouts
+    })
   })
 
-  # --- RENDER GGPLOT ---
+  # --- Render ggplot ---
   output$scatter_plot <- renderPlot({
     df <- shared_data()
-    req(nrow(df) > 0) # Don't plot if filter removes all data
+    req(nrow(df) > 0)
     ggplot(df, aes(x = wt, y = mpg, color = as.factor(cyl))) +
       geom_point(size = 4) +
       geom_smooth(method = "lm", se = FALSE, color = "black") +
@@ -130,6 +137,9 @@ server <- function(input, output, session) {
       labs(title = "MPG vs Weight", x = "Weight (1000 lbs)", y = "Miles/(US) gallon", color = "Cylinders")
   })
   
-  output$last_update_ui <- renderUI({ req(state$last_sender); p(em(paste("Last updated by:", state$last_sender))) })
+  output$last_update_ui <- renderUI({ 
+    req(state$last_sender)
+    p(em(paste("Last updated by:", state$last_sender))) 
+  })
 }
 shinyApp(ui = ui, server = server)

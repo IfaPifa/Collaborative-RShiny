@@ -1,14 +1,14 @@
 library(shiny)
 library(bslib)
 library(plotly)
+library(httr)
 library(jsonlite)
-library(kafka)
 library(shinyjs)
 
 ui <- page_sidebar(
   useShinyjs(),
-  theme = bs_theme(version = 5, preset = "minty"), # Ecological, clean green theme
-  title = "Population Viability Simulator",
+  theme = bs_theme(version = 5, preset = "minty"),
+  title = "Population Viability Simulator (REST API)",
   
   sidebar = sidebar(
     title = "Ecological Parameters",
@@ -19,7 +19,10 @@ ui <- page_sidebar(
     numericInput("years", "Projection Years:", value = 50, min = 10),
     actionButton("run_sim", "Launch Swarm Compute", class = "btn-success", icon = icon("leaf")),
     hr(),
-    uiOutput("status_ui")
+    uiOutput("status_ui"),
+    hr(),
+    h5("Architecture:"),
+    textOutput("connection_status")
   ),
   
   layout_columns(
@@ -39,29 +42,30 @@ ui <- page_sidebar(
 
 server <- function(input, output, session) {
   
-  identity <- reactive({ list(userId = "researcher_01", sessionId = "session_eco_mc") }) 
-  routingKey <- reactive({ identity()$sessionId })
+  spring_api_base <- "http://spring-backend:8085/api/collab"
+  
+  identity <- reactive({
+    query <- parseQueryString(session$clientData$url_search)
+    list(
+      userId = if (!is.null(query$userId)) query$userId else "anonymous",
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
+      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
+    )
+  })
   
   state <- reactiveValues(
-    connected = FALSE, consumer = NULL, producer = NULL, 
-    status = "IDLE", progress = 0, results = NULL
+    status = "IDLE", progress = 0, results = NULL, last_timestamp = 0
   )
-  
-  observe({
-    if (state$connected) return()
-    broker <- "kafka:9092"
-    state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = paste0("front_eco_", sample(10000:99999, 1)), "auto.offset.reset" = "latest"))
-    state$consumer$subscribe("output")
-    state$producer <- Producer$new(list("bootstrap.servers" = broker))
-    state$connected <- TRUE
-  })
 
+  output$connection_status <- renderText({ "HTTP GET/POST" })
+
+  # --- POST simulation request to Spring Boot ---
   observeEvent(input$run_sim, {
-    req(state$connected)
+    id <- identity()
     state$status <- "RUNNING"
-    state$progress <- 0
+    state$progress <- 50
     state$results <- NULL
-    disable("run_sim") 
+    disable("run_sim")
     
     payload <- list(
       command = "START_SIMULATION",
@@ -70,33 +74,65 @@ server <- function(input, output, session) {
       env_var = input$env_var,
       paths = input$paths,
       years = input$years,
-      sender = identity()$userId
+      sender = id$userId,
+      appName = "MonteCarlo"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    
+    post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      res <- httr::POST(
+        url = post_url,
+        body = toJSON(payload, auto_unbox = TRUE),
+        encode = "raw",
+        httr::content_type_json(),
+        httr::timeout(30)
+      )
+      
+      if (httr::status_code(res) == 200) {
+        state$status <- "COMPLETE"
+        state$progress <- 100
+      } else {
+        state$status <- "ERROR"
+        enable("run_sim")
+      }
+    }, error = function(e) {
+      state$status <- "ERROR"
+      print(paste("POST Error:", e$message))
+      enable("run_sim")
+    })
   })
   
-  poll_trigger <- reactivePoll(200, session, checkFunc = function() { as.numeric(Sys.time()) }, valueFunc = function() { as.numeric(Sys.time()) })
+  # --- Poll Spring Boot for results every 500ms ---
+  poll_trigger <- reactiveTimer(500)
   
   observe({
     poll_trigger()
-    req(state$connected)
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
+    id <- identity()
+    get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      res <- httr::GET(get_url, httr::timeout(2))
+      if (httr::status_code(res) == 200) {
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
           
-          if (!is.null(data$type) && data$type == "PROGRESS") {
-            state$progress <- data$percent
-          } else if (!is.null(data$type) && data$type == "RESULT") {
-            state$progress <- 100
-            state$status <- "COMPLETE"
-            state$results <- data
-            enable("run_sim")
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
+            
+            if (!is.null(data$type) && data$type == "RESULT") {
+              state$results <- data
+              state$status <- "COMPLETE"
+              state$progress <- 100
+              enable("run_sim")
+            }
           }
         }
       }
-    }
+    }, error = function(e) {
+      # Fail silently
+    })
   })
 
   output$status_ui <- renderUI({
@@ -119,22 +155,18 @@ server <- function(input, output, session) {
     req(state$results)
     res <- state$results
     
-    p <- plot_ly(x = ~res$years) %>%
-      # 95% Confidence Band
+    plot_ly(x = ~res$years) %>%
       add_ribbons(ymin = ~res$lower_95, ymax = ~res$upper_95, 
                   name = "95% Confidence", line = list(color = 'rgba(46, 204, 113, 0.2)'), fillcolor = 'rgba(46, 204, 113, 0.2)') %>%
-      # Sample paths (to show the random noise)
       add_lines(y = ~res$sample_1, name = "Sample Trajectory 1", line = list(color = 'rgba(189, 195, 199, 0.6)', width = 1)) %>%
       add_lines(y = ~res$sample_2, name = "Sample Trajectory 2", line = list(color = 'rgba(189, 195, 199, 0.6)', width = 1)) %>%
       add_lines(y = ~res$sample_3, name = "Sample Trajectory 3", line = list(color = 'rgba(189, 195, 199, 0.6)', width = 1)) %>%
-      # Mean path
       add_lines(y = ~res$mean_path, name = "Mean Population", line = list(color = '#27ae60', width = 3)) %>%
       layout(
         xaxis = list(title = "Years from Present"),
         yaxis = list(title = "Population Size"),
         hovermode = "x unified"
       )
-    p
   })
   
   output$kpi_footer <- renderUI({

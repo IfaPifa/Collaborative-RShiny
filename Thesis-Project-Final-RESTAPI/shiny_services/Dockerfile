@@ -27,8 +27,6 @@ ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/latest"
 # Install R packages
 RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr', 'promises', 'future'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
 
-# Install the kafka package from GitHub
-RUN R -e "remotes::install_github('INWTlab/r-kafka')"
 
 # Bulletproof Checks
 RUN R -e "if (!requireNamespace('leaflet', quietly = TRUE)) stop('FATAL: Leaflet failed to install!')"

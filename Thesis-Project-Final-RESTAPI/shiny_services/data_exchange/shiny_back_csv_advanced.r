@@ -1,69 +1,57 @@
-llibrary(jsonlite)
-library(kafka)
+library(plumber)
+library(jsonlite)
 library(dplyr)
 
-broker <- "kafka:9092"
 shared_dir <- "/app/shared_data"
-print("LTER-LIFE Anomaly Backend Starting...")
+dir.create(shared_dir, showWarnings = FALSE)
 
-consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = "backend_csv", "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
-consumer$subscribe("input")
-producer <- Producer$new(list("bootstrap.servers" = broker))
+#* @apiTitle LTER-LIFE Climate Anomaly Backend (REST)
 
-repeat {
-  tryCatch({
-    messages <- consumer$consume(500)
-    if (length(messages) > 0) {
-      for (mess in messages) {
-        if (is.null(mess) || is.null(mess$value)) next
-        incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
-        
-        payload <- fromJSON(mess$value)
-        if (!is.null(payload$role) && payload$role == "VIEWER") next 
-        
-        # Check if this is our new ecological action
-        if (!is.null(payload$action) && payload$action == "ANALYZE_CLIMATE") {
-          
-          # 1. READ DYNAMIC RAW DATA FROM VOLUME 
-          raw_file_path <- file.path(shared_dir, payload$file)
-          
-          if (file.exists(raw_file_path)) {
-            df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
-            
-            # 2. ECOLOGICAL MATH (Aggregation & Anomaly Detection)
-            df$Date <- as.Date(df$Timestamp)
-            
-            summary_df <- df %>%
-              group_by(SiteID, Date) %>%
-              summarize(
-                Daily_Mean_Temp = mean(Temperature, na.rm = TRUE),
-                Daily_Mean_Moisture = mean(SoilMoisture, na.rm = TRUE),
-                .groups = 'drop'
-              ) %>%
-              mutate(
-                Heatwave_Anomaly = ifelse(Daily_Mean_Temp > payload$threshold, "YES", "NO")
-              )
-            
-            # 3. SAVE PROCESSED DATA WITH MATCHING FINGERPRINT
-            summary_file_name <- sub("^raw_", "processed_", payload$file)
-            write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
-            
-            # 4. SEND "POINTER" BACK OVER KAFKA
-            response_payload <- list(
-              action = "CLIMATE_READY",
-              file = summary_file_name,
-              sender = payload$sender,
-              timestamp = as.numeric(Sys.time())
-            )
-            
-            producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
-            print(paste("Processed LTER data for", payload$sender, "with file", summary_file_name))
-          }
-        }
-      }
-    }
-  }, error = function(e) { 
-    print(paste("Backend Error:", e$message))
-    Sys.sleep(1) 
-  })
+#* Analyze climate sensor data from shared volume
+#* @post /state
+#* @serializer unboxedJSON
+function(req) {
+  body <- jsonlite::fromJSON(req$body, simplifyVector = TRUE)
+
+  sender <- if (!is.null(body$sender)) body$sender else "unknown"
+  action <- if (!is.null(body$action)) body$action else ""
+
+  if (action != "ANALYZE_CLIMATE") {
+    return(list(status = "ignored", message = "Unknown action"))
+  }
+
+  raw_file_path <- file.path(shared_dir, body$file)
+  threshold <- if (!is.null(body$threshold)) as.numeric(body$threshold) else 28.5
+
+  if (!file.exists(raw_file_path)) {
+    return(list(status = "error", message = "File not found on shared volume"))
+  }
+
+  # Read and process the raw sensor data
+  df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
+  df$Date <- as.Date(df$Timestamp)
+
+  summary_df <- df %>%
+    group_by(SiteID, Date) %>%
+    summarize(
+      Daily_Mean_Temp = mean(Temperature, na.rm = TRUE),
+      Daily_Mean_Moisture = mean(SoilMoisture, na.rm = TRUE),
+      .groups = 'drop'
+    ) %>%
+    mutate(
+      Heatwave_Anomaly = ifelse(Daily_Mean_Temp > threshold, "YES", "NO")
+    )
+
+  # Save processed data with matching fingerprint
+  summary_file_name <- sub("^raw_", "processed_", body$file)
+  write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
+
+  return(list(
+    action = "CLIMATE_READY",
+    file = summary_file_name,
+    sender = sender,
+    rows_processed = nrow(summary_df),
+    status = "success",
+    timestamp = as.numeric(Sys.time())
+  ))
 }

@@ -1,15 +1,14 @@
 library(shiny)
 library(bslib)
 library(plotly)
+library(httr)
 library(jsonlite)
-library(kafka)
 library(shinyjs)
-library(shinyWidgets) # Required for the progress bar
 
 ui <- page_sidebar(
   useShinyjs(),
   theme = bs_theme(version = 5, preset = "materia"),
-  title = "Eco-ML: Biodiversity Predictor",
+  title = "Eco-ML: Biodiversity Predictor (REST API)",
   
   sidebar = sidebar(
     title = "Model Configuration",
@@ -19,7 +18,10 @@ ui <- page_sidebar(
     hr(),
     actionButton("train_btn", "Train Model on Mesh", class = "btn-primary", icon = icon("microchip")),
     hr(),
-    uiOutput("model_stats")
+    uiOutput("status_ui"),
+    hr(),
+    h5("Architecture:"),
+    textOutput("connection_status")
   ),
   
   layout_columns(
@@ -34,106 +36,128 @@ ui <- page_sidebar(
   ),
   
   card(
-    card_header("Mesh Status"),
-    progressBar(id = "train_progress", value = 0, display_pct = TRUE, status = "info")
+    card_header("Mesh Compute Status"),
+    uiOutput("progress_container")
   )
 )
 
 server <- function(input, output, session) {
   
-  # 1. Dynamically parse the Angular routing URL for collaborative routing
+  spring_api_base <- "http://spring-backend:8085/api/collab"
+  
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo_ml_session"
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
+      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
     )
   })
   
-  routingKey <- reactive({ identity()$sessionId })
-  
-  state <- reactiveValues(connected = FALSE, consumer = NULL, producer = NULL, 
-                          logs = data.frame(epoch = numeric(), mse = numeric()),
-                          importance = NULL, running = FALSE)
+  state <- reactiveValues(
+    status = "IDLE", progress = 0, last_timestamp = 0,
+    logs = data.frame(epoch = numeric(), mse = numeric()),
+    importance = NULL
+  )
 
-  # 2. Safely connect to Kafka on boot
-  observe({
-    if (state$connected) return()
-    tryCatch({
-      query <- parseQueryString(session$clientData$url_search)
-      
-      # Prevent Kafka partition fighting by making group.id unique per user
-      s_id <- if(!is.null(query$sessionId)) query$sessionId else "solo"
-      u_id <- if(!is.null(query$userId)) query$userId else sample(1000:9999, 1)
-      group_name <- paste0("front_ml_", s_id, "_", u_id)
-      
-      broker <- "kafka:9092"
-      state$consumer <- Consumer$new(list(
-        "bootstrap.servers" = broker, 
-        "group.id" = group_name,
-        "auto.offset.reset" = "latest",
-        "enable.auto.commit" = "true"
-      ))
-      state$consumer$subscribe("output")
-      state$producer <- Producer$new(list("bootstrap.servers" = broker))
-      state$connected <- TRUE
-    }, error = function(e) { print(paste("Kafka Connection Error:", e$message)) })
-  })
+  output$connection_status <- renderText({ "HTTP GET/POST" })
 
-  # 3. Trigger the asynchronous Machine Learning pipeline
+  # --- POST training request to Spring Boot ---
   observeEvent(input$train_btn, {
-    req(state$connected)
-    state$running <- TRUE
+    id <- identity()
+    state$status <- "RUNNING"
+    state$progress <- 50
     state$logs <- data.frame(epoch = numeric(), mse = numeric())
+    state$importance <- NULL
     disable("train_btn")
     
     payload <- list(
       command = "TRAIN_MODEL",
       trees = input$trees,
       mtry = input$mtry,
-      sender = identity()$userId
+      sender = id$userId,
+      appName = "MLTrainer"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    
+    post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      res <- httr::POST(
+        url = post_url,
+        body = toJSON(payload, auto_unbox = TRUE),
+        encode = "raw",
+        httr::content_type_json(),
+        httr::timeout(60)
+      )
+      
+      if (httr::status_code(res) == 200) {
+        state$status <- "COMPLETE"
+        state$progress <- 100
+      } else {
+        state$status <- "ERROR"
+        enable("train_btn")
+      }
+    }, error = function(e) {
+      state$status <- "ERROR"
+      print(paste("POST Error:", e$message))
+      enable("train_btn")
+    })
   })
-
-  # 4. Consume real-time Kafka epochs safely
-  poll_trigger <- reactivePoll(300, session, checkFunc = function() Sys.time(), valueFunc = function() Sys.time())
+  
+  # --- Poll Spring Boot for results every 500ms ---
+  poll_trigger <- reactiveTimer(500)
   
   observe({
     poll_trigger()
-    req(state$connected, !is.null(state$consumer))
+    id <- identity()
+    get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
     
     tryCatch({
-      messages <- state$consumer$consume(100)
-      if (length(messages) > 0) {
-        for (m in messages) {
-          if (!is.null(m$key) && m$key == routingKey()) {
-            data <- fromJSON(m$value)
+      res <- httr::GET(get_url, httr::timeout(2))
+      if (httr::status_code(res) == 200) {
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
+          
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
             
-            # Safely check for data$type to prevent NULL pointer crashes
-            if (!is.null(data$type) && data$type == "EPOCH_UPDATE") {
-              
-              # FIX: Guard to lock the UI for passive observers
-              if (!state$running) {
-                state$running <- TRUE
-                shinyjs::disable("train_btn")
-              }
-              
-              state$logs <- rbind(state$logs, data.frame(epoch = data$epoch, mse = data$mse))
-              updateProgressBar(session, "train_progress", value = data$percent)
-              
-            } else if (!is.null(data$type) && data$type == "TRAINING_COMPLETE") {
+            if (!is.null(data$type) && data$type == "TRAINING_COMPLETE") {
               state$importance <- data$importance
-              state$running <- FALSE
+              state$status <- "COMPLETE"
+              state$progress <- 100
               enable("train_btn")
+              
+              # Build epoch log from the response
+              if (!is.null(data$epoch_log)) {
+                log_df <- do.call(rbind, lapply(data$epoch_log, as.data.frame))
+                state$logs <- log_df
+              }
             }
           }
         }
       }
-    }, error = function(e) { print(paste("Consumption Error:", e$message)) })
+    }, error = function(e) {
+      # Fail silently
+    })
   })
 
-  # 5. Render dynamic UI
+  output$status_ui <- renderUI({
+    p("Mesh Status: ", strong(state$status, style = ifelse(state$status == "RUNNING", "color: #e67e22;", "color: #27ae60;")))
+  })
+
+  output$progress_container <- renderUI({
+    if (state$status == "IDLE") return(p("Awaiting model configuration..."))
+    HTML(sprintf('
+      <div class="progress" style="height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+             role="progressbar" style="width: %s%%;">
+             %s%%
+        </div>
+      </div>
+    ', state$progress, state$progress))
+  })
+
   output$loss_plot <- renderPlotly({
     req(nrow(state$logs) > 0)
     plot_ly(state$logs, x = ~epoch, y = ~mse, type = 'scatter', mode = 'lines+markers', name = 'MSE') %>%

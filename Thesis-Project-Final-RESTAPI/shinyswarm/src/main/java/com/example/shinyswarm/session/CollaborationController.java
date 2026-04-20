@@ -2,9 +2,13 @@ package com.example.shinyswarm.session;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +37,6 @@ record JoinSessionRequest(String sessionId) {}
 record SaveSessionRequest(String name) {}
 record InviteRequest(String username, String permission) {} 
 record UpdatePermissionRequest(String username, String permission) {}
-record CalculatorStateRequest(int num1, int num2, String sender) {}
 
 @RestController
 @RequestMapping("/api/collab")
@@ -51,6 +54,18 @@ public class CollaborationController {
     
     private final StringRedisTemplate redisTemplate;
     private final RestTemplate restTemplate;
+
+    // App name -> Plumber container hostname mapping
+    private static final Map<String, String> APP_ROUTES = Map.of(
+        "Calculator",      "http://shiny-back:8000/calculate",
+        "Analytics",        "http://shiny-back-analytics:8000/state",
+        "Advanced",         "http://shiny-back-analytics-advanced:8000/state",
+        "DataExchange",     "http://shiny-back-csv:8000/state",
+        "ClimateAnomaly",   "http://shiny-back-csv-advanced:8000/state",
+        "MonteCarlo",       "http://shiny-back-mc:8000/state",
+        "Geospatial",       "http://shiny-back-map:8000/state",
+        "MLTrainer",        "http://shiny-back-ml:8000/state"
+    );
 
     public CollaborationController(CollaborationSessionRepository sessionRepository,
                                    UserRepository userRepository,
@@ -74,7 +89,7 @@ public class CollaborationController {
     }
 
     // ==========================================
-    // REST ARCHITECTURE ENDPOINTS
+    // GENERIC REST STATE RELAY ENDPOINT
     // ==========================================
 
     @GetMapping("/{sessionId}/state")
@@ -86,35 +101,89 @@ public class CollaborationController {
         return ResponseEntity.ok(state);
     }
 
-    @PostMapping("/{sessionId}/calculate")
-    public ResponseEntity<?> updateCalculatorState(
-            @PathVariable String sessionId, 
-            @RequestBody String rawJsonPayload) { 
-        
-        CollaborationSession session = sessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+    /**
+     * Generic state relay: R Shiny POSTs state here, Java routes it to the
+     * correct Plumber backend based on the "appName" field in the JSON body,
+     * then stores the Plumber response in Redis for polling.
+     */
+    @PostMapping("/{sessionId}/state")
+    public ResponseEntity<?> relayState(
+            @PathVariable String sessionId,
+            @RequestBody String rawJson) {
 
-        // DYNAMIC ROUTING
-        String rApiUrl = switch (session.getShinyApp().getName()) {
-            case "Advanced Visual Analytics" -> "http://shiny-back-analytics-advanced:8000/calculate";
-            case "Visual Analytics" -> "http://shiny-back-analytics:8000/calculate";
-            default -> "http://shiny-back:8000/calculate";
-        };
-        
         try {
-            // FIX: Explicitly rebuild the JSON headers so Plumber doesn't ignore the payload!
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-            org.springframework.http.HttpEntity<String> requestEntity = 
-                new org.springframework.http.HttpEntity<>(rawJsonPayload, headers);
+            // Parse the appName from the raw JSON
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, Object> body = mapper.readValue(rawJson, Map.class);
+            String appName = (String) body.getOrDefault("appName", "");
+            String sender = (String) body.getOrDefault("sender", "anonymous");
 
-            // Send the requestEntity instead of the raw string
-            ResponseEntity<String> rResponse = restTemplate.postForEntity(rApiUrl, requestEntity, String.class);
+            // Permission check for collaborative sessions
+            if (!"solo".equals(sessionId)) {
+                sessionRepository.findById(sessionId).ifPresent(session -> {
+                    if (!session.canEdit(sender)) {
+                        throw new RuntimeException("Read-only users cannot update state.");
+                    }
+                });
+            }
+
+            // Route to the correct Plumber backend
+            String plumberUrl = APP_ROUTES.get(appName);
+            if (plumberUrl == null) {
+                return ResponseEntity.badRequest().body("Unknown appName: " + appName);
+            }
+
+            // Forward the full JSON body to Plumber
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(rawJson, headers);
+
+            ResponseEntity<String> rResponse = restTemplate.postForEntity(plumberUrl, request, String.class);
             String finalJsonState = rResponse.getBody();
-            
+
+            // Store in Redis for polling
             redisTemplate.opsForValue().set("session_state:" + sessionId, finalJsonState);
             return ResponseEntity.ok(finalJsonState);
-            
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("State relay error: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // LEGACY CALCULATOR ENDPOINT (kept for backward compatibility)
+    // ==========================================
+
+    @PostMapping("/{sessionId}/calculate")
+    public ResponseEntity<?> updateCalculatorState(
+            @PathVariable String sessionId,
+            @RequestBody String rawJson) {
+
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, Object> body = mapper.readValue(rawJson, Map.class);
+            String sender = (String) body.getOrDefault("sender", "anonymous");
+
+            if (!"solo".equals(sessionId)) {
+                CollaborationSession session = sessionRepository.findById(sessionId)
+                        .orElseThrow(() -> new RuntimeException("Session not found"));
+                if (!session.canEdit(sender)) {
+                    return ResponseEntity.status(403).body("Read-only users cannot trigger calculations.");
+                }
+            }
+
+            String rApiUrl = "http://shiny-back:8000/calculate";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> request = new HttpEntity<>(rawJson, headers);
+
+            ResponseEntity<String> rResponse = restTemplate.postForEntity(rApiUrl, request, String.class);
+            String finalJsonState = rResponse.getBody();
+
+            redisTemplate.opsForValue().set("session_state:" + sessionId, finalJsonState);
+            return ResponseEntity.ok(finalJsonState);
+
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error communicating with R backend: " + e.getMessage());
         }
@@ -135,7 +204,6 @@ public class CollaborationController {
         ShinyApp app = shinyAppRepository.findById(request.appId()).orElseThrow();
         CollaborationSession session = new CollaborationSession(request.name(), host, app);
         
-        // FIX 1: Explicitly add the Host to the participant list so canEdit() returns TRUE
         session.addParticipant(host, SessionPermission.OWNER);
         
         sessionRepository.save(session);
