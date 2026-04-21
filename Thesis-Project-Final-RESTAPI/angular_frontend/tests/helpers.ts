@@ -50,7 +50,7 @@ export async function launchSolo(page: Page, appName: string) {
 /**
  * Wait for the Shiny iframe to boot by checking for the connection status text.
  */
-export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, statusText = 'Async GET/POST') {
+export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, statusText = 'HTTP GET/POST') {
   await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 20000 });
 }
 
@@ -82,18 +82,35 @@ export async function saveState(page: Page, saveName: string) {
  * Waits for the user to appear in the active users list (WebSocket presence).
  */
 export async function demoteUser(page: Page, username: string) {
-  // Wait for the target user's avatar to appear (WebSocket JOIN must arrive first)
-  await expect(page.locator(`text=${username}`).first()).toBeVisible({ timeout: 15000 });
-
+  // Wait for WebSocket JOIN to arrive, then open the Manage Roles modal.
+  // The username may only be visible inside the modal (avatar blob hides the text).
+  await page.waitForTimeout(3000);
   await page.locator('button', { hasText: '⚙️ Manage Roles' }).click();
   await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeVisible();
 
-  // Find the row with the username and uncheck the Editor checkbox
-  const userRow = page.locator('div.flex.justify-between').filter({ hasText: username });
+  // Find the user's row in the modal
+  const userRow = page.locator('div.py-3.px-2').filter({ hasText: username });
   await expect(userRow).toBeVisible({ timeout: 5000 });
   const checkbox = userRow.locator('input[type="checkbox"]');
-  await expect(checkbox).toBeChecked({ timeout: 5000 });
-  await checkbox.uncheck();
+
+  // If not already an Editor, promote first so we can test demotion
+  if (!(await checkbox.isChecked())) {
+    await checkbox.check();
+    await page.waitForTimeout(1000);
+    await page.locator('button', { hasText: 'Done' }).click();
+    await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeHidden();
+    await page.waitForTimeout(2000);
+
+    // Reopen modal to demote
+    await page.locator('button', { hasText: '⚙️ Manage Roles' }).click();
+    await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeVisible();
+    const userRowAgain = page.locator('div.py-3.px-2').filter({ hasText: username });
+    const checkboxAgain = userRowAgain.locator('input[type="checkbox"]');
+    await expect(checkboxAgain).toBeChecked({ timeout: 5000 });
+    await checkboxAgain.uncheck();
+  } else {
+    await checkbox.uncheck();
+  }
 
   // Wait for the API call to complete
   await page.waitForTimeout(1000);

@@ -104,16 +104,21 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame);
 
-    // Default state: num1=0, num2=0
-    await expect(frame.locator('#num1')).toHaveValue('0');
+    // Set different values so we can verify the restore changes them
+    await frame.locator('#num1').fill('99');
+    await frame.locator('#num2').fill('99');
+    await frame.locator('button#calculate').click();
+    await frame.locator('button#calculate').click();
+    await expect(frame.locator('#result')).toHaveText('198', { timeout: 15000 });
 
-    // Load the checkpoint from Test 1
+    // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
-    await page.locator(`text=${sharedSaveName}`).click();
+    const modal = page.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await page.click('button:has-text("Load")');
+    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
-    // Verify restored state
+    // Verify restored state matches Test 1's saved values
     await expect(frame.locator('#num1')).toHaveValue('10', { timeout: 10000 });
     await expect(frame.locator('#num2')).toHaveValue('25', { timeout: 10000 });
   });

@@ -107,10 +107,10 @@ server <- function(input, output, session) {
             state$last_sender <- data$sender
             
             # Update UI inputs to match remote state
-            if (!is.null(data$min_hp) && input$min_hp != data$min_hp) {
+            if (!is.null(data$min_hp) && !is.null(input$min_hp) && input$min_hp != data$min_hp) {
               updateSliderInput(session, "min_hp", value = data$min_hp)
             }
-            if (!is.null(data$cyl)) {
+            if (!is.null(data$cyl) && !is.null(input$cyl)) {
               updateCheckboxGroupInput(session, "cyl", selected = as.character(data$cyl))
             }
             

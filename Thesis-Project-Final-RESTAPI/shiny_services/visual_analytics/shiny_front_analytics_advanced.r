@@ -1,32 +1,15 @@
 library(shiny)
 library(bslib)
 library(plotly)
-library(jsonlite)
 library(httr)
+library(jsonlite)
 library(shinyjs)
 library(dplyr)
-library(promises)
-library(future)
-
-# Enable background workers
-plan(multisession)
-
-# Safe data load
-base_data <- na.omit(airquality)
 
 ui <- page_sidebar(
   useShinyjs(),
-  # JavaScript listener for real-time demotion from Angular
-  tags$head(tags$script(HTML("
-    window.addEventListener('message', function(event) {
-      if (event.data && event.data.type === 'ROLE_UPDATE') {
-        Shiny.setInputValue('role_update', event.data.permission, {priority: 'event'});
-      }
-    });
-  "))),
-  
   theme = bs_theme(version = 5, preset = "minty"), 
-  title = "LTER-LIFE Microclimate Sensors",
+  title = "LTER-LIFE Microclimate Sensors (REST API)",
   
   sidebar = sidebar(
     title = "Sensor Filters",
@@ -70,31 +53,20 @@ server <- function(input, output, session) {
   
   spring_api_base <- "http://spring-backend:8085/api/collab"
   
-  permission_state <- reactiveVal("EDITOR")
-  
-  observeEvent(input$role_update, {
-    permission_state(input$role_update)
-  })
-  
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query$permission) && permission_state() == "EDITOR") {
-        permission_state(query$permission)
-    }
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo"
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
+      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
     )
   })
   
-  state <- reactiveValues(
-    last_timestamp = 0,
-    last_sender = NULL
-  )
+  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
+  base_data <- na.omit(airquality)
 
-  # Permissions Enforcer
   observe({
-    if (permission_state() == "VIEWER") {
+    if (identity()$permission == "VIEWER") {
       disable("min_temp"); disable("months"); disable("update_plot")
     } else {
       enable("min_temp"); enable("months"); enable("update_plot")
@@ -103,62 +75,72 @@ server <- function(input, output, session) {
 
   output$session_info_ui <- renderUI({
     id <- identity()
-    tagList(p("User: ", strong(id$userId)), p("Role: ", strong(permission_state())))
+    tagList(
+      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
+      p("User: ", strong(id$userId)),
+      p("Role: ", strong(id$permission))
+    )
   })
-  
-  output$connection_status <- renderText({ "🌐 Async GET/POST" })
 
-  # --- 1. ASYNC HTTP POST ---
+  output$connection_status <- renderText({ "HTTP GET/POST" })
+
+  # --- POST state to Spring Boot on button click ---
   observeEvent(input$update_plot, {
-    if (permission_state() == "VIEWER") return()
-    
     id <- identity()
-    post_url <- paste0(spring_api_base, "/", id$sessionId, "/calculate")
+    if (id$permission == "VIEWER") return()
     
-    # Capture inputs locally
-    payload <- list(min_temp = input$min_temp, months = input$months, sender = id$userId)
+    payload <- list(
+      min_temp = input$min_temp,
+      months = input$months,
+      sender = id$userId,
+      appName = "Advanced"
+    )
     
-    future_promise({
-      # Background thread
-      httr::POST(post_url, body = payload, encode = "json", httr::timeout(5))
-    }) %...!% (function(error) { 
-      print(error$message) 
+    post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    
+    tryCatch({
+      httr::POST(
+        url = post_url,
+        body = toJSON(payload, auto_unbox = TRUE),
+        encode = "raw",
+        httr::content_type_json(),
+        httr::timeout(5)
+      )
+    }, error = function(e) {
+      print(paste("POST Error:", e$message))
     })
   })
   
-  # --- 2. ASYNC HTTP GET ---
-  poll_trigger <- reactiveTimer(500) 
+  # --- Poll Spring Boot for state every 500ms ---
+  poll_trigger <- reactiveTimer(500)
   
   observe({
     poll_trigger()
     id <- identity()
     get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
     
-    future_promise({
-      # Background thread
+    tryCatch({
       res <- httr::GET(get_url, httr::timeout(2))
       if (httr::status_code(res) == 200) {
-        httr::content(res, "text", encoding = "UTF-8")
-      } else {
-        "{}"
-      }
-    }) %...>% (function(raw_text) {
-      # Main thread
-      if (nchar(raw_text) > 2) {
-        data <- fromJSON(raw_text)
-        
-        if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
-          state$last_timestamp <- data$timestamp
-          state$last_sender <- data$sender
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
           
-          isolate({
-            if (input$min_temp != data$min_temp) {
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
+            state$last_sender <- data$sender
+            
+            if (!is.null(data$min_temp) && !is.null(input$min_temp) && input$min_temp != data$min_temp) {
               updateSliderInput(session, "min_temp", value = data$min_temp)
             }
-            updateCheckboxGroupInput(session, "months", selected = as.character(data$months))
-          })
+            if (!is.null(data$months) && !is.null(input$months)) {
+              updateCheckboxGroupInput(session, "months", selected = as.character(data$months))
+            }
+          }
         }
       }
+    }, error = function(e) {
+      # Fail silently on polling timeouts
     })
   })
 
@@ -190,5 +172,4 @@ server <- function(input, output, session) {
     span(class = "badge bg-success float-end", paste("Synced by:", state$last_sender)) 
   })
 }
-
 shinyApp(ui = ui, server = server)

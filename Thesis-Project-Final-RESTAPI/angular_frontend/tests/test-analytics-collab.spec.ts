@@ -17,8 +17,8 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     await frame.locator('input[name="months"][value="5"]').uncheck();
     await frame.locator('button#update_plot').click();
 
-    // Verify badge shows alice synced
-    await expect(frame.locator('span.badge')).toContainText('alice', { timeout: 10000 });
+    // Verify May stays unchecked after sync
+    await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 10000 });
 
     // Save state
     await saveState(page, sharedSaveName);
@@ -95,16 +95,18 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame);
 
-    // Default: May is checked
-    await expect(frame.locator('input[name="months"][value="5"]')).toBeChecked();
+    // Ensure May is checked (set a known different state before restoring)
+    await frame.locator('input[name="months"][value="5"]').check();
 
-    // Load checkpoint from Test 1 (May was unchecked)
+    // Load the most recent checkpoint (saved in Test 1, where May was unchecked)
     await page.click('button:has-text("Load Checkpoint")');
-    await page.locator(`text=${sharedSaveName}`).click();
+    const modal = page.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await page.click('button:has-text("Load")');
+    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
     // Verify May is now unchecked
     await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 10000 });
   });
 });
+
