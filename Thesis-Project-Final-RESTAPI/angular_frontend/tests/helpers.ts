@@ -55,6 +55,18 @@ export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, 
 }
 
 /**
+ * Set a Shiny numericInput value properly.
+ * Playwright's fill() doesn't trigger Shiny's input binding events.
+ * We need to triple-click (select all), type the value, then press Tab to trigger the change event.
+ */
+export async function setShinyNumericInput(frame: ReturnType<Page['frameLocator']>, selector: string, value: string) {
+  const input = frame.locator(selector);
+  await input.click({ clickCount: 3 }); // select all existing text
+  await input.type(value);
+  await input.press('Tab'); // triggers Shiny's change event
+}
+
+/**
  * Save the current state via the Angular "Save State" modal.
  */
 export async function saveState(page: Page, saveName: string) {

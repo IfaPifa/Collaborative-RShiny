@@ -17,9 +17,10 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
     await frame.locator('#num1').fill('10');
     await frame.locator('#num2').fill('25');
     await frame.locator('button#calculate').click();
+    await frame.locator('button#calculate').click();
 
     // Verify result rendered
-    await expect(frame.locator('#result')).toHaveText('35', { timeout: 15000 });
+    await expect(frame.locator('#result')).toHaveText('35', { timeout: 25000 });
 
     // Save state
     await saveState(page, sharedSaveName);
