@@ -67,12 +67,28 @@ export async function saveState(page: Page, saveName: string) {
 
 /**
  * Demote a user from Editor to Viewer via the Manage Roles modal.
+ * Waits for the user to appear in the active users list (WebSocket presence).
  */
 export async function demoteUser(page: Page, username: string) {
+  // Wait for the target user's avatar to appear (WebSocket JOIN must arrive first)
+  await expect(page.locator(`text=${username}`).first()).toBeVisible({ timeout: 15000 });
+
   await page.locator('button', { hasText: '⚙️ Manage Roles' }).click();
   await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeVisible();
-  const userRow = page.locator('div.border-b').filter({ hasText: username });
-  await userRow.locator('input[type="checkbox"]').uncheck();
+
+  // Find the row with the username and uncheck the Editor checkbox
+  const userRow = page.locator('div.flex.justify-between').filter({ hasText: username });
+  await expect(userRow).toBeVisible({ timeout: 5000 });
+  const checkbox = userRow.locator('input[type="checkbox"]');
+  await expect(checkbox).toBeChecked({ timeout: 5000 });
+  await checkbox.uncheck();
+
+  // Wait for the API call to complete
+  await page.waitForTimeout(1000);
+
   await page.locator('button', { hasText: 'Done' }).click();
   await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeHidden();
+
+  // Wait for the WebSocket ROLE_UPDATE to propagate to the demoted user's iframe
+  await page.waitForTimeout(2000);
 }
