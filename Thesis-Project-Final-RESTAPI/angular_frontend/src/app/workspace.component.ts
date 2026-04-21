@@ -373,6 +373,15 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     if (msg.type === 'ROLE_UPDATE') {
       this.collabService.joinSession(msg.sessionId).subscribe(session => {
         this.collabService.activeSession.set(session);
+        // Relay the new permission into the Shiny iframe via postMessage
+        const user = this.authService.currentUser();
+        if (user) {
+          const myPerm = this.getParticipantPermission(session, user.username) || 'VIEWER';
+          const iframe = document.querySelector('iframe') as HTMLIFrameElement;
+          if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'ROLE_UPDATE', permission: myPerm }, '*');
+          }
+        }
       });
       return; 
     }

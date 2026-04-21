@@ -72,6 +72,16 @@ services:
   nginx-proxy:
     container_name: nginx-proxy
     image: nginx:1.25-alpine
+    restart: unless-stopped
+    depends_on:
+      - shiny-front
+      - shiny-front-analytics
+      - shiny-front-analytics-advanced
+      - shiny-front-csv
+      - shiny-front-csv-advanced
+      - shiny-front-mc
+      - shiny-front-map
+      - shiny-front-ml
     ports:
       - "8080:80"
       - "8081:81"
@@ -99,6 +109,8 @@ services:
   shiny-back:
     <<: *shiny-base
     container_name: shiny-back
+    ports:                  # <--- ADD THIS
+      - "8000:8000"
     volumes:
       - ./shiny_services/calculator/shiny_back.r:/app/back.R
     command: R -e "pr <- plumber::plumb('/app/back.R'); pr$$run(host='0.0.0.0', port=8000)"
