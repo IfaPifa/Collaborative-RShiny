@@ -1,56 +1,114 @@
 import { test, expect } from '@playwright/test';
+import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-// Keep the 60s timeout since the Monte Carlo simulation itself takes time to run
-test.setTimeout(60000);
+test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
+  test.setTimeout(90000); // Simulations can take time
+  const sharedSaveName = `MC Checkpoint - ${Date.now()}`;
 
-test('Monte Carlo: Async Compute & Non-Blocking UI', async ({ page }) => {
-  // --- 1. SETUP & LOGIN ---
-  await page.goto('/login');
-  await page.fill('input[name="username"]', 'alice');
-  await page.fill('input[name="password"]', 'password');
-  await page.click('button[type="submit"]');
-  
-  // Wait for the library to load fully
-  await page.waitForURL('**/library');
-  
-  // --- 2. LAUNCH SOLO APP ---
-  // FIX: Target the specific card container class (.bg-white.rounded-xl) 
-  // instead of a generic 'div' to prevent matching the entire page wrapper.
-  const mcAppContainer = page.locator('.bg-white.rounded-xl').filter({ 
-    has: page.locator('h3', { hasText: 'Monte Carlo Simulator' }) 
+  // TEST 1: Solo Mode — Run Simulation & Save
+  test('1. Solo Mode: Run Simulation & Save State', async ({ page }) => {
+    await login(page, 'alice');
+    await launchSolo(page, 'Monte Carlo Simulator');
+
+    const frame = page.frameLocator('iframe');
+    await waitForShinyBoot(frame, 'HTTP GET/POST');
+
+    // Set parameters and launch
+    await frame.locator('#n0').fill('200');
+    await frame.locator('button#run_sim').click();
+
+    // Wait for the simulation to complete — Extinction Risk KPI appears
+    await expect(frame.locator('text=Extinction Risk')).toBeVisible({ timeout: 45000 });
+
+    // Verify button re-enables
+    await expect(frame.locator('button#run_sim')).toBeEnabled();
+
+    // Save state
+    await saveState(page, sharedSaveName);
+
+    // Verify in saved-apps
+    await page.goto('/saved-apps');
+    await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
   });
-  
-  await mcAppContainer.locator('button:has-text("Launch Solo")').click();
-  
-  await page.waitForURL('**/workspace/solo');
 
-  // --- 3. WAIT FOR R-SHINY & KAFKA TO STABILIZE ---
-  const shinyFrame = page.frameLocator('iframe');
-  
-  // Wait for the UI to actually render using exact text from your Shiny app
-  await expect(shinyFrame.locator('text=Population Viability Simulator')).toBeVisible({ timeout: 15000 });
+  // TEST 2: Real-Time Collaborative Sync
+  test('2. Collab Mode: Real-Time Synchronization', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
 
-  // The Kafka Stabilization Delay
-  // Gives the R backend time to connect to the 'input' topic before we fire the command
-  await page.waitForTimeout(5000);
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Monte Carlo Simulator', 'MC Sync Test');
 
-  // --- 4. TRIGGER THE HEAVY COMPUTE ---
-  await shinyFrame.locator('button#run_sim').click();
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
 
-  // --- 5. VERIFY ASYNC/NON-BLOCKING BEHAVIOR ---
-  // Proof that the UI isn't blocked: the button disables immediately
-  await expect(shinyFrame.locator('button#run_sim')).toBeDisabled();
-  
-  // Proof that Kafka is sending PROGRESS messages: the progress bar appears
-  await expect(shinyFrame.locator('.progress-bar')).toBeVisible();
+    const aliceFrame = alicePage.frameLocator('iframe');
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
 
-  // --- 6. WAIT FOR FINAL RESULT ---
-  // Wait for the final RESULT payload to render the Extinction Risk KPI
-  // This gets a generous timeout because calculating 5,000 paths takes real time
-  await expect(shinyFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 45000 });
-  
-  // Verify the UI unlocks after the backend finishes
-  await expect(shinyFrame.locator('button#run_sim')).toBeEnabled();
+    // Alice runs simulation
+    await aliceFrame.locator('button#run_sim').click();
 
-  console.log('✅ Async Compute passed! Backend handled the load without blocking the frontend.');
+    // Alice sees result
+    await expect(aliceFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 45000 });
+
+    // Bob's UI polls and sees the result too
+    await expect(bobFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 15000 });
+
+    await aliceCtx.close();
+    await bobCtx.close();
+  });
+
+  // TEST 3: Permission Enforcement
+  test('3. Security: Role-Based UI Locking', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const charlieCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const charliePage = await charlieCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Monte Carlo Simulator', 'MC Security Test');
+
+    await login(charliePage, 'charlie');
+    await joinCollabSession(charliePage, sessionId);
+
+    const charlieFrame = charliePage.frameLocator('iframe');
+    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+
+    // Charlie starts as Editor
+    await expect(charlieFrame.locator('button#run_sim')).toBeEnabled();
+
+    // Alice demotes Charlie
+    await demoteUser(alicePage, 'charlie');
+
+    // Charlie's launch button locks
+    await expect(charlieFrame.locator('button#run_sim')).toBeDisabled({ timeout: 10000 });
+
+    await aliceCtx.close();
+    await charlieCtx.close();
+  });
+
+  // TEST 4: Time Machine — Restore Checkpoint
+  test('4. Time Machine: Restoring Historical States', async ({ page }) => {
+    await login(page, 'alice');
+    await launchSolo(page, 'Monte Carlo Simulator');
+
+    const frame = page.frameLocator('iframe');
+    await waitForShinyBoot(frame, 'HTTP GET/POST');
+
+    // Default: no results visible
+    await expect(frame.locator('text=Awaiting simulation')).toBeVisible();
+
+    // Load checkpoint from Test 1
+    await page.click('button:has-text("Load Checkpoint")');
+    await page.locator(`text=${sharedSaveName}`).click();
+    page.once('dialog', dialog => dialog.accept());
+    await page.click('button:has-text("Load")');
+
+    // Verify restored results appear
+    await expect(frame.locator('text=Extinction Risk')).toBeVisible({ timeout: 15000 });
+  });
 });

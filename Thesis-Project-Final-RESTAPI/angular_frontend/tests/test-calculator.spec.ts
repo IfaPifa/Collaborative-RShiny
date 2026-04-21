@@ -1,24 +1,25 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
+test.describe('Calculator: Core Four Matrix (REST)', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Adv Analytics Checkpoint - ${Date.now()}`;
+  const sharedSaveName = `Calc Checkpoint - ${Date.now()}`;
 
-  // TEST 1: Solo Mode — Filter & Save
+  // TEST 1: Solo Mode — Compute & Save
   test('1. Solo Mode: Compute & Save State', async ({ page }) => {
     await login(page, 'alice');
-    await launchSolo(page, 'Advanced Visual Analytics');
+    await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame);
 
-    // Uncheck May and sync
-    await frame.locator('input[name="months"][value="5"]').uncheck();
-    await frame.locator('button#update_plot').click();
+    // Interact: set inputs and calculate
+    await frame.locator('#num1').fill('10');
+    await frame.locator('#num2').fill('25');
+    await frame.locator('button#calculate').click();
 
-    // Verify badge shows alice synced
-    await expect(frame.locator('span.badge')).toContainText('alice', { timeout: 10000 });
+    // Verify result rendered
+    await expect(frame.locator('#result')).toHaveText('35', { timeout: 15000 });
 
     // Save state
     await saveState(page, sharedSaveName);
@@ -36,7 +37,7 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     const bobPage = await bobCtx.newPage();
 
     await login(alicePage, 'alice');
-    const sessionId = await createCollabSession(alicePage, 'Advanced Visual Analytics', 'Adv Analytics Sync Test');
+    const sessionId = await createCollabSession(alicePage, 'Collaborative Calculator', 'Calc Sync Test');
 
     await login(bobPage, 'bob');
     await joinCollabSession(bobPage, sessionId);
@@ -46,12 +47,18 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     await waitForShinyBoot(aliceFrame);
     await waitForShinyBoot(bobFrame);
 
-    // Alice unchecks May and syncs
-    await aliceFrame.locator('input[name="months"][value="5"]').uncheck();
-    await aliceFrame.locator('button#update_plot').click();
+    // Alice calculates
+    await aliceFrame.locator('#num1').fill('42');
+    await aliceFrame.locator('#num2').fill('8');
+    await aliceFrame.locator('button#calculate').click();
 
-    // Bob's UI polls and May becomes unchecked
-    await expect(bobFrame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 15000 });
+    // Alice sees result
+    await expect(aliceFrame.locator('#result')).toHaveText('50', { timeout: 15000 });
+
+    // Bob's UI polls and updates
+    await expect(bobFrame.locator('#num1')).toHaveValue('42', { timeout: 15000 });
+    await expect(bobFrame.locator('#num2')).toHaveValue('8', { timeout: 15000 });
+    await expect(bobFrame.locator('#result')).toHaveText('50', { timeout: 15000 });
 
     await aliceCtx.close();
     await bobCtx.close();
@@ -65,7 +72,7 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     const charliePage = await charlieCtx.newPage();
 
     await login(alicePage, 'alice');
-    const sessionId = await createCollabSession(alicePage, 'Advanced Visual Analytics', 'Adv Analytics Security Test');
+    const sessionId = await createCollabSession(alicePage, 'Collaborative Calculator', 'Calc Security Test');
 
     await login(charliePage, 'charlie');
     await joinCollabSession(charliePage, sessionId);
@@ -73,15 +80,16 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     const charlieFrame = charliePage.frameLocator('iframe');
     await waitForShinyBoot(charlieFrame);
 
-    // Charlie starts as Editor
-    await expect(charlieFrame.locator('button#update_plot')).toBeEnabled();
+    // Charlie starts as Editor — controls enabled
+    await expect(charlieFrame.locator('button#calculate')).toBeEnabled();
 
     // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
     // Charlie's controls lock
-    await expect(charlieFrame.locator('button#update_plot')).toBeDisabled({ timeout: 10000 });
-    await expect(charlieFrame.locator('input[name="months"][value="5"]')).toBeDisabled();
+    await expect(charlieFrame.locator('button#calculate')).toBeDisabled({ timeout: 10000 });
+    await expect(charlieFrame.locator('#num1')).toBeDisabled();
+    await expect(charlieFrame.locator('#num2')).toBeDisabled();
 
     await aliceCtx.close();
     await charlieCtx.close();
@@ -90,21 +98,22 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
   // TEST 4: Time Machine — Restore Checkpoint
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {
     await login(page, 'alice');
-    await launchSolo(page, 'Advanced Visual Analytics');
+    await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame);
 
-    // Default: May is checked
-    await expect(frame.locator('input[name="months"][value="5"]')).toBeChecked();
+    // Default state: num1=0, num2=0
+    await expect(frame.locator('#num1')).toHaveValue('0');
 
-    // Load checkpoint from Test 1 (May was unchecked)
+    // Load the checkpoint from Test 1
     await page.click('button:has-text("Load Checkpoint")');
     await page.locator(`text=${sharedSaveName}`).click();
     page.once('dialog', dialog => dialog.accept());
     await page.click('button:has-text("Load")');
 
-    // Verify May is now unchecked
-    await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 10000 });
+    // Verify restored state
+    await expect(frame.locator('#num1')).toHaveValue('10', { timeout: 10000 });
+    await expect(frame.locator('#num2')).toHaveValue('25', { timeout: 10000 });
   });
 });

@@ -1,31 +1,38 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
+import path from 'path';
+import fs from 'fs';
 
-test.describe('ML Trainer: Core Four Matrix (REST)', () => {
-  test.setTimeout(90000); // Model training can take time
-  const sharedSaveName = `ML Checkpoint - ${Date.now()}`;
+// Create a small test CSV file for upload
+function createTestCsv(): string {
+  const csvPath = path.join(__dirname, 'test-data.csv');
+  fs.writeFileSync(csvPath, 'Name,City,Score\nalice,basel,95\nbob,zurich,88\ncharlie,bern,72\n');
+  return csvPath;
+}
 
-  // TEST 1: Solo Mode — Train Model & Save
-  test('1. Solo Mode: Train Model & Save State', async ({ page }) => {
+test.describe('Data Exchange: Core Four Matrix (REST)', () => {
+  test.setTimeout(60000);
+  const sharedSaveName = `CSV Checkpoint - ${Date.now()}`;
+
+  // TEST 1: Solo Mode — Upload, Process & Save
+  test('1. Solo Mode: Upload CSV & Save State', async ({ page }) => {
     await login(page, 'alice');
-    await launchSolo(page, 'ML Trainer');
+    await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame, 'HTTP GET/POST');
 
-    // Set parameters
-    await frame.locator('#trees').fill('100');
-    await frame.locator('button#train_btn').click();
+    // Upload test CSV
+    const csvPath = createTestCsv();
+    const fileInput = frame.locator('input[type="file"]');
+    await fileInput.setInputFiles(csvPath);
 
-    // Wait for training to complete — feature importance chart renders
-    // The plotly chart container will have data
-    await expect(frame.locator('.plotly')).toBeVisible({ timeout: 60000 });
+    // Click process
+    await frame.locator('button#process_data').click();
 
-    // Verify button re-enables
-    await expect(frame.locator('button#train_btn')).toBeEnabled();
-
-    // Verify status shows COMPLETE
-    await expect(frame.locator('text=COMPLETE')).toBeVisible();
+    // Verify cleaned data appears in the table (uppercase transformation)
+    await expect(frame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
+    await expect(frame.locator('text=BASEL')).toBeVisible();
 
     // Save state
     await saveState(page, sharedSaveName);
@@ -33,6 +40,9 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     // Verify in saved-apps
     await page.goto('/saved-apps');
     await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
+
+    // Cleanup
+    fs.unlinkSync(csvPath);
   });
 
   // TEST 2: Real-Time Collaborative Sync
@@ -43,7 +53,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     const bobPage = await bobCtx.newPage();
 
     await login(alicePage, 'alice');
-    const sessionId = await createCollabSession(alicePage, 'ML Trainer', 'ML Sync Test');
+    const sessionId = await createCollabSession(alicePage, 'Data Exchange', 'CSV Sync Test');
 
     await login(bobPage, 'bob');
     await joinCollabSession(bobPage, sessionId);
@@ -53,16 +63,19 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
     await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
 
-    // Alice trains model
-    await aliceFrame.locator('button#train_btn').click();
+    // Alice uploads and processes
+    const csvPath = createTestCsv();
+    await aliceFrame.locator('input[type="file"]').setInputFiles(csvPath);
+    await aliceFrame.locator('button#process_data').click();
 
-    // Alice sees results
-    await expect(aliceFrame.locator('.plotly')).toBeVisible({ timeout: 60000 });
+    // Alice sees cleaned data
+    await expect(aliceFrame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
 
-    // Bob's UI polls and sees the results too
-    await expect(bobFrame.locator('.plotly')).toBeVisible({ timeout: 15000 });
-    await expect(bobFrame.locator('text=COMPLETE')).toBeVisible();
+    // Bob's UI polls and sees the same cleaned data
+    await expect(bobFrame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
+    await expect(bobFrame.locator('text=BASEL')).toBeVisible();
 
+    fs.unlinkSync(csvPath);
     await aliceCtx.close();
     await bobCtx.close();
   });
@@ -75,7 +88,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     const charliePage = await charlieCtx.newPage();
 
     await login(alicePage, 'alice');
-    const sessionId = await createCollabSession(alicePage, 'ML Trainer', 'ML Security Test');
+    const sessionId = await createCollabSession(alicePage, 'Data Exchange', 'CSV Security Test');
 
     await login(charliePage, 'charlie');
     await joinCollabSession(charliePage, sessionId);
@@ -84,13 +97,13 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
 
     // Charlie starts as Editor
-    await expect(charlieFrame.locator('button#train_btn')).toBeEnabled();
+    await expect(charlieFrame.locator('button#process_data')).toBeEnabled();
 
     // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
-    // Charlie's train button locks
-    await expect(charlieFrame.locator('button#train_btn')).toBeDisabled({ timeout: 10000 });
+    // Charlie's controls lock
+    await expect(charlieFrame.locator('button#process_data')).toBeDisabled({ timeout: 10000 });
 
     await aliceCtx.close();
     await charlieCtx.close();
@@ -99,13 +112,13 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
   // TEST 4: Time Machine — Restore Checkpoint
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {
     await login(page, 'alice');
-    await launchSolo(page, 'ML Trainer');
+    await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame, 'HTTP GET/POST');
 
-    // Default: no results, status is IDLE
-    await expect(frame.locator('text=Awaiting model')).toBeVisible();
+    // Default: shows "Awaiting Data..."
+    await expect(frame.locator('text=Awaiting Data')).toBeVisible();
 
     // Load checkpoint from Test 1
     await page.click('button:has-text("Load Checkpoint")');
@@ -113,7 +126,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     page.once('dialog', dialog => dialog.accept());
     await page.click('button:has-text("Load")');
 
-    // Verify restored results — plotly chart appears
-    await expect(frame.locator('.plotly')).toBeVisible({ timeout: 15000 });
+    // Verify restored data appears
+    await expect(frame.locator('text=ALICE')).toBeVisible({ timeout: 10000 });
   });
 });
