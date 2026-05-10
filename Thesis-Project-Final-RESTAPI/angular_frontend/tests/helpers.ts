@@ -41,7 +41,7 @@ export async function joinCollabSession(page: Page, sessionId: string) {
  */
 export async function launchSolo(page: Page, appName: string) {
   const appCard = page.locator('.bg-white.rounded-xl').filter({
-    has: page.locator('h3', { hasText: appName })
+    has: page.getByRole('heading', { name: appName, exact: true })
   });
   await appCard.locator('button:has-text("Launch Solo")').click();
   await page.waitForURL('**/workspace/solo');

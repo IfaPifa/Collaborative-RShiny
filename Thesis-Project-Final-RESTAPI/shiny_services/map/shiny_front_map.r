@@ -51,6 +51,14 @@ server <- function(input, output, session) {
   
   state <- reactiveValues(last_timestamp = 0, last_sender = NULL, known_sensors = list())
 
+  observe({
+    if (identity()$permission == "VIEWER") {
+      disable("sensor_type")
+    } else {
+      enable("sensor_type")
+    }
+  })
+
   output$connection_status <- renderText({ "HTTP GET/POST" })
 
   output$map <- renderLeaflet({
@@ -140,3 +148,4 @@ server <- function(input, output, session) {
   })
 }
 shinyApp(ui = ui, server = server)
+

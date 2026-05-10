@@ -20,7 +20,9 @@ train_data$richness <- with(train_data, (0.5 * temp) + (0.2 * humidity) - (1.2 *
 #* @post /state
 #* @serializer unboxedJSON
 function(req) {
-  body <- jsonlite::fromJSON(req$body, simplifyVector = TRUE)
+  raw_body <- req$body
+  if (is.raw(raw_body)) { body_text <- rawToChar(raw_body) } else if (is.character(raw_body)) { body_text <- raw_body } else { body_text <- NULL }
+  if (!is.null(body_text)) { body <- jsonlite::fromJSON(body_text, simplifyVector = TRUE) } else { body <- raw_body }
 
   command <- if (!is.null(body$command)) body$command else ""
   if (command != "TRAIN_MODEL") {

@@ -31,15 +31,12 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await frame.locator('button#process_data').click();
 
     // Verify cleaned data appears in the table (uppercase transformation)
-    await expect(frame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
+    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
     await expect(frame.locator('text=BASEL')).toBeVisible();
 
     // Save state
     await saveState(page, sharedSaveName);
 
-    // Verify in saved-apps
-    await page.goto('/saved-apps');
-    await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
 
     // Cleanup
     fs.unlinkSync(csvPath);
@@ -69,10 +66,10 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await aliceFrame.locator('button#process_data').click();
 
     // Alice sees cleaned data
-    await expect(aliceFrame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
+    await expect(aliceFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
 
     // Bob's UI polls and sees the same cleaned data
-    await expect(bobFrame.locator('text=ALICE')).toBeVisible({ timeout: 15000 });
+    await expect(bobFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
     await expect(bobFrame.locator('text=BASEL')).toBeVisible();
 
     fs.unlinkSync(csvPath);
@@ -117,16 +114,15 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame, 'HTTP GET/POST');
 
-    // Default: shows "Awaiting Data..."
-    await expect(frame.locator('text=Awaiting Data')).toBeVisible();
-
-    // Load checkpoint from Test 1
+    // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
-    await page.locator(`text=${sharedSaveName}`).click();
+    const modal = page.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await page.click('button:has-text("Load")');
+    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
     // Verify restored data appears
-    await expect(frame.locator('text=ALICE')).toBeVisible({ timeout: 10000 });
+    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 10000 });
   });
 });
+

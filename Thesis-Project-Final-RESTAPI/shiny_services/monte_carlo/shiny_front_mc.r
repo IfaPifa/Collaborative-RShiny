@@ -59,6 +59,14 @@ server <- function(input, output, session) {
 
   output$connection_status <- renderText({ "HTTP GET/POST" })
 
+  observe({
+    if (identity()$permission == "VIEWER") {
+      disable("run_sim"); disable("n0")
+    } else {
+      enable("run_sim"); enable("n0")
+    }
+  })
+
   # --- POST simulation request to Spring Boot ---
   observeEvent(input$run_sim, {
     id <- identity()

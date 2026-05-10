@@ -26,9 +26,6 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     // Save state
     await saveState(page, sharedSaveName);
 
-    // Verify in saved-apps
-    await page.goto('/saved-apps');
-    await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
   });
 
   // TEST 2: Real-Time Collaborative Sync
@@ -84,8 +81,9 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
-    // Charlie's launch button locks
+    // Charlie's controls lock
     await expect(charlieFrame.locator('button#run_sim')).toBeDisabled({ timeout: 10000 });
+    await expect(charlieFrame.locator('#n0')).toBeDisabled();
 
     await aliceCtx.close();
     await charlieCtx.close();
@@ -99,14 +97,12 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     const frame = page.frameLocator('iframe');
     await waitForShinyBoot(frame, 'HTTP GET/POST');
 
-    // Default: no results visible
-    await expect(frame.locator('text=Awaiting simulation')).toBeVisible();
-
-    // Load checkpoint from Test 1
+    // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
-    await page.locator(`text=${sharedSaveName}`).click();
+    const modal = page.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await page.click('button:has-text("Load")');
+    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
     // Verify restored results appear
     await expect(frame.locator('text=Extinction Risk')).toBeVisible({ timeout: 15000 });

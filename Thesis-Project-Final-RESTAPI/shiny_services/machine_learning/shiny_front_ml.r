@@ -62,6 +62,14 @@ server <- function(input, output, session) {
 
   output$connection_status <- renderText({ "HTTP GET/POST" })
 
+  observe({
+    if (identity()$permission == "VIEWER") {
+      disable("train_btn"); disable("trees")
+    } else {
+      enable("train_btn"); enable("trees")
+    }
+  })
+
   # --- POST training request to Spring Boot ---
   observeEvent(input$train_btn, {
     id <- identity()
@@ -130,8 +138,12 @@ server <- function(input, output, session) {
               
               # Build epoch log from the response
               if (!is.null(data$epoch_log)) {
-                log_df <- do.call(rbind, lapply(data$epoch_log, as.data.frame))
-                state$logs <- log_df
+                el <- data$epoch_log
+                if (is.data.frame(el)) {
+                  state$logs <- el
+                } else if (is.list(el)) {
+                  state$logs <- do.call(rbind, lapply(el, as.data.frame))
+                }
               }
             }
           }

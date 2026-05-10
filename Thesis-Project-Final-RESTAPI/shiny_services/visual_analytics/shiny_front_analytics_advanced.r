@@ -87,7 +87,11 @@ server <- function(input, output, session) {
   # --- POST state to Spring Boot on button click ---
   observeEvent(input$update_plot, {
     id <- identity()
-    if (id$permission == "VIEWER") return()
+    print(paste(">>> SYNC CLICKED | userId:", id$userId, "| sessionId:", id$sessionId, "| permission:", id$permission))
+    if (id$permission == "VIEWER") {
+      print(">>> BLOCKED: user is VIEWER")
+      return()
+    }
     
     payload <- list(
       min_temp = input$min_temp,
@@ -97,17 +101,21 @@ server <- function(input, output, session) {
     )
     
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    print(paste(">>> POSTing to:", post_url))
+    print(paste(">>> Payload:", toJSON(payload, auto_unbox = TRUE)))
     
     tryCatch({
-      httr::POST(
+      res <- httr::POST(
         url = post_url,
         body = toJSON(payload, auto_unbox = TRUE),
         encode = "raw",
         httr::content_type_json(),
         httr::timeout(5)
       )
+      print(paste(">>> POST response status:", httr::status_code(res)))
+      print(paste(">>> POST response body:", httr::content(res, "text", encoding = "UTF-8")))
     }, error = function(e) {
-      print(paste("POST Error:", e$message))
+      print(paste(">>> POST Error:", e$message))
     })
   })
   
@@ -129,11 +137,14 @@ server <- function(input, output, session) {
           if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
             state$last_timestamp <- data$timestamp
             state$last_sender <- data$sender
+            print(paste(">>> POLL: new state from", data$sender, "| min_temp:", data$min_temp, "| months:", paste(data$months, collapse=",")))
             
             if (!is.null(data$min_temp) && !is.null(input$min_temp) && input$min_temp != data$min_temp) {
+              print(paste(">>> Updating min_temp:", input$min_temp, "->", data$min_temp))
               updateSliderInput(session, "min_temp", value = data$min_temp)
             }
-            if (!is.null(data$months) && !is.null(input$months)) {
+            if (!is.null(data$months)) {
+              print(paste(">>> Updating months to:", paste(as.character(data$months), collapse=",")))
               updateCheckboxGroupInput(session, "months", selected = as.character(data$months))
             }
           }
