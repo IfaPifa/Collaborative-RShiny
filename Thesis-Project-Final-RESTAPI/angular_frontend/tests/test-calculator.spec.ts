@@ -1,36 +1,29 @@
 import { test, expect } from '@playwright/test';
-import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
+import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser, setShinyNumericInput } from './helpers';
 
-test.describe('Calculator: Core Four Matrix (REST)', () => {
+test.describe('Calculator: Core Four Matrix', () => {
   test.setTimeout(60000);
   const sharedSaveName = `Calc Checkpoint - ${Date.now()}`;
 
-  // TEST 1: Solo Mode — Compute & Save
   test('1. Solo Mode: Compute & Save State', async ({ page }) => {
     await login(page, 'alice');
     await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame);
+    await waitForShinyBoot(frame, '🟢 System Online');
 
-    // Interact: set inputs and calculate
-    await frame.locator('#num1').fill('10');
-    await frame.locator('#num2').fill('25');
-    await frame.locator('button#calculate').click();
+    await setShinyNumericInput(frame, '#num1', '10');
+    await setShinyNumericInput(frame, '#num2', '25');
     await frame.locator('button#calculate').click();
 
-    // Verify result rendered
     await expect(frame.locator('#result')).toHaveText('35', { timeout: 25000 });
 
-    // Save state
     await saveState(page, sharedSaveName);
 
-    // Verify in saved-apps
     await page.goto('/saved-apps');
     await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
   });
 
-  // TEST 2: Real-Time Collaborative Sync
   test('2. Collab Mode: Real-Time Synchronization', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const bobCtx = await browser.newContext();
@@ -45,18 +38,15 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame);
-    await waitForShinyBoot(bobFrame);
+    await waitForShinyBoot(aliceFrame, '🟢 System Online');
+    await waitForShinyBoot(bobFrame, '🟢 System Online');
 
-    // Alice calculates
-    await aliceFrame.locator('#num1').fill('42');
-    await aliceFrame.locator('#num2').fill('8');
+    await setShinyNumericInput(aliceFrame, '#num1', '42');
+    await setShinyNumericInput(aliceFrame, '#num2', '8');
     await aliceFrame.locator('button#calculate').click();
 
-    // Alice sees result
     await expect(aliceFrame.locator('#result')).toHaveText('50', { timeout: 15000 });
 
-    // Bob's UI polls and updates
     await expect(bobFrame.locator('#num1')).toHaveValue('42', { timeout: 15000 });
     await expect(bobFrame.locator('#num2')).toHaveValue('8', { timeout: 15000 });
     await expect(bobFrame.locator('#result')).toHaveText('50', { timeout: 15000 });
@@ -65,7 +55,6 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
     await bobCtx.close();
   });
 
-  // TEST 3: Permission Enforcement — Real-Time Demotion
   test('3. Security: Role-Based UI Locking', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const charlieCtx = await browser.newContext();
@@ -79,15 +68,12 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame);
+    await waitForShinyBoot(charlieFrame, '🟢 System Online');
 
-    // Charlie starts as Editor — controls enabled
     await expect(charlieFrame.locator('button#calculate')).toBeEnabled();
 
-    // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
-    // Charlie's controls lock
     await expect(charlieFrame.locator('button#calculate')).toBeDisabled({ timeout: 10000 });
     await expect(charlieFrame.locator('#num1')).toBeDisabled();
     await expect(charlieFrame.locator('#num2')).toBeDisabled();
@@ -96,29 +82,24 @@ test.describe('Calculator: Core Four Matrix (REST)', () => {
     await charlieCtx.close();
   });
 
-  // TEST 4: Time Machine — Restore Checkpoint
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {
     await login(page, 'alice');
     await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame);
+    await waitForShinyBoot(frame, '🟢 System Online');
 
-    // Set different values so we can verify the restore changes them
-    await frame.locator('#num1').fill('99');
-    await frame.locator('#num2').fill('99');
-    await frame.locator('button#calculate').click();
+    await setShinyNumericInput(frame, '#num1', '99');
+    await setShinyNumericInput(frame, '#num2', '99');
     await frame.locator('button#calculate').click();
     await expect(frame.locator('#result')).toHaveText('198', { timeout: 15000 });
 
-    // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
     const modal = page.locator('app-modal');
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
     await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
-    // Verify restored state matches Test 1's saved values
     await expect(frame.locator('#num1')).toHaveValue('10', { timeout: 10000 });
     await expect(frame.locator('#num2')).toHaveValue('25', { timeout: 10000 });
   });

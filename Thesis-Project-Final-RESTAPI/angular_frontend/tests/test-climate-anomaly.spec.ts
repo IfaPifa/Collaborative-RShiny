@@ -3,7 +3,6 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 import path from 'path';
 import fs from 'fs';
 
-// Create a synthetic LTER sensor CSV for testing
 function createSensorCsv(): string {
   const csvPath = path.join(__dirname, 'test-sensor-data.csv');
   const rows = ['Timestamp,SiteID,Temperature,SoilMoisture'];
@@ -19,39 +18,32 @@ function createSensorCsv(): string {
   return csvPath;
 }
 
-test.describe('Climate Anomaly Detector: Core Four Matrix (REST)', () => {
+test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
   test.setTimeout(90000);
   const sharedSaveName = `Climate Checkpoint - ${Date.now()}`;
 
-  // TEST 1: Solo Mode — Upload, Analyze & Save
   test('1. Solo Mode: Analyze Climate Data & Save State', async ({ page }) => {
     await login(page, 'alice');
     await launchSolo(page, 'Climate Anomaly Detector');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
-    // Upload sensor data
     const csvPath = createSensorCsv();
     await frame.locator('input[type="file"]').setInputFiles(csvPath);
 
-    // Click analyze
+    // SHINY FIX: Wait 1.5 seconds for the AJAX upload to reach 100% before clicking!
+    await page.waitForTimeout(1500);
+
     await frame.locator('button#process_data').click();
 
-    // Verify processed summary appears (should show SiteID column)
     await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 30000 });
-
-    // Verify "Analysis triggered by" text
     await expect(frame.locator('text=Analysis triggered by')).toBeVisible({ timeout: 10000 });
 
-    // Save state
     await saveState(page, sharedSaveName);
-
-
     fs.unlinkSync(csvPath);
   });
 
-  // TEST 2: Real-Time Collaborative Sync
   test('2. Collab Mode: Real-Time Synchronization', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const bobCtx = await browser.newContext();
@@ -66,18 +58,18 @@ test.describe('Climate Anomaly Detector: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, '🟢 System Online');
+    await waitForShinyBoot(bobFrame, '🟢 System Online');
 
-    // Alice uploads and analyzes
     const csvPath = createSensorCsv();
     await aliceFrame.locator('input[type="file"]').setInputFiles(csvPath);
+    
+    // SHINY FIX: Wait for upload in Collab mode too
+    await alicePage.waitForTimeout(1500); 
+    
     await aliceFrame.locator('button#process_data').click();
 
-    // Alice sees results
     await expect(aliceFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 30000 });
-
-    // Bob's UI polls and sees the same results
     await expect(bobFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 15000 });
 
     fs.unlinkSync(csvPath);
@@ -85,7 +77,6 @@ test.describe('Climate Anomaly Detector: Core Four Matrix (REST)', () => {
     await bobCtx.close();
   });
 
-  // TEST 3: Permission Enforcement
   test('3. Security: Role-Based UI Locking', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const charlieCtx = await browser.newContext();
@@ -99,38 +90,29 @@ test.describe('Climate Anomaly Detector: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(charlieFrame, '🟢 System Online');
 
-    // Charlie starts as Editor
     await expect(charlieFrame.locator('button#process_data')).toBeEnabled();
-
-    // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
-
-    // Charlie's controls lock
     await expect(charlieFrame.locator('button#process_data')).toBeDisabled({ timeout: 10000 });
 
     await aliceCtx.close();
     await charlieCtx.close();
   });
 
-  // TEST 4: Time Machine — Restore Checkpoint
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {
     await login(page, 'alice');
     await launchSolo(page, 'Climate Anomaly Detector');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
-    // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
     const modal = page.locator('app-modal');
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
     await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
-    // Verify restored data appears
     await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 15000 });
   });
 });
-

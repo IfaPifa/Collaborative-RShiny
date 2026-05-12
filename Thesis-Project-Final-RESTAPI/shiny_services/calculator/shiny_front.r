@@ -9,9 +9,10 @@ library(future)
 # Enable background workers for async HTTP requests
 plan(multisession)
 
-# --- MODERN ECO UI DEFINITION ---
+# --- UNIFIED MODERN UI DEFINITION ---
 ui <- page_sidebar(
   useShinyjs(), 
+  
   # Listen for Angular sending the "ROLE_UPDATE" WebSocket message into the iframe
   tags$head(tags$script(HTML("
     window.addEventListener('message', function(event) {
@@ -21,32 +22,38 @@ ui <- page_sidebar(
     });
   "))),
   
+  # Modern theme for your thesis demo
   theme = bs_theme(version = 5, preset = "minty"),
-  title = "LTER-LIFE: Sensor Deployment Calculator (REST API)",
+  title = "LTER-LIFE: Collaborative Sensor Calculator",
   
   sidebar = sidebar(
     title = "Session Context",
     uiOutput("session_info_ui"),
     hr(),
+    
+    # Standardized Inputs
     numericInput("num1", "Camera Traps (Zone A):", value = 0),
     numericInput("num2", "Acoustic Sensors (Zone B):", value = 0),
-    actionButton("calculate", "Sync to Vault", class = "btn-success", icon = icon("cloud-upload-alt")),
+    actionButton("calculate", "Sync Data", class = "btn-success", icon = icon("cloud-upload-alt")),
+    
     hr(),
     h5("Architecture:"),
     textOutput("connection_status")
   ),
   
+  # Main Dashboard Area
   layout_columns(
     value_box(
       title = "Total Active Sensors",
       value = h1(textOutput("result"), style = "font-weight: bold;"), 
-      showcase = icon("tower-broadcast"),
+      showcase = icon("tower-broadcast", lib = "font-awesome"),
       theme = "success"
     )
   ),
   
+  # Debug / Sync Log
   card(
-    card_header("REST Synchronization Log", uiOutput("last_update_ui", inline = TRUE)),
+    card_header("Synchronization Log", uiOutput("last_update_ui", inline = TRUE)),
     verbatimTextOutput("debug_log")
   )
 )
@@ -54,40 +61,31 @@ ui <- page_sidebar(
 # --- SERVER LOGIC (ASYNC HTTP POLLING) ---
 server <- function(input, output, session) {
   
-  spring_api_base <- "http://spring-backend:8085/api/collab"
-  
-  # Reactive state for permissions to allow dynamic updates
-  permission_state <- reactiveVal("EDITOR")
-  
-  # Update permission state when Angular sends a postMessage
-  observeEvent(input$role_update, {
-    permission_state(input$role_update)
-  })
-  
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
-    
-    # Initialize from URL, but let the reactiveVal drive the actual UI lock
-    if (!is.null(query$permission) && permission_state() == "EDITOR") {
-        permission_state(query$permission)
-    }
-    
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo"
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else NULL
     )
   })
   
+  routingKey <- reactive({
+    id <- identity()
+    if (!is.null(id$sessionId)) return(id$sessionId)
+    return(id$userId)
+  })
+  
   state <- reactiveValues(
-    log = "Initializing Async HTTP Polling...",
-    last_timestamp = 0,
+    connected = FALSE,
+    log = "Initializing...",
+    consumer = NULL,
+    producer = NULL,
     last_sender = NULL,
-    current_sum = 0
+    permission = "EDITOR" 
   )
 
-  # Dynamic Permissions Enforcer
   observe({
-    if (permission_state() == "VIEWER") {
+    if (state$permission == "VIEWER") {
       disable("num1"); disable("num2"); disable("calculate")
     } else {
       enable("num1"); enable("num2"); enable("calculate")
@@ -96,85 +94,147 @@ server <- function(input, output, session) {
 
   output$session_info_ui <- renderUI({
     id <- identity()
-    tagList(
-      p(strong("Mode: "), span("Async REST Polling", style = "color: #e67e22")),
-      p("Session Key: ", code(substr(id$sessionId, 1, 8), "...")),
-      p("Role: ", strong(permission_state()))
-    )
+    if (!is.null(id$sessionId)) {
+      tagList(
+        p(strong("Mode: "), span("Collaborative", style = "color: green")),
+        p("Session Key: ", code(substr(id$sessionId, 0, 8), "...")),
+        p("Role: ", strong(state$permission))
+      )
+    } else {
+      tagList(
+        p(strong("Mode: "), span("Solo / Private", style = "color: gray")),
+        p("User: ", id$userId)
+      )
+    }
   })
 
-  output$connection_status <- renderText({ "🌐 Async GET/POST" })
-  output$debug_log <- renderText({ state$log })
-  output$result <- renderText({ state$current_sum })
-  
-  output$last_update_ui <- renderUI({
-    req(state$last_sender)
-    span(class = "badge bg-success float-end", paste("Vault updated by:", state$last_sender))
-  })
-
-  # --- 1. ASYNC HTTP POST ---
-  observeEvent(input$calculate, {
-    if (permission_state() == "VIEWER") return()
+  observe({
+    if (state$connected) return()
     
-    id <- identity()
-    post_url <- paste0(spring_api_base, "/", id$sessionId, "/calculate")
-    
-    # MUST extract reactive inputs BEFORE entering the background future
-    payload <- list(num1 = input$num1, num2 = input$num2, sender = id$userId)
-    
-    state$log <- paste("Sending Async POST request to Vault...\nURL:", post_url)
-    
-    future_promise({
-      # BACKGROUND THREAD (Cannot access input$ or state$ here)
-      httr::POST(url = post_url, body = payload, encode = "json", httr::timeout(5))
-    }) %...>% (function(res) {
-      # BACK ON MAIN THREAD
-      if (httr::status_code(res) == 200) {
-        state$log <- "✅ Successfully saved to Spring Boot Redis Vault."
+    tryCatch({
+      query <- parseQueryString(session$clientData$url_search)
+      state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
+      
+      broker <- "kafka:9092"
+      consumer_group <- paste0("front_", sample(10000:99999, 1))
+      
+      state$consumer <- Consumer$new(list(
+        "bootstrap.servers" = broker,
+        "group.id" = consumer_group,
+        "auto.offset.reset" = "latest", 
+        "enable.auto.commit" = "true"
+      ))
+      state$consumer$subscribe("output")
+      
+      if (state$permission %in% c("EDITOR", "OWNER")) {
+        state$producer <- Producer$new(list("bootstrap.servers" = broker))
+        state$log <- paste("Connected as", state$permission, "- Full Duplex")
       } else {
-        state$log <- paste("❌ HTTP Error:", httr::status_code(res))
+        state$producer <- NULL
+        state$log <- paste("Connected as VIEWER - Read-Only (No Producer)")
+        showNotification("Viewer Mode: Input Stream Disconnected", type = "warning", duration = 10)
       }
-    }) %...!% (function(error) {
-      state$log <- paste("❌ Network Error:", error$message)
+      
+      state$connected <- TRUE
+      
+    }, error = function(e) {
+      state$log <- paste("Kafka Error:", e$message)
     })
   })
+
+  output$connection_status <- renderText({
+    if (state$connected) "🟢 System Online" else "❌ Offline"
+  })
   
-  # --- 2. ASYNC HTTP GET POLLING ---
-  # Can safely run at 500ms now without choking the main thread
-  poll_trigger <- reactiveTimer(500) 
+  output$debug_log <- renderText({ state$log })
+
+  # 4. SEND REQUEST (Producer)
+  observeEvent(input$calculate, {
+    req(state$connected)
+    if (is.null(state$producer)) {
+      showNotification("Write access denied by architecture.", type = "error")
+      return()
+    }
+    
+    id <- identity()
+    payload <- list(
+      num1 = input$num1,
+      num2 = input$num2,
+      sender = id$userId,
+      role = state$permission, 
+      timestamp = as.numeric(Sys.time())
+    )
+    
+    key_to_use <- routingKey()
+    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = key_to_use)
+    state$log <- paste("Sent update to:", key_to_use)
+  })
+  
+  # 5. RECEIVE UPDATES (Consumer)
+  current_sum <- reactiveVal(0)
+  
+  poll_trigger <- reactivePoll(500, session,
+    checkFunc = function() {
+      if (!isTRUE(state$connected)) return(NULL)
+      return(as.numeric(Sys.time()))
+    },
+    valueFunc = function() { return(as.numeric(Sys.time())) }
+  )
   
   observe({
     poll_trigger()
-    id <- identity()
-    get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
+    req(state$connected, !is.null(state$consumer))
     
-    future_promise({
-      # BACKGROUND THREAD
-      res <- httr::GET(get_url, httr::timeout(2))
-      if (httr::status_code(res) == 200) {
-        httr::content(res, "text", encoding = "UTF-8")
-      } else {
-        "{}"
-      }
-    }) %...>% (function(raw_text) {
-      # BACK ON MAIN THREAD
-      if (nchar(raw_text) > 2) {
-        data <- fromJSON(raw_text)
-        
-        if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
-          state$last_timestamp <- data$timestamp
-          state$current_sum <- data$result
-          state$last_sender <- data$sender
-          state$log <- paste("📥 New Vault Data detected! Sent by:", data$sender)
+    messages <- state$consumer$consume(100)
+    
+    if (length(messages) > 0) {
+      for (m in messages) {
+        if (!is.null(m$key) && m$key == routingKey()) {
           
-          # Isolate input updates
-          isolate({
-            if (input$num1 != data$num1) updateNumericInput(session, "num1", value = data$num1)
-            if (input$num2 != data$num2) updateNumericInput(session, "num2", value = data$num2)
-          })
+          data <- fromJSON(m$value)
+          
+          if (!is.null(data$type) && data$type == "SYSTEM") {
+            id <- identity()
+            if (!is.null(data$targetUser) && data$targetUser == id$userId) {
+              newRole <- data$newRole
+              state$permission <- newRole
+              
+              if (newRole %in% c("EDITOR", "OWNER")) {
+                broker <- "kafka:9092"
+                state$producer <- Producer$new(list("bootstrap.servers" = broker))
+                state$log <- paste("System granted", newRole, "access. Producer Active.")
+                showNotification("You have been granted Edit access! You can now interact.", type = "message", duration = 10)
+              } else {
+                state$producer <- NULL
+                state$log <- paste("System revoked write access. Role:", newRole)
+                showNotification("Your Edit access was revoked. You are now a Viewer.", type = "warning", duration = 10)
+              }
+            }
+          } else if (!is.null(data$result) && !is.na(data$result)) {
+            # --- BULLETPROOF UI UPDATES ---
+            current_sum(data$result)
+            
+            state$last_sender <- if (!is.null(data$sender)) data$sender else "System"
+            state$log <- paste("Synced with update from:", state$last_sender)
+            
+            # ONLY update if the JSON explicitly provided a valid number
+            if (!is.null(data$num1) && !is.na(as.numeric(data$num1))) {
+              updateNumericInput(session, "num1", value = as.numeric(data$num1))
+            }
+            if (!is.null(data$num2) && !is.na(as.numeric(data$num2))) {
+              updateNumericInput(session, "num2", value = as.numeric(data$num2))
+            }
+          }
         }
       }
-    })
+    }
+  })
+
+  output$result <- renderText({ current_sum() })
+  
+  output$last_update_ui <- renderUI({
+    req(state$last_sender)
+    p(em(paste("Last updated by:", state$last_sender)), style = "font-size: 0.9em; color: #666;")
   })
 }
 

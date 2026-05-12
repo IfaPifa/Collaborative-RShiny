@@ -10,7 +10,7 @@ function createTestCsv(): string {
   return csvPath;
 }
 
-test.describe('Data Exchange: Core Four Matrix (REST)', () => {
+test.describe('Data Exchange: Core Four Matrix', () => {
   test.setTimeout(60000);
   const sharedSaveName = `CSV Checkpoint - ${Date.now()}`;
 
@@ -20,7 +20,7 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
     // Upload test CSV
     const csvPath = createTestCsv();
@@ -36,7 +36,6 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
 
     // Save state
     await saveState(page, sharedSaveName);
-
 
     // Cleanup
     fs.unlinkSync(csvPath);
@@ -57,8 +56,8 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, '🟢 System Online');
+    await waitForShinyBoot(bobFrame, '🟢 System Online');
 
     // Alice uploads and processes
     const csvPath = createTestCsv();
@@ -91,7 +90,7 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(charlieFrame, '🟢 System Online');
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#process_data')).toBeEnabled();
@@ -112,7 +111,7 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
     // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
@@ -125,4 +124,3 @@ test.describe('Data Exchange: Core Four Matrix (REST)', () => {
     await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 10000 });
   });
 });
-

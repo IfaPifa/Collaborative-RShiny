@@ -1,7 +1,7 @@
 services:
   # --- CONFLUENT ZOOKEEPER ---
   zookeeper:
-    container_name: zookeeper
+    container_name: zookeeper_kafka
     restart: always
     image: confluentinc/cp-zookeeper:7.5.0
     ports:
@@ -12,7 +12,7 @@ services:
 
   # --- CONFLUENT KAFKA ---
   kafka:
-    container_name: kafka-server
+    container_name: kafka_server_kafka
     restart: always
     image: confluentinc/cp-kafka:7.5.0
     ports:
@@ -30,7 +30,7 @@ services:
 
   # --- POSTGRES DATABASE ---
   db:
-    container_name: postgres_db
+    container_name: postgres_db_kafka
     image: postgres:15
     environment:
       POSTGRES_USER: user
@@ -39,11 +39,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_kafka:/var/lib/postgresql/data
 
   # --- JAVA BACKEND ---
   backend:
-    container_name: spring_backend
+    container_name: spring_backend_kafka
     build: ./shinyswarm
     ports:
       - "8085:8085"
@@ -53,16 +53,14 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_JWT_SECRET: IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI=
-      # --- ADD THIS LINE ---
       SPRING_JPA_HIBERNATE_DDL_AUTO: create 
-      # ---------------------
     depends_on:
       - db
       - kafka
 
   # --- ANGULAR FRONTEND ---
   frontend:
-    container_name: angular_frontend
+    container_name: angular_frontend_kafka
     build: ./angular_frontend
     ports:
       - "4200:80"
@@ -71,7 +69,7 @@ services:
 
   # --- RSHINY SERVICES ---
   nginx_proxy:
-    container_name: nginx_proxy
+    container_name: nginx_proxy_kafka
     image: nginx:1.25-alpine
     ports:
       - "8080:80"
@@ -92,8 +90,8 @@ services:
 
   # --- APP 1: CALCULATOR ---
   shiny_front:
-    build: ./shiny_services  # <-- Updated to parent folder
-    container_name: shiny_front
+    build: ./shiny_services
+    container_name: shiny_front_kafka
     volumes:
       - ./shiny_services/calculator/shiny_front.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
@@ -101,8 +99,8 @@ services:
       - kafka
 
   shiny_back:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back
+    build: ./shiny_services
+    container_name: shiny_back_kafka
     volumes:
       - ./shiny_services/calculator/shiny_back.r:/app/back.R
     command: Rscript /app/back.R
@@ -111,8 +109,8 @@ services:
 
   # --- APP 2: VISUAL ANALYTICS ---
   shiny_front_analytics:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_front_analytics
+    build: ./shiny_services
+    container_name: shiny_front_analytics_kafka
     volumes:
       - ./shiny_services/visual_analytics/shiny_front_analytics.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
@@ -120,8 +118,8 @@ services:
       - kafka
 
   shiny_back_analytics:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back_analytics
+    build: ./shiny_services
+    container_name: shiny_back_analytics_kafka
     volumes:
       - ./shiny_services/visual_analytics/shiny_back_analytics.r:/app/back.R
     command: Rscript /app/back.R
@@ -130,49 +128,49 @@ services:
 
   # --- APP 3: DATA EXCHANGE (CSV) ---
   shiny_front_csv:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_front_csv
+    build: ./shiny_services
+    container_name: shiny_front_csv_kafka
     volumes:
       - ./shiny_services/data_exchange/shiny_front_csv.r:/app/app.R
-      - shared_data:/app/shared_data
+      - shared_data_kafka:/app/shared_data
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_csv:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back_csv
+    build: ./shiny_services
+    container_name: shiny_back_csv_kafka
     volumes:
       - ./shiny_services/data_exchange/shiny_back_csv.r:/app/back.R
-      - shared_data:/app/shared_data
+      - shared_data_kafka:/app/shared_data
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
   shiny_front_csv_advanced:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_front_csv_advanced
+    build: ./shiny_services
+    container_name: shiny_front_csv_advanced_kafka
     volumes:
       - ./shiny_services/data_exchange/shiny_front_csv_advanced.r:/app/app.R
-      - shared_data:/app/shared_data
+      - shared_data_kafka:/app/shared_data
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
       - kafka
 
   shiny_back_csv_advanced:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back_csv_advanced
+    build: ./shiny_services
+    container_name: shiny_back_csv_advanced_kafka
     volumes:
       - ./shiny_services/data_exchange/shiny_back_csv_advanced.r:/app/back.R
-      - shared_data:/app/shared_data
+      - shared_data_kafka:/app/shared_data
     command: Rscript /app/back.R
     depends_on:
       - kafka
 
   # --- APP 4: MONTE CARLO SIMULATOR ---
   shiny_front_mc:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_front_mc
+    build: ./shiny_services
+    container_name: shiny_front_mc_kafka
     volumes:
       - ./shiny_services/monte_carlo/shiny_front_mc.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
@@ -180,8 +178,8 @@ services:
       - kafka
 
   shiny_back_mc:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back_mc
+    build: ./shiny_services
+    container_name: shiny_back_mc_kafka
     volumes:
       - ./shiny_services/monte_carlo/shiny_back_mc.r:/app/back.R
     command: Rscript /app/back.R
@@ -190,8 +188,8 @@ services:
 
   # --- APP 5: GEOSPATIAL EDITOR ---
   shiny_front_map:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_front_map
+    build: ./shiny_services
+    container_name: shiny_front_map_kafka
     volumes:
       - ./shiny_services/map/shiny_front_map.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
@@ -199,8 +197,8 @@ services:
       - kafka
 
   shiny_back_map:
-    build: ./shiny_services  # <-- Updated
-    container_name: shiny_back_map
+    build: ./shiny_services
+    container_name: shiny_back_map_kafka
     volumes:
       - ./shiny_services/map/shiny_back_map.r:/app/back.R
     command: Rscript /app/back.R
@@ -208,5 +206,5 @@ services:
       - kafka
 
 volumes:
-  postgres_data:
-  shared_data:
+  postgres_data_kafka:
+  shared_data_kafka:

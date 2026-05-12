@@ -6,7 +6,7 @@ broker <- "kafka:9092"
 shared_dir <- "/app/shared_data"
 print("LTER-LIFE Anomaly Backend Starting...")
 
-consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = "backend_csv", "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
+consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = "backend_csv_advanced", "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
 consumer$subscribe("input")
 producer <- Producer$new(list("bootstrap.servers" = broker))
 
@@ -21,44 +21,55 @@ repeat {
         payload <- fromJSON(mess$value)
         if (!is.null(payload$role) && payload$role == "VIEWER") next 
         
-        # Check if this is our new ecological action
-        if (!is.null(payload$action) && payload$action == "ANALYZE_CLIMATE") {
+        if (!is.null(payload$action)) {
           
-          # 1. READ RAW DATA FROM VOLUME (Not from Kafka)
-          raw_file_path <- file.path(shared_dir, payload$file)
-          
-          if (file.exists(raw_file_path)) {
-            df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
+          # ---------------------------------------------------------
+          # PATH A: NORMAL EXECUTION
+          # ---------------------------------------------------------
+          if (payload$action == "ANALYZE_CLIMATE") {
             
-            # 2. ECOLOGICAL MATH (Aggregation & Anomaly Detection)
-            # Ensure Timestamp is readable as Date
-            df$Date <- as.Date(df$Timestamp)
+            raw_file_path <- file.path(shared_dir, payload$file)
             
-            summary_df <- df %>%
-              group_by(SiteID, Date) %>%
-              summarize(
-                Daily_Mean_Temp = mean(Temperature, na.rm = TRUE),
-                Daily_Mean_Moisture = mean(SoilMoisture, na.rm = TRUE),
-                .groups = 'drop'
-              ) %>%
-              mutate(
-                Heatwave_Anomaly = ifelse(Daily_Mean_Temp > payload$threshold, "YES", "NO")
+            if (file.exists(raw_file_path)) {
+              df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
+              df$Date <- as.Date(df$Timestamp)
+              
+              summary_df <- df %>%
+                group_by(SiteID, Date) %>%
+                summarize(
+                  Daily_Mean_Temp = mean(Temperature, na.rm = TRUE),
+                  Daily_Mean_Moisture = mean(SoilMoisture, na.rm = TRUE),
+                  .groups = 'drop'
+                ) %>%
+                mutate(
+                  Heatwave_Anomaly = ifelse(Daily_Mean_Temp > payload$threshold, "YES", "NO")
+                )
+              
+              # Using a static processed name based on your frontend code
+              summary_file_name <- "processed_summary.csv"
+              write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
+              
+              response_payload <- list(
+                action = "CLIMATE_READY",
+                file = summary_file_name,
+                sender = payload$sender,
+                timestamp = as.numeric(Sys.time())
               )
+              
+              producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
+              print(paste("Processed LTER data for", payload$sender, "with threshold", payload$threshold))
+            }
             
-            # 3. SAVE PROCESSED DATA TO VOLUME
-            summary_file_name <- "processed_summary.csv"
-            write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
+          # ---------------------------------------------------------
+          # PATH B: TIME MACHINE (SYSTEM RESTORE)
+          # ---------------------------------------------------------
+          } else if (payload$action == "CLIMATE_READY" && !is.null(payload$sender) && payload$sender == "System Restore") {
             
-            # 4. SEND "POINTER" BACK OVER KAFKA
-            response_payload <- list(
-              action = "CLIMATE_READY",
-              file = summary_file_name,
-              sender = payload$sender,
-              timestamp = as.numeric(Sys.time())
-            )
+            # The Java orchestrator injected a historical state into the input topic.
+            # We just need to echo it to the output topic so the UI updates!
+            producer$produce("output", toJSON(payload, auto_unbox = TRUE), key = incoming_key)
+            print(paste("Time Machine: Restored checkpoint for", incoming_key))
             
-            producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
-            print(paste("Processed LTER data for", payload$sender, "with threshold", payload$threshold))
           }
         }
       }

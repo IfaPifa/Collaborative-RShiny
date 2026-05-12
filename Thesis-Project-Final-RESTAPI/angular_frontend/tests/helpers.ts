@@ -50,8 +50,13 @@ export async function launchSolo(page: Page, appName: string) {
 /**
  * Wait for the Shiny iframe to boot by checking for the connection status text.
  */
-export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, statusText = 'HTTP GET/POST') {
+export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, statusText = '🟢 System Online') {
+  // 1. Wait for the UI to actually render and say it's online
   await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 20000 });
+  
+  // 2. THE FIX: Standard JS Promise to wait 3 seconds. 
+  // This lets the Kafka Consumer Groups and WebSockets fully negotiate before Playwright starts clicking.
+  await new Promise(resolve => setTimeout(resolve, 3000));
 }
 
 /**
@@ -83,7 +88,6 @@ export async function saveState(page: Page, saveName: string) {
  */
 export async function demoteUser(page: Page, username: string) {
   // Wait for WebSocket JOIN to arrive, then open the Manage Roles modal.
-  // The username may only be visible inside the modal (avatar blob hides the text).
   await page.waitForTimeout(3000);
   await page.locator('button', { hasText: '⚙️ Manage Roles' }).click();
   await expect(page.locator('h3', { hasText: 'Manage Team Roles' })).toBeVisible();
