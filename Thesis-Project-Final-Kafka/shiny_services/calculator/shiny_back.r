@@ -46,6 +46,8 @@ process_message <- function(mess) {
   
   tryCatch({
     payload <- fromJSON(mess$value)
+
+  
     
     # --- BONUS ARCHITECTURE: CONSISTENCY CHECK ---
     # We verify the role to ensure architectural integrity.
@@ -59,6 +61,9 @@ process_message <- function(mess) {
       return() # Discard message, do not broadcast update
     }
     # ---------------------------------------------
+    if (is.null(payload$num1) && is.null(payload$num2)) {
+      return() # It's not a calculator event, ignore it!
+    }
     
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
     print(paste("Processing request on key:", incoming_key, "from sender:", sender))

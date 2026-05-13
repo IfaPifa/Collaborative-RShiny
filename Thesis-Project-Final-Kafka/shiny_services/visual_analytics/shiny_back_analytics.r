@@ -26,9 +26,14 @@ process_message <- function(mess) {
   
   tryCatch({
     payload <- fromJSON(mess$value)
+
     
     # Consistency Check
     if (!is.null(payload$role) && payload$role == "VIEWER") return()
+
+    if (is.null(payload$min_hp) && is.null(payload$cyl)) {
+      return() # It's not an analytics event, ignore it!
+    }
     
     # 1. Extract parameters from UI
     min_hp <- if (!is.null(payload$min_hp)) as.numeric(payload$min_hp) else 50

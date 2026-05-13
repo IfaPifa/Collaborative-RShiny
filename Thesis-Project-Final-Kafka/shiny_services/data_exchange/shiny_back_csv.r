@@ -17,7 +17,13 @@ repeat {
         incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
         
         payload <- fromJSON(mess$value)
+
+
         if (!is.null(payload$role) && payload$role == "VIEWER") next 
+
+        if (is.null(payload$dataset)) {
+          next # It's not a CSV upload, ignore it!
+        }
         
         # 1. PARSE DATA
         df <- as.data.frame(payload$dataset)
