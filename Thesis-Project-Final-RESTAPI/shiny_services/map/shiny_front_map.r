@@ -59,7 +59,7 @@ server <- function(input, output, session) {
     }
   })
 
-  output$connection_status <- renderText({ "HTTP GET/POST" })
+  output$connection_status <- renderText({ "System Online" })
 
   output$map <- renderLeaflet({
     leaflet() %>% 

@@ -10,7 +10,7 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Geospatial Editor');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, 'System Online');
 
     const mapContainer = frame.locator('#map');
     await expect(mapContainer).toBeVisible({ timeout: 15000 });
@@ -41,8 +41,8 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, 'System Online');
+    await waitForShinyBoot(bobFrame, 'System Online');
 
     await expect(aliceFrame.locator('#map')).toBeVisible({ timeout: 15000 });
     await expect(bobFrame.locator('#map')).toBeVisible({ timeout: 15000 });
@@ -73,7 +73,7 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(charlieFrame, 'System Online');
 
     await expect(charlieFrame.locator('.selectize-input')).toBeVisible();
     await demoteUser(alicePage, 'charlie');
@@ -88,7 +88,7 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Geospatial Editor');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, 'System Online');
     await expect(frame.locator('#map')).toBeVisible({ timeout: 15000 });
 
     await page.click('button:has-text("Load Checkpoint")');
@@ -116,8 +116,8 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, 'System Online');
+    await waitForShinyBoot(bobFrame, 'System Online');
 
     await expect(aliceFrame.locator('#map')).toBeVisible({ timeout: 15000 });
     await expect(bobFrame.locator('#map')).toBeVisible({ timeout: 15000 });
