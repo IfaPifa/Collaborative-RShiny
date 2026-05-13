@@ -82,7 +82,7 @@ server <- function(input, output, session) {
     )
   })
 
-  output$connection_status <- renderText({ "HTTP GET/POST" })
+  output$connection_status <- renderText({ "🟢 System Online" })
 
   # --- POST state to Spring Boot on button click ---
   observeEvent(input$update_plot, {

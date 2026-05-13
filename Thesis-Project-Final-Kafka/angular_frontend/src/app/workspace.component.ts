@@ -76,7 +76,7 @@ import { ModalComponent } from './modal.component';
 
         <div class="flex gap-2 items-center">
           @if (canEdit()) {
-            <button (click)="showLoadModal.set(true)" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition shadow-sm">
+            <button (click)="openLoadModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-700 transition shadow-sm">
               Load Checkpoint
             </button>
             <button (click)="showSaveModal.set(true)" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 transition shadow-sm">
@@ -263,7 +263,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
+    //this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
 
     const user = this.authService.currentUser();
     // Read the ID from the URL (e.g., /workspace/1234-abcd)
@@ -456,5 +456,19 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         error: () => alert('Failed to load state')
       });
     }
+  }
+
+  openLoadModal() {
+    // 1. Get the current app's ID
+    const currentAppId = this.dataService.selectedApp()?.id;
+    
+    // 2. Fetch the fresh list of saves JUST for this app
+    this.dataService.getSavedStates(currentAppId).subscribe({
+      next: (states) => {
+        this.savedAppStates.set(states);
+        this.showLoadModal.set(true); // 3. Open the modal after data arrives
+      },
+      error: () => alert("Failed to fetch checkpoints.")
+    });
   }
 }

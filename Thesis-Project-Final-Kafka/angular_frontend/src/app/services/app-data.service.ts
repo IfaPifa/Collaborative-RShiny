@@ -37,8 +37,15 @@ export class AppDataService {
     return this.http.get<ShinyApp[]>(`${this.API_URL}/apps`, { headers: this.getHeaders() });
   }
 
-  getSavedStates() {
-    return this.http.get<SavedAppState[]>(`${this.API_URL}/states`, { headers: this.getHeaders() });
+  getSavedStates(appId?: number) {
+    let url = `${this.API_URL}/states`;
+    
+    // If an appId is provided, append it to the URL so the backend can filter
+    if (appId) {
+      url += `?appId=${appId}`;
+    }
+    
+    return this.http.get<SavedAppState[]>(url, { headers: this.getHeaders() });
   }
 
   // Note: stateData is a JSON string

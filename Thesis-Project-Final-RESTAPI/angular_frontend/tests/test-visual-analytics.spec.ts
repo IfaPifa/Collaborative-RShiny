@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-test.describe('Visual Analytics: Core Four Matrix (REST)', () => {
+test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
   test.setTimeout(60000);
   const sharedSaveName = `Analytics Checkpoint - ${Date.now()}`;
 
@@ -11,18 +11,15 @@ test.describe('Visual Analytics: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Visual Analytics');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, 'System Online');
 
     // Uncheck cylinder 4 to change the filter
     await frame.locator('input[name="cyl"][value="4"]').uncheck();
     await frame.locator('button#update_plot').click();
 
-    // Verify the sync completed (wait for POST round-trip)
+    // Verify the sync completed
     await page.waitForTimeout(3000);
-
-    // Save state
     await saveState(page, sharedSaveName);
-
   });
 
   // TEST 2: Real-Time Collaborative Sync
@@ -40,35 +37,36 @@ test.describe('Visual Analytics: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, 'System Online');
+    await waitForShinyBoot(bobFrame, 'System Online');
 
-    // Alice unchecks cylinder 8 and syncs
     await aliceFrame.locator('input[name="cyl"][value="8"]').uncheck();
     await aliceFrame.locator('button#update_plot').click();
 
-    // Bob's UI polls and cylinder 8 becomes unchecked
     await expect(bobFrame.locator('input[name="cyl"][value="8"]')).not.toBeChecked({ timeout: 15000 });
+    await expect(bobFrame.locator('text=Last filter sync by')).toContainText('alice', { timeout: 15000 });
 
     await aliceCtx.close();
     await bobCtx.close();
   });
 
-  // TEST 3: Permission Enforcement
-  test('3. Security: Role-Based UI Locking', async ({ browser }) => {
+  // TEST 3: RBAC Security
+  test('3. Security: Role-Based Access Control', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const charlieCtx = await browser.newContext();
     const alicePage = await aliceCtx.newPage();
     const charliePage = await charlieCtx.newPage();
 
     await login(alicePage, 'alice');
-    const sessionId = await createCollabSession(alicePage, 'Visual Analytics', 'Analytics Security Test');
+    const sessionId = await createCollabSession(alicePage, 'Visual Analytics', 'Analytics RBAC Test');
 
     await login(charliePage, 'charlie');
     await joinCollabSession(charliePage, sessionId);
 
+    const aliceFrame = alicePage.frameLocator('iframe');
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, 'System Online');
+    await waitForShinyBoot(charlieFrame, 'System Online');
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#update_plot')).toBeEnabled();
@@ -90,19 +88,19 @@ test.describe('Visual Analytics: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Visual Analytics');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, 'System Online');
 
-    // Ensure cylinder 4 is checked (set known different state before restoring)
     await frame.locator('input[name="cyl"][value="4"]').check();
 
-    // Load the most recent checkpoint (saved in Test 1, where cylinder 4 was unchecked)
     await page.click('button:has-text("Load Checkpoint")');
     const modal = page.locator('app-modal');
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
+    
+    // THE FIX: Explicitly target the named checkpoint
+    await modal.locator('*').filter({ hasText: sharedSaveName }).getByRole('button', { name: 'Load', exact: true }).first().click();
 
-    // Verify cylinder 4 is now unchecked
-    await expect(frame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 10000 });
+    await expect(frame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 15000 });
+    await expect(frame.locator('text=Last filter sync by')).toContainText('System Restore', { timeout: 15000 });
   });
 });

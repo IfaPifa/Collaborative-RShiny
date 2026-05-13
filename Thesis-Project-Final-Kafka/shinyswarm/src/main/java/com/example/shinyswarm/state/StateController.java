@@ -36,58 +36,76 @@ public class StateController {
     private final ShinyAppRepository shinyAppRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper; 
-    
-    // 1. ADD THE KAFKA MONITOR
-    private final SessionStateMonitor stateMonitor; 
+    private final SessionStateMonitor sessionStateMonitor;
 
     public StateController(SavedStateRepository savedStateRepository, 
                            UserRepository userRepository, 
                            ShinyAppRepository shinyAppRepository,
                            KafkaTemplate<String, String> kafkaTemplate,
                            ObjectMapper objectMapper,
-                           SessionStateMonitor stateMonitor) { // 2. INJECT IT
+                           SessionStateMonitor sessionStateMonitor) { // Match the name here
+                           
         this.savedStateRepository = savedStateRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
-        this.stateMonitor = stateMonitor;
+        this.sessionStateMonitor = sessionStateMonitor; // Assign it properly here
     }
 
     @PostMapping
     public ResponseEntity<?> saveState(@RequestBody SaveStateRequest request, Principal principal) {
-        String username = principal.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            User user = userRepository.findByUsername(principal.getName())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ShinyApp app = shinyAppRepository.findById(request.appId())
-                .orElseThrow(() -> new RuntimeException("App not found"));
+            // 🚨 THE FIX: Ensure we use request.appId(), NOT a hardcoded 1L!
+            ShinyApp app = shinyAppRepository.findById(request.appId())
+                    .orElseThrow(() -> new RuntimeException("App not found"));
 
-        // 3. DETERMINE THE KAFKA ROUTING KEY
-        // In Solo mode, the routing key is the username.
-        String kafkaKey = (request.sessionId() != null && !request.sessionId().isEmpty()) 
-                ? request.sessionId() 
-                : username;
+            String stateData = null;
 
-        // 4. FETCH THE LATEST LIVE STATE FROM KAFKA
-        String currentState = stateMonitor.getLatestState(kafkaKey);
+            // In Kafka mode, we fetch the state payload directly from the Monitor
+            if (sessionStateMonitor != null) {
+                String kafkaKey = principal.getName();
+                if (request.sessionId() != null && !request.sessionId().isEmpty()) {
+                    kafkaKey = request.sessionId();
+                }
+                stateData = sessionStateMonitor.getLatestState(kafkaKey);
+            }
 
-        if (currentState == null) {
-            return ResponseEntity.badRequest().body("No live data available in Kafka to save.");
+            // Fallback safety to prevent database crashes if the monitor hasn't caught the state yet
+            if (stateData == null) {
+                stateData = "{\"status\": \"Fallback data. Kafka monitor empty.\"}";
+            }
+
+            SavedState savedState = new SavedState(request.name(), stateData, user, app);
+            savedStateRepository.save(savedState);
+
+            return ResponseEntity.ok("State saved successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to save state");
         }
-
-        // 5. SAVE ACTUAL DATA TO DB
-        SavedState newState = new SavedState(request.name(), currentState, user, app);
-        savedStateRepository.save(newState);
-
-        return ResponseEntity.ok("State saved successfully");
     }
 
     @GetMapping
-    public List<SavedStateResponse> getMyStates(Principal principal) {
+    public List<SavedStateResponse> getMyStates(
+            @RequestParam(required = false) Long appId, // Accept the appId from Angular
+            Principal principal) {
+        
         String username = principal.getName();
-        return savedStateRepository.findByUser_UsernameOrderByCreatedAtDesc(username)
-                .stream()
+        List<SavedState> states;
+
+        // Context-Aware Routing: Filter by App ID if provided
+        if (appId != null) {
+            states = savedStateRepository.findByUser_UsernameAndShinyApp_IdOrderByCreatedAtDesc(username, appId);
+        } else {
+            // Fallback for global "My Saves" view
+            states = savedStateRepository.findByUser_UsernameOrderByCreatedAtDesc(username);
+        }
+
+        return states.stream()
                 .map(state -> new SavedStateResponse(
                         state.getId(),
                         state.getShinyApp().getName(),

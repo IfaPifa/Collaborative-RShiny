@@ -1,97 +1,42 @@
+library(plumber)
 library(jsonlite)
-library(kafka)
 
-# --- CONFIGURATION ---
-topic_input <- "input"
-topic_output <- "output"
-broker <- "kafka:9092"
+#* @apiTitle Eco Deployment Calculator Backend (REST)
 
-print("R Backend Service Starting...")
+#* Calculate the sum of deployed sensors
+#* @post /calculate
+#* @serializer unboxedJSON
+function(req) {
+  # Handle both raw vector and string body formats
+  raw_body <- req$body
+  if (is.raw(raw_body)) {
+    body_text <- rawToChar(raw_body)
+  } else if (is.character(raw_body)) {
+    body_text <- raw_body
+  } else {
+    # Plumber may have already parsed it into a list
+    body_text <- NULL
+  }
 
-# Consumer Config
-consumer_config <- list(
-  "bootstrap.servers" = broker,
-  "group.id" = "backend_calc_service_v2", 
-  "auto.offset.reset" = "latest",
-  "enable.auto.commit" = "true"
-)
+  if (!is.null(body_text)) {
+    body <- jsonlite::fromJSON(body_text, simplifyVector = TRUE)
+  } else {
+    body <- raw_body
+  }
 
-# --- 1. ROBUST CONNECTION LOOP ---
-consumer <- NULL
-connected <- FALSE
+  n1 <- as.numeric(body$num1)
+  n2 <- as.numeric(body$num2)
+  sender <- if (!is.null(body$sender)) body$sender else "unknown"
+  result <- n1 + n2
 
-while (!connected) {
-  tryCatch({
-    print(paste("Attempting to subscribe to topic:", topic_input, "..."))
-    consumer <- Consumer$new(consumer_config)
-    consumer$subscribe(topic_input)
-    connected <- TRUE
-    print("✅ Successfully subscribed! Waiting for messages...")
-  }, error = function(e) {
-    print(paste("⚠️ Kafka not ready yet:", e$message))
-    print("Retrying in 5 seconds...")
-    Sys.sleep(5)
-  })
-}
+  print(paste("REST API Calculated:", n1, "+", n2, "=", result, "for", sender))
 
-producer <- Producer$new(list("bootstrap.servers" = broker))
-
-# --- LOGIC LOOP ---
-add_up <- function(a, b) { return(a + b) }
-
-process_message <- function(mess) {
-  if (is.null(mess) || is.null(mess$value)) return()
-
-  incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
-  
-  tryCatch({
-    payload <- fromJSON(mess$value)
-    
-    sender_role <- if (!is.null(payload$role)) payload$role else "UNKNOWN"
-    
-    if (sender_role == "VIEWER") {
-      print(paste("⚠️ CONSISTENCY ALERT: Dropped illegal write from Viewer on key:", incoming_key))
-      return() 
-    }
-    
-    sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
-    print(paste("Processing request on key:", incoming_key, "from sender:", sender))
-    
-    # --- BULLETPROOF PARSING ---
-    # Guarantee we never pass NULL or NA to the addition function
-    num1 <- if (!is.null(payload$num1) && !is.na(as.numeric(payload$num1))) as.numeric(payload$num1) else 0
-    num2 <- if (!is.null(payload$num2) && !is.na(as.numeric(payload$num2))) as.numeric(payload$num2) else 0
-    
-    result <- add_up(num1, num2)
-    
-    response_payload <- list(
-      result = result,
-      num1 = num1,
-      num2 = num2,
-      sender = sender,
-      status = "success",
-      timestamp = as.numeric(Sys.time())
-    )
-    json_response <- toJSON(response_payload, auto_unbox = TRUE)
-    
-    producer$produce(topic_output, json_response, key = incoming_key)
-    
-  }, error = function(e) {
-    print(paste("Error processing message:", e$message))
-  })
-}
-
-# --- MAIN LOOP ---
-repeat {
-  tryCatch({
-    messages <- consumer$consume(500)
-    if (length(messages) > 0) {
-      for (mess in messages) {
-        process_message(mess)
-      }
-    }
-  }, error = function(e) {
-    print(paste("Consumer loop error:", e$message))
-    Sys.sleep(1)
-  })
+  return(list(
+    result = result,
+    num1 = n1,
+    num2 = n2,
+    sender = sender,
+    status = "success",
+    timestamp = as.numeric(Sys.time())
+  ))
 }

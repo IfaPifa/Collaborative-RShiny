@@ -1,28 +1,42 @@
 library(shiny)
+library(bslib)
 library(httr)
 library(jsonlite)
 library(shinyjs)
 library(ggplot2)
 
-ui <- fluidPage(
+ui <- page_sidebar(
   useShinyjs(), 
-  titlePanel("Benchmark 1: Visual Analytics (REST API)"),
-  sidebarLayout(
-    sidebarPanel(
-      h4("Data Filters"),
-      sliderInput("min_hp", "Minimum Horsepower:", min = 50, max = 300, value = 50),
-      checkboxGroupInput("cyl", "Cylinders:", choices = c(4, 6, 8), selected = c(4, 6, 8)),
-      actionButton("update_plot", "Sync Plot"),
-      hr(),
-      uiOutput("session_info_ui"),
-      hr(),
-      h5("Architecture:"),
-      textOutput("connection_status")
-    ),
-    mainPanel(
-      plotOutput("scatter_plot"),
-      uiOutput("last_update_ui")
-    )
+  
+  tags$head(tags$script(HTML("
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'ROLE_UPDATE') {
+        Shiny.setInputValue('role_update', event.data.permission, {priority: 'event'});
+      }
+    });
+  "))),
+  
+  theme = bs_theme(version = 5, preset = "minty"),
+  title = "LTER-LIFE: Visual Analytics (REST API)",
+  
+  sidebar = sidebar(
+    title = "Data Filters",
+    sliderInput("min_hp", "Minimum Horsepower:", min = 50, max = 300, value = 50),
+    # 🚨 FIX 1: Explicitly defining choices as Strings
+    checkboxGroupInput("cyl", "Cylinders:", choices = c("4", "6", "8"), selected = c("4", "6", "8")),
+    actionButton("update_plot", "Sync Plot", class = "btn-success", icon = icon("sync")),
+    hr(),
+    uiOutput("session_info_ui"),
+    hr(),
+    uiOutput("last_update_ui"),
+    hr(),
+    h5("Architecture:"),
+    textOutput("connection_status")
+  ),
+  
+  card(
+    card_header("Interactive Scatter Plot"),
+    plotOutput("scatter_plot", height = "600px")
   )
 )
 
@@ -39,107 +53,82 @@ server <- function(input, output, session) {
     )
   })
   
-  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
+  state <- reactiveValues(last_timestamp = 0, last_sender = NULL, permission = "EDITOR")
   shared_data <- reactiveVal(mtcars)
 
-  observe({
-    if (identity()$permission == "VIEWER") {
-      disable("min_hp"); disable("cyl"); disable("update_plot")
+  # --- DYNAMIC ROLE UPDATES ---
+  observeEvent(input$role_update, {
+    state$permission <- input$role_update
+    if (input$role_update %in% c("EDITOR", "OWNER")) {
+      enable("update_plot"); enable("min_hp"); enable("cyl")
     } else {
-      enable("min_hp"); enable("cyl"); enable("update_plot")
+      disable("update_plot"); disable("min_hp"); disable("cyl")
     }
   })
 
-  output$session_info_ui <- renderUI({
+  observe({
     id <- identity()
-    tagList(
-      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
-      p("Role: ", strong(id$permission))
-    )
+    state$permission <- id$permission
+    if (state$permission == "VIEWER") { disable("update_plot"); disable("min_hp"); disable("cyl") }
   })
 
-  output$connection_status <- renderText({ "HTTP GET/POST" })
-
-  # --- POST state to Spring Boot on button click ---
+  # --- SEND UPDATES (REST POST) ---
   observeEvent(input$update_plot, {
+    if (state$permission == "VIEWER") return()
     id <- identity()
-    if (id$permission == "VIEWER") return()
-    
-    payload <- list(
-      min_hp = input$min_hp,
-      cyl = input$cyl,
-      sender = id$userId,
-      appName = "Analytics"
-    )
-    
+    payload <- list(min_hp = as.numeric(input$min_hp), cyl = as.numeric(input$cyl), sender = id$userId)
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    
     tryCatch({
-      httr::POST(
-        url = post_url,
-        body = toJSON(payload, auto_unbox = TRUE),
-        encode = "raw",
-        httr::content_type_json(),
-        httr::timeout(5)
-      )
-    }, error = function(e) {
-      print(paste("POST Error:", e$message))
-    })
+      httr::POST(post_url, body = payload, encode = "json", httr::timeout(2))
+    }, error = function(e) {})
   })
-  
-  # --- Poll Spring Boot for state every 500ms ---
+
+  # --- RECEIVE UPDATES (REST POLL) ---
   poll_trigger <- reactiveTimer(500)
-  
   observe({
     poll_trigger()
     id <- identity()
     get_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    
     tryCatch({
       res <- httr::GET(get_url, httr::timeout(2))
       if (httr::status_code(res) == 200) {
         raw_text <- httr::content(res, "text", encoding = "UTF-8")
         if (nchar(raw_text) > 2) {
           data <- fromJSON(raw_text)
-          
           if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
             state$last_timestamp <- data$timestamp
             state$last_sender <- data$sender
             
-            # Update UI inputs to match remote state
-            if (!is.null(data$min_hp) && !is.null(input$min_hp) && input$min_hp != data$min_hp) {
-              updateSliderInput(session, "min_hp", value = data$min_hp)
-            }
-            if (!is.null(data$cyl) && !is.null(input$cyl)) {
-              updateCheckboxGroupInput(session, "cyl", selected = as.character(data$cyl))
-            }
+            # 🚨 THE WIRETAP: Printing incoming data shape 🚨
+            message("=== INCOMING REST SYNC ===")
+            message(paste("Received data$cyl:", paste(data$cyl, collapse=", ")))
+            message(paste("Class of data$cyl:", class(data$cyl)))
             
-            # Update plot data if the backend returned filtered data
-            if (!is.null(data$data)) {
-              shared_data(as.data.frame(data$data))
+            if (!is.null(data$min_hp)) updateSliderInput(session, "min_hp", value = data$min_hp)
+            if (!is.null(data$cyl)) {
+              # 🚨 FIX 2: Explicitly matching string choices and unlisting the array
+              updateCheckboxGroupInput(session, "cyl", choices = c("4", "6", "8"), selected = as.character(unlist(data$cyl)))
             }
+            if (!is.null(data$data)) shared_data(as.data.frame(data$data))
           }
         }
       }
-    }, error = function(e) {
-      # Fail silently on polling timeouts
-    })
+    }, error = function(e) {})
   })
 
-  # --- Render ggplot ---
   output$scatter_plot <- renderPlot({
     df <- shared_data()
     req(nrow(df) > 0)
     ggplot(df, aes(x = wt, y = mpg, color = as.factor(cyl))) +
-      geom_point(size = 4) +
-      geom_smooth(method = "lm", se = FALSE, color = "black") +
-      theme_minimal() +
-      labs(title = "MPG vs Weight", x = "Weight (1000 lbs)", y = "Miles/(US) gallon", color = "Cylinders")
+      geom_point(size = 4) + geom_smooth(method = "lm", se = FALSE, color = "black") +
+      theme_minimal() + labs(title = "MPG vs Weight", x = "Weight (1000 lbs)", y = "Miles/(US) gallon", color = "Cylinders")
   })
-  
-  output$last_update_ui <- renderUI({ 
-    req(state$last_sender)
-    p(em(paste("Last updated by:", state$last_sender))) 
+
+  output$session_info_ui <- renderUI({
+    id <- identity()
+    tagList(p("User: ", strong(id$userId)), p("Role: ", strong(state$permission)))
   })
+  output$last_update_ui <- renderUI({ req(state$last_sender); p(em(paste("Last filter sync by:", state$last_sender))) })
+  output$connection_status <- renderText({ "System Online" }) 
 }
 shinyApp(ui = ui, server = server)
