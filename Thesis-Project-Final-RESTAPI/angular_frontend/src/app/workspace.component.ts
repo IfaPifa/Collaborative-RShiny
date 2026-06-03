@@ -240,7 +240,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   });
 
   safeAppUrl = computed(() => {
-    // Read from dataService instead of local signal
     const app = this.dataService.selectedApp(); 
     const user = this.authService.currentUser();
     const session = this.collabService.activeSession(); 
@@ -251,11 +250,10 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       
       if (session) {
         const myPerm = this.getParticipantPermission(session, user.username) || 'VIEWER';
-        // Use user.username instead of user.id
         signedUrl = `${app.url}${separator}sessionId=${session.id}&userId=${user.username}&permission=${myPerm}`; 
       } else {
-        // Use user.username instead of user.id
-        signedUrl = `${app.url}${separator}userId=${user.username}&permission=EDITOR`;
+        // --- THE FIX: Pass a unique Solo sessionId ---
+        signedUrl = `${app.url}${separator}sessionId=solo-${user.username}&userId=${user.username}&permission=EDITOR`;
       }
       return this.sanitizer.bypassSecurityTrustResourceUrl(signedUrl);
     }

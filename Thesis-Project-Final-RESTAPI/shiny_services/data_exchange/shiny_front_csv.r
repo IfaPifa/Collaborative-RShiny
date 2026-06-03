@@ -111,7 +111,23 @@ server <- function(input, output, session) {
     future_promise({
       httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(10))
     }) %...>% (function(res) {
-      if (httr::status_code(res) == 200) print("✅ CSV Synced successfully")
+      if (httr::status_code(res) == 200) {
+        print("✅ CSV Synced successfully")
+        
+        # --- THE FIX: Eager UI Update ---
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
+            state$last_sender <- data$sender
+            if (!is.null(data$dataset)) shared_df(as.data.frame(data$dataset))
+          }
+        }
+      } else {
+         print(paste("❌ Sync failed with status:", httr::status_code(res)))
+      }
     })
   })
   

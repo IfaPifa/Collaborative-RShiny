@@ -120,7 +120,31 @@ server <- function(input, output, session) {
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
     
     tryCatch({
-      httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(30))
+      res <- httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(30))
+      
+      # --- THE FIX: Eager UI Update ---
+      if (httr::status_code(res) == 200) {
+        print("✅ Climate Analysis Synced successfully")
+        raw_text <- httr::content(res, "text", encoding = "UTF-8")
+        
+        if (nchar(raw_text) > 2) {
+          data <- fromJSON(raw_text)
+          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
+            state$last_timestamp <- data$timestamp
+            if (!is.null(data$action) && data$action == "CLIMATE_READY") {
+              state$last_sender <- data$sender
+              summary_file_path <- file.path(shared_dir, data$file)
+              
+              # Instantly read the newly processed file and update the UI
+              if (file.exists(summary_file_path)) {
+                shared_df(read.csv(summary_file_path))
+              }
+            }
+          }
+        }
+      } else {
+         print(paste("❌ Sync failed with status:", httr::status_code(res)))
+      }
     }, error = function(e) { print(paste("POST Error:", e$message)) })
   })
   

@@ -11,7 +11,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Habitat Suitability AI');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
     // Use default 500 trees (slider can't be filled directly) and train
     await frame.locator('button#train_btn').click();
@@ -46,8 +46,8 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame, '🟢 System Online');
+    await waitForShinyBoot(bobFrame, '🟢 System Online');
 
     // Alice trains model
     await aliceFrame.locator('button#train_btn').click();
@@ -99,7 +99,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Habitat Suitability AI');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame, '🟢 System Online');
 
     // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
