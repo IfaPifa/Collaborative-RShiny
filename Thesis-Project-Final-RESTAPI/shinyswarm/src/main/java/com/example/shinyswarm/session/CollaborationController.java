@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.example.shinyswarm.app.ShinyApp;
 import com.example.shinyswarm.app.ShinyAppRepository;
 import com.example.shinyswarm.notification.EmailService;
@@ -54,6 +56,7 @@ public class CollaborationController {
     
     private final StringRedisTemplate redisTemplate;
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     // App name -> Plumber container hostname mapping
     private static final Map<String, String> APP_ROUTES = Map.of(
@@ -75,7 +78,8 @@ public class CollaborationController {
                                    StringRedisTemplate redisTemplate,
                                    NotificationRepository notificationRepository,
                                    EmailService emailService,
-                                   SimpMessagingTemplate messagingTemplate) {
+                                   SimpMessagingTemplate messagingTemplate,
+                                   ObjectMapper objectMapper) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
@@ -86,6 +90,7 @@ public class CollaborationController {
         this.notificationRepository = notificationRepository;
         this.emailService = emailService;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
     }
 
     // ==========================================
@@ -113,8 +118,7 @@ public class CollaborationController {
 
         try {
             // Parse the appName from the raw JSON
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            Map<String, Object> body = mapper.readValue(rawJson, Map.class);
+            Map<String, Object> body = objectMapper.readValue(rawJson, Map.class);
             String appName = (String) body.getOrDefault("appName", "");
             String sender = (String) body.getOrDefault("sender", "anonymous");
 
@@ -160,8 +164,7 @@ public class CollaborationController {
             @RequestBody String rawJson) {
 
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            Map<String, Object> body = mapper.readValue(rawJson, Map.class);
+            Map<String, Object> body = objectMapper.readValue(rawJson, Map.class);
             String sender = (String) body.getOrDefault("sender", "anonymous");
 
             if (!"solo".equals(sessionId)) {
@@ -251,16 +254,20 @@ public class CollaborationController {
     }
 
     @PostMapping("/{sessionId}/restore/{stateId}")
-    public ResponseEntity<?> restoreState(@PathVariable String sessionId, @PathVariable Long stateId) {
+    public ResponseEntity<?> restoreState(@PathVariable String sessionId, @PathVariable Long stateId, Principal principal) {
         SavedState state = savedStateRepository.findById(stateId).orElseThrow();
 
+        // Only the owner of the saved state can restore it
+        if (!state.getUser().getUsername().equals(principal.getName())) {
+            return ResponseEntity.status(403).body("Not your state");
+        }
+
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            java.util.Map<String, Object> payload = mapper.readValue(state.getStateData(), java.util.Map.class);
+            Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
             payload.put("sender", "System Restore");
             // Use seconds (not millis) to match R's as.numeric(Sys.time())
             payload.put("timestamp", System.currentTimeMillis() / 1000.0);
-            String updatedPayload = mapper.writeValueAsString(payload);
+            String updatedPayload = objectMapper.writeValueAsString(payload);
             redisTemplate.opsForValue().set("session_state:" + sessionId, updatedPayload);
         } catch (Exception e) {
             // Fallback: write raw state data if JSON parsing fails

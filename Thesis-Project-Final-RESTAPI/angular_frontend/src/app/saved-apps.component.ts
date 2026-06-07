@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -19,7 +19,7 @@ import { CollabService } from './services/collab.service';
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        @for (save of savedAppStates(); track save.id) {
+        @for (save of availableStates(); track save.id) {
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition">
             <div class="p-6 flex-grow">
               <div class="flex justify-between items-start mb-3">
@@ -59,6 +59,14 @@ export class SavedAppsComponent implements OnInit {
   savedAppStates = signal<SavedAppState[]>([]);
   shinyApps = signal<ShinyApp[]>([]);
   isLoading = signal(false);
+
+  // Only show checkpoints for apps that exist in the current architecture
+  availableStates = computed(() => {
+    const apps = this.shinyApps();
+    if (apps.length === 0) return this.savedAppStates();
+    const appNames = new Set(apps.map(a => a.name));
+    return this.savedAppStates().filter(s => appNames.has(s.appName));
+  });
 
   ngOnInit() {
     // We need both the saved states AND the original apps to cross-reference them

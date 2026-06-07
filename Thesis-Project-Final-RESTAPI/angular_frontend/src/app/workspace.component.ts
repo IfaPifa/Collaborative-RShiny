@@ -142,7 +142,7 @@ import { ModalComponent } from './modal.component';
 
     <app-modal title="Load Checkpoint" [isOpen]="showLoadModal()" (close)="showLoadModal.set(false)">
       <div class="flex-grow overflow-y-auto max-h-[50vh] pr-2 mb-4">
-        @for (save of savedAppStates(); track save.id) {
+        @for (save of filteredCheckpoints(); track save.id) {
           <div class="border-b border-gray-100 py-3 last:border-0 hover:bg-gray-50 transition rounded px-2">
             <div class="flex justify-between items-center">
               <div>
@@ -197,7 +197,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   activeUsers = signal<string[]>([]);
   copySuccess = signal(false);
   savedAppStates = signal<SavedAppState[]>([]);
-  
+
+  // Only show checkpoints for the currently selected app
+  filteredCheckpoints = computed(() => {
+    const app = this.dataService.selectedApp();
+    if (!app) return this.savedAppStates();
+    return this.savedAppStates().filter(s => s.appName === app.name);
+  });
+
   // Modals
   showSaveModal = signal(false);
   showLoadModal = signal(false);
