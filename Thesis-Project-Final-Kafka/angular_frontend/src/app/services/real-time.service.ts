@@ -18,7 +18,7 @@ export class RealTimeService {
       // 1. Connection URL
       // We use 'ws' (WebSocket) protocol. 
       // /ws-shiny is the endpoint we configured in Spring Boot.
-      brokerURL: 'ws://localhost:8085/ws-shiny/websocket',
+      brokerURL: 'ws://localhost:8095/ws-shiny/websocket',
       
       // 2. Reconnect automatically if the server restarts
       reconnectDelay: 200, 

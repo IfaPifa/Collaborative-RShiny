@@ -104,7 +104,7 @@ server <- function(input, output, session) {
       
       if (state$permission %in% c("EDITOR", "OWNER")) state$producer <- Producer$new(list("bootstrap.servers" = broker))
       state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
+    }, error = function(e) { print(e$message); invalidateLater(5000, session) })
   })
 
   output$connection_status <- renderText({ if (state$connected) "🟢 System Online" else "❌ Offline" })
@@ -121,15 +121,15 @@ server <- function(input, output, session) {
   observe({
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
-          if (!is.null(data$dataset)) {
-            shared_df(as.data.frame(data$dataset))
-            state$last_sender <- data$sender
-          }
+    result <- state$consumer$consume(500)
+    msg <- result_message(result)
+    
+    if (!result_has_error(result) && !is.null(msg$value)) {
+      if (!is.null(msg$key) && msg$key == routingKey()) {
+        data <- fromJSON(msg$value)
+        if (!is.null(data$dataset)) {
+          shared_df(as.data.frame(data$dataset))
+          state$last_sender <- data$sender
         }
       }
     }

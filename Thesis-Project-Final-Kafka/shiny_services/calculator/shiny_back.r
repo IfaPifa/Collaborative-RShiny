@@ -92,11 +92,10 @@ process_message <- function(mess) {
 # --- MAIN LOOP ---
 repeat {
   tryCatch({
-    messages <- consumer$consume(500)
-    if (length(messages) > 0) {
-      for (mess in messages) {
-        process_message(mess)
-      }
+    result <- consumer$consume(500)
+    if (!result_has_error(result)) {
+      msg <- result_message(result)
+      process_message(msg)
     }
   }, error = function(e) {
     print(paste("Consumer loop error:", e$message))

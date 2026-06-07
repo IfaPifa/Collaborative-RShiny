@@ -37,38 +37,35 @@ df <- mtcars
 # --- 2. LOGIC LOOP ---
 repeat {
   tryCatch({
-    messages <- consumer$consume(500)
-    if (length(messages) > 0) {
-      for (mess in messages) {
-        if (!is.list(mess) || is.null(mess$value)) next
-        
-        incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
-        payload <- tryCatch(fromJSON(mess$value), error = function(e) NULL)
-        if (!is.list(payload)) next
-        
-        if (!is.null(payload$role) && payload$role == "VIEWER") next
-        
-        # 🚨 CROSS-APP HIJACK PREVENTION 🚨
-        if (is.null(payload$min_hp) && is.null(payload$cyl)) next
-        
-        min_hp <- as.numeric(payload$min_hp)
-        cyl_filter <- as.numeric(payload$cyl)
-        sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
-        
-        filtered_df <- df %>% filter(hp >= min_hp, cyl %in% cyl_filter)
-        
-        response_payload <- list(
-          data = filtered_df,
-          min_hp = min_hp,
-          cyl = cyl_filter,
-          sender = sender,
-          timestamp = as.numeric(Sys.time())
-        )
-        
-        json_response <- toJSON(response_payload, auto_unbox = TRUE)
-        producer$produce(topic_output, json_response, key = incoming_key)
-      }
-    }
+    result <- consumer$consume(500)
+    if (result_has_error(result)) next
+    mess <- result_message(result)
+    if (is.null(mess) || is.null(mess$value)) next
+    
+    incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
+    payload <- tryCatch(fromJSON(mess$value), error = function(e) NULL)
+    if (!is.list(payload)) next
+    
+    if (!is.null(payload$role) && payload$role == "VIEWER") next
+    
+    if (is.null(payload$min_hp) && is.null(payload$cyl)) next
+    
+    min_hp <- as.numeric(payload$min_hp)
+    cyl_filter <- as.numeric(payload$cyl)
+    sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
+    
+    filtered_df <- df %>% filter(hp >= min_hp, cyl %in% cyl_filter)
+    
+    response_payload <- list(
+      data = filtered_df,
+      min_hp = min_hp,
+      cyl = cyl_filter,
+      sender = sender,
+      timestamp = as.numeric(Sys.time())
+    )
+    
+    json_response <- toJSON(response_payload, auto_unbox = TRUE)
+    producer$produce(topic_output, json_response, key = incoming_key)
   }, error = function(e) { 
     print(paste("Consumer loop error:", e$message))
     Sys.sleep(1) 

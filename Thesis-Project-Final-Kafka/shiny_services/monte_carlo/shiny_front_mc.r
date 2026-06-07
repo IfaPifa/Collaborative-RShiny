@@ -52,7 +52,7 @@ server <- function(input, output, session) {
       state$consumer$subscribe("output")
       if (state$permission %in% c("EDITOR", "OWNER")) state$producer <- Producer$new(list("bootstrap.servers" = broker))
       state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
+    }, error = function(e) { print(e$message); invalidateLater(5000, session) })
   })
 
   observeEvent(input$run_sim, {
@@ -66,21 +66,21 @@ server <- function(input, output, session) {
   observe({
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
-          if (!is.null(data$type) && data$type == "SYSTEM" && !is.null(data$targetUser) && data$targetUser == identity()$userId) {
-              state$permission <- data$newRole
-              state$producer <- if (data$newRole %in% c("EDITOR", "OWNER")) Producer$new(list("bootstrap.servers" = "kafka:9092")) else NULL
-          } else if (!is.null(data$hist_counts)) {
-            sim_results(data)
-            state$last_sender <- data$sender
-            updateNumericInput(session, "n_iter", value = data$n_iter)
-            updateSliderInput(session, "mean_val", value = data$mean_val)
-            updateSliderInput(session, "sd_val", value = data$sd_val)
-          }
+    result <- state$consumer$consume(500)
+    msg <- result_message(result)
+    
+    if (!result_has_error(result) && !is.null(msg$value)) {
+      if (!is.null(msg$key) && msg$key == routingKey()) {
+        data <- fromJSON(msg$value)
+        if (!is.null(data$type) && data$type == "SYSTEM" && !is.null(data$targetUser) && data$targetUser == identity()$userId) {
+            state$permission <- data$newRole
+            state$producer <- if (data$newRole %in% c("EDITOR", "OWNER")) Producer$new(list("bootstrap.servers" = "kafka:9092")) else NULL
+        } else if (!is.null(data$hist_counts)) {
+          sim_results(data)
+          state$last_sender <- data$sender
+          updateNumericInput(session, "n_iter", value = data$n_iter)
+          updateSliderInput(session, "mean_val", value = data$mean_val)
+          updateSliderInput(session, "sd_val", value = data$sd_val)
         }
       }
     }
