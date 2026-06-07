@@ -25,6 +25,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     depends_on:
       - zookeeper
 
@@ -92,118 +99,142 @@ services:
   shiny_front:
     build: ./shiny_services
     container_name: shiny_front_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/calculator/shiny_front.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back:
     build: ./shiny_services
     container_name: shiny_back_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/calculator/shiny_back.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   # --- APP 2: VISUAL ANALYTICS ---
   shiny_front_analytics:
     build: ./shiny_services
     container_name: shiny_front_analytics_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/visual_analytics/shiny_front_analytics.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back_analytics:
     build: ./shiny_services
     container_name: shiny_back_analytics_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/visual_analytics/shiny_back_analytics.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   # --- APP 3: DATA EXCHANGE (CSV) ---
   shiny_front_csv:
     build: ./shiny_services
     container_name: shiny_front_csv_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/data_exchange/shiny_front_csv.r:/app/app.R
       - shared_data_kafka:/app/shared_data
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back_csv:
     build: ./shiny_services
     container_name: shiny_back_csv_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/data_exchange/shiny_back_csv.r:/app/back.R
       - shared_data_kafka:/app/shared_data
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_front_csv_advanced:
     build: ./shiny_services
     container_name: shiny_front_csv_advanced_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/data_exchange/shiny_front_csv_advanced.r:/app/app.R
       - shared_data_kafka:/app/shared_data
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back_csv_advanced:
     build: ./shiny_services
     container_name: shiny_back_csv_advanced_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/data_exchange/shiny_back_csv_advanced.r:/app/back.R
       - shared_data_kafka:/app/shared_data
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   # --- APP 4: MONTE CARLO SIMULATOR ---
   shiny_front_mc:
     build: ./shiny_services
     container_name: shiny_front_mc_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/monte_carlo/shiny_front_mc.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back_mc:
     build: ./shiny_services
     container_name: shiny_back_mc_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/monte_carlo/shiny_back_mc.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   # --- APP 5: GEOSPATIAL EDITOR ---
   shiny_front_map:
     build: ./shiny_services
     container_name: shiny_front_map_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/map/shiny_front_map.r:/app/app.R
     command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   shiny_back_map:
     build: ./shiny_services
     container_name: shiny_back_map_kafka
+    restart: unless-stopped
     volumes:
       - ./shiny_services/map/shiny_back_map.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
 volumes:
   postgres_data_kafka:

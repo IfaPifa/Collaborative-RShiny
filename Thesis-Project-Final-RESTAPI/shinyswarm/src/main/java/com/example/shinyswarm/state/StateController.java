@@ -124,9 +124,10 @@ public class StateController {
 
             String cacheKey = (sessionId != null && !sessionId.isEmpty()) ? sessionId : principal.getName();
             
-            // ---> FIX 2: Bridge the Angular "null" ID to the Shiny "solo" ID for restores
+            // Bridge solo restores: Angular sets iframe sessionId to "solo-{username}"
+            // so the Shiny app polls session_state:solo-{username}
             if (cacheKey.equals(principal.getName())) {
-                cacheKey = "solo";
+                cacheKey = "solo-" + principal.getName();
             }
 
             redisTemplate.opsForValue().set("session_state:" + cacheKey, redisPayload);

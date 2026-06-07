@@ -16,11 +16,10 @@ function(req) {
   sender <- if (!is.null(body$sender)) body$sender else "unknown"
 
   return(list(
-    type = "STATE_UPDATE",
     min_temp = min_temp,
     months = months_filter,
     sender = sender,
     status = "success",
-    timestamp = as.numeric(Sys.time()) * 1000 
+    timestamp = as.numeric(Sys.time())
   ))
 }

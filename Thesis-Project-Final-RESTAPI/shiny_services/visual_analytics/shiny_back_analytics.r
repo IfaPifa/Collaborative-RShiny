@@ -13,19 +13,18 @@ function(req) {
 
   sender <- if (!is.null(body$sender)) body$sender else "unknown"
   min_hp <- if (!is.null(body$min_hp)) as.numeric(body$min_hp) else 50
-  
-  # --- THE FIX: Parse the incoming cylinder array safely ---
-  cylinders <- c(4, 6, 8) # Default
+
+  # Parse cylinder array safely
+  cyl <- c(4, 6, 8)
   if (!is.null(body$cyl)) {
-    # It might come in as a single string, numeric, or a list/vector
-    cylinders <- as.numeric(unlist(body$cyl))
+    cyl <- as.numeric(unlist(body$cyl))
   }
 
   return(list(
     min_hp = min_hp,
-    cylinders = cylinders, # Return the parsed array back to the frontend
+    cyl = cyl,
     sender = sender,
     status = "success",
-    timestamp = as.numeric(Sys.time()) * 1000 # Use ms for Java compatibility
+    timestamp = as.numeric(Sys.time())
   ))
 }
