@@ -253,7 +253,20 @@ public class CollaborationController {
     @PostMapping("/{sessionId}/restore/{stateId}")
     public ResponseEntity<?> restoreState(@PathVariable String sessionId, @PathVariable Long stateId) {
         SavedState state = savedStateRepository.findById(stateId).orElseThrow();
-        redisTemplate.opsForValue().set("session_state:" + sessionId, state.getStateData());
+
+        try {
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            java.util.Map<String, Object> payload = mapper.readValue(state.getStateData(), java.util.Map.class);
+            payload.put("sender", "System Restore");
+            // Use seconds (not millis) to match R's as.numeric(Sys.time())
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
+            String updatedPayload = mapper.writeValueAsString(payload);
+            redisTemplate.opsForValue().set("session_state:" + sessionId, updatedPayload);
+        } catch (Exception e) {
+            // Fallback: write raw state data if JSON parsing fails
+            redisTemplate.opsForValue().set("session_state:" + sessionId, state.getStateData());
+        }
+
         return ResponseEntity.ok("State restored to Redis");
     }
 

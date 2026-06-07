@@ -146,6 +146,6 @@ server <- function(input, output, session) {
     tagList(p("User: ", strong(id$userId)), p("Role: ", strong(state$permission)))
   })
   output$last_update_ui <- renderUI({ req(state$last_sender); p(em(paste("Last filter sync by:", state$last_sender))) })
-  output$connection_status <- renderText({ "System Online" }) 
+  output$connection_status <- renderText({ "🟢 System Online" }) 
 }
 shinyApp(ui = ui, server = server)

@@ -11,7 +11,7 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     await launchSolo(page, 'Visual Analytics');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'System Online');
+    await waitForShinyBoot(frame);
 
     // Uncheck cylinder 4 to change the filter
     await frame.locator('input[name="cyl"][value="4"]').uncheck();
@@ -37,8 +37,8 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'System Online');
-    await waitForShinyBoot(bobFrame, 'System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     await aliceFrame.locator('input[name="cyl"][value="8"]').uncheck();
     await aliceFrame.locator('button#update_plot').click();
@@ -65,8 +65,8 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'System Online');
-    await waitForShinyBoot(charlieFrame, 'System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(charlieFrame);
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#update_plot')).toBeEnabled();
@@ -88,7 +88,7 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     await launchSolo(page, 'Visual Analytics');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'System Online');
+    await waitForShinyBoot(frame);
 
     await frame.locator('input[name="cyl"][value="4"]').check();
 

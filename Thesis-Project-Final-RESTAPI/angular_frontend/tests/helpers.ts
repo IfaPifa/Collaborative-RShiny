@@ -55,7 +55,7 @@ export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, 
   await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 20000 });
   
   // 2. THE FIX: Standard JS Promise to wait 3 seconds. 
-  // This lets the Kafka Consumer Groups and WebSockets fully negotiate before Playwright starts clicking.
+  // Wait for the backend and WebSockets to fully initialize before Playwright starts clicking.
   await new Promise(resolve => setTimeout(resolve, 3000));
 }
 

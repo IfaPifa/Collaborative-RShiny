@@ -27,7 +27,7 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     await launchSolo(page, 'Climate Anomaly Detector');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     const csvPath = createSensorCsv();
     await frame.locator('input[type="file"]').setInputFiles(csvPath);
@@ -58,8 +58,8 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, '🟢 System Online');
-    await waitForShinyBoot(bobFrame, '🟢 System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     const csvPath = createSensorCsv();
     await aliceFrame.locator('input[type="file"]').setInputFiles(csvPath);
@@ -90,7 +90,7 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, '🟢 System Online');
+    await waitForShinyBoot(charlieFrame);
 
     await expect(charlieFrame.locator('button#process_data')).toBeEnabled();
     await demoteUser(alicePage, 'charlie');
@@ -105,7 +105,7 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     await launchSolo(page, 'Climate Anomaly Detector');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     await page.click('button:has-text("Load Checkpoint")');
     const modal = page.locator('app-modal');

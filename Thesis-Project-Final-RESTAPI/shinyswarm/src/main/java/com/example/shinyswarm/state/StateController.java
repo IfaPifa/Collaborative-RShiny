@@ -118,7 +118,8 @@ public class StateController {
         try {
             Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
             payload.put("sender", "System Restore");
-            payload.put("timestamp", System.currentTimeMillis());
+            // Use seconds (not millis) to match R's as.numeric(Sys.time())
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
             
             String redisPayload = objectMapper.writeValueAsString(payload);
 

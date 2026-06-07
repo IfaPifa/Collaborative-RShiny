@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
+test.describe('Advanced Analytics: Core Four Matrix', () => {
   test.setTimeout(60000);
   
   // 1. Declare the shared save name variable at the suite level
@@ -25,7 +25,7 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     await frame.locator('button#update_plot').click();
 
     // 3. WAIT FOR R SHINY TO FINISH ITS BACKGROUND WORK
-    // This ensures Plumber has successfully pushed the data to Redis BEFORE we click Save.
+    // This ensures the backend has processed the state BEFORE we click Save.
     await expect(frame.locator('text=Synced by: alice')).toBeVisible({ timeout: 15000 });
 
     // Verify May stays unchecked locally

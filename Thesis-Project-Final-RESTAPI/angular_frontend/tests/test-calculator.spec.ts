@@ -10,7 +10,7 @@ test.describe('Calculator: Core Four Matrix', () => {
     await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     await setShinyNumericInput(frame, '#num1', '10');
     await setShinyNumericInput(frame, '#num2', '25');
@@ -38,8 +38,8 @@ test.describe('Calculator: Core Four Matrix', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, '🟢 System Online');
-    await waitForShinyBoot(bobFrame, '🟢 System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     await setShinyNumericInput(aliceFrame, '#num1', '42');
     await setShinyNumericInput(aliceFrame, '#num2', '8');
@@ -68,7 +68,7 @@ test.describe('Calculator: Core Four Matrix', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, '🟢 System Online');
+    await waitForShinyBoot(charlieFrame);
 
     await expect(charlieFrame.locator('button#calculate')).toBeEnabled();
 
@@ -87,7 +87,7 @@ test.describe('Calculator: Core Four Matrix', () => {
     await launchSolo(page, 'Collaborative Calculator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     await setShinyNumericInput(frame, '#num1', '99');
     await setShinyNumericInput(frame, '#num2', '99');

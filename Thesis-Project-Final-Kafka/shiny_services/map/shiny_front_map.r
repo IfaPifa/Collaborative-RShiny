@@ -181,6 +181,6 @@ server <- function(input, output, session) {
   })
   
   # Note: Aligning text output with the Playwright test expectation
-  output$connection_status <- renderText({ "System Online" }) 
+  output$connection_status <- renderText({ "🟢 System Online" }) 
 }
 shinyApp(ui = ui, server = server)

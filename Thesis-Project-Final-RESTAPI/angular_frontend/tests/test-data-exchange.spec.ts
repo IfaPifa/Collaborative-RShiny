@@ -20,7 +20,7 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     // Upload test CSV
     const csvPath = createTestCsv();
@@ -56,8 +56,8 @@ test.describe('Data Exchange: Core Four Matrix', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, '🟢 System Online');
-    await waitForShinyBoot(bobFrame, '🟢 System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     // Alice uploads and processes
     const csvPath = createTestCsv();
@@ -90,7 +90,7 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, '🟢 System Online');
+    await waitForShinyBoot(charlieFrame);
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#process_data')).toBeEnabled();
@@ -111,7 +111,7 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     await launchSolo(page, 'Data Exchange');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');

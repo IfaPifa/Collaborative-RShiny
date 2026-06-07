@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
+import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser, setShinyNumericInput } from './helpers';
 
-test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
+test.describe('Monte Carlo Simulator: Core Four Matrix', () => {
   test.setTimeout(90000); // Simulations can take time
   const sharedSaveName = `MC Checkpoint - ${Date.now()}`;
 
@@ -11,10 +11,10 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Monte Carlo Simulator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame);
 
     // Set parameters and launch
-    await frame.locator('#n0').fill('200');
+    await setShinyNumericInput(frame, '#n0', '200');
     await frame.locator('button#run_sim').click();
 
     // Wait for the simulation to complete — Extinction Risk KPI appears
@@ -43,8 +43,8 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'HTTP GET/POST');
-    await waitForShinyBoot(bobFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     // Alice runs simulation
     await aliceFrame.locator('button#run_sim').click();
@@ -73,7 +73,7 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(charlieFrame);
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#run_sim')).toBeEnabled();
@@ -95,7 +95,7 @@ test.describe('Monte Carlo Simulator: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Monte Carlo Simulator');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'HTTP GET/POST');
+    await waitForShinyBoot(frame);
 
     // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');
