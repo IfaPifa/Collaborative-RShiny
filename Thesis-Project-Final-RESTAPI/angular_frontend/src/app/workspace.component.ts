@@ -426,22 +426,28 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     if (!app || !name) return;
 
     if (currentSession) {
-      // Collaborative Save (Uses the CollabService)
+      // Collaborative Save
       this.collabService.saveSessionState(currentSession.id, name).subscribe({
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
           alert('Team Snapshot Saved securely from Kafka!');
+          
+          // ---> THE FIX: Refresh the saved states list for the modal!
+          this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
         },
         error: (err) => alert('Error saving session: ' + (err.error || 'Unknown error'))
       });
     } else {
-      // Solo Save (Backend will look up the Kafka state using the Username)
+      // Solo Save 
       this.dataService.saveState(app.id, name, null).subscribe({
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
           alert('Solo State Saved securely from Kafka!');
+          
+          // ---> THE FIX: Refresh the saved states list for the modal!
+          this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
         },
         error: (err) => alert('Error saving state: ' + (err.error || 'Unknown error'))
       });

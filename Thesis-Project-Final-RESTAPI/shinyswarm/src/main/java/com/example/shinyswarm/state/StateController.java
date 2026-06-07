@@ -64,11 +64,17 @@ public class StateController {
                           ? request.sessionId() 
                           : username;
                           
+        // The Proper Fix
         String latestRealState = sessionStateMonitor.getLatestState(cacheKey);
 
-        // ---> FIX 1: Bridge the Angular "null" ID to the Shiny "solo" ID
         if (latestRealState == null && cacheKey.equals(username)) {
-            latestRealState = sessionStateMonitor.getLatestState("solo");
+            // Tell Java to look in the isolated solo bucket we created in Angular
+            latestRealState = sessionStateMonitor.getLatestState("solo-" + username);
+            
+            // Fallback just in case an older app is still using the generic "solo"
+            if (latestRealState == null) {
+                latestRealState = sessionStateMonitor.getLatestState("solo");
+            }
         }
 
         if (latestRealState == null) {

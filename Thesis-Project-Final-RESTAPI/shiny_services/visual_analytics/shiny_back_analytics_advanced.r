@@ -21,6 +21,6 @@ function(req) {
     months = months_filter,
     sender = sender,
     status = "success",
-    timestamp = as.numeric(Sys.time())
+    timestamp = as.numeric(Sys.time()) * 1000 
   ))
 }

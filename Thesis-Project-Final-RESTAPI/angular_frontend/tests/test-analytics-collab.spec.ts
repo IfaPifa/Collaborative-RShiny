@@ -3,7 +3,14 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Adv Analytics Checkpoint - ${Date.now()}`;
+  
+  // 1. Declare the shared save name variable at the suite level
+  let sharedSaveName: string;
+
+  // 2. Initialize it in beforeAll to guarantee consistency across retries/workers
+  test.beforeAll(() => {
+    sharedSaveName = `Adv Analytics Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Filter & Save
   test('1. Solo Mode: Compute & Save State', async ({ page }) => {
@@ -17,13 +24,28 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     await frame.locator('input[name="months"][value="5"]').uncheck();
     await frame.locator('button#update_plot').click();
 
-    // Verify May stays unchecked after sync
-    await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 10000 });
+    // 3. WAIT FOR R SHINY TO FINISH ITS BACKGROUND WORK
+    // This ensures Plumber has successfully pushed the data to Redis BEFORE we click Save.
+    await expect(frame.locator('text=Synced by: alice')).toBeVisible({ timeout: 15000 });
 
-    // Save state
+    // Verify May stays unchecked locally
+    await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked();
+
+    // 4. SET UP STRICT NETWORK LISTENER
+    // Wait specifically for a 200 OK from Java to ensure it saved to Postgres
+    const savePromise = page.waitForResponse(response => 
+      response.url().includes('/api/states') && 
+      response.request().method() === 'POST' &&
+      response.status() === 200
+    );
+    
+    // 5. Trigger the save action (Angular UI click)
     await saveState(page, sharedSaveName);
+    
+    // 6. Wait for Java to securely write to PostgreSQL
+    await savePromise;
 
-    // Verify in saved-apps
+    // 7. Safely navigate to the dashboard and verify the checkpoint exists
     await page.goto('/saved-apps');
     await expect(page.locator(`text=${sharedSaveName}`)).toBeVisible();
   });
@@ -103,7 +125,11 @@ test.describe('Advanced Analytics: Core Four Matrix (REST)', () => {
     const modal = page.locator('app-modal');
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
-    await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
+    await modal.locator('*')
+      .filter({ hasText: /Adv Analytics Checkpoint/ })
+      .getByRole('button', { name: 'Load', exact: true })
+      .first()
+      .click();
 
     // Verify May is now unchecked
     await expect(frame.locator('input[name="months"][value="5"]')).not.toBeChecked({ timeout: 10000 });

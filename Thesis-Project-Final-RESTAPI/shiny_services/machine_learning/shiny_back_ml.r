@@ -46,7 +46,7 @@ function(req) {
   return(list(
     type = "TRAINING_COMPLETE",
     importance = as.list(importance(rf_mod)[, 1]),
-    epoch_log = epoch_log,
+    logs = epoch_log, 
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())

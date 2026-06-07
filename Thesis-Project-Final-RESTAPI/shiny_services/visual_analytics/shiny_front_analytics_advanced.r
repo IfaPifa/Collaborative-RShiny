@@ -6,17 +6,27 @@ library(jsonlite)
 library(shinyjs)
 library(dplyr)
 
+# UI Definition: Using string values to ensure strict type matching during updates
 ui <- page_sidebar(
   useShinyjs(),
   theme = bs_theme(version = 5, preset = "minty"), 
   title = "LTER-LIFE Microclimate Sensors (REST API)",
   
+  # WebSockets role sync
+  tags$head(tags$script(HTML("
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'ROLE_UPDATE') {
+        Shiny.setInputValue('role_update', event.data.permission, {priority: 'event'});
+      }
+    });
+  "))),
+  
   sidebar = sidebar(
     title = "Sensor Filters",
     sliderInput("min_temp", "Minimum Temperature (°F):", min = 50, max = 100, value = 65),
     checkboxGroupInput("months", "Active Months:", 
-                       choices = list("May"=5, "June"=6, "July"=7, "August"=8, "September"=9), 
-                       selected = c(5, 6, 7, 8, 9)),
+                       choices = list("May"="5", "June"="6", "July"="7", "August"="8", "September"="9"), 
+                       selected = c("5", "6", "7", "8", "9")),
     actionButton("update_plot", "Sync State to Swarm", class = "btn-success", icon = icon("cloud-upload-alt")),
     hr(),
     uiOutput("session_info_ui"),
@@ -53,6 +63,7 @@ server <- function(input, output, session) {
   
   spring_api_base <- "http://spring-backend:8085/api/collab"
   
+  # --- IDENTITY & STATE TRACKING ---
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
     list(
@@ -62,64 +73,54 @@ server <- function(input, output, session) {
     )
   })
   
-  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
+  state <- reactiveValues(
+    last_timestamp = 0, 
+    last_sender = NULL, 
+    permission = "EDITOR"
+  )
+  
   base_data <- na.omit(airquality)
 
+  # --- DYNAMIC ROLE MANAGEMENT ---
+  observeEvent(input$role_update, {
+    state$permission <- input$role_update
+  })
+
   observe({
-    if (identity()$permission == "VIEWER") {
-      disable("min_temp"); disable("months"); disable("update_plot")
+    if (state$permission == "VIEWER") {
+      disable("update_plot"); disable("min_temp"); disable("months")
     } else {
-      enable("min_temp"); enable("months"); enable("update_plot")
+      enable("update_plot"); enable("min_temp"); enable("months")
     }
   })
 
-  output$session_info_ui <- renderUI({
-    id <- identity()
-    tagList(
-      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
-      p("User: ", strong(id$userId)),
-      p("Role: ", strong(id$permission))
-    )
-  })
-
-  output$connection_status <- renderText({ "🟢 System Online" })
-
-  # --- POST state to Spring Boot on button click ---
+  # --- ASYNC POST EVENT (Save to Swarm) ---
   observeEvent(input$update_plot, {
-    id <- identity()
-    print(paste(">>> SYNC CLICKED | userId:", id$userId, "| sessionId:", id$sessionId, "| permission:", id$permission))
-    if (id$permission == "VIEWER") {
-      print(">>> BLOCKED: user is VIEWER")
-      return()
-    }
+    if (state$permission == "VIEWER") return()
     
+    id <- identity()
+    # Ensure POST body sends numeric months to match backend API schema
     payload <- list(
-      min_temp = input$min_temp,
-      months = input$months,
+      min_temp = as.numeric(input$min_temp),
+      months = as.numeric(input$months),
       sender = id$userId,
       appName = "Advanced"
     )
     
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    print(paste(">>> POSTing to:", post_url))
-    print(paste(">>> Payload:", toJSON(payload, auto_unbox = TRUE)))
     
-    tryCatch({
-      res <- httr::POST(
+    try({
+      httr::POST(
         url = post_url,
         body = toJSON(payload, auto_unbox = TRUE),
         encode = "raw",
         httr::content_type_json(),
         httr::timeout(5)
       )
-      print(paste(">>> POST response status:", httr::status_code(res)))
-      print(paste(">>> POST response body:", httr::content(res, "text", encoding = "UTF-8")))
-    }, error = function(e) {
-      print(paste(">>> POST Error:", e$message))
     })
   })
   
-  # --- Poll Spring Boot for state every 500ms ---
+  # --- SYNCHRONOUS POLLING LOOP ---
   poll_trigger <- reactiveTimer(500)
   
   observe({
@@ -137,30 +138,31 @@ server <- function(input, output, session) {
           if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
             state$last_timestamp <- data$timestamp
             state$last_sender <- data$sender
-            print(paste(">>> POLL: new state from", data$sender, "| min_temp:", data$min_temp, "| months:", paste(data$months, collapse=",")))
             
-            if (!is.null(data$min_temp) && !is.null(input$min_temp) && input$min_temp != data$min_temp) {
-              print(paste(">>> Updating min_temp:", input$min_temp, "->", data$min_temp))
-              updateSliderInput(session, "min_temp", value = data$min_temp)
-            }
+            if (!is.null(data$min_temp)) updateSliderInput(session, "min_temp", value = data$min_temp)
+            
+            # Explicitly cast to character to match UI definition
             if (!is.null(data$months)) {
-              print(paste(">>> Updating months to:", paste(as.character(data$months), collapse=",")))
-              updateCheckboxGroupInput(session, "months", selected = as.character(data$months))
+              updateCheckboxGroupInput(session, "months", 
+                                       choices = list("May"="5", "June"="6", "July"="7", "August"="8", "September"="9"),
+                                       selected = as.character(unlist(data$months)))
             }
           }
         }
       }
-    }, error = function(e) {
-      # Fail silently on polling timeouts
-    })
+    }, error = function(e) {})
   })
 
+  # --- REACTIVE DATA FILTER ---
   filtered_data <- reactive({
     req(input$months)
-    base_data %>% filter(Temp >= input$min_temp, Month %in% input$months)
+    # Cast input$months back to numeric for dplyr filtering
+    base_data %>% filter(Temp >= input$min_temp, Month %in% as.numeric(input$months))
   })
 
+  # --- UI RENDERING ---
   output$kpi_count <- renderText({ nrow(filtered_data()) })
+  
   output$kpi_ozone <- renderText({
     df <- filtered_data()
     if (nrow(df) == 0) return("N/A")
@@ -178,9 +180,21 @@ server <- function(input, output, session) {
     ggplotly(p)
   })
   
+  output$session_info_ui <- renderUI({
+    id <- identity()
+    tagList(
+      p(strong("Mode: "), span("REST Polling", style = "color: #e67e22")),
+      p("User: ", strong(id$userId)),
+      p("Role: ", strong(state$permission))
+    )
+  })
+
   output$last_update_badge <- renderUI({ 
     req(state$last_sender)
     span(class = "badge bg-success float-end", paste("Synced by:", state$last_sender)) 
   })
+  
+  output$connection_status <- renderText({ "🟢 System Online" })
 }
+
 shinyApp(ui = ui, server = server)

@@ -77,7 +77,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'HTTP GET/POST');
+    await waitForShinyBoot(charlieFrame, '🟢 System Online');
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#train_btn')).toBeEnabled();
