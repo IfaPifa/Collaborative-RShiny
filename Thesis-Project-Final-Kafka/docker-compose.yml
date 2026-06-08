@@ -81,12 +81,12 @@ services:
     container_name: nginx_proxy_kafka
     image: nginx:1.25-alpine
     ports:
-      - "9080:80"
-      - "9081:81"
-      - "9082:82"
-      - "9083:83"
-      - "9084:84"  
-      - "9086:85"
+      - "10080:80"
+      - "10081:81"
+      - "10082:82"
+      - "10083:83"
+      - "10084:84"  
+      - "10086:85"
     volumes:
       - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
