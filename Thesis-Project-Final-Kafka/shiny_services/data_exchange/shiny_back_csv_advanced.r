@@ -59,9 +59,6 @@ repeat {
           print(paste("Processed LTER data for", payload$sender, "with threshold", payload$threshold))
         }
         
-      } else if (payload$action == "CLIMATE_READY" && !is.null(payload$sender) && payload$sender == "System Restore") {
-        producer$produce("output", toJSON(payload, auto_unbox = TRUE), key = incoming_key)
-        print(paste("Time Machine: Restored checkpoint for", incoming_key))
       }
     }
   }, error = function(e) { 

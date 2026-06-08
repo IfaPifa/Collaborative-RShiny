@@ -144,7 +144,7 @@ public class StateController {
                 kafkaKey = currentUser.getUsername(); 
             }
 
-            kafkaTemplate.send("input", kafkaKey, kafkaPayload);
+            kafkaTemplate.send("output", kafkaKey, kafkaPayload);
             
             return ResponseEntity.ok("State restored");
 
