@@ -90,7 +90,7 @@ server <- function(input, output, session) {
       state$consumer$subscribe("output")
       if (state$permission %in% c("EDITOR", "OWNER")) state$producer <- Producer$new(list("bootstrap.servers" = broker))
       state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
+    }, error = function(e) { print(e$message); invalidateLater(5000, session) })
   })
 
   # --- SEND UPDATES ---
@@ -116,18 +116,18 @@ server <- function(input, output, session) {
   observe({
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
-    messages <- state$consumer$consume(100)
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
-          
-          if (!is.null(data$data)) {
-            shared_data(as.data.frame(data$data))
-            state$last_sender <- data$sender
-            updateSliderInput(session, "min_hp", value = data$min_hp)
-            updateCheckboxGroupInput(session, "cyl", selected = data$cyl)
-          }
+    result <- state$consumer$consume(500)
+    msg <- result_message(result)
+    
+    if (!result_has_error(result) && !is.null(msg$value)) {
+      if (!is.null(msg$key) && msg$key == routingKey()) {
+        data <- fromJSON(msg$value)
+        
+        if (!is.null(data$data)) {
+          shared_data(as.data.frame(data$data))
+          state$last_sender <- data$sender
+          updateSliderInput(session, "min_hp", value = data$min_hp)
+          updateCheckboxGroupInput(session, "cyl", selected = data$cyl)
         }
       }
     }
@@ -146,6 +146,6 @@ server <- function(input, output, session) {
     tagList(p("User: ", strong(id$userId)), p("Role: ", strong(state$permission)))
   })
   output$last_update_ui <- renderUI({ req(state$last_sender); p(em(paste("Last filter sync by:", state$last_sender))) })
-  output$connection_status <- renderText({ "System Online" }) 
+  output$connection_status <- renderText({ "🟢 System Online" }) 
 }
 shinyApp(ui = ui, server = server)

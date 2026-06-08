@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -19,7 +19,7 @@ import { CollabService } from './services/collab.service';
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        @for (save of savedAppStates(); track save.id) {
+        @for (save of availableStates(); track save.id) {
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition">
             <div class="p-6 flex-grow">
               <div class="flex justify-between items-start mb-3">
@@ -60,6 +60,14 @@ export class SavedAppsComponent implements OnInit {
   shinyApps = signal<ShinyApp[]>([]);
   isLoading = signal(false);
 
+  // Only show checkpoints for apps that exist in the current architecture
+  availableStates = computed(() => {
+    const apps = this.shinyApps();
+    if (apps.length === 0) return this.savedAppStates();
+    const appNames = new Set(apps.map(a => a.name));
+    return this.savedAppStates().filter(s => appNames.has(s.appName));
+  });
+
   ngOnInit() {
     // We need both the saved states AND the original apps to cross-reference them
     this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
@@ -78,19 +86,19 @@ export class SavedAppsComponent implements OnInit {
       // 2. Set the selected app in the global state
       this.dataService.selectedApp.set(app);
       
-      // 3. Navigate to the workspace
-      this.router.navigate(['/workspace', 'solo']);
-
-      // 4. Wait 3.5 seconds for the iframe and Kafka consumer to boot
-      setTimeout(() => {
-        this.dataService.restoreStateToKafka(save.id).subscribe({
-          next: () => this.isLoading.set(false),
-          error: () => {
-            this.isLoading.set(false);
-            alert('Failed to push state to Kafka.');
-          }
-        });
-      }, 3500); // <-- INCREASED THIS TIMER
+      // 3. Write restored state to Redis immediately — it persists there
+      // until the Shiny app boots and picks it up via polling.
+      this.dataService.restoreStateToKafka(save.id).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          // 4. Navigate to workspace after restore is confirmed in Redis
+          this.router.navigate(['/workspace', 'solo']);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          alert('Failed to restore state.');
+        }
+      });
       
     } else {
       alert('The base application for this save no longer exists.');

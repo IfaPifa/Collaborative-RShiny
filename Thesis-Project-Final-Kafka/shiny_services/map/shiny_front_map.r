@@ -110,7 +110,7 @@ server <- function(input, output, session) {
         state$producer <- Producer$new(list("bootstrap.servers" = broker))
       }
       state$connected <- TRUE
-    }, error = function(e) { print(e$message) })
+    }, error = function(e) { print(e$message); invalidateLater(5000, session) })
   })
 
   # --- SEND CLICK (PRODUCER) ---
@@ -143,24 +143,22 @@ server <- function(input, output, session) {
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
     
-    messages <- state$consumer$consume(100)
+    result <- state$consumer$consume(500)
+    msg <- result_message(result)
     
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
+    if (!result_has_error(result) && !is.null(msg$value)) {
+      if (!is.null(msg$key) && msg$key == routingKey()) {
+        data <- fromJSON(msg$value)
+        
+        if (!is.null(data$type) && data$type == "DELTA") {
+          state$last_sender <- data$sender
           
-          if (!is.null(data$type) && data$type == "DELTA") {
-            state$last_sender <- data$sender
-            
-            # Apply identical awesome-marker DOM injection as the REST version
-            leafletProxy("map") %>% 
-              addAwesomeMarkers(
-                lng = data$lng, lat = data$lat, 
-                icon = sensor_icons[[data$sensor_type]],
-                popup = paste("Type:", data$sensor_type, "<br>Deployed by:", data$sender)
-              )
-          }
+          leafletProxy("map") %>% 
+            addAwesomeMarkers(
+              lng = data$lng, lat = data$lat, 
+              icon = sensor_icons[[data$sensor_type]],
+              popup = paste("Type:", data$sensor_type, "<br>Deployed by:", data$sender)
+            )
         }
       }
     }
@@ -181,6 +179,6 @@ server <- function(input, output, session) {
   })
   
   # Note: Aligning text output with the Playwright test expectation
-  output$connection_status <- renderText({ "System Online" }) 
+  output$connection_status <- renderText({ "🟢 System Online" }) 
 }
 shinyApp(ui = ui, server = server)

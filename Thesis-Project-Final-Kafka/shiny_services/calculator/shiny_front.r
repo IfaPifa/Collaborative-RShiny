@@ -160,6 +160,7 @@ server <- function(input, output, session) {
       
     }, error = function(e) {
       state$log <- paste("Kafka Error:", e$message)
+      invalidateLater(5000, session)
     })
   })
 
@@ -209,21 +210,20 @@ server <- function(input, output, session) {
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
     
-    messages <- state$consumer$consume(100)
+    result <- state$consumer$consume(500)
+    msg <- result_message(result)
     
-    if (length(messages) > 0) {
-      for (m in messages) {
-        if (!is.null(m$key) && m$key == routingKey()) {
-          data <- fromJSON(m$value)
+    if (!result_has_error(result) && !is.null(msg$value)) {
+      if (!is.null(msg$key) && msg$key == routingKey()) {
+        data <- fromJSON(msg$value)
+        
+        if (!is.null(data$result)) {
+          current_sum(data$result)
+          state$last_sender <- if (!is.null(data$sender)) data$sender else "System"
+          state$log <- paste("Synced with update from:", state$last_sender)
           
-          if (!is.null(data$result)) {
-            current_sum(data$result)
-            state$last_sender <- if (!is.null(data$sender)) data$sender else "System"
-            state$log <- paste("Synced with update from:", state$last_sender)
-            
-            updateNumericInput(session, "num1", value = data$num1)
-            updateNumericInput(session, "num2", value = data$num2)
-          }
+          updateNumericInput(session, "num1", value = data$num1)
+          updateNumericInput(session, "num2", value = data$num2)
         }
       }
     }

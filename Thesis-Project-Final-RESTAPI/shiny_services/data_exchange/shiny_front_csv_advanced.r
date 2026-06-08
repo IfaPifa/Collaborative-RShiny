@@ -3,6 +3,10 @@ library(bslib)
 library(httr)
 library(jsonlite)
 library(shinyjs)
+library(promises)
+library(future)
+
+plan(multisession)
 
 # Allow up to 1GB uploads for massive ecological datasets
 options(shiny.maxRequestSize = 1000 * 1024^2) 
@@ -119,10 +123,9 @@ server <- function(input, output, session) {
     
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
     
-    tryCatch({
-      res <- httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(30))
-      
-      # --- THE FIX: Eager UI Update ---
+    future_promise({
+      httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(60))
+    }) %...>% (function(res) {
       if (httr::status_code(res) == 200) {
         print("✅ Climate Analysis Synced successfully")
         raw_text <- httr::content(res, "text", encoding = "UTF-8")
@@ -135,7 +138,6 @@ server <- function(input, output, session) {
               state$last_sender <- data$sender
               summary_file_path <- file.path(shared_dir, data$file)
               
-              # Instantly read the newly processed file and update the UI
               if (file.exists(summary_file_path)) {
                 shared_df(read.csv(summary_file_path))
               }
@@ -145,7 +147,7 @@ server <- function(input, output, session) {
       } else {
          print(paste("❌ Sync failed with status:", httr::status_code(res)))
       }
-    }, error = function(e) { print(paste("POST Error:", e$message)) })
+    }) %...!% (function(e) { print(paste("POST Error:", e$message)) })
   })
   
   poll_trigger <- reactiveTimer(500)

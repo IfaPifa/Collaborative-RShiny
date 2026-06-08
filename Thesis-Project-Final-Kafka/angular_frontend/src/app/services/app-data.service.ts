@@ -21,7 +21,7 @@ export interface SavedAppState {
 export class AppDataService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
-  private API_URL = 'http://localhost:8085/api';
+  private API_URL = 'http://localhost:8095/api';
 
   public selectedApp = signal<ShinyApp | null>(null);
 

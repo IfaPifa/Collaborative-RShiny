@@ -142,7 +142,7 @@ import { ModalComponent } from './modal.component';
 
     <app-modal title="Load Checkpoint" [isOpen]="showLoadModal()" (close)="showLoadModal.set(false)">
       <div class="flex-grow overflow-y-auto max-h-[50vh] pr-2 mb-4">
-        @for (save of savedAppStates(); track save.id) {
+        @for (save of filteredCheckpoints(); track save.id) {
           <div class="border-b border-gray-100 py-3 last:border-0 hover:bg-gray-50 transition rounded px-2">
             <div class="flex justify-between items-center">
               <div>
@@ -197,7 +197,14 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   activeUsers = signal<string[]>([]);
   copySuccess = signal(false);
   savedAppStates = signal<SavedAppState[]>([]);
-  
+
+  // Only show checkpoints for the currently selected app
+  filteredCheckpoints = computed(() => {
+    const app = this.dataService.selectedApp();
+    if (!app) return this.savedAppStates();
+    return this.savedAppStates().filter(s => s.appName === app.name);
+  });
+
   // Modals
   showSaveModal = signal(false);
   showLoadModal = signal(false);
@@ -252,8 +259,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         const myPerm = this.getParticipantPermission(session, user.username) || 'VIEWER';
         signedUrl = `${app.url}${separator}sessionId=${session.id}&userId=${user.username}&permission=${myPerm}`; 
       } else {
-        // --- THE FIX: Pass a unique Solo sessionId ---
-        signedUrl = `${app.url}${separator}sessionId=solo-${user.username}&userId=${user.username}&permission=EDITOR`;
+        // Solo sessionId includes app ID to isolate Redis state per app
+        signedUrl = `${app.url}${separator}sessionId=solo-${app.id}-${user.username}&userId=${user.username}&permission=EDITOR`;
       }
       return this.sanitizer.bypassSecurityTrustResourceUrl(signedUrl);
     }
@@ -315,7 +322,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     });
 
     // --- ADD THIS NEW BLOCK ---
-    // Give the Shiny iframe and R Kafka Consumer 3.5 seconds to fully boot 
+    // Give the Shiny iframe 3.5 seconds to fully boot
     // before we ask the backend to blast the last known state into the queue.
     setTimeout(() => {
       this.collabService.replaySession(session.id).subscribe({
@@ -431,7 +438,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Team Snapshot Saved securely from Kafka!');
+          alert('Team snapshot saved!');
           
           // ---> THE FIX: Refresh the saved states list for the modal!
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
@@ -444,7 +451,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Solo State Saved securely from Kafka!');
+          alert('State saved!');
           
           // ---> THE FIX: Refresh the saved states list for the modal!
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));

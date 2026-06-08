@@ -4,9 +4,22 @@ library(plotly)
 library(httr)
 library(jsonlite)
 library(shinyjs)
+library(promises)
+library(future)
+
+plan(multisession)
 
 ui <- page_sidebar(
   useShinyjs(),
+
+  tags$head(tags$script(HTML("
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'ROLE_UPDATE') {
+        Shiny.setInputValue('role_update', event.data.permission, {priority: 'event'});
+      }
+    });
+  "))),
+
   theme = bs_theme(version = 5, preset = "minty"),
   title = "Population Viability Simulator (REST API)",
   
@@ -43,13 +56,21 @@ ui <- page_sidebar(
 server <- function(input, output, session) {
   
   spring_api_base <- "http://spring-backend:8085/api/collab"
-  
+
+  permission_state <- reactiveVal("EDITOR")
+
+  observeEvent(input$role_update, {
+    permission_state(input$role_update)
+  })
+
   identity <- reactive({
     query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query$permission) && permission_state() == "EDITOR") {
+      permission_state(query$permission)
+    }
     list(
       userId = if (!is.null(query$userId)) query$userId else "anonymous",
-      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo",
-      permission = if (!is.null(query$permission)) query$permission else "EDITOR"
+      sessionId = if (!is.null(query$sessionId)) query$sessionId else "solo"
     )
   })
   
@@ -57,10 +78,10 @@ server <- function(input, output, session) {
     status = "IDLE", progress = 0, results = NULL, last_timestamp = 0
   )
 
-  output$connection_status <- renderText({ "HTTP GET/POST" })
+  output$connection_status <- renderText({ "🟢 System Online" })
 
   observe({
-    if (identity()$permission == "VIEWER") {
+    if (permission_state() == "VIEWER") {
       disable("run_sim"); disable("n0")
     } else {
       enable("run_sim"); enable("n0")
@@ -69,6 +90,8 @@ server <- function(input, output, session) {
 
   # --- POST simulation request to Spring Boot ---
   observeEvent(input$run_sim, {
+    if (permission_state() == "VIEWER") return()
+
     id <- identity()
     state$status <- "RUNNING"
     state$progress <- 50
@@ -87,24 +110,30 @@ server <- function(input, output, session) {
     )
     
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    
-    tryCatch({
-      res <- httr::POST(
+
+    future_promise({
+      httr::POST(
         url = post_url,
         body = toJSON(payload, auto_unbox = TRUE),
         encode = "raw",
         httr::content_type_json(),
-        httr::timeout(30)
+        httr::timeout(60)
       )
-      
+    }) %...>% (function(res) {
       if (httr::status_code(res) == 200) {
+        data <- fromJSON(httr::content(res, "text", encoding = "UTF-8"))
+        if (!is.null(data$type) && data$type == "RESULT") {
+          state$results <- data
+          state$last_timestamp <- data$timestamp
+        }
         state$status <- "COMPLETE"
         state$progress <- 100
+        enable("run_sim")
       } else {
         state$status <- "ERROR"
         enable("run_sim")
       }
-    }, error = function(e) {
+    }) %...!% (function(e) {
       state$status <- "ERROR"
       print(paste("POST Error:", e$message))
       enable("run_sim")

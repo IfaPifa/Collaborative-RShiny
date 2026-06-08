@@ -1,9 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-test.describe('ML Trainer: Core Four Matrix (REST)', () => {
+test.describe('ML Trainer: Core Four Matrix', () => {
   test.setTimeout(90000); // Model training can take time
-  const sharedSaveName = `ML Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `ML Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Train Model & Save
   test('1. Solo Mode: Train Model & Save State', async ({ page }) => {
@@ -11,7 +15,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Habitat Suitability AI');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     // Use default 500 trees (slider can't be filled directly) and train
     await frame.locator('button#train_btn').click();
@@ -46,8 +50,8 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, '🟢 System Online');
-    await waitForShinyBoot(bobFrame, '🟢 System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     // Alice trains model
     await aliceFrame.locator('button#train_btn').click();
@@ -77,7 +81,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, '🟢 System Online');
+    await waitForShinyBoot(charlieFrame);
 
     // Charlie starts as Editor
     await expect(charlieFrame.locator('button#train_btn')).toBeEnabled();
@@ -99,7 +103,7 @@ test.describe('ML Trainer: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Habitat Suitability AI');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, '🟢 System Online');
+    await waitForShinyBoot(frame);
 
     // Load the most recent checkpoint (saved in Test 1)
     await page.click('button:has-text("Load Checkpoint")');

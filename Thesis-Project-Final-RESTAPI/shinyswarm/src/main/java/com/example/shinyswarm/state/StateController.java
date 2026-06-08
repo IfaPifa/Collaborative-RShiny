@@ -68,13 +68,8 @@ public class StateController {
         String latestRealState = sessionStateMonitor.getLatestState(cacheKey);
 
         if (latestRealState == null && cacheKey.equals(username)) {
-            // Tell Java to look in the isolated solo bucket we created in Angular
-            latestRealState = sessionStateMonitor.getLatestState("solo-" + username);
-            
-            // Fallback just in case an older app is still using the generic "solo"
-            if (latestRealState == null) {
-                latestRealState = sessionStateMonitor.getLatestState("solo");
-            }
+            // Solo Redis key is solo-{appId}-{username}, matching the iframe sessionId
+            latestRealState = sessionStateMonitor.getLatestState("solo-" + request.appId() + "-" + username);
         }
 
         if (latestRealState == null) {
@@ -118,16 +113,17 @@ public class StateController {
         try {
             Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
             payload.put("sender", "System Restore");
-            payload.put("timestamp", System.currentTimeMillis());
+            // Use seconds (not millis) to match R's as.numeric(Sys.time())
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
             
             String redisPayload = objectMapper.writeValueAsString(payload);
 
             String cacheKey = (sessionId != null && !sessionId.isEmpty()) ? sessionId : principal.getName();
             
-            // Bridge solo restores: Angular sets iframe sessionId to "solo-{username}"
-            // so the Shiny app polls session_state:solo-{username}
+            // Bridge solo restores: Angular sets iframe sessionId to "solo-{appId}-{username}"
+            // so the Shiny app polls session_state:solo-{appId}-{username}
             if (cacheKey.equals(principal.getName())) {
-                cacheKey = "solo-" + principal.getName();
+                cacheKey = "solo-" + state.getShinyApp().getId() + "-" + principal.getName();
             }
 
             redisTemplate.opsForValue().set("session_state:" + cacheKey, redisPayload);

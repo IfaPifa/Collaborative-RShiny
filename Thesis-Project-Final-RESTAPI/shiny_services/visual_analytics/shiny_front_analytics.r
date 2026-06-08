@@ -184,7 +184,7 @@ server <- function(input, output, session) {
     p(em(paste("Last filter sync by:", state$last_sender)))
   })
 
-  output$connection_status <- renderText({ "System Online" })
+  output$connection_status <- renderText({ "🟢 System Online" })
 }
 
 shinyApp(ui = ui, server = server)

@@ -1,16 +1,20 @@
 import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
-test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
+test.describe('Geospatial Editor: Core Four Matrix', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Map Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `Map Checkpoint - ${Date.now()}`;
+  });
 
   test('1. Solo Mode: Place Sensor Marker', async ({ page }) => {
     await login(page, 'alice');
     await launchSolo(page, 'Geospatial Editor');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'System Online');
+    await waitForShinyBoot(frame);
 
     const mapContainer = frame.locator('#map');
     await expect(mapContainer).toBeVisible({ timeout: 15000 });
@@ -41,8 +45,8 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'System Online');
-    await waitForShinyBoot(bobFrame, 'System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     await expect(aliceFrame.locator('#map')).toBeVisible({ timeout: 15000 });
     await expect(bobFrame.locator('#map')).toBeVisible({ timeout: 15000 });
@@ -73,7 +77,7 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
     await joinCollabSession(charliePage, sessionId);
 
     const charlieFrame = charliePage.frameLocator('iframe');
-    await waitForShinyBoot(charlieFrame, 'System Online');
+    await waitForShinyBoot(charlieFrame);
 
     await expect(charlieFrame.locator('.selectize-input')).toBeVisible();
     await demoteUser(alicePage, 'charlie');
@@ -88,7 +92,7 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
     await launchSolo(page, 'Geospatial Editor');
 
     const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame, 'System Online');
+    await waitForShinyBoot(frame);
     await expect(frame.locator('#map')).toBeVisible({ timeout: 15000 });
 
     await page.click('button:has-text("Load Checkpoint")');
@@ -116,8 +120,8 @@ test.describe('Geospatial Editor: Core Four Matrix (REST)', () => {
 
     const aliceFrame = alicePage.frameLocator('iframe');
     const bobFrame = bobPage.frameLocator('iframe');
-    await waitForShinyBoot(aliceFrame, 'System Online');
-    await waitForShinyBoot(bobFrame, 'System Online');
+    await waitForShinyBoot(aliceFrame);
+    await waitForShinyBoot(bobFrame);
 
     await expect(aliceFrame.locator('#map')).toBeVisible({ timeout: 15000 });
     await expect(bobFrame.locator('#map')).toBeVisible({ timeout: 15000 });
