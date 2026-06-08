@@ -199,7 +199,7 @@ server <- function(input, output, session) {
   # 5. RECEIVE UPDATES (Consumer)
   current_sum <- reactiveVal(0)
   
-  poll_trigger <- reactivePoll(500, session,
+  poll_trigger <- reactivePoll(200, session,
     checkFunc = function() {
       if (!isTRUE(state$connected)) return(NULL)
       return(as.numeric(Sys.time()))
@@ -211,7 +211,7 @@ server <- function(input, output, session) {
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
     
-    result <- state$consumer$consume(500)
+    result <- state$consumer$consume(10)
     msg <- result_message(result)
     
     if (!result_has_error(result) && !is.null(msg$value)) {

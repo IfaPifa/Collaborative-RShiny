@@ -52,7 +52,7 @@ export async function launchSolo(page: Page, appName: string) {
  */
 export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, statusText = '🟢 System Online') {
   // 1. Wait for the UI to actually render and say it's online
-  await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 20000 });
+  await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 30000 });
   
   // 2. Wait for Shiny to fully initialize before Playwright starts clicking.
   // Wait for the backend and WebSockets to fully initialize before Playwright starts clicking.

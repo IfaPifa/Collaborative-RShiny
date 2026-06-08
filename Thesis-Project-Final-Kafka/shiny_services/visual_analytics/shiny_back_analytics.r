@@ -37,7 +37,7 @@ df <- mtcars
 # --- 2. LOGIC LOOP ---
 repeat {
   tryCatch({
-    result <- consumer$consume(500)
+    result <- consumer$consume(100)
     if (result_has_error(result)) next
     mess <- result_message(result)
     if (is.null(mess) || is.null(mess$value)) next

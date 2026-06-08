@@ -92,7 +92,7 @@ process_message <- function(mess) {
 # --- MAIN LOOP ---
 repeat {
   tryCatch({
-    result <- consumer$consume(500)
+    result <- consumer$consume(100)
     if (!result_has_error(result)) {
       msg <- result_message(result)
       process_message(msg)

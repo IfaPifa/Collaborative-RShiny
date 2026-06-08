@@ -117,12 +117,12 @@ server <- function(input, output, session) {
     state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
-  poll_trigger <- reactivePoll(500, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))
+  poll_trigger <- reactivePoll(200, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))
   
   observe({
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
-    result <- state$consumer$consume(500)
+    result <- state$consumer$consume(10)
     msg <- result_message(result)
     
     if (!result_has_error(result) && !is.null(msg$value)) {
