@@ -3,7 +3,11 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('ML Trainer: Core Four Matrix', () => {
   test.setTimeout(90000); // Model training can take time
-  const sharedSaveName = `ML Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `ML Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Train Model & Save
   test('1. Solo Mode: Train Model & Save State', async ({ page }) => {

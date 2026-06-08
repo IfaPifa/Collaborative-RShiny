@@ -86,19 +86,19 @@ export class SavedAppsComponent implements OnInit {
       // 2. Set the selected app in the global state
       this.dataService.selectedApp.set(app);
       
-      // 3. Navigate to the workspace
-      this.router.navigate(['/workspace', 'solo']);
-
-      // 4. Wait 3.5 seconds for the iframe and Kafka consumer to boot
-      setTimeout(() => {
-        this.dataService.restoreStateToKafka(save.id).subscribe({
-          next: () => this.isLoading.set(false),
-          error: () => {
-            this.isLoading.set(false);
-            alert('Failed to push state to Kafka.');
-          }
-        });
-      }, 3500); // <-- INCREASED THIS TIMER
+      // 3. Write restored state to Redis immediately — it persists there
+      // until the Shiny app boots and picks it up via polling.
+      this.dataService.restoreStateToKafka(save.id).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          // 4. Navigate to workspace after restore is confirmed in Redis
+          this.router.navigate(['/workspace', 'solo']);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          alert('Failed to restore state.');
+        }
+      });
       
     } else {
       alert('The base application for this save no longer exists.');

@@ -12,7 +12,11 @@ function createTestCsv(): string {
 
 test.describe('Data Exchange: Core Four Matrix', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `CSV Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `CSV Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Upload, Process & Save
   test('1. Solo Mode: Upload CSV & Save State', async ({ page }) => {

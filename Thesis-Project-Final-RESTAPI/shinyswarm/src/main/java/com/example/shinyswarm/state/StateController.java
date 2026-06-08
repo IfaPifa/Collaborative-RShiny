@@ -68,13 +68,8 @@ public class StateController {
         String latestRealState = sessionStateMonitor.getLatestState(cacheKey);
 
         if (latestRealState == null && cacheKey.equals(username)) {
-            // Tell Java to look in the isolated solo bucket we created in Angular
-            latestRealState = sessionStateMonitor.getLatestState("solo-" + username);
-            
-            // Fallback just in case an older app is still using the generic "solo"
-            if (latestRealState == null) {
-                latestRealState = sessionStateMonitor.getLatestState("solo");
-            }
+            // Solo Redis key is solo-{appId}-{username}, matching the iframe sessionId
+            latestRealState = sessionStateMonitor.getLatestState("solo-" + request.appId() + "-" + username);
         }
 
         if (latestRealState == null) {

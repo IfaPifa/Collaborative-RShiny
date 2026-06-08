@@ -3,7 +3,11 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('Monte Carlo Simulator: Core Four Matrix', () => {
   test.setTimeout(90000); // Simulations can take time
-  const sharedSaveName = `MC Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `MC Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Run Simulation & Save
   test('1. Solo Mode: Run Simulation & Save State', async ({ page }) => {

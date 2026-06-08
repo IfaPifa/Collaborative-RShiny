@@ -20,7 +20,11 @@ function createSensorCsv(): string {
 
 test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
   test.setTimeout(90000);
-  const sharedSaveName = `Climate Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `Climate Checkpoint - ${Date.now()}`;
+  });
 
   test('1. Solo Mode: Analyze Climate Data & Save State', async ({ page }) => {
     await login(page, 'alice');

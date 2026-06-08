@@ -3,7 +3,11 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('Geospatial Editor: Core Four Matrix', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Map Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `Map Checkpoint - ${Date.now()}`;
+  });
 
   test('1. Solo Mode: Place Sensor Marker', async ({ page }) => {
     await login(page, 'alice');

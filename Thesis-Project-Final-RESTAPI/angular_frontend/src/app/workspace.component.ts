@@ -322,7 +322,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     });
 
     // --- ADD THIS NEW BLOCK ---
-    // Give the Shiny iframe and R Kafka Consumer 3.5 seconds to fully boot 
+    // Give the Shiny iframe 3.5 seconds to fully boot
     // before we ask the backend to blast the last known state into the queue.
     setTimeout(() => {
       this.collabService.replaySession(session.id).subscribe({
@@ -438,7 +438,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Team Snapshot Saved securely from Kafka!');
+          alert('Team snapshot saved!');
           
           // ---> THE FIX: Refresh the saved states list for the modal!
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
@@ -451,7 +451,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
-          alert('Solo State Saved securely from Kafka!');
+          alert('State saved!');
           
           // ---> THE FIX: Refresh the saved states list for the modal!
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));

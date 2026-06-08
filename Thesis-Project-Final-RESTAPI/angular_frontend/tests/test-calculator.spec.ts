@@ -3,7 +3,11 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('Calculator: Core Four Matrix', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Calc Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `Calc Checkpoint - ${Date.now()}`;
+  });
 
   test('1. Solo Mode: Compute & Save State', async ({ page }) => {
     await login(page, 'alice');

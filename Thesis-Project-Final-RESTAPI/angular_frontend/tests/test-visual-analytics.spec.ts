@@ -3,7 +3,11 @@ import { login, createCollabSession, joinCollabSession, launchSolo, waitForShiny
 
 test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
   test.setTimeout(60000);
-  const sharedSaveName = `Analytics Checkpoint - ${Date.now()}`;
+  let sharedSaveName: string;
+
+  test.beforeAll(() => {
+    sharedSaveName = `Analytics Checkpoint - ${Date.now()}`;
+  });
 
   // TEST 1: Solo Mode — Filter & Save
   test('1. Solo Mode: Filter & Save State', async ({ page }) => {
