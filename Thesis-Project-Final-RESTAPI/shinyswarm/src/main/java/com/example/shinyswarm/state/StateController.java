@@ -125,10 +125,10 @@ public class StateController {
 
             String cacheKey = (sessionId != null && !sessionId.isEmpty()) ? sessionId : principal.getName();
             
-            // Bridge solo restores: Angular sets iframe sessionId to "solo-{username}"
-            // so the Shiny app polls session_state:solo-{username}
+            // Bridge solo restores: Angular sets iframe sessionId to "solo-{appId}-{username}"
+            // so the Shiny app polls session_state:solo-{appId}-{username}
             if (cacheKey.equals(principal.getName())) {
-                cacheKey = "solo-" + principal.getName();
+                cacheKey = "solo-" + state.getShinyApp().getId() + "-" + principal.getName();
             }
 
             redisTemplate.opsForValue().set("session_state:" + cacheKey, redisPayload);

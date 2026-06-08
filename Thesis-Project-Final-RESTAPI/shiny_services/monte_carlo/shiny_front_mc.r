@@ -4,6 +4,10 @@ library(plotly)
 library(httr)
 library(jsonlite)
 library(shinyjs)
+library(promises)
+library(future)
+
+plan(multisession)
 
 ui <- page_sidebar(
   useShinyjs(),
@@ -106,24 +110,30 @@ server <- function(input, output, session) {
     )
     
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    
-    tryCatch({
-      res <- httr::POST(
+
+    future_promise({
+      httr::POST(
         url = post_url,
         body = toJSON(payload, auto_unbox = TRUE),
         encode = "raw",
         httr::content_type_json(),
-        httr::timeout(30)
+        httr::timeout(60)
       )
-      
+    }) %...>% (function(res) {
       if (httr::status_code(res) == 200) {
+        data <- fromJSON(httr::content(res, "text", encoding = "UTF-8"))
+        if (!is.null(data$type) && data$type == "RESULT") {
+          state$results <- data
+          state$last_timestamp <- data$timestamp
+        }
         state$status <- "COMPLETE"
         state$progress <- 100
+        enable("run_sim")
       } else {
         state$status <- "ERROR"
         enable("run_sim")
       }
-    }, error = function(e) {
+    }) %...!% (function(e) {
       state$status <- "ERROR"
       print(paste("POST Error:", e$message))
       enable("run_sim")

@@ -259,8 +259,8 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         const myPerm = this.getParticipantPermission(session, user.username) || 'VIEWER';
         signedUrl = `${app.url}${separator}sessionId=${session.id}&userId=${user.username}&permission=${myPerm}`; 
       } else {
-        // --- THE FIX: Pass a unique Solo sessionId ---
-        signedUrl = `${app.url}${separator}sessionId=solo-${user.username}&userId=${user.username}&permission=EDITOR`;
+        // Solo sessionId includes app ID to isolate Redis state per app
+        signedUrl = `${app.url}${separator}sessionId=solo-${app.id}-${user.username}&userId=${user.username}&permission=EDITOR`;
       }
       return this.sanitizer.bypassSecurityTrustResourceUrl(signedUrl);
     }
