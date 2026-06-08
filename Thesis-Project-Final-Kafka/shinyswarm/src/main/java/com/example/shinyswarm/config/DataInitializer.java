@@ -69,7 +69,17 @@ public class DataInitializer {
                 appRepository.save(new ShinyApp(
                     "Climate Anomaly Detector",
                     "SOTA Out-of-core processing for massive ecological sensor datasets.",
-                    "http://localhost:11086" 
+                    "http://localhost:11086"
+                ));
+                appRepository.save(new ShinyApp(
+                    "Advanced Visual Analytics",
+                    "State-only Kafka synchronization for microclimate sensor analysis.",
+                    "http://localhost:11085"
+                ));
+                appRepository.save(new ShinyApp(
+                    "Habitat Suitability AI",
+                    "Asynchronous Random Forest training and real-time inference API.",
+                    "http://localhost:11087"
                 ));
             }
         };

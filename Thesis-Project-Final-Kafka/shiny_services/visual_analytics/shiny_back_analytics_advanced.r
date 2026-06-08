@@ -1,16 +1,13 @@
 library(jsonlite)
 library(kafka)
-library(dplyr)
 
 broker <- "kafka:9092"
 topic_input <- "input"
 topic_output <- "output"
 
-print("Visual Analytics Backend Starting...")
-print("⏳ Giving Kafka 15 seconds to fully boot and create topic partitions...")
+print("Advanced Visual Analytics Backend Starting...")
 Sys.sleep(15)
 
-# --- 1. ROBUST CONNECTION LOOP ---
 consumer <- NULL
 connected <- FALSE
 
@@ -18,57 +15,54 @@ while (!connected) {
   tryCatch({
     consumer <- Consumer$new(list(
       "bootstrap.servers" = broker,
-      "group.id" = "backend_analytics_v1", 
+      "group.id" = "backend_adv_analytics_v1",
       "auto.offset.reset" = "latest",
       "enable.auto.commit" = "true"
     ))
     consumer$subscribe(topic_input)
     test_msg <- consumer$consume(100)
     connected <- TRUE
-    print("✅ Successfully subscribed and verified topic! Waiting for messages...")
+    print("Successfully subscribed! Waiting for messages...")
   }, error = function(e) {
     Sys.sleep(5)
   })
 }
 
 producer <- Producer$new(list("bootstrap.servers" = broker))
-df <- mtcars
 
-# --- 2. LOGIC LOOP ---
 repeat {
   tryCatch({
     result <- consumer$consume(100)
     if (result_has_error(result)) next
     mess <- result_message(result)
     if (is.null(mess) || is.null(mess$value)) next
-    
+
     incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
     payload <- tryCatch(fromJSON(mess$value), error = function(e) NULL)
     if (!is.list(payload)) next
-    
+
     if (!is.null(payload$role) && payload$role == "VIEWER") next
-    
-    if (is.null(payload$appName) || payload$appName != "VisualAnalytics") next
-    
-    min_hp <- as.numeric(payload$min_hp)
-    cyl_filter <- as.numeric(payload$cyl)
+
+    # Only process Advanced analytics messages
+    if (is.null(payload$appName) || payload$appName != "AdvancedAnalytics") next
+
+    min_temp <- as.numeric(payload$min_temp)
+    months_filter <- if (!is.null(payload$months)) as.numeric(payload$months) else c(5, 6, 7, 8, 9)
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
-    
-    filtered_df <- df %>% filter(hp >= min_hp, cyl %in% cyl_filter)
-    
+
     response_payload <- list(
-      appName = "VisualAnalytics",
-      data = filtered_df,
-      min_hp = min_hp,
-      cyl = cyl_filter,
+      appName = "AdvancedAnalytics",
+      min_temp = min_temp,
+      months = months_filter,
       sender = sender,
+      status = "success",
       timestamp = as.numeric(Sys.time())
     )
-    
+
     json_response <- toJSON(response_payload, auto_unbox = TRUE)
     producer$produce(topic_output, json_response, key = incoming_key)
-  }, error = function(e) { 
+  }, error = function(e) {
     print(paste("Consumer loop error:", e$message))
-    Sys.sleep(1) 
+    Sys.sleep(1)
   })
 }

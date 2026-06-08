@@ -19,8 +19,10 @@ repeat {
     incoming_key <- if (!is.null(mess$key)) mess$key else "unknown"
     
     payload <- fromJSON(mess$value)
-    if (!is.null(payload$role) && payload$role == "VIEWER") next 
-    
+    if (!is.null(payload$role) && payload$role == "VIEWER") next
+
+    if (is.null(payload$appName) || payload$appName != "ClimateAnomaly") next
+
     if (!is.null(payload$action)) {
       
       if (payload$action == "ANALYZE_CLIMATE") {
@@ -46,6 +48,7 @@ repeat {
           write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
           
           response_payload <- list(
+            appName = "ClimateAnomaly",
             action = "CLIMATE_READY",
             file = summary_file_name,
             sender = payload$sender,

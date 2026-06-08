@@ -184,6 +184,7 @@ server <- function(input, output, session) {
     id <- identity()
     
     payload <- list(
+      appName = "Calculator",
       num1 = input$num1,
       num2 = input$num2,
       sender = id$userId,
@@ -218,7 +219,8 @@ server <- function(input, output, session) {
       print(paste("📩 Received message on key:", msg$key, "| expecting:", routingKey()))
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
-        
+        if (!is.null(data$appName) && data$appName != "Calculator") return()
+
         if (!is.null(data$result)) {
           current_sum(data$result)
           state$last_sender <- if (!is.null(data$sender)) data$sender else "System"

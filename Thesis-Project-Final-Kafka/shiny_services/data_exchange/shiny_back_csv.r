@@ -20,7 +20,7 @@ repeat {
 
     if (!is.null(payload$role) && payload$role == "VIEWER") next 
 
-    if (is.null(payload$dataset)) next
+    if (is.null(payload$appName) || payload$appName != "DataExchange") next
 
     # 1. PARSE DATA
     df <- as.data.frame(payload$dataset)
@@ -36,6 +36,7 @@ repeat {
     }
     
     response_payload <- list(
+      appName = "DataExchange",
       dataset = df,
       sender = payload$sender,
       timestamp = as.numeric(Sys.time())

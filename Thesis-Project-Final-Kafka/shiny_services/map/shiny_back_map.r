@@ -54,13 +54,13 @@ repeat {
     payload <- tryCatch(fromJSON(mess$value), error = function(e) NULL)
     if (!is.list(payload)) next
     
-    if (!is.null(payload$role) && payload$role == "VIEWER") {
-      print(paste("Dropped illegal write from Viewer on key:", incoming_key))
-      next 
-    }
-    
+    if (!is.null(payload$role) && payload$role == "VIEWER") next
+
+    if (is.null(payload$appName) || payload$appName != "GeoMap") next
+
     if (!is.null(payload$type) && payload$type %in% c("NEW_SENSOR", "DELTA")) {
       response_payload <- list(
+        appName = "GeoMap",
         type = "DELTA",
         lat = as.numeric(payload$lat),
         lng = as.numeric(payload$lng),

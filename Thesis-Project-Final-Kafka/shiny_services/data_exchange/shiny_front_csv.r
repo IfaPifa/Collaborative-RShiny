@@ -113,7 +113,7 @@ server <- function(input, output, session) {
   observeEvent(input$process_data, {
     req(state$connected, !is.null(state$producer), input$file_upload)
     df <- read.csv(input$file_upload$datapath, stringsAsFactors = FALSE)
-    payload <- list(dataset = df, sender = identity()$userId, role = state$permission)
+    payload <- list(appName = "DataExchange", dataset = df, sender = identity()$userId, role = state$permission)
     state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
@@ -128,6 +128,7 @@ server <- function(input, output, session) {
     if (!result_has_error(result) && !is.null(msg$value)) {
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
+        if (!is.null(data$appName) && data$appName != "DataExchange") return()
         if (!is.null(data$dataset)) {
           shared_df(as.data.frame(data$dataset))
           state$last_sender <- data$sender

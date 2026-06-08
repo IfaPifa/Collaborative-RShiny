@@ -100,6 +100,7 @@ server <- function(input, output, session) {
     if (is.null(state$producer) || state$permission == "VIEWER") return()
     
     payload <- list(
+      appName = "VisualAnalytics",
       min_hp = as.numeric(input$min_hp),
       cyl = as.numeric(input$cyl),
       sender = identity()$userId,
@@ -123,7 +124,8 @@ server <- function(input, output, session) {
     if (!result_has_error(result) && !is.null(msg$value)) {
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
-        
+        if (!is.null(data$appName) && data$appName != "VisualAnalytics") return()
+
         if (!is.null(data$data)) {
           shared_data(as.data.frame(data$data))
           state$last_sender <- data$sender

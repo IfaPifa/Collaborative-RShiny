@@ -123,6 +123,7 @@ server <- function(input, output, session) {
     file.copy(input$file_upload$datapath, raw_file_path, overwrite = TRUE)
     
     payload <- list(
+      appName = "ClimateAnomaly",
       action = "ANALYZE_CLIMATE",
       file = raw_filename,
       threshold = input$threshold,
@@ -144,7 +145,8 @@ server <- function(input, output, session) {
     if (!result_has_error(result) && !is.null(msg$value)) {
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
-        
+        if (!is.null(data$appName) && data$appName != "ClimateAnomaly") return()
+
         if (!is.null(data$action) && data$action == "CLIMATE_READY") {
           summary_file_path <- file.path(shared_dir, data$file)
           if (file.exists(summary_file_path)) {

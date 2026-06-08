@@ -85,8 +85,10 @@ services:
       - "11081:81"
       - "11082:82"
       - "11083:83"
-      - "11084:84"  
+      - "11084:84"
       - "11086:85"
+      - "11085:86"
+      - "11087:87"
     volumes:
       - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -96,6 +98,8 @@ services:
       - shiny_front_mc
       - shiny_front_map
       - shiny_front_csv_advanced
+      - shiny_front_analytics_advanced
+      - shiny_front_ml
 
   # --- APP 1: CALCULATOR ---
   shiny_front:
@@ -233,6 +237,52 @@ services:
     restart: unless-stopped
     volumes:
       - ./shiny_services/map/shiny_back_map.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  # --- APP 7: ADVANCED VISUAL ANALYTICS ---
+  shiny_front_analytics_advanced:
+    build: ./shiny_services
+    container_name: shiny_front_analytics_advanced_kafka
+    restart: unless-stopped
+    volumes:
+      - ./shiny_services/visual_analytics/shiny_front_analytics_advanced.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  shiny_back_analytics_advanced:
+    build: ./shiny_services
+    container_name: shiny_back_analytics_advanced_kafka
+    restart: unless-stopped
+    volumes:
+      - ./shiny_services/visual_analytics/shiny_back_analytics_advanced.r:/app/back.R
+    command: Rscript /app/back.R
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  # --- APP 8: HABITAT SUITABILITY AI (ML TRAINER) ---
+  shiny_front_ml:
+    build: ./shiny_services
+    container_name: shiny_front_ml_kafka
+    restart: unless-stopped
+    volumes:
+      - ./shiny_services/machine_learning/shiny_front_ml.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  shiny_back_ml:
+    build: ./shiny_services
+    container_name: shiny_back_ml_kafka
+    restart: unless-stopped
+    volumes:
+      - ./shiny_services/machine_learning/shiny_back_ml.r:/app/back.R
     command: Rscript /app/back.R
     depends_on:
       kafka:

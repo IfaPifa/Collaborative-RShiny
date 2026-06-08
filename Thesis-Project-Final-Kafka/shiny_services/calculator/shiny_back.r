@@ -57,12 +57,11 @@ process_message <- function(mess) {
     sender_role <- if (!is.null(payload$role)) payload$role else "UNKNOWN"
     
     if (sender_role == "VIEWER") {
-      print(paste("⚠️ CONSISTENCY ALERT: Dropped illegal write from Viewer on key:", incoming_key))
-      return() # Discard message, do not broadcast update
+      return()
     }
-    # ---------------------------------------------
-    if (is.null(payload$num1) && is.null(payload$num2)) {
-      return() # It's not a calculator event, ignore it!
+
+    if (is.null(payload$appName) || payload$appName != "Calculator") {
+      return()
     }
     
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
@@ -73,6 +72,7 @@ process_message <- function(mess) {
     result <- add_up(num1, num2)
     
     response_payload <- list(
+      appName = "Calculator",
       result = result,
       num1 = num1,
       num2 = num2,
