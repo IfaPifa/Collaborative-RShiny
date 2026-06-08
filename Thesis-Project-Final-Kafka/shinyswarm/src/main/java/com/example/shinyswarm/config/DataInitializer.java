@@ -44,32 +44,32 @@ public class DataInitializer {
                 appRepository.save(new ShinyApp(
                     "Collaborative Calculator",
                     "A simple benchmark app for testing integer synchronization.",
-                    "http://localhost:10080"
+                    "http://localhost:11080"
                 ));
                 appRepository.save(new ShinyApp(
                     "Visual Analytics",
                     "Real-time reactive scatter plots using ggplot2 and dplyr.",
-                    "http://localhost:10081"
+                    "http://localhost:11081"
                 ));
                 appRepository.save(new ShinyApp(
                     "Data Exchange",
                     "Collaborative CSV file handling and string manipulation.",
-                    "http://localhost:10082"
+                    "http://localhost:11082"
                 ));
                 appRepository.save(new ShinyApp(
                     "Monte Carlo Simulator",
                     "Heavy CPU simulation for testing backend isolation.",
-                    "http://localhost:10083"
+                    "http://localhost:11083"
                 ));
                 appRepository.save(new ShinyApp(
                     "Geospatial Editor",
                     "Collaborative mapping and POI dropping using Leaflet.",
-                    "http://localhost:10084"
+                    "http://localhost:11084"
                 ));
                 appRepository.save(new ShinyApp(
                     "Climate Anomaly Detector",
                     "SOTA Out-of-core processing for massive ecological sensor datasets.",
-                    "http://localhost:10086" 
+                    "http://localhost:11086" 
                 ));
             }
         };
