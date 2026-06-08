@@ -85,7 +85,7 @@ server <- function(input, output, session) {
     if (state$connected) return()
     tryCatch({
       broker <- "kafka:9092"
-      consumer_group <- paste0("front_analytics_", sample(10000:99999, 1))
+      consumer_group <- paste0("front_analytics_", session$token)
       state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = consumer_group, "auto.offset.reset" = "latest", "enable.auto.commit" = "true",
         "max.poll.interval.ms" = "600000"))
       state$consumer$subscribe("output")

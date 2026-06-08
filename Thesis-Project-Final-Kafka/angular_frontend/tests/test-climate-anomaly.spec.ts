@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
 function createSensorCsv(): string {
-  const csvPath = path.join(__dirname, 'test-sensor-data.csv');
+  const csvPath = path.join(os.tmpdir(), 'test-sensor-data.csv');
   const rows = ['Timestamp,SiteID,Temperature,SoilMoisture'];
   const sites = ['SITE_A', 'SITE_B'];
   for (let day = 1; day <= 5; day++) {
@@ -19,6 +20,7 @@ function createSensorCsv(): string {
 }
 
 test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000);
   let sharedSaveName: string;
 

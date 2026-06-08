@@ -2,15 +2,17 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
 // Create a small test CSV file for upload
 function createTestCsv(): string {
-  const csvPath = path.join(__dirname, 'test-data.csv');
+  const csvPath = path.join(os.tmpdir(), 'test-data.csv');
   fs.writeFileSync(csvPath, 'Name,City,Score\nalice,basel,95\nbob,zurich,88\ncharlie,bern,72\n');
   return csvPath;
 }
 
 test.describe('Data Exchange: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(60000);
   let sharedSaveName: string;
 

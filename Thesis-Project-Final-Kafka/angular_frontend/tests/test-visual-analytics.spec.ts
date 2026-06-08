@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
 test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(60000);
   let sharedSaveName: string;
 

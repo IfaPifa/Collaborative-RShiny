@@ -98,7 +98,7 @@ server <- function(input, output, session) {
       state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
       
       broker <- "kafka:9092"
-      consumer_group <- paste0("front_map_", sample(10000:99999, 1))
+      consumer_group <- paste0("front_map_", session$token)
       
       state$consumer <- Consumer$new(list(
         "bootstrap.servers" = broker, "group.id" = consumer_group,

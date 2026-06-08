@@ -136,7 +136,7 @@ server <- function(input, output, session) {
       state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
       
       broker <- "kafka:9092"
-      consumer_group <- paste0("front_", sample(10000:99999, 1))
+      consumer_group <- paste0("front_", session$token)
       
       # A. ALWAYS CREATE CONSUMER (Read-Path)
       state$consumer <- Consumer$new(list(

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
 test.describe('ML Trainer: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000); // Model training can take time
   let sharedSaveName: string;
 

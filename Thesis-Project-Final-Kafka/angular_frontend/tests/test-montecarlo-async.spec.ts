@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser, setShinyNumericInput } from './helpers';
 
 test.describe('Monte Carlo Simulator: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000); // Simulations can take time
   let sharedSaveName: string;
 

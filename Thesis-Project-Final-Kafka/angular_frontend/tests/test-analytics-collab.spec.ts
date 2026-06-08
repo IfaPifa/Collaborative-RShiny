@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
 test.describe('Advanced Analytics: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(60000);
   
   // 1. Declare the shared save name variable at the suite level

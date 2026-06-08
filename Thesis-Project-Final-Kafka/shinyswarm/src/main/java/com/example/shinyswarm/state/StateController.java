@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +28,6 @@ record SavedStateResponse(Long id, String appName, String name, String stateData
 
 @RestController
 @RequestMapping("/api/states")
-@CrossOrigin(origins = "http://localhost:4201") 
 public class StateController {
 
     private final SavedStateRepository savedStateRepository;
@@ -74,9 +73,8 @@ public class StateController {
                 stateData = sessionStateMonitor.getLatestState(kafkaKey);
             }
 
-            // Fallback safety to prevent database crashes if the monitor hasn't caught the state yet
             if (stateData == null) {
-                stateData = "{\"status\": \"Fallback data. Kafka monitor empty.\"}";
+                return ResponseEntity.status(409).body("No state captured yet. Try performing an action in the app first, then save again.");
             }
 
             SavedState savedState = new SavedState(request.name(), stateData, user, app);
