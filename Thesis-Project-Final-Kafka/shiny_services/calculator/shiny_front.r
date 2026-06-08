@@ -142,8 +142,9 @@ server <- function(input, output, session) {
       state$consumer <- Consumer$new(list(
         "bootstrap.servers" = broker,
         "group.id" = consumer_group,
-        "auto.offset.reset" = "latest", 
-        "enable.auto.commit" = "true"
+        "auto.offset.reset" = "latest",
+        "enable.auto.commit" = "true",
+        "max.poll.interval.ms" = "600000"
       ))
       state$consumer$subscribe("output")
       
@@ -214,6 +215,7 @@ server <- function(input, output, session) {
     msg <- result_message(result)
     
     if (!result_has_error(result) && !is.null(msg$value)) {
+      print(paste("📩 Received message on key:", msg$key, "| expecting:", routingKey()))
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
         

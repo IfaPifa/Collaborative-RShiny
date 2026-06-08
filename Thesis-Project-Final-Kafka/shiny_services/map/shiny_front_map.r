@@ -102,7 +102,8 @@ server <- function(input, output, session) {
       
       state$consumer <- Consumer$new(list(
         "bootstrap.servers" = broker, "group.id" = consumer_group,
-        "auto.offset.reset" = "latest", "enable.auto.commit" = "true"
+        "auto.offset.reset" = "latest", "enable.auto.commit" = "true",
+        "max.poll.interval.ms" = "600000"
       ))
       state$consumer$subscribe("output")
       

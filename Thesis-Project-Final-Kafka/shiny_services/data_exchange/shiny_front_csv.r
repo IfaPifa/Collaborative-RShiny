@@ -99,7 +99,8 @@ server <- function(input, output, session) {
       state$permission <- if (!is.null(query$permission)) query$permission else "EDITOR"
       broker <- "kafka:9092"
       
-      state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = paste0("front_csv_", sample(10000:99999, 1)), "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
+      state$consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = paste0("front_csv_", sample(10000:99999, 1)), "auto.offset.reset" = "latest", "enable.auto.commit" = "true",
+        "max.poll.interval.ms" = "600000"))
       state$consumer$subscribe("output")
       
       if (state$permission %in% c("EDITOR", "OWNER")) state$producer <- Producer$new(list("bootstrap.servers" = broker))
