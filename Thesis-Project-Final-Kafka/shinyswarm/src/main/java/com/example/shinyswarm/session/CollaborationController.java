@@ -35,7 +35,7 @@ record UpdatePermissionRequest(String username, String permission) {}
 
 @RestController
 @RequestMapping("/api/collab")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4201")
 public class CollaborationController {
 
     private final CollaborationSessionRepository sessionRepository;

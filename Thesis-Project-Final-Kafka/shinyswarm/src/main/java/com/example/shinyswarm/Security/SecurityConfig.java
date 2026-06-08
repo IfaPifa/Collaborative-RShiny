@@ -61,8 +61,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow localhost:4200 specifically
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        // Allow localhost:4201 (Kafka architecture frontend port)
+        configuration.setAllowedOrigins(List.of("http://localhost:4201"));
         // Allow all standard methods
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Allow Authorization header (for the JWT)

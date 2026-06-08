@@ -28,7 +28,7 @@ record SavedStateResponse(Long id, String appName, String name, String stateData
 
 @RestController
 @RequestMapping("/api/states")
-@CrossOrigin(origins = "http://localhost:4200") 
+@CrossOrigin(origins = "http://localhost:4201") 
 public class StateController {
 
     private final SavedStateRepository savedStateRepository;
