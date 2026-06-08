@@ -56,12 +56,12 @@ export class AppDataService {
       payload, 
       { 
         headers: this.getHeaders(),
-        responseType: 'text' // <-- ADD THIS LINE
+        responseType: 'text'
       } 
     );
   }
 
-  // Trigger the backend to push the saved state into Kafka
+  // Restore a saved state by pushing it into Kafka
   restoreStateToKafka(stateId: number) {
     return this.http.post(
       `${this.API_URL}/states/${stateId}/restore`, 

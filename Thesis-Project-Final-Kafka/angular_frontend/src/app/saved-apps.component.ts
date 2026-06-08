@@ -81,16 +81,16 @@ export class SavedAppsComponent implements OnInit {
       // 3. Navigate to the workspace
       this.router.navigate(['/workspace', 'solo']);
 
-      // 4. Wait 3.5 seconds for the iframe and Kafka consumer to boot
+      // 4. Wait for the iframe and Kafka consumer to boot before restoring
       setTimeout(() => {
         this.dataService.restoreStateToKafka(save.id).subscribe({
           next: () => this.isLoading.set(false),
           error: () => {
             this.isLoading.set(false);
-            alert('Failed to push state to Kafka.');
+            alert('Failed to restore state.');
           }
         });
-      }, 3500); // <-- INCREASED THIS TIMER
+      }, 3500);
       
     } else {
       alert('The base application for this save no longer exists.');

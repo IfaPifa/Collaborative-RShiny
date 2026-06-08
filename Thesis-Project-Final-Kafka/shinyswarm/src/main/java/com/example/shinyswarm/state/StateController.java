@@ -59,7 +59,7 @@ public class StateController {
             User user = userRepository.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
-            // 🚨 THE FIX: Ensure we use request.appId(), NOT a hardcoded 1L!
+            // Look up the app by the ID from the request
             ShinyApp app = shinyAppRepository.findById(request.appId())
                     .orElseThrow(() -> new RuntimeException("App not found"));
 

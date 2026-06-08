@@ -101,7 +101,7 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
     page.once('dialog', dialog => dialog.accept());
     
-    // THE FIX: Explicitly target the named checkpoint
+    // Explicitly target the named checkpoint to avoid ambiguity
     await modal.locator('*').filter({ hasText: sharedSaveName }).getByRole('button', { name: 'Load', exact: true }).first().click();
 
     await expect(frame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 15000 });

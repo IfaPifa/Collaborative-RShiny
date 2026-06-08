@@ -13,7 +13,7 @@ export const routes: Routes = [
   { 
     path: '', 
     loadComponent: () => import('./layout.component').then(m => m.LayoutComponent),
-    canActivate: [authGuard], // <--- Here is the magic line!
+    canActivate: [authGuard],
     children: [
       { path: 'library', loadComponent: () => import('./library.component').then(m => m.LibraryComponent) },
       { path: 'saved-apps', loadComponent: () => import('./saved-apps.component').then(m => m.SavedAppsComponent) },

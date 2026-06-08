@@ -54,7 +54,7 @@ export async function waitForShinyBoot(frame: ReturnType<Page['frameLocator']>, 
   // 1. Wait for the UI to actually render and say it's online
   await expect(frame.locator(`text=${statusText}`)).toBeVisible({ timeout: 20000 });
   
-  // 2. THE FIX: Standard JS Promise to wait 3 seconds. 
+  // 2. Wait for Shiny to fully initialize before Playwright starts clicking.
   // Wait for the backend and WebSockets to fully initialize before Playwright starts clicking.
   await new Promise(resolve => setTimeout(resolve, 3000));
 }

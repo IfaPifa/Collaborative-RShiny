@@ -321,9 +321,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       this.handlePresenceUpdate(msg);
     });
 
-    // --- ADD THIS NEW BLOCK ---
-    // Give the Shiny iframe 3.5 seconds to fully boot
-    // before we ask the backend to blast the last known state into the queue.
+    // Wait for the Shiny iframe to boot before replaying state
     setTimeout(() => {
       this.collabService.replaySession(session.id).subscribe({
         next: () => console.log('🔄 Replayed previous session state!'),
@@ -440,7 +438,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.saveStateName.set('');
           alert('Team snapshot saved!');
           
-          // ---> THE FIX: Refresh the saved states list for the modal!
+          // Refresh the saved states list for the modal
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
         },
         error: (err) => alert('Error saving session: ' + (err.error || 'Unknown error'))
@@ -453,7 +451,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.saveStateName.set('');
           alert('State saved!');
           
-          // ---> THE FIX: Refresh the saved states list for the modal!
+          // Refresh the saved states list for the modal
           this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
         },
         error: (err) => alert('Error saving state: ' + (err.error || 'Unknown error'))

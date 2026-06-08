@@ -140,7 +140,7 @@ test.describe('Geospatial Editor: Core Four Matrix', () => {
       await bobMap.click({ position: { x: bobBox.width * 2 / 3, y: bobBox.height * 2 / 3 } });
     }
 
-    // THE FIX: Allow for DOM duplication by checking for >= 2 instead of exactly 2
+    // Allow for DOM duplication by checking for >= 2 instead of exactly 2
     await expect(async () => {
       const count = await aliceFrame.locator('.awesome-marker').count();
       expect(count).toBeGreaterThanOrEqual(2);

@@ -43,7 +43,7 @@ public class SecurityConfig {
                 // 3. Allow Actuator (Health checks)
                 .requestMatchers("/actuator/**").permitAll()
                 
-                // --- ADD THIS LINE TO ALLOW WEBSOCKET CONNECTIONS ---
+                // Allow WebSocket connections
                 .requestMatchers("/ws-shiny/**").permitAll()
                 
                 // 4. Lock everything else

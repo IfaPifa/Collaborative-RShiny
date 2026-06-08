@@ -316,9 +316,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       this.handlePresenceUpdate(msg);
     });
 
-    // --- ADD THIS NEW BLOCK ---
-    // Give the Shiny iframe and R Kafka Consumer 3.5 seconds to fully boot 
-    // before we ask the backend to blast the last known state into the queue.
+    // Wait for the Shiny iframe and Kafka consumer to boot before replaying state
     setTimeout(() => {
       this.collabService.replaySession(session.id).subscribe({
         next: () => console.log('🔄 Replayed previous session state!'),

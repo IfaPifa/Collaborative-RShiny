@@ -114,7 +114,7 @@ server <- function(input, output, session) {
       if (httr::status_code(res) == 200) {
         print("✅ Deployment signal sent.")
         
-        # --- THE FIX: Eager UI Update ---
+        # Update UI immediately from the response
         raw_text <- httr::content(res, "text", encoding = "UTF-8")
         if (nchar(raw_text) > 2) {
           data <- fromJSON(raw_text)
