@@ -1,0 +1,453 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\newtcolorbox{slidebox}[1]{
+  colback=blue!5!white,
+  colframe=blue!50!black,
+  title={\textbf{#1}},
+  fonttitle=\small
+}
+
+\title{\textbf{ShinySwarm: Introduction \& Research Questions}\\[0.5em]
+\large Summary for Midterm Presentation Preparation}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+% PART I: SUMMARIES
+% ============================================================
+
+\part{Summaries}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+\subsection{The Reproducibility Crisis}
+
+The motivation for this work begins with a well-documented problem in science. A Nature survey of 1,576 researchers found that more than 70\% of experiments presented in research papers cannot be reproduced by independent peers, and more than 50\% of experiments are not even reproducible by the original authors themselves (Baker, 2016). According to Peng (2011), this lack of reproducibility can often be attributed to poorly done data analysis that is not available to the public. Once the code and the data are made available, errors and issues in the research can be easily identified.
+
+Containerisation, using tools such as Docker, has emerged as a promising solution to issues of reproducibility and code reusability. By encapsulating the entire computational environment --- code, dependencies, and system libraries --- containerisation ensures that analyses can be reliably re-executed and shared across different systems and collaborators (Boettiger, 2015).
+
+\subsection{R Shiny: Bridging the Programming Gap}
+
+The R programming language has become a mainstay in the scientific community for conducting statistical analysis and facilitating high-quality data visualisation. Despite its power, utilising R requires a degree of programming literacy that remains a significant barrier for many domain experts. The Shiny package for R addresses this by offering a paradigm where interactive web applications can be created using only R, without the need for web development skills such as HTML, CSS, or JavaScript. This has enabled statisticians and scientists to construct user-friendly graphical interfaces, broadening accessibility and enhancing the utility of advanced analytics to users lacking formal programming training (Hartgerink, 2017).
+
+\subsection{The Collaboration Gap}
+
+While Shiny applications simplify the process of deploying interactive analyses, they are typically architected for \textbf{single-user, isolated interactions}. In contrast, modern scientific discovery is inherently collaborative, relying on sharing, iterative improvement, and collective review (Olson \& Olson, 2000). Current Shiny deployments provide limited support for real-time, multi-user collaboration, thereby constraining the ability of research teams to collectively explore data, reproduce analytical workflows, or transparently communicate methodological choices.
+
+Existing approaches to collaboration in Shiny are limited:
+
+\begin{itemize}[nosep]
+  \item \textbf{shinyURL} (Aerts, 2015) and \textbf{Shiny bookmarking} (Posit) encode input values into URLs for state sharing. However, this transfers only inputs --- the receiving user must recompute all outputs, requiring double the computational power.
+  \item \textbf{shiny.collections} (Appsilon, 2017) offered Google Docs-style live collaboration using RethinkDB as a reactive database. It was presented at UseR! 2017 but is now \textbf{deprecated} because RethinkDB lost R support.
+  \item There has been \textbf{no other publicly documented exploration} of write--write or read--write collaboration for Shiny applications.
+\end{itemize}
+
+On the deployment side, three platforms exist for hosting Shiny apps --- shinyapps.io, Shiny Server Open Source, and ShinyProxy --- but \textbf{none of them support real-time multi-user collaboration on the same application instance}. ShinyProxy comes closest by using Spring Boot and Docker container-per-session isolation, but each session remains isolated.
+
+On the microservice side, only \textbf{two prior attempts} exist at decomposing Shiny apps into microservices: the ``Shiny Microservices Demo'' (useR! 2018) and Rodriguez's Plumber-based approach (2021). Neither implements real-time collaboration.
+
+\subsection{The Gap This Thesis Addresses}
+
+Based on the literature review, there is no evidence in publicly available sources that a system or deployment approach for Shiny web applications featuring collaborative functionalities, a microservices architecture, and utilisation of a message queue or REST-based state synchronisation has been previously attempted.
+
+This thesis addresses that gap by designing, building, and benchmarking \textbf{ShinySwarm}: a cloud-based, microservice-oriented system for enabling real-time, multi-user collaboration and reproducibility in containerised R Shiny web applications.
+
+\subsection{Scope Changes from Original Proposal}
+
+Two significant changes were made relative to the original thesis proposal:
+
+\begin{enumerate}[nosep]
+  \item \textbf{BioDT Honeybee application re-engineering was deferred to future work.} Instead of re-engineering an existing third-party Shiny application, a custom suite of 8 R Shiny applications was built from scratch to serve as the test subjects. This provides full control over the experimental variables and avoids dependency on external codebases.
+  \item \textbf{The comparison shifted from two Kafka variants to REST API vs.\ Kafka.} The original proposal planned to compare two different Kafka-based collaborative approaches (shared container vs.\ container-per-user). The final design instead compares a \textbf{REST API architecture} (Plumber + Redis) against a \textbf{Kafka event-driven architecture}, with both measured against a \textbf{monolithic baseline}. This provides a more meaningful architectural comparison between synchronous and asynchronous communication paradigms.
+\end{enumerate}
+
+% ============================================================
+\section{Research Questions}
+% ============================================================
+
+\subsection{Central Research Question}
+
+\begin{quote}
+\textit{How can containerised R Shiny web applications be architected as cloud-based microservices to enable real-time, multi-user collaboration and reproducibility?}
+\end{quote}
+
+This central question is decomposed into four sub-questions, each addressing a distinct aspect of the problem. Together they form a logical chain: RQ1 defines \textit{what} collaboration means, RQ2 defines \textit{what} needs to be synchronised, RQ3 defines \textit{how} to synchronise it, and RQ4 measures \textit{how well} each approach works.
+
+\subsection{RQ1: Collaboration Model}
+
+\begin{quote}
+\textit{What does it mean for an R Shiny web application to be collaborative, and what modes of interaction can be supported?}
+\end{quote}
+
+\textbf{Context:} This question is grounded in Churchill et al.'s (2001) framework of Collaborative Virtual Environments (CVEs). The proposal classifies Shiny interactions into two primitives --- \textbf{read} (viewing outputs, gaining knowledge) and \textbf{write} (changing inputs, altering state) --- and derives five collaboration modes from their combinations:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Read--Read} --- multiple users observe the application simultaneously. Natively supported by Shiny (multiple browser tabs viewing the same app).
+  \item \textbf{Write--Write} --- multiple users simultaneously alter the application state. Previously attempted by \texttt{shiny.collections} via shared reactive database; now deprecated.
+  \item \textbf{Read--Write} --- a hybrid where some users can read while others can write. Requires role-based access control.
+  \item \textbf{Individual interaction} --- users interact with the same application without interference from others. Requires session isolation.
+  \item \textbf{State sharing} --- users can transfer the current state of the application to other users.
+\end{enumerate}
+
+\textbf{How ShinySwarm answers this:} All five modes are implemented through a combination of key-based message routing (each session gets a unique UUID as the Kafka key or Redis key) and a three-tier permission model: OWNER (full control, can invite, save, change roles), EDITOR (can read and write), and VIEWER (read-only, UI inputs disabled via \texttt{shinyjs}).
+
+\subsection{RQ2: State Sharing}
+
+\begin{quote}
+\textit{How can application state --- both inputs and outputs --- be transferred between users without redundant computation?}
+\end{quote}
+
+\textbf{Context:} Existing state sharing in Shiny (\texttt{shinyURL}, bookmarking) encodes only input values. The receiving user must recompute all outputs from those inputs, which doubles computational cost and provides no guarantee of identical results in non-deterministic analyses. The proposal formulates two functional requirements: (1) the system must transfer inputs from one user to another, and (2) it should transfer outputs to optimise computational efficiency.
+
+\textbf{How ShinySwarm answers this:} State is serialised as a JSON payload containing \textbf{both inputs and outputs} (e.g., \texttt{num1}, \texttt{num2}, \texttt{result}, \texttt{sender}, \texttt{timestamp}). This payload flows through the architecture as follows:
+
+\begin{itemize}[nosep]
+  \item \textbf{REST architecture:} R Shiny frontend $\rightarrow$ Spring Boot (API gateway) $\rightarrow$ Plumber backend (computes result) $\rightarrow$ Redis cache (stores full state) $\rightarrow$ all frontends poll Redis every 500ms and receive both inputs and outputs.
+  \item \textbf{Kafka architecture:} R Shiny frontend $\rightarrow$ Kafka \texttt{input} topic (keyed by sessionId) $\rightarrow$ R backend consumer (computes result) $\rightarrow$ Kafka \texttt{output} topic (same key) $\rightarrow$ all frontend consumers receive both inputs and outputs.
+  \item \textbf{Persistence:} Users can save the current state as a checkpoint to PostgreSQL via the Angular portal. Restoring a checkpoint pushes the saved JSON back through the pipeline (into Redis or onto the Kafka \texttt{input} topic), and all participants' UIs update automatically.
+\end{itemize}
+
+This design means a user joining a session or restoring a checkpoint \textbf{never needs to recompute} --- they receive the pre-computed outputs immediately.
+
+\subsection{RQ3: Architecture Comparison}
+
+\begin{quote}
+\textit{What are the trade-offs between a REST API architecture (synchronous, Plumber + Redis) and an event-driven architecture (asynchronous, Apache Kafka) for real-time collaborative state synchronisation?}
+\end{quote}
+
+\textbf{Context:} This is the core engineering question of the thesis. The microservices literature distinguishes two fundamental communication paradigms: synchronous (request--response, typically REST/HTTP) and asynchronous (event-driven, typically message brokers). Lewis and Fowler (2014) define microservices as ``suites of small services communicating with lightweight mechanisms.'' Richardson (2018) catalogues the patterns: API Gateway, Database-per-Service, Saga, CQRS. Newman (2021) dedicates a full chapter to the synchronous vs.\ asynchronous trade-off.
+
+\textbf{The two architectures in ShinySwarm:}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Aspect} & \textbf{REST API} & \textbf{Kafka Event-Driven} \\
+\midrule
+R backend role & Plumber HTTP API & Standalone Kafka consumer \\
+Communication & Synchronous POST/GET & Asynchronous pub/sub \\
+State store & Redis (key-value cache) & Kafka topics + ConcurrentHashMap \\
+Spring Boot role & Active relay (routes to Plumber) & Session manager only \\
+Data flow & Frontend $\rightarrow$ Spring $\rightarrow$ Plumber $\rightarrow$ Redis & Frontend $\rightarrow$ Kafka $\rightarrow$ Backend $\rightarrow$ Kafka \\
+Polling & Frontend polls Spring/Redis (500ms) & Frontend polls Kafka consumer (500ms) \\
+Infrastructure & Spring + Redis + Plumber & Kafka + Zookeeper + R consumers \\
+\bottomrule
+\end{tabular}
+\caption{Architectural comparison: REST API vs.\ Kafka}
+\end{table}
+
+\textbf{Key trade-offs identified:}
+
+\begin{itemize}[nosep]
+  \item \textbf{Simplicity vs.\ decoupling:} REST is simpler (no Kafka/Zookeeper), uses familiar HTTP semantics, and is easier to debug with standard tools. Kafka provides stronger decoupling --- services communicate via topics, not direct HTTP calls.
+  \item \textbf{Bottleneck vs.\ overhead:} In REST, Spring Boot is a single relay point (potential bottleneck under load). In Kafka, the broker handles distribution, but adds infrastructure overhead (Kafka + Zookeeper containers).
+  \item \textbf{Replay vs.\ simplicity:} Kafka naturally provides an event log that can be replayed. REST has no built-in replay --- state must be explicitly saved to Redis/PostgreSQL.
+  \item \textbf{R ecosystem maturity:} Plumber is mature and well-documented. The \texttt{kafka} R package is new (2024, INWT/R Consortium) and less battle-tested.
+\end{itemize}
+
+\subsection{RQ4: Performance Benchmarking}
+
+\begin{quote}
+\textit{How do the three architectures (monolithic, REST, Kafka) compare on latency, throughput, data loss, and cross-contamination?}
+\end{quote}
+
+\textbf{Context:} The three architectures under test are:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Monolithic Baseline} (\texttt{whole\_apps/}) --- standard Shiny applications with no network communication. All computation happens in-process within the R session. This establishes the floor for latency and the ceiling for simplicity.
+  \item \textbf{REST API Architecture} (\texttt{Thesis-Project-Final-RESTAPI/}) --- Plumber backends, Redis state cache, Spring Boot relay, Angular frontend. Approximately 20 Docker containers.
+  \item \textbf{Kafka Event-Driven Architecture} (\texttt{Thesis-Project-Final-Kafka/}) --- Kafka consumers as backends, Kafka topics for state flow, Spring Boot for session management only. Approximately 18 Docker containers plus Kafka and Zookeeper.
+\end{enumerate}
+
+\textbf{Four benchmarking metrics:}
+
+\begin{enumerate}[nosep]
+  \item \textbf{Latency} --- end-to-end time from a user submitting input to the UI updating for all participants. Measured per-application and per-architecture. The monolithic baseline has near-zero network latency (in-process); the microservice architectures add network hops, serialisation, and broker/cache overhead.
+  \item \textbf{Throughput / Speed} --- overall application performance including load times, requests handled per second, and behaviour under concurrent users. Tests whether the architectures scale or degrade under load.
+  \item \textbf{Data Loss} --- accuracy of state synchronisation. Do all participants receive every update? Are the inputs and outputs consistent across all connected users? Particularly relevant for the Kafka architecture where consumer group rebalancing could cause missed messages.
+  \item \textbf{Cross-Contamination} --- state leakage between parallel sessions. If Session A and Session B run simultaneously on the same infrastructure, does Session A's data ever appear in Session B? This tests the correctness of key-based routing (sessionId as Kafka key or Redis key).
+\end{enumerate}
+
+\textbf{Test suite:} 8 R Shiny applications of varying computational complexity:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{App} & \textbf{Complexity} & \textbf{What It Tests} & \textbf{Key Stress Factor} \\
+\midrule
+Calculator & Minimal & Baseline latency & Pure round-trip time \\
+Visual Analytics & Medium & Data filtering + plot sync & Moderate payload size \\
+Advanced Analytics & Medium & Plotly interactive charts & State-only sync \\
+Data Exchange (CSV) & I/O-bound & File upload + string cleaning & Large payload (dataset in JSON) \\
+Climate Anomaly & Heavy & 500K-row analysis & Shared Docker volume I/O \\
+Monte Carlo & CPU-bound & N random samples + histogram & Long computation time \\
+Geospatial Editor & Delta-based & Map pin placement & Incremental state updates \\
+ML Trainer & Long-running & Random Forest training & Async computation pattern \\
+\bottomrule
+\end{tabular}
+\caption{Test suite: 8 R Shiny applications and their stress factors}
+\end{table}
+
+\textbf{Testing methodology:} Automated end-to-end tests using Playwright. The test suite covers solo mode operation, collaborative real-time synchronisation (Alice sends, Bob receives), role-based UI locking (demote user to VIEWER, verify inputs disabled), and the save/restore checkpoint pipeline.
+
+\textbf{Deployment targets:}
+\begin{itemize}[nosep]
+  \item \textbf{Local:} Docker Compose for development and initial testing.
+  \item \textbf{Production:} Kubernetes managed via Rancher for the final benchmarking results. Full deployment manifests (\texttt{full-rancher-deployment.yaml}) are provided for both architectures.
+\end{itemize}
+
+\subsection{How the Research Questions Connect}
+
+The four research questions form a logical chain:
+
+\begin{enumerate}
+  \item \textbf{RQ1} defines \textit{what} collaboration means for Shiny --- the five modes and the permission model. This determines the functional requirements.
+  \item \textbf{RQ2} defines \textit{what} needs to be synchronised --- both inputs and outputs as JSON payloads, with persistence via checkpoints. This determines the data model.
+  \item \textbf{RQ3} defines \textit{how} to synchronise it --- REST (synchronous, Plumber + Redis) vs.\ Kafka (asynchronous, topics + consumers). This determines the system architecture.
+  \item \textbf{RQ4} measures \textit{how well} each approach works --- latency, throughput, data loss, cross-contamination across 8 apps. This produces the empirical evidence to answer the central question.
+\end{enumerate}
+
+The central research question is answered by the combination of all four: RQ1 and RQ2 provide the theoretical framework, RQ3 provides the engineering contribution, and RQ4 provides the empirical validation.
+
+\newpage
+
+% ============================================================
+% PART II: SLIDE SUGGESTIONS
+% ============================================================
+
+\part{Slide Suggestions for the Presentation}
+
+Below are concrete suggestions for how to translate the summaries above into presentation slides.
+
+% ============================================================
+\section{Slide 1: Introduction --- The Problem and the Gap}
+% ============================================================
+
+\begin{slidebox}{Slide 1: ``Why This Research Matters''}
+\textbf{Layout:} Three columns or three stacked blocks.
+
+\textbf{Column 1 --- The Crisis:}
+\begin{itemize}[nosep]
+  \item Nature 2016: 70\% of experiments irreproducible
+  \item Root cause: data analysis not publicly available (Peng 2011)
+  \item R Shiny makes analytics accessible to non-programmers
+\end{itemize}
+
+\textbf{Column 2 --- The Gap:}
+\begin{itemize}[nosep]
+  \item Shiny is designed for single-user, isolated interactions
+  \item \texttt{shiny.collections} (2017) attempted collaboration $\rightarrow$ deprecated
+  \item Only 2 microservice Shiny demos exist, neither collaborative
+  \item No existing platform (shinyapps.io, ShinyProxy) supports real-time multi-user collaboration
+\end{itemize}
+
+\textbf{Column 3 --- ShinySwarm:}
+\begin{itemize}[nosep]
+  \item What we are building: collaborative, containerised, microservice-based Shiny
+  \item Two architectures: REST API vs.\ Kafka, compared against monolithic baseline
+  \item Named ``ShinySwarm'' --- a swarm of containerised Shiny microservices
+\end{itemize}
+
+\textbf{Visual suggestion:} A funnel or arrow diagram: Crisis $\rightarrow$ Gap $\rightarrow$ ShinySwarm. Keep text minimal, use icons.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 2: Scope Changes from Proposal}
+% ============================================================
+
+\begin{slidebox}{Slide 2: ``What Changed from the Proposal''}
+\textbf{Layout:} Two rows, each with ``Original Plan'' on the left and ``Current Plan'' on the right, connected by an arrow.
+
+\textbf{Row 1:}
+\begin{itemize}[nosep]
+  \item Original: Re-engineer the BioDT Honeybee Shiny application
+  \item Current: Built 8 custom R Shiny apps from scratch (full experimental control). BioDT deferred to future work.
+\end{itemize}
+
+\textbf{Row 2:}
+\begin{itemize}[nosep]
+  \item Original: Compare two Kafka-based collaborative approaches (shared container vs.\ container-per-user)
+  \item Current: Compare REST API (Plumber + Redis) vs.\ Kafka (event-driven) vs.\ Monolithic baseline
+\end{itemize}
+
+\textbf{Note:} This slide is optional. If time is tight, fold the scope changes into the introduction slide as a small callout box.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 3: Research Questions Overview}
+% ============================================================
+
+\begin{slidebox}{Slide 3: ``Research Questions at a Glance''}
+\textbf{Layout:} Central question at the top in a highlighted box. Four sub-questions below in a 2$\times$2 grid.
+
+\textbf{Top box:}
+\begin{quote}
+\textit{How can containerised R Shiny web applications be architected as cloud-based microservices to enable real-time, multi-user collaboration and reproducibility?}
+\end{quote}
+
+\textbf{Grid:}
+\begin{itemize}[nosep]
+  \item \textbf{RQ1} (top-left): What does ``collaborative Shiny'' mean? $\rightarrow$ 5 modes + RBAC
+  \item \textbf{RQ2} (top-right): How to share state without recomputation? $\rightarrow$ inputs + outputs as JSON
+  \item \textbf{RQ3} (bottom-left): REST vs.\ Kafka trade-offs? $\rightarrow$ synchronous vs.\ asynchronous
+  \item \textbf{RQ4} (bottom-right): How do they compare? $\rightarrow$ latency, throughput, data loss, cross-contamination
+\end{itemize}
+
+\textbf{Visual suggestion:} Colour-code each RQ (e.g., blue, green, orange, red) and use the same colours consistently in later slides.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 4: RQ1 --- Collaboration Model}
+% ============================================================
+
+\begin{slidebox}{Slide 4: ``RQ1: What Does Collaborative Shiny Mean?''}
+\textbf{Layout:} Left side: the five collaboration modes as a numbered list. Right side: a small table mapping each mode to its ShinySwarm implementation.
+
+\textbf{Left --- Five Modes:}
+\begin{enumerate}[nosep]
+  \item Read--Read (multiple observers)
+  \item Write--Write (multiple editors)
+  \item Read--Write (mixed permissions)
+  \item Individual (isolated sessions)
+  \item State Sharing (transfer state between users)
+\end{enumerate}
+
+\textbf{Right --- Implementation Table:}
+
+\begin{tabular}{@{}ll@{}}
+\toprule
+Mode & ShinySwarm \\
+\midrule
+Read--Read & VIEWER role \\
+Write--Write & Multiple EDITORs \\
+Read--Write & OWNER + VIEWER \\
+Individual & Solo mode (own key) \\
+State Sharing & Save/Restore + Invite \\
+\bottomrule
+\end{tabular}
+
+\textbf{Callout box:} ``\texttt{shiny.collections} (2017) achieved only Write--Write via RethinkDB. Now deprecated. ShinySwarm supports all five modes.''
+\end{slidebox}
+
+% ============================================================
+\section{Slide 5: RQ2 --- State Sharing}
+% ============================================================
+
+\begin{slidebox}{Slide 5: ``RQ2: Sharing State Without Recomputation''}
+\textbf{Layout:} Left side: the problem (old approach). Right side: the solution (ShinySwarm approach).
+
+\textbf{Left --- The Problem:}
+\begin{itemize}[nosep]
+  \item \texttt{shinyURL} / bookmarking sends only inputs
+  \item Receiver must recompute all outputs
+  \item Double computational cost
+  \item No guarantee of identical results
+\end{itemize}
+
+\textbf{Right --- ShinySwarm's Solution:}
+\begin{itemize}[nosep]
+  \item JSON payload contains both inputs AND outputs
+  \item Example: \texttt{\{num1: 10, num2: 25, result: 35, sender: ``alice''\}}
+  \item Live state in Redis (REST) or Kafka topics (event-driven)
+  \item Checkpoints saved to PostgreSQL
+  \item Restore pushes state back through pipeline --- zero recomputation
+\end{itemize}
+
+\textbf{Visual suggestion:} A before/after diagram. ``Before'': arrow from User A to User B carrying only inputs, User B has a computation icon. ``After'': arrow carrying inputs+outputs, User B has no computation icon.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 6: RQ3 --- REST vs.\ Kafka}
+% ============================================================
+
+\begin{slidebox}{Slide 6: ``RQ3: REST API vs.\ Kafka --- Side by Side''}
+\textbf{Layout:} Two columns, one per architecture.
+
+\textbf{Left --- REST API:}
+\begin{itemize}[nosep]
+  \item Flow: Shiny $\rightarrow$ Spring Boot $\rightarrow$ Plumber $\rightarrow$ Redis $\rightarrow$ poll
+  \item Pros: simpler infra, familiar HTTP, easier debugging
+  \item Cons: polling overhead, Spring Boot is bottleneck
+\end{itemize}
+
+\textbf{Right --- Kafka:}
+\begin{itemize}[nosep]
+  \item Flow: Shiny $\rightarrow$ Kafka input $\rightarrow$ R backend $\rightarrow$ Kafka output $\rightarrow$ consume
+  \item Pros: decoupled services, natural event log, horizontal scaling
+  \item Cons: heavier infra (Kafka + Zookeeper), immature R integration
+\end{itemize}
+
+\textbf{Visual suggestion:} Two simple flow diagrams (3--4 boxes with arrows) side by side. Below each, 2--3 green checkmarks for pros and 1--2 red crosses for cons.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 7: RQ4 --- Benchmarking Plan}
+% ============================================================
+
+\begin{slidebox}{Slide 7: ``RQ4: How Will We Measure?''}
+\textbf{Layout:} Top: table with 4 metrics $\times$ 3 architectures (cells marked ``TBD'' since this is midterm). Bottom: list of the 8 test apps.
+
+\textbf{Top --- Metrics Table:}
+
+\begin{tabular}{@{}llll@{}}
+\toprule
+Metric & Monolithic & REST API & Kafka \\
+\midrule
+Latency & TBD & TBD & TBD \\
+Throughput & TBD & TBD & TBD \\
+Data Loss & TBD & TBD & TBD \\
+Cross-Contamination & TBD & TBD & TBD \\
+\bottomrule
+\end{tabular}
+
+\textbf{Bottom --- Test Suite:}
+Calculator, Visual Analytics, Advanced Analytics, Data Exchange, Climate Anomaly (500K rows), Monte Carlo, Geospatial Editor, ML Trainer.
+
+\textbf{Footer note:} ``Automated via Playwright E2E tests. Final benchmarks on Kubernetes (Rancher).''
+\end{slidebox}
+
+% ============================================================
+\section{Slide 8: Research Questions Connection Map}
+% ============================================================
+
+\begin{slidebox}{Slide 8: ``How the Research Questions Connect''}
+\textbf{Layout:} A horizontal chain of four boxes with arrows between them, all converging into a central box below.
+
+\textbf{Chain:}
+\begin{itemize}[nosep]
+  \item RQ1 $\xrightarrow{\text{defines what to sync}}$ RQ2 $\xrightarrow{\text{determines architecture}}$ RQ3 $\xrightarrow{\text{measured by}}$ RQ4
+\end{itemize}
+
+\textbf{Central box below:}
+\begin{quote}
+Central RQ: How to architect collaborative containerised R Shiny?
+\end{quote}
+
+\textbf{One-line summary:}
+``RQ1 and RQ2 provide the theoretical framework. RQ3 provides the engineering contribution. RQ4 provides the empirical validation.''
+
+\textbf{Visual suggestion:} Use the same colour coding from Slide 3. This slide gives the audience a mental map and serves as a transition into the architecture/demo section of the presentation.
+\end{slidebox}
+
+\end{document}

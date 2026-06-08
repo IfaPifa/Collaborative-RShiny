@@ -1,0 +1,250 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\definecolor{addedcolor}{RGB}{0,100,0}
+
+\newtcolorbox{addedsource}{
+  colback=green!5!white,
+  colframe=green!50!black,
+  title={\textbf{Additional Source (not in original proposal)}},
+  fonttitle=\small
+}
+
+\title{\textbf{ShinySwarm: Literature Review Summary}\\[0.5em]
+\large For Midterm Presentation Preparation}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{The Reproducibility Crisis and R's Role in Science}
+% ============================================================
+
+Nature's survey of 1,576 researchers found that more than 70\% of experiments could not be reproduced by independent peers, and more than 50\% could not be reproduced by the original authors themselves \cite{baker2016}. Peng \cite{peng2011} argues that lack of reproducibility stems from poorly done data analysis that is not publicly available --- once code and data are open, errors become identifiable.
+
+R \cite{rcore2025} has become a mainstay for statistical analysis and data visualisation in the scientific community. However, it requires programming literacy that remains a barrier for domain experts. The Shiny package \cite{chang2022} addresses this by enabling interactive web applications using only R, without HTML, CSS, or JavaScript knowledge, broadening accessibility for non-programmers \cite{hartgerink2017}.
+
+\begin{addedsource}
+Stodden, V., McNutt, M., Bailey, D.H. et al. ``Enhancing reproducibility for computational methods.'' \textit{Science}, 354(6317), 2016. --- Argues that containerisation of computational environments is a key enabler for reproducibility. Directly supports the Docker-based approach used in ShinySwarm.
+\end{addedsource}
+
+% ============================================================
+\section{Collaboration Models for Shiny Applications}
+% ============================================================
+
+The collaboration framework is grounded in Churchill et al.'s \cite{churchill2001} definition of Collaborative Virtual Environments (CVEs): ``distributed virtual reality systems providing potentially limitless virtual spaces where users can engage in information sharing.''
+
+Interactions with Shiny web applications can be classified as \textbf{read} (viewing outputs) and \textbf{write} (changing inputs/state), leading to five collaboration modes:
+
+\begin{itemize}[nosep]
+  \item \textbf{Read--Read} --- multiple users observe simultaneously (natively supported by Shiny)
+  \item \textbf{Write--Write} --- multiple users alter state simultaneously (explored but problematic)
+  \item \textbf{Read--Write} --- hybrid where some users read, some write (the OWNER/EDITOR/VIEWER model in ShinySwarm)
+  \item \textbf{Individual interaction} --- no interference between users
+  \item \textbf{State sharing} --- transferring current application state between users
+\end{itemize}
+
+\begin{addedsource}
+\begin{itemize}[nosep]
+  \item Ellis, C.A. and Gibbs, S.J. ``Concurrency control in groupware systems.'' \textit{ACM SIGMOD Record}, 18(2), 1989. --- The foundational taxonomy of collaboration modes (same-time/same-place matrix). The read/write classification maps directly onto their framework.
+  \item Sun, C. and Ellis, C. ``Operational transformation in real-time group editors: issues, algorithms, and achievements.'' \textit{Proceedings of ACM CSCW}, 1998. --- The theory behind Google Docs-style collaboration. Relevant because \texttt{shiny.collections} attempted this approach and failed.
+\end{itemize}
+\end{addedsource}
+
+% ============================================================
+\section{The State Sharing Problem}
+% ============================================================
+
+The \texttt{shinyURL} package \cite{aerts2015} and Shiny bookmarking \cite{shinybookmark} encode input values into URLs for state sharing. The key limitation: \textbf{this requires double computation} --- the receiving user must recompute all outputs from the shared inputs.
+
+The solution adopted in ShinySwarm: transfer \textbf{both inputs and outputs}, so inputs provide understanding of methodology while outputs prevent redundant computation. This became the design principle behind the Redis/Kafka state relay architecture.
+
+The \texttt{shiny.collections} package \cite{appsilon2017} attempted Google Docs-style live collaboration using RethinkDB \cite{rethinkdb} as a reactive database. It was presented at UseR! 2017 but is now \textbf{deprecated} because RethinkDB lost R support. The shared-database approach also introduces the anti-pattern identified by Richardson \cite{richardson_shared_db}: concurrent read/write operations risk data corruption, and a bug in one service can affect all others.
+
+There has been no other publicly documented exploration of write--write or read--write collaboration for Shiny applications.
+
+% ============================================================
+\section{Shiny Deployment Platforms}
+% ============================================================
+
+Three deployment approaches exist for Shiny applications:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Platform} & \textbf{Architecture} & \textbf{Scaling} & \textbf{Auth} & \textbf{Containers} \\
+\midrule
+shinyapps.io \cite{shinyappsio} & Multi-tenant cloud & Auto-scaling R processes & Paid tiers & Behind the scenes \\
+Shiny Server OSS \cite{shinyserver} & Self-hosted Linux & Manual, no LB & None built-in & None native \\
+ShinyProxy \cite{shinyproxy} & Container-per-session & Horizontal (K8s/Swarm) & LDAP/AD & Core architecture \\
+\bottomrule
+\end{tabular}
+\caption{Comparison of existing Shiny deployment platforms}
+\end{table}
+
+ShinyProxy is the closest existing solution to ShinySwarm --- it uses Spring Boot on the server side and launches isolated Docker containers per user session. However, \textbf{none of these platforms support real-time multi-user collaboration on the same application instance}.
+
+\begin{addedsource}
+\begin{itemize}[nosep]
+  \item Fay, C., Rochette, S., Guyader, V., Girard, C. \textit{Engineering Production-Grade Shiny Apps.} Chapman \& Hall/CRC, 2021. --- The \texttt{golem} framework book. Discusses Shiny app architecture at scale, relevant context for why monolithic Shiny apps hit limits.
+  \item OpenAnalytics. ``ShinyProxy Architecture.'' shinyproxy.io/documentation. --- Details the Spring Boot + Docker container-per-session model that directly inspired the ShinySwarm architecture.
+\end{itemize}
+\end{addedsource}
+
+% ============================================================
+\section{Microservice Architecture and Shiny}
+% ============================================================
+
+R Shiny apps are typically monolithic. Only \textbf{two prior attempts} at microservice-based Shiny exist in the literature:
+
+\begin{enumerate}[nosep]
+  \item \textbf{``Shiny Microservices Demo''} --- useR! 2018 Conference \cite{brokamp2018}. GitHub-only, minimal documentation. Uses an API gateway for inter-service communication.
+  \item \textbf{``Turning our monolithic Shiny app into a microservices-based structure''} --- Juan Cruz Rodriguez \cite{rodriguez2021}. Uses Plumber \cite{plumber2025} to expose R functions as REST APIs with roxygen2-like comments.
+\end{enumerate}
+
+Both use API gateway + Plumber for communication. Neither implements real-time collaboration.
+
+\begin{addedsource}
+\begin{itemize}[nosep]
+  \item Lewis, J. and Fowler, M. ``Microservices: a definition of this new architectural term.'' martinfowler.com, 2014. --- The canonical definition: ``suites of small services, each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API.'' Directly frames the REST vs.\ Kafka comparison.
+  \item Newman, S. \textit{Building Microservices.} O'Reilly, 2nd edition, 2021. --- Industry standard reference. Chapter on inter-service communication covers synchronous (REST) vs.\ asynchronous (messaging) patterns --- the exact comparison being made.
+  \item Richardson, C. \textit{Microservices Patterns.} Manning, 2018. --- Defines the API Gateway pattern, Database-per-Service pattern, and Saga pattern. The Spring Boot backend implements the API Gateway pattern; the Redis/Kafka state stores implement Database-per-Service.
+\end{itemize}
+\end{addedsource}
+
+% ============================================================
+\section{Apache Kafka and R Integration}
+% ============================================================
+
+Apache Kafka \cite{kafka_docs} is a distributed event streaming platform originally created at LinkedIn. It uses publish-subscribe messaging with topics, partitions, and consumer groups.
+
+The R--Kafka integration history:
+
+\begin{enumerate}[nosep]
+  \item \textbf{\texttt{rkafka} package} \cite{gupta2022} --- Removed from CRAN, only available on GitHub, not updated since 2022. The author's own Proof-of-Concept using \texttt{rkafka} showed \textbf{21-second end-to-end latency} due to dataframe-to-JSON serialisation taking 5--8 seconds per message.
+  \item \textbf{Neff's MongoDB approach} \cite{neff2019} --- Store Kafka messages in MongoDB, read from R. Only supports consumption, not production.
+  \item \textbf{\texttt{kafka} package by INWT} \cite{neudecker2024} --- New R package funded by R Consortium, built on \texttt{librdkafka}. Provides \texttt{Producer\$new()} and \texttt{Consumer\$new()} classes. The final Kafka architecture uses this package, which resolved the latency issue.
+\end{enumerate}
+
+\begin{addedsource}
+\begin{itemize}[nosep]
+  \item Kreps, J. ``The Log: What every software engineer should know about real-time data's unifying abstraction.'' LinkedIn Engineering Blog, 2013. --- Jay Kreps (Kafka co-creator) explains the log abstraction that underpins Kafka. Directly relevant to understanding why Kafka's ordered log is suitable for state synchronisation in collaborative apps.
+  \item Narkhede, N., Shapira, G., Palino, T. \textit{Kafka: The Definitive Guide.} O'Reilly, 2nd edition, 2021. --- Covers consumer groups, partitioning, and exactly-once semantics. The use of message keys for session routing is a direct application of Kafka's partitioning model.
+  \item INWTlab. ``r-kafka: R Client for Apache Kafka.'' GitHub, github.com/INWTlab/r-kafka. --- Funded by R Consortium. Documents the \texttt{Producer\$new()} / \texttt{Consumer\$new()} API used throughout the Kafka architecture.
+\end{itemize}
+\end{addedsource}
+
+% ============================================================
+\section{Data Persistence in Shiny}
+% ============================================================
+
+Native Shiny provides no built-in data persistence. Attali \cite{attali2016} documents seven recommended methods: local files (CSV, RDS), SQLite, relational databases (MySQL, PostgreSQL), MongoDB \cite{mongodb}, Google Sheets, Dropbox, and Amazon S3.
+
+ShinySwarm uses \textbf{PostgreSQL} for persistent checkpoint storage (the \texttt{SavedState} entity) and \textbf{Redis} (REST architecture) or \textbf{Kafka topics + ConcurrentHashMap} (Kafka architecture) for live session state.
+
+\begin{addedsource}
+Carlson, J.L. \textit{Redis in Action.} Manning, 2013. --- Covers Redis as a real-time cache and pub/sub system. The REST architecture uses Redis as the ``State Vault'' --- the central source of truth that all R Shiny frontends poll.
+\end{addedsource}
+
+% ============================================================
+\section{Containerisation and Reproducibility}
+% ============================================================
+
+Docker \cite{docker_docs} encapsulates the entire computational environment --- code, dependencies, system libraries --- ensuring analyses can be reliably re-executed across systems. Containerisation serves as the bridge between reproducibility and collaboration in this work.
+
+\begin{addedsource}
+\begin{itemize}[nosep]
+  \item Boettiger, C. ``An introduction to Docker for reproducible research.'' \textit{ACM SIGOPS Operating Systems Review}, 49(1), 2015. --- The key paper on Docker for scientific reproducibility. Argues that containerisation solves the ``works on my machine'' problem for computational research. Highly cited (1000+), directly supports the thesis motivation.
+  \item Merkel, D. ``Docker: lightweight Linux containers for consistent development and deployment.'' \textit{Linux Journal}, 239, 2014. --- Early technical overview of Docker's architecture (cgroups, namespaces, layered filesystems).
+  \item Burns, B. et al. ``Borg, Omega, and Kubernetes.'' \textit{ACM Queue}, 14(1), 2016. --- Google's paper on container orchestration evolution. Relevant to the Rancher/Kubernetes deployment target.
+\end{itemize}
+\end{addedsource}
+
+% ============================================================
+\section{Presentation Suggestions}
+% ============================================================
+
+For a 30-minute midterm presentation, the literature review should occupy \textbf{2--3 slides maximum}:
+
+\begin{enumerate}
+  \item \textbf{Slide: ``The Gap''} --- Reproducibility crisis (Baker 2016) + Shiny is single-user + existing collaboration attempts failed (\texttt{shiny.collections} deprecated) + no microservice Shiny exists with real-time collaboration. This is the motivation.
+  
+  \item \textbf{Slide: ``Existing Solutions \& Their Limits''} --- Table comparing shinyapps.io / Shiny Server / ShinyProxy / \texttt{shiny.collections}. Show that none support real-time multi-user collaboration. ShinyProxy is closest but still uses container-per-user isolation, not shared state.
+  
+  \item \textbf{Slide: ``Architectural Foundations''} --- Microservices (Fowler 2014) + Kafka event streaming (Kreps 2013) + REST/Plumber (Rodriguez 2021) + Docker for reproducibility (Boettiger 2015). These are the building blocks combined in ShinySwarm.
+\end{enumerate}
+
+% ============================================================
+\begin{thebibliography}{99}
+% ============================================================
+
+\bibitem{baker2016} M. Baker. ``1,500 scientists lift the lid on reproducibility.'' \textit{Nature}, 533, pp.\ 452--454, 2016.
+
+\bibitem{peng2011} R. D. Peng. ``Reproducible Research in Computational Science.'' \textit{Science}, 334(6060), pp.\ 1226--1227, 2011.
+
+\bibitem{rcore2025} R Core Team. \textit{R: A Language and Environment for Statistical Computing.} 2025. \url{https://www.r-project.org/}
+
+\bibitem{chang2022} W. Chang, J. Cheng, J. Allaire, C. Sievert, B. Schloerke, Y. Xie, J. Allen, J. McPherson, A. Dipert, B. Borges. \textit{Shiny: Web Application Framework for R.} 2022. \url{https://shiny.posit.co/}
+
+\bibitem{hartgerink2017} C. Hartgerink. ``Composing reproducible manuscripts using R Markdown.'' 2017.
+
+\bibitem{churchill2001} E. Churchill, D. Snowdon, A. Munro. \textit{Collaborative Virtual Environments: Digital Places and Spaces for Interaction.} Springer, 2001.
+
+\bibitem{aerts2015} A. Aerts. \textit{shinyURL: Save and restore the state of Shiny apps.} 2015. \url{https://github.com/aoles/shinyURL}
+
+\bibitem{shinybookmark} Posit. ``Bookmarking state in Shiny applications.'' \url{https://shiny.posit.co/r/articles/share/bookmarking-state/}
+
+\bibitem{appsilon2017} Appsilon. \textit{shiny.collections: Google Docs-like live collaboration in Shiny.} UseR! 2017. \url{https://github.com/Appsilon/shiny.collections}
+
+\bibitem{rethinkdb} RethinkDB. \url{https://rethinkdb.com/}
+
+\bibitem{richardson_shared_db} C. Richardson. ``Shared Database Pattern.'' \url{https://microservices.io/patterns/data/shared-database.html}
+
+\bibitem{shinyappsio} Posit. shinyapps.io. \url{https://www.shinyapps.io/}
+
+\bibitem{shinyserver} Posit. \textit{Shiny Server Pro Admin Guide.} 2020. \url{https://docs.posit.co/shiny-server/}
+
+\bibitem{shinyproxy} OpenAnalytics. ShinyProxy. 2025. \url{https://shinyproxy.io/}
+
+\bibitem{brokamp2018} C. Brokamp. ``Shiny Microservices Demo.'' useR! 2018 Conference.
+
+\bibitem{rodriguez2021} J. C. Rodriguez. ``Turning our monolithic Shiny app into a microservices-based structure.'' 2021.
+
+\bibitem{plumber2025} B. Schloerke, J. Allen, B. Tremblay, F. van Dunn\'{e}, S. Vandewoude. \textit{Plumber: An API Generator for R.} 2025. \url{https://www.rplumber.io/}
+
+\bibitem{kafka_docs} Apache Software Foundation. \textit{Apache Kafka Documentation.} \url{https://kafka.apache.org/documentation/}
+
+\bibitem{gupta2022} N. Gupta. \textit{rkafka: Using Apache Kafka Messaging Queue Through R.} 2022.
+
+\bibitem{neff2019} P. Neff. ``Connecting to Apache Kafka from R.'' Confluent tutorial, 2019.
+
+\bibitem{rkafka_examples} GitHub examples of rkafka usage. \url{https://github.com/}
+
+\bibitem{neudecker2024} A. Neudecker, INWT Statistics. \textit{kafka: R Client for Apache Kafka.} 2024. \url{https://github.com/INWTlab/r-kafka}
+
+\bibitem{gunjaca_poc} I. Gunjaca. Proof-of-Concept: Kafka + Shiny microservice. \url{https://github.com/IfaPifa/Collaborative-RShiny}
+
+\bibitem{attali2016} D. Attali. ``Persistent data storage in Shiny apps.'' 2016. \url{https://deanattali.com/blog/shiny-persistent-data-storage/}
+
+\bibitem{mongodb} MongoDB Documentation. \url{https://www.mongodb.com/docs/}
+
+\bibitem{docker_docs} Docker Inc. ``What is a Container?'' \url{https://www.docker.com/resources/what-container/}
+
+\end{thebibliography}
+
+\end{document}

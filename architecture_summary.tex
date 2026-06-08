@@ -1,0 +1,459 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
+
+\newtcolorbox{slidebox}[1]{
+  colback=blue!5!white,
+  colframe=blue!50!black,
+  title={\textbf{#1}},
+  fonttitle=\small
+}
+
+\title{\textbf{ShinySwarm: Architecture Summary}\\[0.5em]
+\large REST API vs.\ Kafka Event-Driven --- How They Work}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% === PART I ===
+\part{Summaries}
+
+% === SECTION 1 ===
+\section{System Overview --- What Both Architectures Share}
+
+Both the REST API and Kafka architectures share the same high-level structure. The system is called \textbf{ShinySwarm} and consists of four layers:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Presentation Layer} --- An \textbf{Angular 19} single-page application that serves as the collaboration portal. It provides login, an app library, a workspace for launching Shiny apps (embedded via iframes), a collaboration hub for managing sessions, and a saved states view for checkpoints.
+  \item \textbf{Orchestration Layer} --- A \textbf{Spring Boot 3} Java backend that handles authentication (JWT), session management (CRUD for CollaborationSession entities), role-based access control (OWNER/EDITOR/VIEWER), real-time presence (WebSocket via STOMP), email notifications, and state persistence (save/restore checkpoints to PostgreSQL).
+  \item \textbf{Computation Layer} --- \textbf{R Shiny microservices}, each decomposed into a \textbf{frontend} (Shiny UI + reactive polling) and a \textbf{backend} (computation engine). There are 8 app pairs, totalling 16 R containers.
+  \item \textbf{Infrastructure Layer} --- \textbf{Nginx} reverse proxy (port-based routing to each Shiny frontend), \textbf{PostgreSQL} (users, sessions, apps, saved states), and either \textbf{Redis} (REST) or \textbf{Kafka + Zookeeper} (event-driven) for live state relay.
+\end{enumerate}
+
+\textbf{Key shared design decisions:}
+\begin{itemize}[nosep]
+  \item Every Shiny app is split into two containers: a \textbf{frontend} (UI, user interaction, reactive polling) and a \textbf{backend} (pure computation, no UI). This is the core microservice decomposition.
+  \item All R containers are built from a single shared Docker image (\texttt{rocker/shiny:4.4.0} with pre-installed packages) using a YAML anchor (\texttt{x-shiny-base}) to avoid image duplication.
+  \item The Angular portal embeds Shiny frontends via \textbf{iframes}. Communication between Angular and the iframe uses \texttt{window.postMessage} for role updates and state injection.
+  \item State payloads are \textbf{JSON objects} containing both inputs and outputs (e.g., \texttt{\{num1, num2, result, sender, timestamp\}}).
+  \item Polling interval is \textbf{500ms} in both architectures (via \texttt{reactivePoll} in R).
+  \item Session routing uses \textbf{UUID-based keys} --- solo mode uses the username as key, collaborative mode uses the session UUID.
+\end{itemize}
+
+% === SECTION 2: REST ===
+\section{Architecture 1: REST API (Plumber + Redis)}
+
+\subsection{Overview}
+
+In the REST architecture, R backends run as \textbf{Plumber HTTP APIs}. Plumber is an R package that converts decorated R functions into REST endpoints using roxygen2-style comments (e.g., \texttt{\#* @post /calculate}). Each backend listens on port 8000 inside its container.
+
+Spring Boot acts as the \textbf{active relay} --- it receives state from the Angular/Shiny frontend, forwards it to the correct Plumber backend, receives the computed result, and stores it in Redis. All other Shiny frontends poll Redis through Spring Boot to receive updates.
+
+\subsection{Components}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Component} & \textbf{Technology} & \textbf{Role} \\
+\midrule
+Angular Frontend & Angular 19, standalone & Portal UI, iframe embedding \\
+Spring Boot Backend & Java 21, Spring Boot 3 & API gateway, state relay, auth, sessions \\
+R Shiny Frontends (x8) & R 4.4.0, Shiny, bslib & User-facing UI, reactive polling \\
+R Plumber Backends (x8) & R 4.4.0, Plumber & Computation endpoints (HTTP) \\
+Redis & Redis Alpine & Live state cache (key-value) \\
+PostgreSQL & PostgreSQL 15 & Users, sessions, apps, saved states \\
+Nginx & Nginx 1.25 Alpine & Reverse proxy, port-based routing \\
+\bottomrule
+\end{tabular}
+\caption{REST architecture components (~20 containers)}
+\end{table}
+
+\subsection{Data Flow --- Solo Mode}
+
+When a single user interacts with a Shiny app in solo mode:
+
+\begin{enumerate}[nosep]
+  \item User changes an input (e.g., sets \texttt{num1=10}, \texttt{num2=25}) in the \textbf{R Shiny frontend}.
+  \item The Shiny frontend sends an \textbf{HTTP POST} to Spring Boot: \texttt{POST /api/collab/\{username\}/state} with the JSON payload \texttt{\{num1: 10, num2: 25, appName: "Calculator"\}}.
+  \item Spring Boot looks up the correct Plumber backend using the \texttt{APP\_ROUTES} map:
+  \begin{verbatim}
+  "Calculator" -> "http://shiny-back:8000/calculate"
+  "Analytics"  -> "http://shiny-back-analytics:8000/state"
+  ...
+  \end{verbatim}
+  \item Spring Boot \textbf{forwards} the JSON to the Plumber backend via \texttt{RestTemplate.postForEntity()}.
+  \item The \textbf{Plumber backend} executes the R computation (e.g., \texttt{num1 + num2 = 35}) and returns the result as JSON: \texttt{\{num1: 10, num2: 25, result: 35\}}.
+  \item Spring Boot \textbf{stores} the result in Redis: \texttt{SET session\_state:\{username\} \{json\}}.
+  \item The Shiny frontend's \texttt{reactivePoll} (every 500ms) calls \texttt{GET /api/collab/\{username\}/state}, which reads from Redis.
+  \item The frontend receives the JSON and updates the UI reactively --- both inputs and outputs are set.
+\end{enumerate}
+
+\subsection{Data Flow --- Collaborative Mode}
+
+When multiple users share a session:
+
+\begin{enumerate}[nosep]
+  \item The OWNER creates a session via the Angular portal. Spring Boot generates a \textbf{UUID} (e.g., \texttt{df56ae5e-...}) and stores a \texttt{CollaborationSession} entity in PostgreSQL.
+  \item The OWNER invites other users by email. Spring Boot creates \texttt{SessionParticipant} records with permissions (EDITOR or VIEWER) and sends email notifications.
+  \item All participants' Shiny frontends are configured with the \textbf{session UUID} as the routing key (passed via URL parameter into the iframe).
+  \item When any EDITOR changes an input, the same flow as solo mode executes, but with the \textbf{session UUID} as the key instead of the username.
+  \item Spring Boot stores the result in Redis: \texttt{SET session\_state:\{sessionId\} \{json\}}.
+  \item \textbf{All participants'} Shiny frontends poll \texttt{GET /api/collab/\{sessionId\}/state} every 500ms and receive the same state.
+  \item VIEWER users have their UI inputs disabled via \texttt{shinyjs::disable()} --- the Angular portal sends a \texttt{postMessage} with the user's role, and the Shiny frontend reacts by locking or unlocking inputs.
+\end{enumerate}
+
+\subsection{State Persistence (Save/Restore)}
+
+\begin{enumerate}[nosep]
+  \item \textbf{Save:} User clicks ``Save'' in Angular $\rightarrow$ Angular calls \texttt{POST /api/states} $\rightarrow$ Spring Boot reads the latest state from Redis (\texttt{GET session\_state:\{key\}}) $\rightarrow$ stores it as a \texttt{SavedState} entity in PostgreSQL with the user ID, app ID, and a name.
+  \item \textbf{Restore:} User clicks ``Load'' $\rightarrow$ Angular calls \texttt{POST /api/states/\{id\}/restore} $\rightarrow$ Spring Boot reads the saved JSON from PostgreSQL $\rightarrow$ writes it back to Redis (\texttt{SET session\_state:\{key\} \{json\}}) $\rightarrow$ all frontends pick it up on the next poll cycle.
+\end{enumerate}
+
+\subsection{Real-Time Presence}
+
+Presence (who is online, user avatars) uses \textbf{WebSocket via STOMP}, not REST polling:
+
+\begin{itemize}[nosep]
+  \item Angular connects to \texttt{ws://localhost:8085/ws-shiny/websocket} using RxStomp.
+  \item On joining a session, Angular publishes to \texttt{/app/presence.join/\{sessionId\}}.
+  \item Spring Boot's \texttt{PresenceController} receives the message, updates the participant's \texttt{online} status in PostgreSQL, and broadcasts to \texttt{/topic/presence/\{sessionId\}}.
+  \item On disconnect (browser close, network drop), the \texttt{WebSocketEventListener} catches the \texttt{SessionDisconnectEvent} and automatically marks the user offline.
+\end{itemize}
+
+\subsection{Nginx Routing}
+
+Nginx uses \textbf{port-based routing} to map external ports to internal Shiny frontend containers:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{External Port} & \textbf{Internal Target} & \textbf{App} \\
+\midrule
+8080 (port 80) & shiny-front:3838 & Calculator \\
+8081 (port 81) & shiny-front-analytics:3838 & Visual Analytics \\
+8082 (port 82) & shiny-front-csv:3838 & Data Exchange \\
+8083 (port 83) & shiny-front-mc:3838 & Monte Carlo \\
+8084 (port 84) & shiny-front-map:3838 & Geospatial Editor \\
+8086 (port 85) & shiny-front-csv-advanced:3838 & Climate Anomaly \\
+8087 (port 87) & shiny-front-analytics-advanced:3838 & Advanced Analytics \\
+8088 (port 88) & shiny-front-ml:3838 & ML Trainer \\
+\bottomrule
+\end{tabular}
+\caption{Nginx port-based routing}
+\end{table}
+
+% === SECTION 3: KAFKA ===
+\section{Architecture 2: Kafka Event-Driven}
+
+\subsection{Overview}
+
+In the Kafka architecture, R backends run as \textbf{standalone Kafka consumers} (long-running \texttt{Rscript} processes). They read from an \texttt{input} topic, perform computation, and write results to an \texttt{output} topic. There is no HTTP communication between R services.
+
+Spring Boot's role changes: it is \textbf{no longer the data relay}. It only manages sessions, authentication, and state persistence. The data flows directly between R services through Kafka topics, with the \textbf{session UUID} (or username) as the Kafka message key.
+
+\subsection{Components}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Component} & \textbf{Technology} & \textbf{Role} \\
+\midrule
+Angular Frontend & Angular 19, standalone & Portal UI, iframe embedding \\
+Spring Boot Backend & Java 21, Spring Boot 3 & Session management, auth, save/restore \\
+R Shiny Frontends (x8) & R 4.4.0, Shiny, kafka pkg & UI, Kafka producer + consumer \\
+R Backends (x8) & R 4.4.0, kafka pkg & Kafka consumer + producer (computation) \\
+Apache Kafka & Confluent 7.5.0 & Message broker (input/output topics) \\
+Zookeeper & Confluent 7.5.0 & Kafka cluster coordination \\
+PostgreSQL & PostgreSQL 15 & Users, sessions, apps, saved states \\
+Nginx & Nginx 1.25 Alpine & Reverse proxy, port-based routing \\
+\bottomrule
+\end{tabular}
+\caption{Kafka architecture components (~18 containers + Kafka + Zookeeper)}
+\end{table}
+
+\subsection{Kafka Topics and Message Keys}
+
+Two topics are used:
+
+\begin{itemize}[nosep]
+  \item \textbf{\texttt{input}} --- carries user input from Shiny frontends to R backends. Message key = session UUID (or username in solo mode). Value = JSON payload with inputs.
+  \item \textbf{\texttt{output}} --- carries computed results from R backends back to Shiny frontends. Same key. Value = JSON payload with inputs + outputs.
+\end{itemize}
+
+The \textbf{message key} is the routing mechanism. In solo mode, the key is the username. In collaborative mode, the key is the session UUID. All consumers filter messages by key to ensure they only process messages for their session.
+
+\subsection{Data Flow --- Solo Mode}
+
+\begin{enumerate}[nosep]
+  \item User changes an input in the \textbf{R Shiny frontend}.
+  \item The frontend creates a Kafka \texttt{Producer} and sends a message to the \texttt{input} topic with key = username and value = JSON payload (e.g., \texttt{\{num1: 10, num2: 25\}}).
+  \item The \textbf{R backend} runs a continuous \texttt{while(TRUE)} loop with a Kafka \texttt{Consumer} listening on the \texttt{input} topic.
+  \item The backend receives the message, performs the computation (e.g., \texttt{10 + 25 = 35}), and produces a new message to the \texttt{output} topic with the same key and value = \texttt{\{num1: 10, num2: 25, result: 35\}}.
+  \item The Shiny frontend's \texttt{reactivePoll} (every 500ms) runs a Kafka \texttt{Consumer} that reads from the \texttt{output} topic, filtering by key.
+  \item The frontend receives the JSON and updates the UI reactively.
+\end{enumerate}
+
+\subsection{Data Flow --- Collaborative Mode}
+
+\begin{enumerate}[nosep]
+  \item Session creation and invitation work identically to the REST architecture (Spring Boot + PostgreSQL + email).
+  \item All participants' Shiny frontends use the \textbf{session UUID} as the Kafka message key.
+  \item When any EDITOR changes an input, their frontend produces to the \texttt{input} topic with key = session UUID.
+  \item The R backend consumes from \texttt{input}, computes, and produces to \texttt{output} with the same key.
+  \item \textbf{All participants'} frontends consume from \texttt{output} with the same key and receive the update simultaneously.
+  \item VIEWER locking works the same way as REST --- Angular sends \texttt{postMessage} to the iframe with the role, and \texttt{shinyjs} disables inputs.
+\end{enumerate}
+
+\subsection{Spring Boot as Kafka Listener (SessionStateMonitor)}
+
+Spring Boot runs a \texttt{@KafkaListener} on the \texttt{output} topic (consumer group: \texttt{spring-backend-state-monitor}). This \texttt{SessionStateMonitor} service stores the latest state for each session key in a \texttt{ConcurrentHashMap}:
+
+\begin{verbatim}
+@KafkaListener(topics = "output", groupId = "spring-backend-state-monitor")
+public void listen(ConsumerRecord<String, String> record) {
+    sessionStates.put(record.key(), record.value());
+}
+\end{verbatim}
+
+This allows Spring Boot to:
+\begin{itemize}[nosep]
+  \item \textbf{Save state:} When the user clicks ``Save,'' Spring Boot reads the latest state from the \texttt{ConcurrentHashMap} (not from Kafka directly) and persists it to PostgreSQL.
+  \item \textbf{Restore state:} When the user clicks ``Load,'' Spring Boot reads the saved JSON from PostgreSQL and \textbf{produces it to the \texttt{input} topic} via \texttt{KafkaTemplate.send("input", sessionId, json)}. The R backend picks it up and re-broadcasts to \texttt{output}, updating all frontends.
+  \item \textbf{Replay state:} When a new user joins a session, Spring Boot can replay the latest cached state to the \texttt{input} topic so the new user immediately sees the current state.
+\end{itemize}
+
+\subsection{R Backend Consumer Loop}
+
+Each R backend runs a continuous consumer loop (simplified):
+
+\begin{verbatim}
+consumer <- kafka::Consumer$new(broker, "input", group_id = unique_id)
+producer <- kafka::Producer$new(broker)
+
+while (TRUE) {
+  msgs <- consumer$consume(timeout = 1000)
+  for (m in msgs) {
+    data <- fromJSON(m$value)
+    result <- compute(data)  # e.g., data$num1 + data$num2
+    payload <- toJSON(list(num1=data$num1, num2=data$num2, result=result))
+    producer$produce(topic="output", key=m$key, value=payload)
+  }
+}
+\end{verbatim}
+
+Each backend uses a \textbf{unique consumer group ID} (generated with \texttt{paste0("r-back-", uuid::UUIDgenerate())}) to ensure every backend instance receives every message, not just one instance in a shared group.
+
+% === SECTION 4: COMPARISON ===
+\section{Side-by-Side Comparison}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}p{3.5cm}p{5.5cm}p{5.5cm}@{}}
+\toprule
+\textbf{Aspect} & \textbf{REST API} & \textbf{Kafka Event-Driven} \\
+\midrule
+R backend type & Plumber HTTP API (port 8000) & Standalone Rscript Kafka consumer \\
+Communication & Synchronous HTTP POST/GET & Asynchronous pub/sub via topics \\
+State relay & Spring Boot forwards to Plumber, stores in Redis & R services communicate directly via Kafka topics \\
+State store (live) & Redis (\texttt{session\_state:\{key\}}) & ConcurrentHashMap in SessionStateMonitor \\
+State store (persist) & PostgreSQL (SavedState entity) & PostgreSQL (SavedState entity) \\
+Spring Boot role & Active relay (routes every state update) & Passive listener (only save/restore/replay) \\
+Polling mechanism & \texttt{httr::GET} to Spring Boot/Redis & \texttt{kafka::Consumer\$consume()} on output topic \\
+Polling interval & 500ms (\texttt{reactivePoll}) & 500ms (\texttt{reactivePoll}) \\
+Restore mechanism & Write JSON to Redis & Produce JSON to \texttt{input} topic \\
+Infrastructure & Redis (lightweight) & Kafka + Zookeeper (heavier) \\
+Container count & ~20 & ~20 (but Kafka/ZK add 2 more) \\
+R package maturity & Plumber (mature, CRAN) & kafka (new, 2024, INWT/R Consortium) \\
+Debugging & Standard HTTP tools (curl, Postman) & Kafka CLI tools, less familiar \\
+Event replay & Not built-in (must save to Redis/PG) & Natural (Kafka retains messages) \\
+Decoupling & Tight (Spring Boot relays every request) & Loose (services only know topic names) \\
+Bottleneck risk & Spring Boot (single relay point) & Kafka broker (but designed for throughput) \\
+\bottomrule
+\end{tabular}
+\caption{Full comparison: REST API vs.\ Kafka architectures}
+\end{table}
+
+% === SECTION 5: MONOLITHIC BASELINE ===
+\section{Monolithic Baseline}
+
+The monolithic baseline (\texttt{whole\_apps/}) consists of 8 standard R Shiny applications with \textbf{no microservice decomposition}. Each app is a single \texttt{app.r} file containing both UI and server logic. Computation happens in-process within the R session --- there is no network communication, no message broker, no API gateway, and no state relay.
+
+Each monolithic app runs in its own Docker container with a simple Dockerfile:
+
+\begin{verbatim}
+FROM rocker/shiny:4.4.0
+COPY app.r /app/app.R
+CMD R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+\end{verbatim}
+
+The monolithic baseline serves as the \textbf{performance floor} for latency (no network hops) and the \textbf{ceiling for simplicity} (no infrastructure overhead). It cannot support collaboration --- each user gets an isolated R session. It is included in the benchmarking to quantify the overhead introduced by the microservice architectures.
+
+\newpage
+
+% === PART II: SLIDES ===
+\part{Slide Suggestions}
+
+% === SLIDE 1 ===
+\section{Slide 1: System Overview --- Shared Architecture}
+
+\begin{slidebox}{Slide 1: ``ShinySwarm --- System Overview''}
+\textbf{Layout:} A layered diagram showing the four layers as horizontal bands, top to bottom.
+
+\textbf{Layer 1 (top) --- Presentation:}
+\begin{itemize}[nosep]
+  \item Angular 19 portal (login, app library, workspace, collab hub, saved states)
+  \item Embeds Shiny apps via iframes
+\end{itemize}
+
+\textbf{Layer 2 --- Orchestration:}
+\begin{itemize}[nosep]
+  \item Spring Boot 3 (JWT auth, session CRUD, RBAC, WebSocket presence, email)
+  \item Connects to PostgreSQL for persistence
+\end{itemize}
+
+\textbf{Layer 3 --- Computation:}
+\begin{itemize}[nosep]
+  \item 8 app pairs: Shiny Frontend + R Backend (16 containers)
+  \item Each app split into UI and computation microservices
+\end{itemize}
+
+\textbf{Layer 4 (bottom) --- Infrastructure:}
+\begin{itemize}[nosep]
+  \item Nginx (port-based routing), PostgreSQL, and either Redis or Kafka+Zookeeper
+\end{itemize}
+
+\textbf{Visual:} Colour each layer differently. Draw arrows showing the iframe embedding (Layer 1 $\rightarrow$ Layer 3) and the state relay (Layer 3 $\leftrightarrow$ Layer 4 $\leftrightarrow$ Layer 2). Label the ``state relay'' arrow with ``This is where REST and Kafka differ.''
+\end{slidebox}
+
+% === SLIDE 2 ===
+\section{Slide 2: REST API Architecture --- Data Flow}
+
+\begin{slidebox}{Slide 2: ``REST API Architecture --- How It Works''}
+\textbf{Layout:} A horizontal flow diagram with 5 boxes connected by arrows, left to right.
+
+\textbf{Flow:}
+\begin{enumerate}[nosep]
+  \item \textbf{R Shiny Frontend} (user changes input)
+  \item $\xrightarrow{\text{HTTP POST}}$ \textbf{Spring Boot} (API gateway, APP\_ROUTES lookup)
+  \item $\xrightarrow{\text{HTTP POST}}$ \textbf{Plumber Backend} (R computation)
+  \item $\xrightarrow{\text{JSON result}}$ \textbf{Redis Cache} (stores \texttt{session\_state:\{key\}})
+  \item $\xleftarrow{\text{Poll every 500ms}}$ \textbf{All Shiny Frontends} (receive inputs + outputs)
+\end{enumerate}
+
+\textbf{Key labels on the diagram:}
+\begin{itemize}[nosep]
+  \item On the Spring Boot box: ``Routes to correct Plumber via APP\_ROUTES map''
+  \item On the Redis box: ``Single source of truth for live state''
+  \item On the polling arrow: ``reactivePoll --- 500ms interval''
+\end{itemize}
+
+\textbf{Below the diagram, 3 bullet points:}
+\begin{itemize}[nosep]
+  \item Spring Boot is the active relay --- every state update passes through it
+  \item Redis stores the latest state per session key
+  \item Save/Restore: Spring Boot reads from Redis $\rightarrow$ writes to PostgreSQL (save) or Redis $\leftarrow$ reads from PostgreSQL (restore)
+\end{itemize}
+\end{slidebox}
+
+% === SLIDE 3 ===
+\section{Slide 3: Kafka Architecture --- Data Flow}
+
+\begin{slidebox}{Slide 3: ``Kafka Event-Driven Architecture --- How It Works''}
+\textbf{Layout:} A horizontal flow diagram with Kafka in the centre as a wide box with two topics inside.
+
+\textbf{Flow:}
+\begin{enumerate}[nosep]
+  \item \textbf{R Shiny Frontend} (user changes input)
+  \item $\xrightarrow{\text{produce}}$ \textbf{Kafka ``input'' topic} (key = sessionId)
+  \item $\xrightarrow{\text{consume}}$ \textbf{R Backend} (computation)
+  \item $\xrightarrow{\text{produce}}$ \textbf{Kafka ``output'' topic} (same key)
+  \item $\xleftarrow{\text{consume (500ms poll)}}$ \textbf{All Shiny Frontends}
+\end{enumerate}
+
+\textbf{Side box:} Spring Boot with a dashed arrow from the ``output'' topic labelled ``@KafkaListener (SessionStateMonitor) --- caches latest state for save/restore only.''
+
+\textbf{Key labels:}
+\begin{itemize}[nosep]
+  \item On the Kafka box: ``Message key = session UUID (routing mechanism)''
+  \item On the Spring Boot side box: ``NOT in the data path --- only listens for save/restore''
+  \item On the R Backend: ``Standalone Rscript, continuous while(TRUE) consumer loop''
+\end{itemize}
+
+\textbf{Below the diagram, 3 bullet points:}
+\begin{itemize}[nosep]
+  \item R services communicate directly via Kafka --- Spring Boot is not in the data path
+  \item Each backend uses a unique consumer group ID to receive all messages
+  \item Restore: Spring Boot produces saved JSON to ``input'' topic $\rightarrow$ R backend reprocesses $\rightarrow$ all frontends update
+\end{itemize}
+\end{slidebox}
+
+% === SLIDE 4 ===
+\section{Slide 4: Side-by-Side Comparison}
+
+\begin{slidebox}{Slide 4: ``REST vs.\ Kafka --- Key Differences''}
+\textbf{Layout:} A comparison table with the most important differences only (not the full table from the summary --- pick 6--8 rows max for readability).
+
+\textbf{Suggested rows:}
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+& \textbf{REST API} & \textbf{Kafka} \\
+\midrule
+R backend & Plumber HTTP API & Kafka consumer (Rscript) \\
+Communication & Synchronous (HTTP) & Asynchronous (pub/sub) \\
+Spring Boot role & Active relay & Passive listener \\
+State store & Redis & Kafka topics + HashMap \\
+Decoupling & Tight & Loose \\
+Infrastructure & Lighter (Redis) & Heavier (Kafka + ZK) \\
+Debugging & curl, Postman & Kafka CLI \\
+Event replay & Manual (save to DB) & Built-in (topic retention) \\
+\bottomrule
+\end{tabular}
+
+\textbf{Visual suggestion:} Use green/red colour coding for relative advantages. For example, REST gets green on ``Infrastructure'' and ``Debugging''; Kafka gets green on ``Decoupling'' and ``Event replay.''
+\end{slidebox}
+
+% === SLIDE 5 ===
+\section{Slide 5: Collaboration Flow (Shared by Both)}
+
+\begin{slidebox}{Slide 5: ``How Collaboration Works''}
+\textbf{Layout:} A sequence diagram or numbered flow showing the collaboration lifecycle.
+
+\textbf{Steps:}
+\begin{enumerate}[nosep]
+  \item Alice logs in $\rightarrow$ Angular portal $\rightarrow$ JWT token
+  \item Alice launches Calculator from App Library $\rightarrow$ Shiny frontend loads in iframe
+  \item Alice creates a collaboration session $\rightarrow$ Spring Boot generates UUID
+  \item Alice invites Bob (email) $\rightarrow$ Bob receives notification with session ID
+  \item Bob joins session $\rightarrow$ his Shiny frontend uses the same session UUID as routing key
+  \item Alice changes \texttt{num1=10} $\rightarrow$ state flows through REST/Kafka pipeline $\rightarrow$ Bob's UI updates
+  \item Alice demotes Bob to VIEWER $\rightarrow$ WebSocket broadcasts role change $\rightarrow$ Angular sends \texttt{postMessage} to Bob's iframe $\rightarrow$ \texttt{shinyjs::disable()} locks Bob's inputs
+  \item Alice saves checkpoint $\rightarrow$ state persisted to PostgreSQL
+  \item Later: Alice restores checkpoint $\rightarrow$ state pushed back through pipeline $\rightarrow$ all UIs update
+\end{enumerate}
+
+\textbf{Visual suggestion:} A simplified sequence diagram with 3 swim lanes: Alice, Spring Boot, Bob. Show the key messages flowing between them. Highlight the ``state relay'' step as the point where REST and Kafka differ.
+\end{slidebox}
+
+\end{document}

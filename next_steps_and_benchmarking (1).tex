@@ -1,0 +1,266 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\newtcolorbox{slidebox}[1]{
+  colback=blue!5!white,
+  colframe=blue!50!black,
+  title={\textbf{#1}},
+  fonttitle=\small
+}
+
+\newtcolorbox{recbox}{
+  colback=green!5!white,
+  colframe=green!50!black,
+  title={\textbf{Recommendation}},
+  fonttitle=\small
+}
+
+\title{\textbf{ShinySwarm: Next Steps \& Benchmarking Plan}\\[0.5em]
+\large Midterm --- What Remains to Complete the Thesis}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\part{Summary}
+% ============================================================
+
+% ============================================================
+\section{Current Status --- What Is Done}
+% ============================================================
+
+All software engineering work is complete. Three fully functional architectures have been built:
+
+\begin{itemize}[nosep]
+  \item \textbf{Proof-of-Concept} --- validated that R Shiny apps can be decomposed into frontend/backend microservices using only R and Kafka (4 containers, no web framework).
+  \item \textbf{REST API architecture} --- 8 Shiny apps decomposed into 16 R microservices (8 frontends + 8 Plumber backends), orchestrated by Spring Boot, state relayed through Redis, Angular portal, Nginx routing. ~20 containers.
+  \item \textbf{Kafka event-driven architecture} --- same 8 apps with Kafka-based communication (input/output topics), R backends as standalone consumers, Spring Boot as passive session manager. ~20 containers.
+  \item \textbf{Monolithic baseline} --- 8 standalone Shiny apps in individual containers, no decomposition.
+  \item \textbf{Collaboration features} --- session management, RBAC (OWNER/EDITOR/VIEWER), real-time presence (WebSocket/STOMP), invite system with email notifications, save/restore checkpoints to PostgreSQL.
+  \item \textbf{Playwright E2E tests} --- functional correctness tests for solo mode, collaborative sync, role-based locking, save/restore pipeline.
+  \item \textbf{Kubernetes manifests} --- \texttt{full-rancher-deployment.yaml} ready for deployment via Rancher.
+\end{itemize}
+
+% ============================================================
+\section{What Remains}
+% ============================================================
+
+Four tasks remain to complete the thesis:
+
+\begin{enumerate}
+  \item \textbf{Deploy} all three architectures to the dedicated server in Germany, managed via Rancher (Kubernetes UI).
+  \item \textbf{Stress test} all three architectures using a load testing tool to collect performance metrics.
+  \item \textbf{Analyse} the results and generate comparison plots.
+  \item \textbf{Write} the Results, Discussion, and Conclusion chapters.
+\end{enumerate}
+
+% ============================================================
+\section{Deployment Plan}
+% ============================================================
+
+A dedicated server has been rented in Germany. Kubernetes will be managed via \textbf{Rancher} as the UI. Each architecture will be deployed \textbf{sequentially} on the same hardware (deploy, benchmark, tear down, repeat) to ensure a fair comparison.
+
+\begin{enumerate}[nosep]
+  \item Deploy Monolithic baseline $\rightarrow$ benchmark $\rightarrow$ tear down
+  \item Deploy REST API architecture $\rightarrow$ benchmark $\rightarrow$ tear down
+  \item Deploy Kafka architecture $\rightarrow$ benchmark $\rightarrow$ tear down
+\end{enumerate}
+
+% ============================================================
+\section{Stress Testing --- Tool Selection}
+% ============================================================
+
+The existing Playwright tests verify \textbf{functional correctness} (does the UI update? does role locking work?). They are not suitable for performance benchmarking because Playwright launches full browser instances, which consume too much CPU/RAM to simulate many concurrent users, and its timing includes browser rendering overhead.
+
+A dedicated load testing tool is needed. Three options were evaluated:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Criteria} & \textbf{Apache JMeter} & \textbf{k6} & \textbf{Locust} \\
+\midrule
+Language & XML (GUI) / Java & JavaScript & Python \\
+Academic recognition & High & Medium & Medium \\
+GUI & Yes & No (CLI only) & Yes (web UI) \\
+Max virtual users & 500+ & 1000+ & 200--500 \\
+HTTP + WebSocket & Yes & Yes & Yes (plugin) \\
+CSV/JSON export & Yes (.jtl files) & Yes & Yes \\
+Learning curve & Medium & Low & Low \\
+\bottomrule
+\end{tabular}
+\caption{Load testing tool comparison}
+\end{table}
+
+\begin{recbox}
+\textbf{Recommended: Apache JMeter.} It is the most widely cited load testing tool in academic software engineering research. It has a GUI for designing test plans, CLI mode for headless execution on the server, and produces \texttt{.jtl} result files that can be parsed into plots with R or Python. It can simulate 50--500+ concurrent virtual users from a single machine.
+
+\textbf{Alternative: k6} as a secondary validation tool. Tests are written in JavaScript, execution is lightweight, and it takes minimal setup. Running the same tests with two tools strengthens the validity of the findings.
+\end{recbox}
+
+% ============================================================
+\section{What to Measure --- Four Metrics}
+% ============================================================
+
+\subsection{Metric 1: End-to-End Latency}
+
+Time from sending a state update (\texttt{POST /state}) to receiving the updated state (\texttt{GET /state}) on a different client. Measured per app, per architecture. Report median (p50), p95, p99, and max. 100+ iterations per measurement.
+
+For the monolithic baseline: measure in-process computation time using R's \texttt{system.time()} (no network involved).
+
+\subsection{Metric 2: Throughput}
+
+Number of successful state update round-trips per second under increasing load. Ramp from 1 to 50 concurrent virtual users, each sending requests every 500ms. Identify the saturation point where throughput plateaus or error rate spikes.
+
+\subsection{Metric 3: Data Loss}
+
+Percentage of state updates that are sent but never received by other participants. Send 1000 sequential updates with incrementing sequence numbers, then count gaps on the receiving end. Test under both low load (1 user) and high load (50 users).
+
+\subsection{Metric 4: Cross-Contamination}
+
+Whether state from one session leaks into another. Create 10 parallel sessions on the same app, each sending unique identifiable values. After each round, verify that no session received another session's data. Run for 500+ rounds.
+
+% ============================================================
+\section{Planned Plot Types}
+% ============================================================
+
+Results will be visualised using \textbf{R + ggplot2} (thematically consistent with a thesis about R Shiny).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}llp{7cm}@{}}
+\toprule
+\textbf{Plot} & \textbf{Type} & \textbf{What It Shows} \\
+\midrule
+Latency comparison & Grouped bar chart & X = 8 apps, Y = median latency (ms), 3 bars per app (Monolithic/REST/Kafka), p95 as error bars \\
+Latency distribution & Box plot & Full distribution per architecture per app (median, quartiles, outliers) \\
+Throughput curve & Line chart & X = concurrent users (1--50), Y = requests/sec, 3 lines \\
+Data loss & Heatmap or table & Rows = 8 apps, Columns = 3 architectures, cells = loss \% (colour-coded) \\
+Cross-contamination & Pass/fail table & Rows = 8 apps, Columns = 3 architectures, cells = pass or fail \\
+Resource usage & Grouped bar chart & X = architecture, Y = CPU\% or RAM (MB), from Rancher monitoring \\
+\bottomrule
+\end{tabular}
+\caption{Planned visualisations}
+\end{table}
+
+% ============================================================
+\section{Thesis Completion Checklist}
+% ============================================================
+
+\begin{enumerate}
+  \item[$\square$] Deploy all three architectures to the server via Rancher
+  \item[$\square$] Run Playwright functional tests on each deployment (correctness check)
+  \item[$\square$] Design and run JMeter test plans for all 4 metrics
+  \item[$\square$] Export results as CSV
+  \item[$\square$] Generate plots with R + ggplot2
+  \item[$\square$] Write Results chapter
+  \item[$\square$] Write Discussion chapter (interpret trade-offs, answer RQ3 and RQ4)
+  \item[$\square$] Write Conclusion (answer central RQ, contributions, future work)
+  \item[$\square$] Final review and submission
+\end{enumerate}
+
+\newpage
+
+% ============================================================
+\part{Slide Suggestions}
+% ============================================================
+
+\section{Slide 1: What Is Done}
+
+\begin{slidebox}{Slide 1: ``Current Status --- What Is Built''}
+\textbf{Layout:} A checklist with green checkmarks.
+
+\begin{itemize}[nosep]
+  \item[$\checkmark$] Proof-of-Concept validated (pure R + Kafka, 4 containers)
+  \item[$\checkmark$] REST API architecture built (8 apps, ~20 containers)
+  \item[$\checkmark$] Kafka architecture built (8 apps, ~20 containers)
+  \item[$\checkmark$] Monolithic baseline built (8 standalone apps)
+  \item[$\checkmark$] Collaboration: sessions, RBAC, presence, invite, save/restore
+  \item[$\checkmark$] Angular portal: login, library, workspace, collab hub
+  \item[$\checkmark$] Playwright E2E tests (functional correctness)
+  \item[$\checkmark$] Kubernetes manifests ready for Rancher
+\end{itemize}
+
+\textbf{Bottom line:} ``All engineering work is complete. What remains is deployment, benchmarking, and writing.''
+\end{slidebox}
+
+\section{Slide 2: What Remains}
+
+\begin{slidebox}{Slide 2: ``Road to Completion''}
+\textbf{Layout:} A horizontal pipeline with 4 stages, left to right.
+
+\begin{enumerate}[nosep]
+  \item \textbf{Deploy} --- Dedicated server in Germany, Kubernetes via Rancher, sequential deployment (one architecture at a time)
+  \item \textbf{Stress Test} --- Apache JMeter, 50+ virtual users, 4 metrics (latency, throughput, data loss, cross-contamination)
+  \item \textbf{Analyse} --- Export CSV, generate plots with R + ggplot2 (bar charts, box plots, throughput curves)
+  \item \textbf{Write} --- Results, Discussion, Conclusion chapters
+\end{enumerate}
+
+\textbf{Visual:} 4 boxes connected by arrows. Each box has a one-word title and 2--3 bullet points underneath.
+\end{slidebox}
+
+\section{Slide 3: Benchmarking Plan}
+
+\begin{slidebox}{Slide 3: ``How We Will Measure''}
+\textbf{Layout:} Two columns.
+
+\textbf{Left --- 4 Metrics:}
+\begin{enumerate}[nosep]
+  \item \textbf{Latency} --- POST to GET round-trip time (ms)
+  \item \textbf{Throughput} --- requests/sec under 1--50 users
+  \item \textbf{Data Loss} --- \% of updates lost (1000 sequential sends)
+  \item \textbf{Cross-Contamination} --- state leakage between 10 parallel sessions
+\end{enumerate}
+
+\textbf{Right --- Method:}
+\begin{itemize}[nosep]
+  \item Tool: Apache JMeter (headless on server)
+  \item Server: Dedicated machine in Germany
+  \item Orchestration: Kubernetes via Rancher
+  \item Protocol: Deploy $\rightarrow$ Benchmark $\rightarrow$ Tear down $\rightarrow$ Repeat
+  \item Scope: 8 apps $\times$ 3 architectures $\times$ 4 metrics
+  \item Plots: R + ggplot2
+\end{itemize}
+\end{slidebox}
+
+\section{Slide 4: Expected Deliverables}
+
+\begin{slidebox}{Slide 4: ``What the Final Results Will Look Like''}
+\textbf{Layout:} Show placeholder/mock versions of the planned plots (empty axes, no data).
+
+\textbf{Mock 1 --- Grouped Bar Chart:}
+\begin{itemize}[nosep]
+  \item X-axis: 8 app names
+  \item Y-axis: Latency (ms)
+  \item 3 bars per app: grey (Monolithic), blue (REST), orange (Kafka)
+  \item All bars empty / marked ``TBD''
+\end{itemize}
+
+\textbf{Mock 2 --- Throughput Curve:}
+\begin{itemize}[nosep]
+  \item X-axis: Concurrent users (1--50)
+  \item Y-axis: Requests/sec
+  \item 3 placeholder lines with ``?'' labels
+\end{itemize}
+
+\textbf{Purpose:} Shows the committee you have a clear analysis plan. You know exactly what plots you will produce --- you just need to run the experiments.
+
+\textbf{Note on the slide:} ``These are the planned visualisations. Data will be collected after deployment to the dedicated server.''
+\end{slidebox}
+
+\end{document}

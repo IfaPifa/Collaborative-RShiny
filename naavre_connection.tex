@@ -1,0 +1,264 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+
+\newtcolorbox{slidebox}[1]{
+  colback=blue!5!white,
+  colframe=blue!50!black,
+  title={\textbf{#1}},
+  fonttitle=\small
+}
+
+\title{\textbf{ShinySwarm \& NaaVRE: Connection to the Virtual Research Environment}\\[0.5em]
+\large How This Thesis Fits into the Broader VRE Ecosystem}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\part{Summary}
+% ============================================================
+
+\section{What Is NaaVRE}
+
+NaaVRE (Notebook-as-a-Virtual-Research-Environment) is a platform built by LifeWatch ERIC VLIC and the \textbf{QCDIS team at the University of Amsterdam} --- the same research group (MultiScale Networked Systems, Informatics Institute) in which this thesis is supervised by Dr.\ Zhiming Zhao.
+
+NaaVRE is a user-centric platform that supports the full research lifecycle through customisable \textbf{Virtual Labs}. It is built on top of JupyterLab and extends it with custom extensions for:
+
+\begin{itemize}[nosep]
+  \item \textbf{Containerisation} --- turning individual Jupyter notebook cells into standalone Docker containers (workflow components)
+  \item \textbf{Workflow composition} --- connecting containerised cells into reproducible computational workflows
+  \item \textbf{Cloud execution} --- running workflows on Kubernetes via Argo Workflows
+  \item \textbf{Collaboration} --- sharing notebooks, workflow components, and results with teams and communities
+  \item \textbf{Catalogue} --- browsing and reusing shared components across Virtual Labs
+\end{itemize}
+
+NaaVRE's architecture is itself \textbf{microservice-based}: the backend consists of independent API services (containeriser, workflow, catalogue) deployed on Kubernetes, with JupyterLab extensions as the frontend. Communication between frontend and backend goes through a centralised communication hub with OIDC authentication via Keycloak (Zhao et al., 2022).
+
+NaaVRE currently supports \textbf{Python and R kernels} in Jupyter notebooks.
+
+\textbf{Key publications:}
+\begin{itemize}[nosep]
+  \item Zhao, Z. et al. ``Notebook-as-a-VRE (NaaVRE): From private notebooks to a collaborative cloud virtual research environment.'' \textit{Software: Practice and Experience}, spe.3098, 2022. \url{https://doi.org/10.1002/spe.3098}
+  \item Zhao, Z. et al. ``A Virtual Lab Maturity Model for Guiding the Co-Development of Advanced Virtual Research Environments.'' \textit{IEEE SOSE}, pp.\ 20--26, 2025. \url{https://doi.org/10.1109/SOSE67019.2025.00007}
+\end{itemize}
+
+% ============================================================
+\section{How ShinySwarm Relates to NaaVRE}
+% ============================================================
+
+ShinySwarm and NaaVRE address the same fundamental problem --- \textbf{enabling collaborative, reproducible, containerised scientific computing} --- but from different entry points:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Aspect} & \textbf{NaaVRE} & \textbf{ShinySwarm} \\
+\midrule
+Entry point & Jupyter notebooks & R Shiny web applications \\
+User interface & JupyterLab + extensions & Angular portal + embedded Shiny iframes \\
+Containerisation unit & Individual notebook cells & Shiny frontend/backend pairs \\
+Workflow model & DAG workflows (Argo) & Real-time interactive sessions \\
+Collaboration model & Shared assets (notebooks, components) & Real-time shared state (live UI sync) \\
+Communication & REST APIs + communication hub & REST (Plumber/Redis) or Kafka (topics) \\
+Orchestration & Kubernetes + Argo Workflows & Kubernetes + Spring Boot \\
+Authentication & Keycloak (OIDC) & JWT (Spring Security) \\
+Deployment & Helm charts on K8s & Docker Compose / Rancher K8s \\
+Supported languages & Python, R & R (Shiny) \\
+\bottomrule
+\end{tabular}
+\caption{NaaVRE vs.\ ShinySwarm: complementary approaches}
+\end{table}
+
+\subsection{Shared Principles}
+
+Despite the different entry points, both systems share core architectural principles:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Microservice decomposition of scientific code.} NaaVRE containerises notebook cells into independent workflow components. ShinySwarm decomposes Shiny apps into frontend (UI) and backend (computation) microservices. Both take monolithic scientific code and break it into independently deployable, containerised units.
+  
+  \item \textbf{Kubernetes-native deployment.} Both systems are designed to run on Kubernetes. NaaVRE uses Helm charts and JupyterHub's z2jh for deployment. ShinySwarm uses Kubernetes manifests deployed via Rancher. Both leverage container orchestration for scaling and resource management.
+  
+  \item \textbf{Collaboration as a first-class concern.} NaaVRE enables collaboration through shared catalogues of components and workflows. ShinySwarm enables collaboration through real-time shared state in interactive applications. Both move scientific computing from isolated, single-user environments to collaborative platforms.
+  
+  \item \textbf{Reproducibility through containerisation.} Both systems use Docker containers to encapsulate computational environments, ensuring that analyses can be re-executed reliably across different systems and by different users.
+  
+  \item \textbf{R language support.} NaaVRE supports R kernels in Jupyter notebooks. ShinySwarm is built entirely around R Shiny. This creates a natural integration point.
+\end{enumerate}
+
+\subsection{Complementary Strengths}
+
+NaaVRE and ShinySwarm are \textbf{complementary}, not competing:
+
+\begin{itemize}[nosep]
+  \item \textbf{NaaVRE excels at batch workflows} --- long-running computational pipelines where cells execute sequentially or in parallel, producing results that are stored and shared. The interaction model is asynchronous: a researcher designs a workflow, submits it, and retrieves results later.
+  
+  \item \textbf{ShinySwarm excels at interactive exploration} --- real-time, synchronous interaction where multiple users simultaneously view and manipulate a live application. The interaction model is synchronous: changes are reflected immediately across all participants.
+  
+  \item A typical scientific workflow might involve \textbf{both}: a researcher uses NaaVRE to run a data processing pipeline (batch), then uses ShinySwarm to collaboratively explore and visualise the results (interactive).
+\end{itemize}
+
+% ============================================================
+\section{Integration Possibilities (Future Work)}
+% ============================================================
+
+ShinySwarm could be integrated into the NaaVRE ecosystem in several ways:
+
+\subsection{ShinySwarm as a NaaVRE Virtual Lab Flavour}
+
+NaaVRE supports ``flavours'' --- customised Virtual Lab configurations for specific domains. ShinySwarm could become a \textbf{Shiny-specific flavour} that adds real-time collaborative Shiny app hosting to a NaaVRE Virtual Lab. A researcher could:
+
+\begin{enumerate}[nosep]
+  \item Use NaaVRE's Jupyter environment to develop and containerise R analysis code.
+  \item Use NaaVRE's workflow engine to run batch data processing.
+  \item Switch to the ShinySwarm flavour to collaboratively explore results in a Shiny dashboard --- with live state sync, RBAC, and session management.
+\end{enumerate}
+
+\subsection{Shared Containerisation Pipeline}
+
+NaaVRE's \textbf{containeriser service} automatically builds Docker images from notebook cells. ShinySwarm's R microservices are also containerised. A shared containerisation pipeline could:
+
+\begin{itemize}[nosep]
+  \item Allow researchers to containerise R Shiny apps directly from a Jupyter notebook cell using NaaVRE's existing tooling.
+  \item Automatically register the containerised Shiny app in NaaVRE's catalogue for discovery and reuse.
+  \item Deploy the app to ShinySwarm's collaboration platform with one click.
+\end{itemize}
+
+\subsection{Shared Authentication (Keycloak Integration)}
+
+NaaVRE uses \textbf{Keycloak} (OIDC) for authentication. ShinySwarm currently uses \textbf{JWT via Spring Security}. Integrating ShinySwarm with NaaVRE's Keycloak instance would provide:
+
+\begin{itemize}[nosep]
+  \item Single sign-on (SSO) across both platforms.
+  \item Unified user identity --- a researcher's NaaVRE account would automatically work in ShinySwarm.
+  \item Consistent role-based access control across notebooks and Shiny apps.
+\end{itemize}
+
+\subsection{Workflow-to-Dashboard Pipeline}
+
+The most powerful integration: connecting NaaVRE's \textbf{workflow output} to ShinySwarm's \textbf{interactive input}. A researcher could:
+
+\begin{enumerate}[nosep]
+  \item Design a data processing workflow in NaaVRE (e.g., clean sensor data, run statistical models).
+  \item The workflow produces output datasets stored in a shared volume or object store.
+  \item A ShinySwarm app is configured to read from that output location.
+  \item The research team collaboratively explores the results in real time using ShinySwarm's collaboration features.
+  \item If the team identifies issues, they adjust the workflow parameters in NaaVRE and re-run --- the Shiny dashboard updates automatically.
+\end{enumerate}
+
+This creates a \textbf{closed loop} between batch processing (NaaVRE) and interactive exploration (ShinySwarm).
+
+% ============================================================
+\section{Why This Matters for the Thesis}
+% ============================================================
+
+This thesis is supervised by Dr.\ Zhiming Zhao, who leads the development of NaaVRE. The research is situated within the broader vision of the QCDIS group: building Virtual Research Environments that make scientific computing collaborative, reproducible, and accessible.
+
+ShinySwarm contributes to this vision by:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Extending the VRE paradigm to interactive applications.} NaaVRE focuses on notebooks and batch workflows. ShinySwarm demonstrates that the same microservice + container + collaboration principles can be applied to real-time interactive web applications.
+  
+  \item \textbf{Providing empirical evidence for architectural decisions.} The REST vs.\ Kafka comparison produces data that is relevant not only to Shiny apps but to any VRE component that needs real-time state synchronisation. NaaVRE's own architecture could benefit from these findings when adding real-time features.
+  
+  \item \textbf{Demonstrating R Shiny as a VRE component.} NaaVRE already supports R kernels. ShinySwarm shows that R Shiny apps --- the most common way R is used for interactive analysis --- can be containerised, decomposed, and made collaborative, making them first-class citizens in a VRE.
+  
+  \item \textbf{Validating the microservice approach for scientific tools.} Both NaaVRE and ShinySwarm independently arrive at the same architectural pattern: decompose monolithic scientific code into containerised microservices, orchestrate with Kubernetes, and add collaboration on top. This convergence strengthens the argument that microservices are the right paradigm for modern scientific computing infrastructure.
+\end{enumerate}
+
+\newpage
+
+% ============================================================
+\part{Slide Suggestions}
+% ============================================================
+
+\section{Slide 1: What Is NaaVRE}
+
+\begin{slidebox}{Slide 1: ``NaaVRE --- The Virtual Research Environment''}
+\textbf{Layout:} Brief introduction with the NaaVRE logo/diagram and 4--5 bullet points.
+
+\textbf{Content:}
+\begin{itemize}[nosep]
+  \item NaaVRE = Notebook-as-a-Virtual-Research-Environment
+  \item Built by LifeWatch ERIC VLIC and the QCDIS team at UvA (same group as this thesis)
+  \item Extends JupyterLab: containerise notebook cells $\rightarrow$ compose workflows $\rightarrow$ run on Kubernetes
+  \item Supports Python and R kernels
+  \item Microservice architecture: containeriser, workflow, and catalogue services on K8s
+  \item Collaboration through shared catalogues of components and workflows
+\end{itemize}
+
+\textbf{Source:} Zhao et al., ``Notebook-as-a-VRE,'' \textit{Software: Practice and Experience}, 2022.
+
+\textbf{Visual:} Use the NaaVRE architecture diagram from the website or paper (the one showing VRE knowledgebase, containeriser, workflow bus, etc.).
+\end{slidebox}
+
+\section{Slide 2: ShinySwarm as a Complement to NaaVRE}
+
+\begin{slidebox}{Slide 2: ``How ShinySwarm Fits into the VRE Ecosystem''}
+\textbf{Layout:} Two columns showing NaaVRE and ShinySwarm side by side, with shared principles in the middle.
+
+\textbf{Left --- NaaVRE:}
+\begin{itemize}[nosep]
+  \item Entry point: Jupyter notebooks
+  \item Strength: batch workflows, DAG execution
+  \item Containerises: notebook cells
+  \item Collaboration: shared catalogues (asynchronous)
+\end{itemize}
+
+\textbf{Right --- ShinySwarm:}
+\begin{itemize}[nosep]
+  \item Entry point: R Shiny web apps
+  \item Strength: real-time interactive exploration
+  \item Containerises: Shiny frontend/backend pairs
+  \item Collaboration: live state sync (synchronous)
+\end{itemize}
+
+\textbf{Centre --- Shared Principles:}
+\begin{itemize}[nosep]
+  \item Microservice decomposition of scientific code
+  \item Kubernetes-native deployment
+  \item Docker containerisation for reproducibility
+  \item R language support
+\end{itemize}
+
+\textbf{Bottom line:} ``NaaVRE handles batch processing. ShinySwarm handles interactive exploration. Together they cover the full research lifecycle.''
+\end{slidebox}
+
+\section{Slide 3: Future Integration Vision}
+
+\begin{slidebox}{Slide 3: ``Integration Vision --- The Closed Loop''}
+\textbf{Layout:} A circular or linear flow diagram showing the workflow-to-dashboard pipeline.
+
+\textbf{Flow:}
+\begin{enumerate}[nosep]
+  \item \textbf{Develop} --- Researcher writes R analysis code in NaaVRE's Jupyter environment
+  \item \textbf{Containerise} --- NaaVRE's containeriser packages cells into Docker images
+  \item \textbf{Process} --- NaaVRE's workflow engine runs the batch pipeline on Kubernetes (Argo)
+  \item \textbf{Explore} --- Results flow into a ShinySwarm app for collaborative, real-time visualisation
+  \item \textbf{Iterate} --- Team identifies issues $\rightarrow$ adjusts workflow in NaaVRE $\rightarrow$ re-runs $\rightarrow$ Shiny dashboard updates
+\end{enumerate}
+
+\textbf{Integration points to highlight:}
+\begin{itemize}[nosep]
+  \item Shared Keycloak SSO (single sign-on across both platforms)
+  \item Shared container registry (NaaVRE-containerised R code reused in ShinySwarm)
+  \item Shared data layer (workflow output $\rightarrow$ Shiny input)
+\end{itemize}
+
+\textbf{Label:} ``Future work --- not implemented in this thesis, but architecturally feasible.''
+\end{slidebox}
+
+\end{document}
