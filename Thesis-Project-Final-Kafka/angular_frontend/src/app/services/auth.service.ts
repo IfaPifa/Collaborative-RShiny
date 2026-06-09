@@ -16,7 +16,7 @@ interface LoginResponse {
 export class AuthService {
   private http = inject(HttpClient);
   // Ensure this matches your Spring Boot URL
-  private API_URL = 'http://localhost:8095/api/auth';
+  private API_URL = '/api/auth';
 
   // State: Who is logged in?
   currentUser = signal<User | null>(null);

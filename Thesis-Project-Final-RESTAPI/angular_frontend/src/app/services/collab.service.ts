@@ -35,7 +35,7 @@ export interface Notification {
 export class CollabService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
-  private API_URL = 'http://localhost:8085/api/collab';
+  private API_URL = '/api/collab';
 
   // STATE
   activeSession = signal<CollaborationSession | null>(null);
