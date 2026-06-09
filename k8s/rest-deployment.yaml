@@ -506,7 +506,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back.r }
@@ -540,7 +540,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics.r }
@@ -574,7 +574,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics_advanced.r }
@@ -608,7 +608,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv.r }
@@ -642,7 +642,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv_advanced.r }
@@ -676,7 +676,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_mc.r }
@@ -710,7 +710,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_map.r }
@@ -744,7 +744,7 @@ spec:
       containers:
         - name: api
           image: ghcr.io/ifapifa/collaborative-rshiny/rest-shiny-services:latest
-          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr\$run(host='0.0.0.0', port=8000)"]
+          command: ["R", "-e", "pr <- plumber::plumb('/app/back.R'); pr$run(host='0.0.0.0', port=8000)"]
           ports: [{ containerPort: 8000 }]
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_ml.r }
