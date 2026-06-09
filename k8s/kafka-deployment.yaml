@@ -161,6 +161,11 @@ spec:
             - { name: SPRING_KAFKA_BOOTSTRAP_SERVERS, value: "kafka:9092" }
             - { name: APP_JWT_SECRET, value: "IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI=" }
             - { name: SPRING_JPA_HIBERNATE_DDL_AUTO, value: create }
+            - name: CORS_ALLOWED_ORIGINS
+              valueFrom:
+                secretKeyRef:
+                  name: spring-cors-secret
+                  key: CORS_ALLOWED_ORIGINS
           readinessProbe:
             tcpSocket:
               port: 8085
