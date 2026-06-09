@@ -127,6 +127,11 @@ spec:
                 secretKeyRef:
                   name: spring-cors-secret
                   key: CORS_ALLOWED_ORIGINS
+            - name: SHINY_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: spring-cors-secret
+                  key: SHINY_BASE_URL
           readinessProbe:
             tcpSocket:
               port: 8085

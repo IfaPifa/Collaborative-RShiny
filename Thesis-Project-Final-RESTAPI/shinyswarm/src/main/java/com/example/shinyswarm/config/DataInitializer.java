@@ -1,5 +1,6 @@
 package com.example.shinyswarm.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,9 @@ import com.example.shinyswarm.user.UserRepository;
 
 @Configuration
 public class DataInitializer {
+
+    @Value("${shiny.base-url:http://localhost}")
+    private String shinyBaseUrl;
 
     // Bean 1: Handles User Creation (20 users for k6 benchmarking)
     @Bean
@@ -47,42 +51,42 @@ public class DataInitializer {
                 appRepository.save(new ShinyApp(
                     "Collaborative Calculator",
                     "A simple benchmark app for testing integer synchronization.",
-                    "http://localhost:8080"
+                    shinyBaseUrl + ":30080"
                 ));
                 appRepository.save(new ShinyApp(
                     "Visual Analytics",
                     "Real-time reactive scatter plots using ggplot2 and dplyr.",
-                    "http://localhost:8081"
+                    shinyBaseUrl + ":30081"
                 ));
                 appRepository.save(new ShinyApp(
                     "Advanced Visual Analytics",
                     "State-only Kafka synchronization (The 'Big Data' Template).",
-                    "http://localhost:8087" // Ensure this port matches your Nginx/Docker setup
+                    shinyBaseUrl + ":30086"
                 ));
                 appRepository.save(new ShinyApp(
                     "Data Exchange",
                     "Collaborative CSV file handling and string manipulation.",
-                    "http://localhost:8082"
+                    shinyBaseUrl + ":30082"
                 ));
                 appRepository.save(new ShinyApp(
                     "Monte Carlo Simulator",
                     "Heavy CPU simulation for testing backend isolation.",
-                    "http://localhost:8083"
+                    shinyBaseUrl + ":30083"
                 ));
                 appRepository.save(new ShinyApp(
                     "Geospatial Editor",
                     "Collaborative mapping and POI dropping using Leaflet.",
-                    "http://localhost:8084"
+                    shinyBaseUrl + ":30084"
                 ));
                 appRepository.save(new ShinyApp(
                     "Climate Anomaly Detector",
                     "SOTA Out-of-core processing for massive ecological sensor datasets.",
-                    "http://localhost:8086" 
+                    shinyBaseUrl + ":30085"
                 ));
                 appRepository.save(new ShinyApp(
                     "Habitat Suitability AI",
                     "Asynchronous Random Forest training and real-time inference API.",
-                    "http://localhost:8088" 
+                    shinyBaseUrl + ":30087"
                 ));
             }
         };
