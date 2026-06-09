@@ -16,67 +16,72 @@ import com.example.shinyswarm.user.UserRepository;
 @Configuration
 public class DataInitializer {
 
-    // Bean 1: Handles User Creation
+    // Bean 1: Handles User Creation (20 users for k6 benchmarking)
     @Bean
     @Order(1)
     public CommandLineRunner initUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             String encryptedPassword = passwordEncoder.encode("password");
 
-            if (userRepository.findByUsername("alice").isEmpty()) {
-                userRepository.save(new User("alice", encryptedPassword, "alice@example.com"));
-            }
-            if (userRepository.findByUsername("bob").isEmpty()) {
-                userRepository.save(new User("bob", encryptedPassword, "bob@example.com"));
-            }
-            if (userRepository.findByUsername("charlie").isEmpty()) {
-                userRepository.save(new User("charlie", encryptedPassword, "charlie@example.com"));
+            String[] users = {
+                "alice", "bob", "charlie", "diana", "eve",
+                "frank", "grace", "heidi", "ivan", "judy",
+                "karl", "laura", "mallory", "niaj", "oscar",
+                "peggy", "quinn", "rupert", "sybil", "trent"
+            };
+
+            for (String name : users) {
+                if (userRepository.findByUsername(name).isEmpty()) {
+                    userRepository.save(new User(name, encryptedPassword, name + "@example.com"));
+                }
             }
         };
     }
 
     // Bean 2: Handles BENCHMARK App Creation
+    // IMPORTANT: Insertion order must match REST DataInitializer so app IDs
+    // are identical across architectures (k6 benchmarks use hardcoded IDs).
     @Bean
     @Order(2)
     public CommandLineRunner initApps(ShinyAppRepository appRepository) {
         return args -> {
             if (appRepository.count() == 0) {
-                appRepository.save(new ShinyApp(
+                appRepository.save(new ShinyApp(                          // ID 1
                     "Collaborative Calculator",
                     "A simple benchmark app for testing integer synchronization.",
                     "http://localhost:11080"
                 ));
-                appRepository.save(new ShinyApp(
+                appRepository.save(new ShinyApp(                          // ID 2
                     "Visual Analytics",
                     "Real-time reactive scatter plots using ggplot2 and dplyr.",
                     "http://localhost:11081"
                 ));
-                appRepository.save(new ShinyApp(
-                    "Data Exchange",
-                    "Collaborative CSV file handling and string manipulation.",
-                    "http://localhost:11082"
-                ));
-                appRepository.save(new ShinyApp(
-                    "Monte Carlo Simulator",
-                    "Heavy CPU simulation for testing backend isolation.",
-                    "http://localhost:11083"
-                ));
-                appRepository.save(new ShinyApp(
-                    "Geospatial Editor",
-                    "Collaborative mapping and POI dropping using Leaflet.",
-                    "http://localhost:11084"
-                ));
-                appRepository.save(new ShinyApp(
-                    "Climate Anomaly Detector",
-                    "SOTA Out-of-core processing for massive ecological sensor datasets.",
-                    "http://localhost:11086"
-                ));
-                appRepository.save(new ShinyApp(
+                appRepository.save(new ShinyApp(                          // ID 3
                     "Advanced Visual Analytics",
                     "State-only Kafka synchronization for microclimate sensor analysis.",
                     "http://localhost:11085"
                 ));
-                appRepository.save(new ShinyApp(
+                appRepository.save(new ShinyApp(                          // ID 4
+                    "Data Exchange",
+                    "Collaborative CSV file handling and string manipulation.",
+                    "http://localhost:11082"
+                ));
+                appRepository.save(new ShinyApp(                          // ID 5
+                    "Monte Carlo Simulator",
+                    "Heavy CPU simulation for testing backend isolation.",
+                    "http://localhost:11083"
+                ));
+                appRepository.save(new ShinyApp(                          // ID 6
+                    "Geospatial Editor",
+                    "Collaborative mapping and POI dropping using Leaflet.",
+                    "http://localhost:11084"
+                ));
+                appRepository.save(new ShinyApp(                          // ID 7
+                    "Climate Anomaly Detector",
+                    "SOTA Out-of-core processing for massive ecological sensor datasets.",
+                    "http://localhost:11086"
+                ));
+                appRepository.save(new ShinyApp(                          // ID 8
                     "Habitat Suitability AI",
                     "Asynchronous Random Forest training and real-time inference API.",
                     "http://localhost:11087"

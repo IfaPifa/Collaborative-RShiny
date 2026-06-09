@@ -68,6 +68,60 @@ public class CollaborationController {
         this.messagingTemplate = messagingTemplate;
     }
 
+    // ==========================================
+    // STATE RELAY ENDPOINTS (mirror REST API for benchmark parity)
+    // ==========================================
+
+    /**
+     * GET live state for a session. Reads from the in-memory cache that
+     * SessionStateMonitor populates by consuming the Kafka 'output' topic.
+     */
+    @GetMapping("/{sessionId}/state")
+    public ResponseEntity<String> getLiveState(@PathVariable String sessionId) {
+        String state = stateMonitor.getLatestState(sessionId);
+        if (state == null) {
+            return ResponseEntity.ok("{}");
+        }
+        return ResponseEntity.ok(state);
+    }
+
+    /**
+     * POST state into the Kafka pipeline. Sends the raw JSON to the 'input'
+     * topic keyed by sessionId. The R Plumber consumer processes it and
+     * writes the result to the 'output' topic, which SessionStateMonitor
+     * caches for GET polling.
+     */
+    @PostMapping("/{sessionId}/state")
+    public ResponseEntity<?> relayState(
+            @PathVariable String sessionId,
+            @RequestBody String rawJson,
+            Principal principal) {
+
+        try {
+            String sender = principal != null ? principal.getName() : "anonymous";
+
+            // Permission check for collaborative sessions
+            if (!"solo".equals(sessionId)) {
+                sessionRepository.findById(sessionId).ifPresent(session -> {
+                    if (!session.canEdit(sender)) {
+                        throw new RuntimeException("Read-only users cannot update state.");
+                    }
+                });
+            }
+
+            // Send to Kafka input topic — R consumer will process and write to output
+            kafkaTemplate.send("input", sessionId, rawJson);
+            return ResponseEntity.ok("{\"status\":\"accepted\"}");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("State relay error: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // SESSION MANAGEMENT
+    // ==========================================
+
     // 1. List active sessions for user
     @GetMapping
     public List<CollaborationSession> getMySessions(Principal principal) {

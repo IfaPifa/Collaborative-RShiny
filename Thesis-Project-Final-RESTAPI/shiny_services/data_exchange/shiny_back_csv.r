@@ -24,10 +24,12 @@ function(req) {
     }
   }
 
-  return(list(
+  res <- list(
     dataset = df,
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

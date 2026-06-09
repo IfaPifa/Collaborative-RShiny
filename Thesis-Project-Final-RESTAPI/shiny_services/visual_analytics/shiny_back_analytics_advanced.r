@@ -15,11 +15,13 @@ function(req) {
   months_filter <- if (!is.null(body$months)) as.numeric(body$months) else c(5, 6, 7, 8, 9)
   sender <- if (!is.null(body$sender)) body$sender else "unknown"
 
-  return(list(
+  res <- list(
     min_temp = min_temp,
     months = months_filter,
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

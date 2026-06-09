@@ -43,12 +43,14 @@ function(req) {
     list(epoch = i * trees_per_chunk, mse = 5.0 / (i * 0.8))
   })
 
-  return(list(
+  res <- list(
     type = "TRAINING_COMPLETE",
     importance = as.list(importance(rf_mod)[, 1]),
     logs = epoch_log, 
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

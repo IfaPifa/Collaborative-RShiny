@@ -16,7 +16,7 @@ function(req) {
 
   if (action_type == "NEW_SENSOR") {
     # Validate and relay the sensor placement
-    return(list(
+    res <- list(
       type = "DELTA",
       lat = as.numeric(body$lat),
       lng = as.numeric(body$lng),
@@ -24,12 +24,16 @@ function(req) {
       sender = sender,
       status = "success",
       timestamp = as.numeric(Sys.time())
-    ))
+    )
+    if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+    return(res)
   }
 
-  return(list(
+  res <- list(
     status = "ignored",
     message = "Unknown action type",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

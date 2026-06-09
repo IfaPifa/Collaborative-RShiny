@@ -42,7 +42,7 @@ function(req) {
   sample_indices <- sample(1:n_paths, 3)
   samples <- all_paths[, sample_indices]
 
-  return(list(
+  res <- list(
     type = "RESULT",
     sender = sender,
     years = 0:years,
@@ -55,5 +55,7 @@ function(req) {
     extinction_prob = sum(all_paths[years + 1, ] < 1) / n_paths,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

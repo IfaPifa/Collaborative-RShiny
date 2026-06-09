@@ -41,6 +41,7 @@ repeat {
       sender = payload$sender,
       timestamp = as.numeric(Sys.time())
     )
+    if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
     producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
   }, error = function(e) { Sys.sleep(1) })
 }

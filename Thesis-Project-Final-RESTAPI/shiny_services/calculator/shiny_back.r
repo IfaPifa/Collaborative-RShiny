@@ -31,12 +31,14 @@ function(req) {
 
   print(paste("REST API Calculated:", n1, "+", n2, "=", result, "for", sender))
 
-  return(list(
+  res <- list(
     result = result,
     num1 = n1,
     num2 = n2,
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

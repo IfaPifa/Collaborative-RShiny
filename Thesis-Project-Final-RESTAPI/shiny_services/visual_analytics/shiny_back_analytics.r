@@ -20,11 +20,13 @@ function(req) {
     cyl <- as.numeric(unlist(body$cyl))
   }
 
-  return(list(
+  res <- list(
     min_hp = min_hp,
     cyl = cyl,
     sender = sender,
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

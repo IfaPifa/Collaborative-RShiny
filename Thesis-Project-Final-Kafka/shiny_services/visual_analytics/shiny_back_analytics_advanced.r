@@ -44,21 +44,21 @@ repeat {
     if (!is.null(payload$role) && payload$role == "VIEWER") next
 
     # Only process Advanced analytics messages
-    if (is.null(payload$appName) || payload$appName != "AdvancedAnalytics") next
+    if (is.null(payload$appName) || payload$appName != "Advanced") next
 
     min_temp <- as.numeric(payload$min_temp)
     months_filter <- if (!is.null(payload$months)) as.numeric(payload$months) else c(5, 6, 7, 8, 9)
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
 
     response_payload <- list(
-      appName = "AdvancedAnalytics",
+      appName = "Advanced",
       min_temp = min_temp,
       months = months_filter,
       sender = sender,
       status = "success",
       timestamp = as.numeric(Sys.time())
     )
-
+    if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
     json_response <- toJSON(response_payload, auto_unbox = TRUE)
     producer$produce(topic_output, json_response, key = incoming_key)
   }, error = function(e) {

@@ -140,7 +140,7 @@ server <- function(input, output, session) {
       months = as.numeric(input$months),
       sender = identity()$userId,
       role = state$permission,
-      appName = "AdvancedAnalytics"
+      appName = "Advanced"
     )
     state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
@@ -160,7 +160,7 @@ server <- function(input, output, session) {
     if (!result_has_error(result) && !is.null(msg$value)) {
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
-        if (!is.null(data$appName) && data$appName != "AdvancedAnalytics") return()
+        if (!is.null(data$appName) && data$appName != "Advanced") return()
 
         if (!is.null(data$min_temp)) {
           state$last_sender <- if (!is.null(data$sender)) data$sender else "System"

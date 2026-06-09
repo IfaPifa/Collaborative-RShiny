@@ -48,7 +48,7 @@ repeat {
     
     if (!is.null(payload$role) && payload$role == "VIEWER") next
     
-    if (is.null(payload$appName) || payload$appName != "VisualAnalytics") next
+    if (is.null(payload$appName) || payload$appName != "Analytics") next
     
     min_hp <- as.numeric(payload$min_hp)
     cyl_filter <- as.numeric(payload$cyl)
@@ -57,14 +57,14 @@ repeat {
     filtered_df <- df %>% filter(hp >= min_hp, cyl %in% cyl_filter)
     
     response_payload <- list(
-      appName = "VisualAnalytics",
+      appName = "Analytics",
       data = filtered_df,
       min_hp = min_hp,
       cyl = cyl_filter,
       sender = sender,
       timestamp = as.numeric(Sys.time())
     )
-    
+    if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
     json_response <- toJSON(response_payload, auto_unbox = TRUE)
     producer$produce(topic_output, json_response, key = incoming_key)
   }, error = function(e) { 

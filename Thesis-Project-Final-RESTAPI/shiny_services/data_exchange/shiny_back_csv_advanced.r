@@ -48,12 +48,14 @@ function(req) {
   summary_file_name <- sub("^raw_", "processed_", body$file)
   write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
 
-  return(list(
+  res <- list(
     action = "CLIMATE_READY",
     file = summary_file_name,
     sender = sender,
     rows_processed = nrow(summary_df),
     status = "success",
     timestamp = as.numeric(Sys.time())
-  ))
+  )
+  if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+  return(res)
 }

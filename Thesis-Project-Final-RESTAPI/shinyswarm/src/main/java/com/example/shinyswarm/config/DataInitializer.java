@@ -16,21 +16,24 @@ import com.example.shinyswarm.user.UserRepository;
 @Configuration
 public class DataInitializer {
 
-    // Bean 1: Handles User Creation
+    // Bean 1: Handles User Creation (20 users for k6 benchmarking)
     @Bean
     @Order(1)
     public CommandLineRunner initUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             String encryptedPassword = passwordEncoder.encode("password");
 
-            if (userRepository.findByUsername("alice").isEmpty()) {
-                userRepository.save(new User("alice", encryptedPassword, "alice@example.com"));
-            }
-            if (userRepository.findByUsername("bob").isEmpty()) {
-                userRepository.save(new User("bob", encryptedPassword, "bob@example.com"));
-            }
-            if (userRepository.findByUsername("charlie").isEmpty()) {
-                userRepository.save(new User("charlie", encryptedPassword, "charlie@example.com"));
+            String[] users = {
+                "alice", "bob", "charlie", "diana", "eve",
+                "frank", "grace", "heidi", "ivan", "judy",
+                "karl", "laura", "mallory", "niaj", "oscar",
+                "peggy", "quinn", "rupert", "sybil", "trent"
+            };
+
+            for (String name : users) {
+                if (userRepository.findByUsername(name).isEmpty()) {
+                    userRepository.save(new User(name, encryptedPassword, name + "@example.com"));
+                }
             }
         };
     }

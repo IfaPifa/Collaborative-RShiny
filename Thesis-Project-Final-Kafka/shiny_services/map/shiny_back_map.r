@@ -56,11 +56,11 @@ repeat {
     
     if (!is.null(payload$role) && payload$role == "VIEWER") next
 
-    if (is.null(payload$appName) || payload$appName != "GeoMap") next
+    if (is.null(payload$appName) || payload$appName != "Geospatial") next
 
     if (!is.null(payload$type) && payload$type %in% c("NEW_SENSOR", "DELTA")) {
       response_payload <- list(
-        appName = "GeoMap",
+        appName = "Geospatial",
         type = "DELTA",
         lat = as.numeric(payload$lat),
         lng = as.numeric(payload$lng),
@@ -69,7 +69,7 @@ repeat {
         status = "success",
         timestamp = as.numeric(Sys.time())
       )
-      
+      if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
       json_response <- toJSON(response_payload, auto_unbox = TRUE)
       producer$produce(topic_output, json_response, key = incoming_key)
     }

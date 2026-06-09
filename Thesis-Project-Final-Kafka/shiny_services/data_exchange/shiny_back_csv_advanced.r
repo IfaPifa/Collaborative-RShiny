@@ -54,7 +54,7 @@ repeat {
             sender = payload$sender,
             timestamp = as.numeric(Sys.time())
           )
-          
+          if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
           producer$produce("output", toJSON(response_payload, auto_unbox = TRUE), key = incoming_key)
           print(paste("Processed LTER data for", payload$sender, "with threshold", payload$threshold))
         }

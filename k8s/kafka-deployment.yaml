@@ -1,0 +1,747 @@
+# ==============================================================================
+# ShinySwarm — Kafka Architecture — Kubernetes Deployment
+# Target: 8 vCPU / 16 GB RAM (single node, one architecture at a time)
+#
+# Deploy:
+#   ./k8s/deploy-kafka.sh
+# Tear down:
+#   kubectl delete -f k8s/kafka-deployment.yaml
+#   kubectl delete configmap -l arch=kafka
+# ==============================================================================
+
+# 1. PERSISTENT STORAGE
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-data-pvc
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+
+# 2. ZOOKEEPER
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper
+spec:
+  selector:
+    matchLabels: { app: zookeeper }
+  template:
+    metadata:
+      labels: { app: zookeeper }
+    spec:
+      containers:
+        - name: zookeeper
+          image: confluentinc/cp-zookeeper:7.5.0
+          ports: [{ containerPort: 2181 }]
+          env:
+            - { name: ZOOKEEPER_CLIENT_PORT, value: "2181" }
+            - { name: ZOOKEEPER_TICK_TIME, value: "2000" }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 250m, memory: 512Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+spec:
+  selector: { app: zookeeper }
+  ports: [{ port: 2181 }]
+
+# 3. KAFKA
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  selector:
+    matchLabels: { app: kafka }
+  template:
+    metadata:
+      labels: { app: kafka }
+    spec:
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.5.0
+          ports: [{ containerPort: 9092 }]
+          env:
+            - { name: KAFKA_BROKER_ID, value: "1" }
+            - { name: KAFKA_ZOOKEEPER_CONNECT, value: "zookeeper:2181" }
+            - { name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP, value: "PLAINTEXT:PLAINTEXT" }
+            - { name: KAFKA_INTER_BROKER_LISTENER_NAME, value: "PLAINTEXT" }
+            - { name: KAFKA_ADVERTISED_LISTENERS, value: "PLAINTEXT://kafka:9092" }
+            - { name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR, value: "1" }
+          resources:
+            requests: { cpu: 500m, memory: 1Gi }
+            limits: { cpu: 1000m, memory: 2Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  selector: { app: kafka }
+  ports: [{ port: 9092 }]
+
+# 4. POSTGRESQL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels: { app: db }
+  template:
+    metadata:
+      labels: { app: db }
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports: [{ containerPort: 5432 }]
+          env:
+            - { name: POSTGRES_USER, value: user }
+            - { name: POSTGRES_PASSWORD, value: password }
+            - { name: POSTGRES_DB, value: shinyswarm }
+          volumeMounts:
+            - { name: pg-data, mountPath: /var/lib/postgresql/data }
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+      volumes:
+        - name: pg-data
+          persistentVolumeClaim: { claimName: postgres-data-pvc }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector: { app: db }
+  ports: [{ port: 5432 }]
+
+# 5. SPRING BOOT BACKEND
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-backend
+spec:
+  selector:
+    matchLabels: { app: spring-backend }
+  template:
+    metadata:
+      labels: { app: spring-backend }
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-spring-backend:latest
+          ports: [{ containerPort: 8085 }]
+          env:
+            - { name: SPRING_DATASOURCE_URL, value: "jdbc:postgresql://db:5432/shinyswarm" }
+            - { name: SPRING_DATASOURCE_USERNAME, value: user }
+            - { name: SPRING_DATASOURCE_PASSWORD, value: password }
+            - { name: SPRING_KAFKA_BOOTSTRAP_SERVERS, value: "kafka:9092" }
+            - { name: APP_JWT_SECRET, value: "IxNDf6ATTN2WPPjo8KnG6pe7wrduNFi3TRTnDWkcZtI=" }
+            - { name: SPRING_JPA_HIBERNATE_DDL_AUTO, value: create }
+          readinessProbe:
+            tcpSocket:
+              port: 8085
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 8085
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits: { cpu: 750m, memory: 1Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-backend
+spec:
+  selector: { app: spring-backend }
+  ports: [{ port: 8085 }]
+
+# 6. ANGULAR FRONTEND
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angular-frontend
+spec:
+  selector:
+    matchLabels: { app: angular-frontend }
+  template:
+    metadata:
+      labels: { app: angular-frontend }
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-angular-frontend:latest
+          ports: [{ containerPort: 80 }]
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 200m, memory: 128Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-frontend
+spec:
+  type: NodePort
+  selector: { app: angular-frontend }
+  ports:
+    - port: 80
+      nodePort: 30001
+
+# 7. NGINX PROXY (routes to 8 Shiny frontends)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+spec:
+  selector:
+    matchLabels: { app: nginx-proxy }
+  template:
+    metadata:
+      labels: { app: nginx-proxy }
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25-alpine
+          volumeMounts:
+            - { name: conf, mountPath: /etc/nginx/nginx.conf, subPath: nginx.conf }
+          resources:
+            requests: { cpu: 50m, memory: 32Mi }
+            limits: { cpu: 200m, memory: 128Mi }
+      volumes:
+        - name: conf
+          configMap: { name: kafka-nginx-config }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy
+spec:
+  type: NodePort
+  selector: { app: nginx-proxy }
+  ports:
+    - { name: calc, port: 80, targetPort: 80, nodePort: 30080 }
+    - { name: analytics, port: 81, targetPort: 81, nodePort: 30081 }
+    - { name: csv, port: 82, targetPort: 82, nodePort: 30082 }
+    - { name: mc, port: 83, targetPort: 83, nodePort: 30083 }
+    - { name: map, port: 84, targetPort: 84, nodePort: 30084 }
+    - { name: climate, port: 85, targetPort: 85, nodePort: 30085 }
+    - { name: adv-analytics, port: 86, targetPort: 86, nodePort: 30086 }
+    - { name: ml, port: 87, targetPort: 87, nodePort: 30087 }
+
+# Shiny Frontend: shiny-front
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front
+spec:
+  selector:
+    matchLabels: { app: shiny-front }
+  template:
+    metadata:
+      labels: { app: shiny-front }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-calc }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front
+spec:
+  selector: { app: shiny-front }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-analytics
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-analytics
+spec:
+  selector:
+    matchLabels: { app: shiny-front-analytics }
+  template:
+    metadata:
+      labels: { app: shiny-front-analytics }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-analytics }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-analytics
+spec:
+  selector: { app: shiny-front-analytics }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-csv
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-csv
+spec:
+  selector:
+    matchLabels: { app: shiny-front-csv }
+  template:
+    metadata:
+      labels: { app: shiny-front-csv }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-csv }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-csv
+spec:
+  selector: { app: shiny-front-csv }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-csv-advanced
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-csv-advanced
+spec:
+  selector:
+    matchLabels: { app: shiny-front-csv-advanced }
+  template:
+    metadata:
+      labels: { app: shiny-front-csv-advanced }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv_advanced.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-csv-adv }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-csv-advanced
+spec:
+  selector: { app: shiny-front-csv-advanced }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-mc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-mc
+spec:
+  selector:
+    matchLabels: { app: shiny-front-mc }
+  template:
+    metadata:
+      labels: { app: shiny-front-mc }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_mc.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-mc }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-mc
+spec:
+  selector: { app: shiny-front-mc }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-map
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-map
+spec:
+  selector:
+    matchLabels: { app: shiny-front-map }
+  template:
+    metadata:
+      labels: { app: shiny-front-map }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_map.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-map }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-map
+spec:
+  selector: { app: shiny-front-map }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-analytics-advanced
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-analytics-advanced
+spec:
+  selector:
+    matchLabels: { app: shiny-front-analytics-advanced }
+  template:
+    metadata:
+      labels: { app: shiny-front-analytics-advanced }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics_advanced.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-adv-analytics }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-analytics-advanced
+spec:
+  selector: { app: shiny-front-analytics-advanced }
+  ports: [{ port: 3838 }]
+
+# Shiny Frontend: shiny-front-ml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-front-ml
+spec:
+  selector:
+    matchLabels: { app: shiny-front-ml }
+  template:
+    metadata:
+      labels: { app: shiny-front-ml }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
+          ports: [{ containerPort: 3838 }]
+          volumeMounts:
+            - { name: script, mountPath: /app/app.R, subPath: shiny_front_ml.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-ml }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny-front-ml
+spec:
+  selector: { app: shiny-front-ml }
+  ports: [{ port: 3838 }]
+
+# Shiny Backend: shiny-back
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back
+spec:
+  selector:
+    matchLabels: { app: shiny-back }
+  template:
+    metadata:
+      labels: { app: shiny-back }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-calc }
+
+# Shiny Backend: shiny-back-analytics
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-analytics
+spec:
+  selector:
+    matchLabels: { app: shiny-back-analytics }
+  template:
+    metadata:
+      labels: { app: shiny-back-analytics }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-analytics }
+
+# Shiny Backend: shiny-back-csv
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-csv
+spec:
+  selector:
+    matchLabels: { app: shiny-back-csv }
+  template:
+    metadata:
+      labels: { app: shiny-back-csv }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-csv }
+
+# Shiny Backend: shiny-back-csv-advanced
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-csv-advanced
+spec:
+  selector:
+    matchLabels: { app: shiny-back-csv-advanced }
+  template:
+    metadata:
+      labels: { app: shiny-back-csv-advanced }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv_advanced.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-csv-adv }
+
+# Shiny Backend: shiny-back-mc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-mc
+spec:
+  selector:
+    matchLabels: { app: shiny-back-mc }
+  template:
+    metadata:
+      labels: { app: shiny-back-mc }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_mc.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-mc }
+
+# Shiny Backend: shiny-back-map
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-map
+spec:
+  selector:
+    matchLabels: { app: shiny-back-map }
+  template:
+    metadata:
+      labels: { app: shiny-back-map }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_map.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-map }
+
+# Shiny Backend: shiny-back-analytics-advanced
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-analytics-advanced
+spec:
+  selector:
+    matchLabels: { app: shiny-back-analytics-advanced }
+  template:
+    metadata:
+      labels: { app: shiny-back-analytics-advanced }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics_advanced.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-adv-analytics }
+
+# Shiny Backend: shiny-back-ml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny-back-ml
+spec:
+  selector:
+    matchLabels: { app: shiny-back-ml }
+  template:
+    metadata:
+      labels: { app: shiny-back-ml }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
+          command: ["Rscript", "/app/back.R"]
+          volumeMounts:
+            - { name: script, mountPath: /app/back.R, subPath: shiny_back_ml.r }
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+      volumes:
+        - name: script
+          configMap: { name: kafka-scripts-ml }

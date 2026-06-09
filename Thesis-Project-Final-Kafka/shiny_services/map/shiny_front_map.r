@@ -123,7 +123,7 @@ server <- function(input, output, session) {
     id <- identity()
     
     payload <- list(
-      appName = "GeoMap",
+      appName = "Geospatial",
       type = "NEW_SENSOR",
       lat = click$lat,
       lng = click$lng,
@@ -151,7 +151,7 @@ server <- function(input, output, session) {
     if (!result_has_error(result) && !is.null(msg$value)) {
       if (!is.null(msg$key) && msg$key == routingKey()) {
         data <- fromJSON(msg$value)
-        if (!is.null(data$appName) && data$appName != "GeoMap") return()
+        if (!is.null(data$appName) && data$appName != "Geospatial") return()
 
         if (!is.null(data$type) && data$type == "DELTA") {
           state$last_sender <- data$sender
