@@ -226,8 +226,8 @@ spec:
     - { name: mc, port: 83, targetPort: 83, nodePort: 30083 }
     - { name: map, port: 84, targetPort: 84, nodePort: 30084 }
     - { name: climate, port: 85, targetPort: 85, nodePort: 30085 }
-    - { name: adv-analytics, port: 86, targetPort: 86, nodePort: 30086 }
-    - { name: ml, port: 87, targetPort: 87, nodePort: 30087 }
+    - { name: adv-analytics, port: 87, targetPort: 87, nodePort: 30086 }
+    - { name: ml, port: 88, targetPort: 88, nodePort: 30087 }
 
 ---
 apiVersion: apps/v1
