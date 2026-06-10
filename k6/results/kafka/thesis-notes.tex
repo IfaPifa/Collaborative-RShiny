@@ -147,6 +147,153 @@ library could adopt the same design, but the throughput ceiling would
 remain R's single-threaded processing speed.
 
 % ------------------------------------------------------------------
+\section{Latency vs Data Integrity: The Case for Kafka Despite Higher Latency}
+% ------------------------------------------------------------------
+
+A common objection to the latency findings is that for scientific
+workflows---where simulations may run for hours---an 11-second state
+relay delay is negligible. This is true for batch-style usage, but
+misses the collaborative real-time editing use case that ShinySwarm
+targets. However, the objection reveals a more nuanced trade-off:
+Kafka's value is not low latency but \textbf{data integrity guarantees}.
+
+\subsection{What Kafka Provides That REST Does Not}
+
+\begin{tabularx}{\textwidth}{@{}lXX@{}}
+\toprule
+\textbf{Property} & \textbf{REST + Redis} & \textbf{Kafka} \\
+\midrule
+Latency (avg)
+  & $\sim$91\,ms
+  & $\sim$5.7\,s \\
+State durability
+  & Last-write-wins; intermediate states are overwritten and lost
+  & Append-only log; every state change is persisted \\
+Ordering guarantees
+  & None; concurrent writes may arrive out of order
+  & Guaranteed per partition \\
+Crash recovery
+  & State lost if Redis restarts without persistence
+  & Consumer resumes from last committed offset \\
+Audit trail
+  & Must be explicitly implemented (e.g.\ event-sourcing table)
+  & Built-in via topic retention policy \\
+Data loss under concurrency
+  & Possible: if two users write between polls, one update is silently
+    overwritten
+  & Impossible: all messages are appended, none overwritten \\
+\bottomrule
+\end{tabularx}
+
+\subsection{When Latency Does Not Matter}
+
+For scientific use cases where the workflow is:
+
+\begin{enumerate}
+  \item Researcher A configures simulation parameters,
+  \item A long-running computation executes (minutes to hours),
+  \item Researcher B reviews the results,
+\end{enumerate}
+
+\noindent the 11-second relay latency is irrelevant. What matters is
+that the parameter configuration is \textbf{not lost or corrupted}
+between steps. Kafka's append-only log guarantees this: every parameter
+change is recorded in order, and if the system crashes mid-computation,
+the exact state can be reconstructed from the topic.
+
+In contrast, the REST architecture stores only the \textit{latest} state
+in Redis. If Redis restarts, or if two researchers modify parameters
+simultaneously, intermediate states are silently lost. For a
+reproducibility-focused scientific workflow, this is a more serious
+deficiency than high latency.
+
+\subsection{When Latency Does Matter}
+
+For interactive collaborative editing---multiple researchers adjusting
+a shared visualization in real time---latency directly impacts usability:
+
+\begin{itemize}
+  \item At 11\,s delay, users make conflicting changes based on stale state.
+  \item At 36\,s (10-user scenario), the platform is effectively unusable
+        for synchronous collaboration.
+  \item Users may assume the platform is broken and retry actions,
+        creating duplicate state changes.
+\end{itemize}
+
+\subsection{Synthesis}
+
+The choice between REST and Kafka is not ``which is better'' but
+``which trade-off is acceptable for the use case'':
+
+\begin{itemize}
+  \item \textbf{Interactive collaboration} (real-time parameter tuning,
+        shared dashboards): REST wins. Low latency is essential, and
+        data integrity can be supplemented with explicit save/restore
+        snapshots to PostgreSQL.
+  \item \textbf{Asynchronous scientific workflows} (long-running
+        simulations, reproducible pipelines): Kafka wins. Latency is
+        irrelevant, and the append-only log provides an audit trail
+        and crash recovery that REST cannot match without additional
+        infrastructure.
+  \item \textbf{Hybrid approach}: use REST for the real-time state
+        synchronization layer (low latency for UI updates) and Kafka
+        as a durable event log for audit, replay, and crash recovery.
+        This combines the strengths of both architectures but increases
+        operational complexity.
+\end{itemize}
+
+The Kafka benchmark data supports this framing: the three failing
+benchmarks (01, 02, 08) are exclusively latency-sensitive, while all
+correctness benchmarks (data loss, cross-contamination, session
+lifecycle) pass at 100\%. The architecture's weakness is responsiveness,
+not reliability---which aligns with Kafka's design priorities.
+
+% ------------------------------------------------------------------
+\section{Benchmark Load Justification}
+% ------------------------------------------------------------------
+
+The k6 benchmarks use the following virtual user (VU) counts:
+
+\begin{tabularx}{\textwidth}{@{}lrX@{}}
+\toprule
+\textbf{Benchmark} & \textbf{Peak VUs} & \textbf{Ramp pattern} \\
+\midrule
+01 State Relay          & 20  & 1 $\to$ 5 $\to$ 10 $\to$ 20 $\to$ 10 $\to$ 1 \\
+02 Collaboration        & 30  & 1 $\to$ 10 $\to$ 20 $\to$ 30 $\to$ 15 $\to$ 1 \\
+03 Save/Restore         & 15  & Ramped \\
+04 Throughput           & 100 & 0 $\to$ 10 $\to$ 25 $\to$ 50 $\to$ 75 $\to$ 100 $\to$ 50 $\to$ 0 \\
+05 Data Loss            & 15  & Fixed \\
+06 Cross-Contamination  & ---  & Fixed (2 sessions per app) \\
+07 Session Lifecycle    & 50  & Ramped \\
+08 Multi-User           & 3   & 3 VUs simulating groups of 3, 5, and 10 guests \\
+09 WebSocket Presence   & 50  & Ramped \\
+\bottomrule
+\end{tabularx}
+
+These loads are realistic for a university collaborative research platform.
+Typical usage patterns include:
+
+\begin{itemize}
+  \item \textbf{5--20 concurrent users}: a research lab group or seminar
+        working on a shared analysis session.
+  \item \textbf{50--100 concurrent users}: a lecture demonstration, a
+        workshop, or a course exercise where an entire class interacts
+        with the platform simultaneously.
+\end{itemize}
+
+The Kafka architecture already fails at 20 VUs (benchmark~01), which
+corresponds to a single lab group---the most basic collaborative use case.
+Testing higher loads (e.g.\ 500 or 1000 VUs) would not yield additional
+insight, as the bottleneck is already saturated at the lowest realistic
+concurrency level.
+
+The single-node Hetzner CX32 cluster (8 vCPU, 16\,GB RAM) is
+representative of what a university research group would realistically
+deploy. Enterprise-scale Kubernetes clusters with dozens of nodes are
+outside the scope of this comparison, as they would not reflect the
+target deployment environment.
+
+% ------------------------------------------------------------------
 \section{Future Work: A Background-Thread Kafka Library for R}
 % ------------------------------------------------------------------
 

@@ -96,6 +96,7 @@ export const APPS = [
     appName: 'MonteCarlo',
     payload: (vu, iter) => ({
       appName: 'MonteCarlo',
+      command: 'START_SIMULATION',
       n_simulations: 1000,
       distribution: 'normal',
       mean: 0,
@@ -124,6 +125,7 @@ export const APPS = [
     appName: 'ClimateAnomaly',
     payload: (vu, iter) => ({
       appName: 'ClimateAnomaly',
+      action: 'ANALYZE_CLIMATE',
       station_id: `ST_${vu}`,
       threshold: 2.5,
       window_size: 30,
@@ -137,6 +139,7 @@ export const APPS = [
     appName: 'MLTrainer',
     payload: (vu, iter) => ({
       appName: 'MLTrainer',
+      command: 'TRAIN_MODEL',
       n_trees: 50,
       target_var: 'presence',
       train_ratio: 0.7,
