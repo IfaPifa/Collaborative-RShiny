@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run all 7 k6 benchmarks against a deployed architecture.
+# Run all 8 k6 benchmarks against a deployed architecture.
 #
 # Usage:
 #   ./k6/run-all.sh http://server-ip:30001 kafka
@@ -31,6 +31,8 @@ TESTS=(
   "05-data-loss"
   "06-cross-contamination"
   "07-session-lifecycle"
+  "08-multi-user-collab"
+  "09-websocket-presence"
 )
 
 TOTAL=${#TESTS[@]}
