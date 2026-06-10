@@ -4,6 +4,10 @@ library(jsonlite)
 library(kafka)
 library(shinyjs)
 
+# Tunable polling parameters (override via env vars in K8s ConfigMap)
+POLL_INTERVAL_MS  <- as.integer(Sys.getenv("POLL_INTERVAL_MS", "150"))
+CONSUME_TIMEOUT_MS <- as.integer(Sys.getenv("CONSUME_TIMEOUT_MS", "50"))
+
 # --- UNIFIED MODERN UI DEFINITION ---
 ui <- page_sidebar(
   useShinyjs(), 
@@ -117,12 +121,12 @@ server <- function(input, output, session) {
     state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
-  poll_trigger <- reactivePoll(200, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))
+  poll_trigger <- reactivePoll(POLL_INTERVAL_MS, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))
   
   observe({
     poll_trigger()
     req(state$connected, !is.null(state$consumer))
-    result <- state$consumer$consume(10)
+    result <- state$consumer$consume(CONSUME_TIMEOUT_MS)
     msg <- result_message(result)
     
     if (!result_has_error(result) && !is.null(msg$value)) {
