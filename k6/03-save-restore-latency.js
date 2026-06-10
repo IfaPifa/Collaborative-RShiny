@@ -79,6 +79,7 @@ export default function () {
       const marker = `sr_${__VU}_${__ITER}_${Date.now()}`;
       const payload = app.payload(__VU, __ITER);
       payload._marker = marker;
+      payload.sender = username;
       const postRes = postState(token, session.id, payload, tags);
       if (postRes.status !== 200) { saveRestoreFail.add(1, tags); return; }
 

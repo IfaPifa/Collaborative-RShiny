@@ -75,6 +75,7 @@ export default function () {
       for (let i = 0; i < BATCH_SIZE; i++) {
         const payload = app.payload(__VU, i);
         payload._marker = `dl_${runId}_${i}`;
+        payload.sender = username;
 
         // POST state to populate the pipeline
         const postRes = postState(token, session.id, payload, tags);

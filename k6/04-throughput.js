@@ -93,6 +93,7 @@ export default function () {
 
     // 4. POST state (relay through pipeline)
     const payload = app.payload(__VU, __ITER);
+    payload.sender = username;
     const postRes = postState(token, session.id, payload, { app_name: appTag });
     track(postRes, 'post_state', appTag);
 

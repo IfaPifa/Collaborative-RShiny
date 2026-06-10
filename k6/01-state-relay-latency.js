@@ -78,6 +78,7 @@ export default function () {
       const payload = app.payload(__VU, __ITER);
       const marker = `m_${__VU}_${__ITER}_${Date.now()}`;
       payload._marker = marker;
+      payload.sender = username;
 
       // POST state
       const t0 = Date.now();
