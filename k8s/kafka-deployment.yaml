@@ -94,7 +94,7 @@ spec:
           volumeMounts:
             - { name: pg-data, mountPath: /var/lib/postgresql/data }
           resources:
-            requests: { cpu: 100m, memory: 256Mi }
+            requests: { cpu: 200m, memory: 384Mi }
             limits: { cpu: 500m, memory: 512Mi }
       volumes:
         - name: pg-data
@@ -260,8 +260,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-calc }
@@ -295,8 +295,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-analytics }
@@ -330,8 +330,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-csv }
@@ -366,8 +366,8 @@ spec:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv_advanced.r }
             - { name: shared-data, mountPath: /app/shared_data }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-csv-adv }
@@ -403,8 +403,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_mc.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-mc }
@@ -438,8 +438,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_map.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-map }
@@ -473,8 +473,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics_advanced.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-adv-analytics }
@@ -508,8 +508,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_ml.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-ml }
@@ -542,8 +542,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-calc }
@@ -568,8 +568,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-analytics }
@@ -594,8 +594,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-csv }
@@ -621,8 +621,8 @@ spec:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_csv_advanced.r }
             - { name: shared-data, mountPath: /app/shared_data }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-csv-adv }
@@ -649,8 +649,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_mc.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-mc }
@@ -675,8 +675,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_map.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-map }
@@ -701,8 +701,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_analytics_advanced.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-adv-analytics }
@@ -727,8 +727,8 @@ spec:
           volumeMounts:
             - { name: script, mountPath: /app/back.R, subPath: shiny_back_ml.r }
           resources:
-            requests: { cpu: 100m, memory: 128Mi }
-            limits: { cpu: 300m, memory: 384Mi }
+            requests: { cpu: 200m, memory: 384Mi }
+            limits: { cpu: 750m, memory: 1Gi }
       volumes:
         - name: script
           configMap: { name: kafka-scripts-ml }
