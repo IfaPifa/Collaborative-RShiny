@@ -1,0 +1,206 @@
+{
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "relay_Calculator": {
+                "checks": {},
+                "name": "relay_Calculator",
+                "path": "::relay_Calculator",
+                "id": "b15cd39a80d15b7ac5e8d41fe8bed8e1",
+                "groups": {}
+            },
+            "relay_Analytics": {
+                "groups": {},
+                "checks": {},
+                "name": "relay_Analytics",
+                "path": "::relay_Analytics",
+                "id": "3f6e5c7330df17be5df28046122eaaf1"
+            },
+            "relay_Advanced": {
+                "id": "d2f8470bb6a73030e8afe1e5c458431b",
+                "groups": {},
+                "checks": {},
+                "name": "relay_Advanced",
+                "path": "::relay_Advanced"
+            },
+            "relay_DataExchange": {
+                "id": "2afc7dda5c4f3829b5f74104b74a6aae",
+                "groups": {},
+                "checks": {},
+                "name": "relay_DataExchange",
+                "path": "::relay_DataExchange"
+            },
+            "relay_MonteCarlo": {
+                "groups": {},
+                "checks": {},
+                "name": "relay_MonteCarlo",
+                "path": "::relay_MonteCarlo",
+                "id": "463f30ea0fa8c29621dc3b12ed590cbd"
+            },
+            "relay_Geospatial": {
+                "groups": {},
+                "checks": {},
+                "name": "relay_Geospatial",
+                "path": "::relay_Geospatial",
+                "id": "65687095441089d06e99284df5d27ef2"
+            },
+            "relay_ClimateAnomaly": {
+                "name": "relay_ClimateAnomaly",
+                "path": "::relay_ClimateAnomaly",
+                "id": "bb360df4b5424979ea868ace1b882d7e",
+                "groups": {},
+                "checks": {}
+            },
+            "relay_MLTrainer": {
+                "groups": {},
+                "checks": {},
+                "name": "relay_MLTrainer",
+                "path": "::relay_MLTrainer",
+                "id": "dd4125415a9ee83ee19c6ec49c33bb87"
+            }
+        },
+        "checks": {}
+    },
+    "metrics": {
+        "relay_failure": {
+            "count": 3520,
+            "rate": 14.365840983027914
+        },
+        "http_req_failed": {
+            "passes": 3520,
+            "fails": 3962,
+            "thresholds": {
+                "rate<0.15": true
+            },
+            "value": 0.47046244319700614
+        },
+        "http_reqs": {
+            "count": 7482,
+            "rate": 30.535574498583767
+        },
+        "group_duration": {
+            "avg": 150.53525451647732,
+            "min": 73.600558,
+            "med": 111.2203925,
+            "max": 932.345955,
+            "p(90)": 233.49246829999998,
+            "p(95)": 303.9546785
+        },
+        "iterations": {
+            "count": 440,
+            "rate": 1.7957301228784892
+        },
+        "data_sent": {
+            "count": 3078783,
+            "rate": 12565.144033877736
+        },
+        "http_req_blocked": {
+            "min": 0.001237,
+            "med": 0.0086795,
+            "max": 60.386379,
+            "p(90)": 0.016841,
+            "p(95)": 0.0186266,
+            "avg": 0.114062949612403
+        },
+        "data_received": {
+            "rate": 28966.718551911676,
+            "count": 7097590
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 130.35509103028764,
+            "min": 35.825565,
+            "med": 63.510009499999995,
+            "max": 1903.999322,
+            "p(90)": 223.3045060000002,
+            "p(95)": 499.62491779999954
+        },
+        "iteration_duration": {
+            "max": 7399.927339,
+            "p(90)": 6750.4131469,
+            "p(95)": 6909.8945500499985,
+            "avg": 5754.954829322729,
+            "min": 4801.942734,
+            "med": 5593.077781
+        },
+        "http_req_duration": {
+            "avg": 102.61513493023227,
+            "min": 35.216919,
+            "med": 56.7870645,
+            "max": 1903.999322,
+            "p(90)": 162.8565693000001,
+            "p(95)": 259.65730535
+        },
+        "http_req_sending": {
+            "p(90)": 0.0639291,
+            "p(95)": 0.07062565,
+            "avg": 0.04051497460572034,
+            "min": 0.006532,
+            "med": 0.036320000000000005,
+            "max": 0.814599
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 60.28099,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.10380603421545041
+        },
+        "relay_total_ms": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "thresholds": {
+                "p(95)<10000": false
+            }
+        },
+        "vus_max": {
+            "value": 20,
+            "min": 20,
+            "max": 20
+        },
+        "http_req_waiting": {
+            "avg": 102.153174521652,
+            "min": 34.816583,
+            "med": 56.369861,
+            "max": 1903.862498,
+            "p(90)": 162.08151360000002,
+            "p(95)": 259.40926344999997
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        },
+        "http_req_receiving": {
+            "avg": 0.421445433974874,
+            "min": 0.016814,
+            "med": 0.1497985,
+            "max": 91.277994,
+            "p(90)": 0.39353950000000004,
+            "p(95)": 0.73706765
+        },
+        "relay_post_ms": {
+            "med": 52,
+            "max": 601,
+            "p(90)": 102,
+            "p(95)": 140,
+            "avg": 71.696875,
+            "min": 36
+        },
+        "vus": {
+            "value": 1,
+            "min": 0,
+            "max": 20
+        }
+    },
+    "setup_data": {}
+}

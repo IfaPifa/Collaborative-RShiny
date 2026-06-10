@@ -1,0 +1,209 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "save_restore_Calculator": {
+                "path": "::save_restore_Calculator",
+                "id": "b99a24a3c98dc4741cb9b34732005dc4",
+                "groups": {},
+                "checks": {},
+                "name": "save_restore_Calculator"
+            },
+            "save_restore_Analytics": {
+                "id": "283e4783344f0d2bd71d2fe6b4121c1d",
+                "groups": {},
+                "checks": {},
+                "name": "save_restore_Analytics",
+                "path": "::save_restore_Analytics"
+            },
+            "save_restore_Advanced": {
+                "path": "::save_restore_Advanced",
+                "id": "1c0c317933d2016d57a2c9d4d8befaa3",
+                "groups": {},
+                "checks": {},
+                "name": "save_restore_Advanced"
+            },
+            "save_restore_DataExchange": {
+                "checks": {},
+                "name": "save_restore_DataExchange",
+                "path": "::save_restore_DataExchange",
+                "id": "f64edbb461f86bb7504624774eef9675",
+                "groups": {}
+            },
+            "save_restore_MonteCarlo": {
+                "path": "::save_restore_MonteCarlo",
+                "id": "49a3c8c465580da641479c6df128fc24",
+                "groups": {},
+                "checks": {},
+                "name": "save_restore_MonteCarlo"
+            },
+            "save_restore_Geospatial": {
+                "name": "save_restore_Geospatial",
+                "path": "::save_restore_Geospatial",
+                "id": "1d0bef176e2bed93fafa3adefe627f74",
+                "groups": {},
+                "checks": {}
+            },
+            "save_restore_ClimateAnomaly": {
+                "name": "save_restore_ClimateAnomaly",
+                "path": "::save_restore_ClimateAnomaly",
+                "id": "57b53bf5fbcdd8d236ac3edc6e66426c",
+                "groups": {},
+                "checks": {}
+            },
+            "save_restore_MLTrainer": {
+                "id": "0d77cdc745ff40c823a070ca217dee42",
+                "groups": {},
+                "checks": {},
+                "name": "save_restore_MLTrainer",
+                "path": "::save_restore_MLTrainer"
+            }
+        },
+        "checks": {},
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "http_req_duration{expected_response:true}": {
+            "max": 655.270873,
+            "p(90)": 113.6919331,
+            "p(95)": 163.1672582999998,
+            "avg": 64.19451061133604,
+            "min": 35.208118,
+            "med": 44.5912285
+        },
+        "http_req_sending": {
+            "avg": 0.04187893016845333,
+            "min": 0.005181,
+            "med": 0.038664000000000004,
+            "max": 0.317323,
+            "p(90)": 0.0643046,
+            "p(95)": 0.07045499999999996
+        },
+        "http_req_blocked": {
+            "p(90)": 0.017176200000000003,
+            "p(95)": 0.018783399999999995,
+            "avg": 0.09695643476263383,
+            "min": 0.001741,
+            "med": 0.009181499999999999,
+            "max": 42.211732
+        },
+        "data_received": {
+            "count": 6180098,
+            "rate": 25346.666865040865
+        },
+        "iterations": {
+            "count": 384,
+            "rate": 1.5749135492957702
+        },
+        "save_to_db_ms": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "thresholds": {
+                "p(95)<5000": false
+            }
+        },
+        "http_req_connecting": {
+            "avg": 0.08603871562021438,
+            "min": 0,
+            "med": 0,
+            "max": 42.114176,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_tls_handshaking": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0
+        },
+        "http_req_waiting": {
+            "min": 34.764256,
+            "med": 44.135979,
+            "max": 655.189277,
+            "p(90)": 84.8404466,
+            "p(95)": 122.56364419999954,
+            "avg": 56.171652508116296
+        },
+        "http_req_receiving": {
+            "avg": 0.2252316898928022,
+            "min": 0.020588,
+            "med": 0.15651500000000002,
+            "max": 49.043872,
+            "p(90)": 0.32571200000000006,
+            "p(95)": 0.5149870499999997
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 15
+        },
+        "http_req_duration": {
+            "p(90)": 85.24777650000001,
+            "p(95)": 123.30879104999971,
+            "avg": 56.43876312817741,
+            "min": 34.976899,
+            "med": 44.3635735,
+            "max": 655.270873
+        },
+        "group_duration": {
+            "min": 72.850934,
+            "med": 89.125089,
+            "max": 289.144882,
+            "p(90)": 116.56883670000002,
+            "p(95)": 144.4856693499999,
+            "avg": 96.0053994166666
+        },
+        "http_reqs": {
+            "count": 6530,
+            "rate": 26.78173301276401
+        },
+        "data_sent": {
+            "count": 2677544,
+            "rate": 10981.511261551026
+        },
+        "save_restore_fail": {
+            "count": 3072,
+            "rate": 12.599308394366162
+        },
+        "http_req_failed": {
+            "passes": 3072,
+            "fails": 3458,
+            "thresholds": {
+                "rate<0.2": true
+            },
+            "value": 0.4704441041347626
+        },
+        "iteration_duration": {
+            "max": 5520.815289,
+            "p(90)": 5198.0040232,
+            "p(95)": 5321.59963655,
+            "avg": 4972.860810247398,
+            "min": 4789.448504,
+            "med": 4910.795866500001
+        },
+        "restore_from_db_ms": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "thresholds": {
+                "p(95)<5000": false
+            }
+        },
+        "vus_max": {
+            "max": 15,
+            "value": 15,
+            "min": 15
+        }
+    },
+    "setup_data": {}
+}
