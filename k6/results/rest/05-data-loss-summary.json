@@ -1,0 +1,260 @@
+{
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "dataloss_Calculator": {
+                "name": "dataloss_Calculator",
+                "path": "::dataloss_Calculator",
+                "id": "54dd1e3820159378e333cca3134a246b",
+                "groups": {},
+                "checks": {
+                        "Calculator zero data loss": {
+                            "name": "Calculator zero data loss",
+                            "path": "::dataloss_Calculator::Calculator zero data loss",
+                            "id": "637ee923d24926739061ccd01708ab0a",
+                            "passes": 15,
+                            "fails": 0
+                        }
+                    }
+            },
+            "dataloss_Analytics": {
+                "name": "dataloss_Analytics",
+                "path": "::dataloss_Analytics",
+                "id": "a08bb261ca9635cd8e3523733e119ca3",
+                "groups": {},
+                "checks": {
+                        "Analytics zero data loss": {
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "Analytics zero data loss",
+                            "path": "::dataloss_Analytics::Analytics zero data loss",
+                            "id": "fa97f28236b7e9365bb14036eeb302f8"
+                        }
+                    }
+            },
+            "dataloss_Advanced": {
+                "name": "dataloss_Advanced",
+                "path": "::dataloss_Advanced",
+                "id": "eb4a88e77b6b8a91018d4e6798f35056",
+                "groups": {},
+                "checks": {
+                        "Advanced zero data loss": {
+                            "path": "::dataloss_Advanced::Advanced zero data loss",
+                            "id": "c3545bda829666c94303734767dedd8c",
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "Advanced zero data loss"
+                        }
+                    }
+            },
+            "dataloss_DataExchange": {
+                "id": "944660eed6bb770b883c8d47c7332d48",
+                "groups": {},
+                "checks": {
+                        "DataExchange zero data loss": {
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "DataExchange zero data loss",
+                            "path": "::dataloss_DataExchange::DataExchange zero data loss",
+                            "id": "96affe4494354f0e5109709ba97a289e"
+                        }
+                    },
+                "name": "dataloss_DataExchange",
+                "path": "::dataloss_DataExchange"
+            },
+            "dataloss_MonteCarlo": {
+                "id": "d2ccacf89f748ec10dd380ae4c20c9d5",
+                "groups": {},
+                "checks": {
+                        "MonteCarlo zero data loss": {
+                            "id": "ed59ecc3c60dbf946c34f03d4cb3f892",
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "MonteCarlo zero data loss",
+                            "path": "::dataloss_MonteCarlo::MonteCarlo zero data loss"
+                        }
+                    },
+                "name": "dataloss_MonteCarlo",
+                "path": "::dataloss_MonteCarlo"
+            },
+            "dataloss_Geospatial": {
+                "path": "::dataloss_Geospatial",
+                "id": "cc0be419e63c1234db98505eba7c6a6b",
+                "groups": {},
+                "checks": {
+                        "Geospatial zero data loss": {
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "Geospatial zero data loss",
+                            "path": "::dataloss_Geospatial::Geospatial zero data loss",
+                            "id": "62a9c066b15b65bcc87eba77a86c3d28"
+                        }
+                    },
+                "name": "dataloss_Geospatial"
+            },
+            "dataloss_ClimateAnomaly": {
+                "groups": {},
+                "checks": {
+                        "ClimateAnomaly zero data loss": {
+                            "name": "ClimateAnomaly zero data loss",
+                            "path": "::dataloss_ClimateAnomaly::ClimateAnomaly zero data loss",
+                            "id": "a99aa02fb53d826c5b5364c8c4810d7e",
+                            "passes": 15,
+                            "fails": 0
+                        }
+                    },
+                "name": "dataloss_ClimateAnomaly",
+                "path": "::dataloss_ClimateAnomaly",
+                "id": "a5045a77c47978060e9b52e3559efe41"
+            },
+            "dataloss_MLTrainer": {
+                "name": "dataloss_MLTrainer",
+                "path": "::dataloss_MLTrainer",
+                "id": "6df95604139c03d07443ec9b9e9f0328",
+                "groups": {},
+                "checks": {
+                        "MLTrainer zero data loss": {
+                            "passes": 15,
+                            "fails": 0,
+                            "name": "MLTrainer zero data loss",
+                            "path": "::dataloss_MLTrainer::MLTrainer zero data loss",
+                            "id": "ce81ad5c4bad1b9368a2500a51e52d92"
+                        }
+                    }
+            }
+        },
+        "checks": {}
+    },
+    "metrics": {
+        "http_req_duration": {
+            "p(90)": 194.4552092,
+            "p(95)": 218.38926179999999,
+            "avg": 110.91101749831479,
+            "min": 34.483787,
+            "med": 62.31796,
+            "max": 3701.819443
+        },
+        "checks": {
+            "passes": 120,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_failed": {
+            "passes": 3600,
+            "fails": 257,
+            "value": 0.933367902514908
+        },
+        "data_received": {
+            "count": 2352482,
+            "rate": 33587.588616365574
+        },
+        "http_req_waiting": {
+            "p(95)": 218.30195999999998,
+            "avg": 110.74927961524496,
+            "min": 34.397839,
+            "med": 62.222597,
+            "max": 3701.685558,
+            "p(90)": 194.3775168
+        },
+        "group_duration": {
+            "p(95)": 17285.00507395,
+            "avg": 8435.462868875,
+            "min": 6305.071483,
+            "med": 7095.668966,
+            "max": 18024.501212,
+            "p(90)": 16262.2791096
+        },
+        "http_req_receiving": {
+            "med": 0.098307,
+            "max": 26.196823,
+            "p(90)": 0.1883126,
+            "p(95)": 0.23863659999999978,
+            "avg": 0.130277584910552,
+            "min": 0.016817
+        },
+        "vus_max": {
+            "value": 15,
+            "min": 15,
+            "max": 15
+        },
+        "vus": {
+            "value": 2,
+            "min": 2,
+            "max": 15
+        },
+        "iterations": {
+            "count": 15,
+            "rate": 0.2141626712746298
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 260.07862598054464,
+            "min": 35.576741,
+            "med": 44.676643,
+            "max": 3701.819443,
+            "p(90)": 583.0621958000004,
+            "p(95)": 2010.9849047999999
+        },
+        "http_req_connecting": {
+            "p(95)": 0,
+            "avg": 0.1599208384754991,
+            "min": 0,
+            "med": 0,
+            "max": 40.796916,
+            "p(90)": 0
+        },
+        "data_sent": {
+            "count": 1903655,
+            "rate": 27179.455999020356
+        },
+        "dataloss_pct": {
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "thresholds": {
+                "p(95)<5": false
+            }
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "http_req_sending": {
+            "avg": 0.03146029815919103,
+            "min": 0.005439,
+            "med": 0.028399,
+            "max": 0.50757,
+            "p(90)": 0.0469352,
+            "p(95)": 0.05299559999999998
+        },
+        "iteration_duration": {
+            "p(95)": 69605.7970224,
+            "avg": 68609.11771020001,
+            "min": 66037.108438,
+            "med": 69181.10716,
+            "max": 69628.340598,
+            "p(90)": 69574.3487604
+        },
+        "http_reqs": {
+            "count": 3857,
+            "rate": 55.06836154041647
+        },
+        "http_req_blocked": {
+            "med": 0.006005,
+            "max": 40.881668,
+            "p(90)": 0.0110554,
+            "p(95)": 0.0139796,
+            "avg": 0.16860225200933382,
+            "min": 0.001216
+        }
+    },
+    "setup_data": {}
+}
