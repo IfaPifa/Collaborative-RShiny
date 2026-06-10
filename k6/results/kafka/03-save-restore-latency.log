@@ -1,0 +1,819 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: k6/03-save-restore-latency.js
+        output: json (k6/results/kafka/03-save-restore-latency.json)
+
+     scenarios: (100.00%) 1 scenario, 15 max VUs, 4m30s max duration (incl. graceful stop):
+              * save_restore: Up to 15 looping VUs for 4m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+running (0m01.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   0% ] 01/15 VUs  0m00.8s/4m00.0s
+
+running (0m02.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   1% ] 01/15 VUs  0m01.8s/4m00.0s
+
+running (0m03.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   1% ] 01/15 VUs  0m02.8s/4m00.0s
+
+running (0m04.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m03.8s/4m00.0s
+
+running (0m05.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m04.8s/4m00.0s
+
+running (0m06.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m05.8s/4m00.0s
+
+running (0m07.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   3% ] 01/15 VUs  0m06.8s/4m00.0s
+
+running (0m08.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   3% ] 01/15 VUs  0m07.8s/4m00.0s
+
+running (0m09.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   4% ] 01/15 VUs  0m08.8s/4m00.0s
+
+running (0m10.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   4% ] 01/15 VUs  0m09.8s/4m00.0s
+
+running (0m11.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   4% ] 01/15 VUs  0m10.8s/4m00.0s
+
+running (0m12.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   5% ] 01/15 VUs  0m11.8s/4m00.0s
+
+running (0m13.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   5% ] 01/15 VUs  0m12.8s/4m00.0s
+
+running (0m14.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   6% ] 01/15 VUs  0m13.8s/4m00.0s
+
+running (0m15.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   6% ] 01/15 VUs  0m14.8s/4m00.0s
+
+running (0m16.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m15.8s/4m00.0s
+
+running (0m17.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m16.8s/4m00.0s
+
+running (0m18.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m17.8s/4m00.0s
+
+running (0m19.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [   8% ] 02/15 VUs  0m18.8s/4m00.0s
+
+running (0m20.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [   8% ] 02/15 VUs  0m19.8s/4m00.0s
+
+running (0m21.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [   9% ] 02/15 VUs  0m20.8s/4m00.0s
+
+running (0m22.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [   9% ] 02/15 VUs  0m21.8s/4m00.0s
+
+running (0m23.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [   9% ] 02/15 VUs  0m22.8s/4m00.0s
+
+running (0m24.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  10% ] 02/15 VUs  0m23.8s/4m00.0s
+
+running (0m25.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  10% ] 02/15 VUs  0m24.8s/4m00.0s
+
+running (0m26.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  11% ] 02/15 VUs  0m25.8s/4m00.0s
+
+running (0m27.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  11% ] 02/15 VUs  0m26.8s/4m00.0s
+
+running (0m28.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m27.8s/4m00.0s
+
+running (0m29.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m28.8s/4m00.0s
+
+running (0m30.0s), 02/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m29.8s/4m00.0s
+
+running (0m31.0s), 03/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  13% ] 03/15 VUs  0m30.8s/4m00.0s
+
+running (0m32.0s), 03/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  13% ] 03/15 VUs  0m31.8s/4m00.0s
+
+running (0m33.0s), 03/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  14% ] 03/15 VUs  0m32.8s/4m00.0s
+
+running (0m34.0s), 03/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  14% ] 03/15 VUs  0m33.8s/4m00.0s
+
+running (0m35.0s), 03/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  14% ] 03/15 VUs  0m34.8s/4m00.0s
+
+running (0m36.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  15% ] 03/15 VUs  0m35.8s/4m00.0s
+
+running (0m37.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  15% ] 03/15 VUs  0m36.8s/4m00.0s
+
+running (0m38.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  16% ] 03/15 VUs  0m37.8s/4m00.0s
+
+running (0m39.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  16% ] 03/15 VUs  0m38.8s/4m00.0s
+
+running (0m40.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m39.8s/4m00.0s
+
+running (0m41.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m40.8s/4m00.0s
+
+running (0m42.0s), 03/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m41.8s/4m00.0s
+
+running (0m43.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  18% ] 04/15 VUs  0m42.8s/4m00.0s
+
+running (0m44.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  18% ] 04/15 VUs  0m43.8s/4m00.0s
+
+running (0m45.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  19% ] 04/15 VUs  0m44.8s/4m00.0s
+
+running (0m46.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  19% ] 04/15 VUs  0m45.8s/4m00.0s
+
+running (0m47.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  19% ] 04/15 VUs  0m46.8s/4m00.0s
+
+running (0m48.0s), 04/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  20% ] 04/15 VUs  0m47.8s/4m00.0s
+
+running (0m49.0s), 04/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  20% ] 04/15 VUs  0m48.8s/4m00.0s
+
+running (0m50.0s), 04/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  21% ] 04/15 VUs  0m49.8s/4m00.0s
+
+running (0m51.0s), 04/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  21% ] 04/15 VUs  0m50.8s/4m00.0s
+
+running (0m52.0s), 04/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m51.8s/4m00.0s
+
+running (0m53.0s), 04/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m52.8s/4m00.0s
+
+running (0m54.0s), 04/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m53.8s/4m00.0s
+
+running (0m55.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  23% ] 05/15 VUs  0m54.8s/4m00.0s
+
+running (0m56.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  23% ] 05/15 VUs  0m55.8s/4m00.0s
+
+running (0m57.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  24% ] 05/15 VUs  0m56.8s/4m00.0s
+
+running (0m58.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  24% ] 05/15 VUs  0m57.8s/4m00.0s
+
+running (0m59.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  24% ] 05/15 VUs  0m58.8s/4m00.0s
+
+running (1m00.0s), 05/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  25% ] 05/15 VUs  0m59.8s/4m00.0s
+
+running (1m01.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  25% ] 05/15 VUs  1m00.8s/4m00.0s
+
+running (1m02.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  26% ] 05/15 VUs  1m01.8s/4m00.0s
+
+running (1m03.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  26% ] 05/15 VUs  1m02.8s/4m00.0s
+
+running (1m04.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m03.8s/4m00.0s
+
+running (1m05.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m04.8s/4m00.0s
+
+running (1m06.0s), 05/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m05.8s/4m00.0s
+
+running (1m07.0s), 06/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  28% ] 06/15 VUs  1m06.8s/4m00.0s
+
+running (1m08.0s), 06/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  28% ] 06/15 VUs  1m07.8s/4m00.0s
+
+running (1m09.0s), 06/15 VUs, 9 complete and 0 interrupted iterations
+save_restore   [  29% ] 06/15 VUs  1m08.8s/4m00.0s
+
+running (1m10.0s), 06/15 VUs, 9 complete and 0 interrupted iterations
+save_restore   [  29% ] 06/15 VUs  1m09.8s/4m00.0s
+
+running (1m11.0s), 06/15 VUs, 9 complete and 0 interrupted iterations
+save_restore   [  29% ] 06/15 VUs  1m10.8s/4m00.0s
+
+running (1m12.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  30% ] 06/15 VUs  1m11.8s/4m00.0s
+
+running (1m13.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  30% ] 06/15 VUs  1m12.8s/4m00.0s
+
+running (1m14.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  31% ] 06/15 VUs  1m13.8s/4m00.0s
+
+running (1m15.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  31% ] 06/15 VUs  1m14.8s/4m00.0s
+
+running (1m16.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m15.8s/4m00.0s
+
+running (1m17.0s), 06/15 VUs, 11 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m16.8s/4m00.0s
+
+running (1m18.0s), 06/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m17.8s/4m00.0s
+
+running (1m19.0s), 07/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  33% ] 07/15 VUs  1m18.8s/4m00.0s
+
+running (1m20.0s), 07/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  33% ] 07/15 VUs  1m19.8s/4m00.0s
+
+running (1m21.0s), 07/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  34% ] 07/15 VUs  1m20.8s/4m00.0s
+
+running (1m22.0s), 07/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  34% ] 07/15 VUs  1m21.8s/4m00.0s
+
+running (1m23.0s), 07/15 VUs, 12 complete and 0 interrupted iterations
+save_restore   [  34% ] 07/15 VUs  1m22.8s/4m00.0s
+
+running (1m24.0s), 07/15 VUs, 14 complete and 0 interrupted iterations
+save_restore   [  35% ] 07/15 VUs  1m23.8s/4m00.0s
+
+running (1m25.0s), 07/15 VUs, 14 complete and 0 interrupted iterations
+save_restore   [  35% ] 07/15 VUs  1m24.8s/4m00.0s
+
+running (1m26.0s), 07/15 VUs, 14 complete and 0 interrupted iterations
+save_restore   [  36% ] 07/15 VUs  1m25.8s/4m00.0s
+
+running (1m27.0s), 07/15 VUs, 15 complete and 0 interrupted iterations
+save_restore   [  36% ] 07/15 VUs  1m26.8s/4m00.0s
+
+running (1m28.0s), 07/15 VUs, 15 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m27.8s/4m00.0s
+
+running (1m29.0s), 07/15 VUs, 15 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m28.8s/4m00.0s
+
+running (1m30.0s), 07/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m29.8s/4m00.0s
+
+running (1m31.0s), 08/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  38% ] 08/15 VUs  1m30.8s/4m00.0s
+
+running (1m32.0s), 08/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  38% ] 08/15 VUs  1m31.8s/4m00.0s
+
+running (1m33.0s), 08/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  39% ] 08/15 VUs  1m32.8s/4m00.0s
+
+running (1m34.0s), 08/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  39% ] 08/15 VUs  1m33.8s/4m00.0s
+
+running (1m35.0s), 08/15 VUs, 17 complete and 0 interrupted iterations
+save_restore   [  39% ] 08/15 VUs  1m34.8s/4m00.0s
+
+running (1m36.0s), 08/15 VUs, 18 complete and 0 interrupted iterations
+save_restore   [  40% ] 08/15 VUs  1m35.8s/4m00.0s
+
+running (1m37.0s), 08/15 VUs, 19 complete and 0 interrupted iterations
+save_restore   [  40% ] 08/15 VUs  1m36.8s/4m00.0s
+
+running (1m38.0s), 08/15 VUs, 19 complete and 0 interrupted iterations
+save_restore   [  41% ] 08/15 VUs  1m37.8s/4m00.0s
+
+running (1m39.0s), 09/15 VUs, 19 complete and 0 interrupted iterations
+save_restore   [  41% ] 09/15 VUs  1m38.8s/4m00.0s
+
+running (1m40.0s), 09/15 VUs, 19 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m39.8s/4m00.0s
+
+running (1m41.0s), 09/15 VUs, 19 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m40.8s/4m00.0s
+
+running (1m42.0s), 09/15 VUs, 21 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m41.8s/4m00.0s
+
+running (1m43.0s), 09/15 VUs, 21 complete and 0 interrupted iterations
+save_restore   [  43% ] 09/15 VUs  1m42.8s/4m00.0s
+
+running (1m44.0s), 09/15 VUs, 21 complete and 0 interrupted iterations
+save_restore   [  43% ] 09/15 VUs  1m43.8s/4m00.0s
+
+running (1m45.0s), 09/15 VUs, 22 complete and 0 interrupted iterations
+save_restore   [  44% ] 09/15 VUs  1m44.8s/4m00.0s
+
+running (1m46.0s), 09/15 VUs, 22 complete and 0 interrupted iterations
+save_restore   [  44% ] 09/15 VUs  1m45.8s/4m00.0s
+
+running (1m47.0s), 09/15 VUs, 22 complete and 0 interrupted iterations
+save_restore   [  44% ] 09/15 VUs  1m46.8s/4m00.0s
+
+running (1m48.0s), 10/15 VUs, 24 complete and 0 interrupted iterations
+save_restore   [  45% ] 10/15 VUs  1m47.8s/4m00.0s
+
+running (1m49.0s), 10/15 VUs, 25 complete and 0 interrupted iterations
+save_restore   [  45% ] 10/15 VUs  1m48.8s/4m00.0s
+
+running (1m50.0s), 10/15 VUs, 25 complete and 0 interrupted iterations
+save_restore   [  46% ] 10/15 VUs  1m49.8s/4m00.0s
+
+running (1m51.0s), 10/15 VUs, 25 complete and 0 interrupted iterations
+save_restore   [  46% ] 10/15 VUs  1m50.8s/4m00.0s
+
+running (1m52.0s), 10/15 VUs, 25 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m51.8s/4m00.0s
+
+running (1m53.0s), 10/15 VUs, 25 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m52.8s/4m00.0s
+
+running (1m54.0s), 10/15 VUs, 26 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m53.8s/4m00.0s
+
+running (1m55.0s), 10/15 VUs, 27 complete and 0 interrupted iterations
+save_restore   [  48% ] 10/15 VUs  1m54.8s/4m00.0s
+
+running (1m56.0s), 11/15 VUs, 27 complete and 0 interrupted iterations
+save_restore   [  48% ] 11/15 VUs  1m55.8s/4m00.0s
+
+running (1m57.0s), 11/15 VUs, 28 complete and 0 interrupted iterations
+save_restore   [  49% ] 11/15 VUs  1m56.8s/4m00.0s
+
+running (1m58.0s), 11/15 VUs, 28 complete and 0 interrupted iterations
+save_restore   [  49% ] 11/15 VUs  1m57.8s/4m00.0s
+
+running (1m59.0s), 11/15 VUs, 28 complete and 0 interrupted iterations
+save_restore   [  49% ] 11/15 VUs  1m58.8s/4m00.0s
+
+running (2m00.0s), 11/15 VUs, 30 complete and 0 interrupted iterations
+save_restore   [  50% ] 11/15 VUs  1m59.8s/4m00.0s
+
+running (2m01.0s), 11/15 VUs, 30 complete and 0 interrupted iterations
+save_restore   [  50% ] 11/15 VUs  2m00.8s/4m00.0s
+
+running (2m02.0s), 11/15 VUs, 30 complete and 0 interrupted iterations
+save_restore   [  51% ] 11/15 VUs  2m01.8s/4m00.0s
+
+running (2m03.0s), 11/15 VUs, 31 complete and 0 interrupted iterations
+save_restore   [  51% ] 11/15 VUs  2m02.8s/4m00.0s
+
+running (2m04.0s), 11/15 VUs, 31 complete and 0 interrupted iterations
+save_restore   [  52% ] 11/15 VUs  2m03.8s/4m00.0s
+
+running (2m05.0s), 12/15 VUs, 31 complete and 0 interrupted iterations
+save_restore   [  52% ] 12/15 VUs  2m04.8s/4m00.0s
+
+running (2m06.0s), 12/15 VUs, 34 complete and 0 interrupted iterations
+save_restore   [  52% ] 12/15 VUs  2m05.8s/4m00.0s
+
+running (2m07.0s), 12/15 VUs, 35 complete and 0 interrupted iterations
+save_restore   [  53% ] 12/15 VUs  2m06.8s/4m00.0s
+
+running (2m08.0s), 12/15 VUs, 35 complete and 0 interrupted iterations
+save_restore   [  53% ] 12/15 VUs  2m07.8s/4m00.0s
+
+running (2m09.0s), 12/15 VUs, 35 complete and 0 interrupted iterations
+save_restore   [  54% ] 12/15 VUs  2m08.8s/4m00.0s
+
+running (2m10.0s), 12/15 VUs, 35 complete and 0 interrupted iterations
+save_restore   [  54% ] 12/15 VUs  2m09.8s/4m00.0s
+
+running (2m11.0s), 12/15 VUs, 35 complete and 0 interrupted iterations
+save_restore   [  54% ] 12/15 VUs  2m10.8s/4m00.0s
+
+running (2m12.0s), 12/15 VUs, 36 complete and 0 interrupted iterations
+save_restore   [  55% ] 12/15 VUs  2m11.8s/4m00.0s
+
+running (2m13.0s), 12/15 VUs, 37 complete and 0 interrupted iterations
+save_restore   [  55% ] 12/15 VUs  2m12.8s/4m00.0s
+
+running (2m14.0s), 13/15 VUs, 38 complete and 0 interrupted iterations
+save_restore   [  56% ] 13/15 VUs  2m13.8s/4m00.0s
+
+running (2m15.0s), 13/15 VUs, 39 complete and 0 interrupted iterations
+save_restore   [  56% ] 13/15 VUs  2m14.8s/4m00.0s
+
+running (2m16.0s), 13/15 VUs, 39 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m15.8s/4m00.0s
+
+running (2m17.0s), 13/15 VUs, 39 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m16.8s/4m00.0s
+
+running (2m18.0s), 13/15 VUs, 41 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m17.8s/4m00.0s
+
+running (2m19.0s), 13/15 VUs, 41 complete and 0 interrupted iterations
+save_restore   [  58% ] 13/15 VUs  2m18.8s/4m00.0s
+
+running (2m20.0s), 13/15 VUs, 41 complete and 0 interrupted iterations
+save_restore   [  58% ] 13/15 VUs  2m19.8s/4m00.0s
+
+running (2m21.0s), 13/15 VUs, 42 complete and 0 interrupted iterations
+save_restore   [  59% ] 13/15 VUs  2m20.8s/4m00.0s
+
+running (2m22.0s), 14/15 VUs, 42 complete and 0 interrupted iterations
+save_restore   [  59% ] 14/15 VUs  2m21.8s/4m00.0s
+
+running (2m23.0s), 14/15 VUs, 43 complete and 0 interrupted iterations
+save_restore   [  59% ] 14/15 VUs  2m22.8s/4m00.0s
+
+running (2m24.0s), 14/15 VUs, 46 complete and 0 interrupted iterations
+save_restore   [  60% ] 14/15 VUs  2m23.8s/4m00.0s
+
+running (2m25.0s), 14/15 VUs, 47 complete and 0 interrupted iterations
+save_restore   [  60% ] 14/15 VUs  2m24.8s/4m00.0s
+
+running (2m26.0s), 14/15 VUs, 47 complete and 0 interrupted iterations
+save_restore   [  61% ] 14/15 VUs  2m25.8s/4m00.0s
+
+running (2m27.0s), 14/15 VUs, 47 complete and 0 interrupted iterations
+save_restore   [  61% ] 14/15 VUs  2m26.8s/4m00.0s
+
+running (2m28.0s), 14/15 VUs, 47 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m27.8s/4m00.0s
+
+running (2m29.0s), 14/15 VUs, 47 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m28.8s/4m00.0s
+
+running (2m30.0s), 14/15 VUs, 49 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m29.8s/4m00.0s
+
+running (2m31.0s), 15/15 VUs, 50 complete and 0 interrupted iterations
+save_restore   [  63% ] 15/15 VUs  2m30.8s/4m00.0s
+
+running (2m32.0s), 15/15 VUs, 51 complete and 0 interrupted iterations
+save_restore   [  63% ] 15/15 VUs  2m31.8s/4m00.0s
+
+running (2m33.0s), 15/15 VUs, 52 complete and 0 interrupted iterations
+save_restore   [  64% ] 15/15 VUs  2m32.8s/4m00.0s
+
+running (2m34.0s), 15/15 VUs, 52 complete and 0 interrupted iterations
+save_restore   [  64% ] 15/15 VUs  2m33.8s/4m00.0s
+
+running (2m35.0s), 15/15 VUs, 52 complete and 0 interrupted iterations
+save_restore   [  64% ] 15/15 VUs  2m34.8s/4m00.0s
+
+running (2m36.0s), 15/15 VUs, 54 complete and 0 interrupted iterations
+save_restore   [  65% ] 15/15 VUs  2m35.8s/4m00.0s
+
+running (2m37.0s), 15/15 VUs, 54 complete and 0 interrupted iterations
+save_restore   [  65% ] 15/15 VUs  2m36.8s/4m00.0s
+
+running (2m38.0s), 15/15 VUs, 55 complete and 0 interrupted iterations
+save_restore   [  66% ] 15/15 VUs  2m37.8s/4m00.0s
+
+running (2m39.0s), 15/15 VUs, 55 complete and 0 interrupted iterations
+save_restore   [  66% ] 15/15 VUs  2m38.8s/4m00.0s
+
+running (2m40.0s), 15/15 VUs, 56 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m39.8s/4m00.0s
+
+running (2m41.0s), 15/15 VUs, 57 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m40.8s/4m00.0s
+
+running (2m42.0s), 15/15 VUs, 60 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m41.8s/4m00.0s
+
+running (2m43.0s), 15/15 VUs, 61 complete and 0 interrupted iterations
+save_restore   [  68% ] 15/15 VUs  2m42.8s/4m00.0s
+
+running (2m44.0s), 15/15 VUs, 61 complete and 0 interrupted iterations
+save_restore   [  68% ] 15/15 VUs  2m43.8s/4m00.0s
+
+running (2m45.0s), 15/15 VUs, 61 complete and 0 interrupted iterations
+save_restore   [  69% ] 15/15 VUs  2m44.8s/4m00.0s
+
+running (2m46.0s), 15/15 VUs, 61 complete and 0 interrupted iterations
+save_restore   [  69% ] 15/15 VUs  2m45.8s/4m00.0s
+
+running (2m47.0s), 15/15 VUs, 61 complete and 0 interrupted iterations
+save_restore   [  69% ] 15/15 VUs  2m46.8s/4m00.0s
+
+running (2m48.0s), 15/15 VUs, 63 complete and 0 interrupted iterations
+save_restore   [  70% ] 15/15 VUs  2m47.8s/4m00.0s
+
+running (2m49.0s), 14/15 VUs, 65 complete and 0 interrupted iterations
+save_restore   [  70% ] 14/15 VUs  2m48.8s/4m00.0s
+
+running (2m50.0s), 14/15 VUs, 66 complete and 0 interrupted iterations
+save_restore   [  71% ] 14/15 VUs  2m49.8s/4m00.0s
+
+running (2m51.0s), 14/15 VUs, 67 complete and 0 interrupted iterations
+save_restore   [  71% ] 14/15 VUs  2m50.8s/4m00.0s
+
+running (2m52.0s), 14/15 VUs, 67 complete and 0 interrupted iterations
+save_restore   [  72% ] 14/15 VUs  2m51.8s/4m00.0s
+
+running (2m53.0s), 14/15 VUs, 67 complete and 0 interrupted iterations
+save_restore   [  72% ] 14/15 VUs  2m52.8s/4m00.0s
+
+running (2m54.0s), 14/15 VUs, 69 complete and 0 interrupted iterations
+save_restore   [  72% ] 14/15 VUs  2m53.8s/4m00.0s
+
+running (2m55.0s), 14/15 VUs, 69 complete and 0 interrupted iterations
+save_restore   [  73% ] 14/15 VUs  2m54.8s/4m00.0s
+
+running (2m56.0s), 14/15 VUs, 70 complete and 0 interrupted iterations
+save_restore   [  73% ] 14/15 VUs  2m55.8s/4m00.0s
+
+running (2m57.0s), 14/15 VUs, 70 complete and 0 interrupted iterations
+save_restore   [  74% ] 14/15 VUs  2m56.8s/4m00.0s
+
+running (2m58.0s), 13/15 VUs, 72 complete and 0 interrupted iterations
+save_restore   [  74% ] 13/15 VUs  2m57.8s/4m00.0s
+
+running (2m59.0s), 13/15 VUs, 73 complete and 0 interrupted iterations
+save_restore   [  74% ] 13/15 VUs  2m58.8s/4m00.0s
+
+running (3m00.0s), 13/15 VUs, 76 complete and 0 interrupted iterations
+save_restore   [  75% ] 13/15 VUs  2m59.8s/4m00.0s
+
+running (3m01.0s), 13/15 VUs, 76 complete and 0 interrupted iterations
+save_restore   [  75% ] 13/15 VUs  3m00.8s/4m00.0s
+
+running (3m02.0s), 13/15 VUs, 76 complete and 0 interrupted iterations
+save_restore   [  76% ] 13/15 VUs  3m01.8s/4m00.0s
+
+running (3m03.0s), 13/15 VUs, 76 complete and 0 interrupted iterations
+save_restore   [  76% ] 13/15 VUs  3m02.8s/4m00.0s
+
+running (3m04.0s), 13/15 VUs, 76 complete and 0 interrupted iterations
+save_restore   [  77% ] 13/15 VUs  3m03.8s/4m00.0s
+
+running (3m05.0s), 13/15 VUs, 77 complete and 0 interrupted iterations
+save_restore   [  77% ] 13/15 VUs  3m04.8s/4m00.0s
+
+running (3m06.0s), 13/15 VUs, 78 complete and 0 interrupted iterations
+save_restore   [  77% ] 13/15 VUs  3m05.8s/4m00.0s
+
+running (3m07.0s), 12/15 VUs, 79 complete and 0 interrupted iterations
+save_restore   [  78% ] 12/15 VUs  3m06.8s/4m00.0s
+
+running (3m08.0s), 12/15 VUs, 80 complete and 0 interrupted iterations
+save_restore   [  78% ] 12/15 VUs  3m07.8s/4m00.0s
+
+running (3m09.0s), 12/15 VUs, 81 complete and 0 interrupted iterations
+save_restore   [  79% ] 12/15 VUs  3m08.8s/4m00.0s
+
+running (3m10.0s), 12/15 VUs, 81 complete and 0 interrupted iterations
+save_restore   [  79% ] 12/15 VUs  3m09.8s/4m00.0s
+
+running (3m11.0s), 12/15 VUs, 82 complete and 0 interrupted iterations
+save_restore   [  79% ] 12/15 VUs  3m10.8s/4m00.0s
+
+running (3m12.0s), 12/15 VUs, 83 complete and 0 interrupted iterations
+save_restore   [  80% ] 12/15 VUs  3m11.8s/4m00.0s
+
+running (3m13.0s), 12/15 VUs, 83 complete and 0 interrupted iterations
+save_restore   [  80% ] 12/15 VUs  3m12.8s/4m00.0s
+
+running (3m14.0s), 12/15 VUs, 84 complete and 0 interrupted iterations
+save_restore   [  81% ] 12/15 VUs  3m13.8s/4m00.0s
+
+running (3m15.0s), 12/15 VUs, 84 complete and 0 interrupted iterations
+save_restore   [  81% ] 12/15 VUs  3m14.8s/4m00.0s
+
+running (3m16.0s), 11/15 VUs, 85 complete and 0 interrupted iterations
+save_restore   [  82% ] 11/15 VUs  3m15.8s/4m00.0s
+
+running (3m17.0s), 11/15 VUs, 87 complete and 0 interrupted iterations
+save_restore   [  82% ] 11/15 VUs  3m16.8s/4m00.0s
+
+running (3m18.0s), 11/15 VUs, 89 complete and 0 interrupted iterations
+save_restore   [  82% ] 11/15 VUs  3m17.8s/4m00.0s
+
+running (3m19.0s), 11/15 VUs, 89 complete and 0 interrupted iterations
+save_restore   [  83% ] 11/15 VUs  3m18.8s/4m00.0s
+
+running (3m20.0s), 11/15 VUs, 89 complete and 0 interrupted iterations
+save_restore   [  83% ] 11/15 VUs  3m19.8s/4m00.0s
+
+running (3m21.0s), 11/15 VUs, 89 complete and 0 interrupted iterations
+save_restore   [  84% ] 11/15 VUs  3m20.8s/4m00.0s
+
+running (3m22.0s), 11/15 VUs, 89 complete and 0 interrupted iterations
+save_restore   [  84% ] 11/15 VUs  3m21.8s/4m00.0s
+
+running (3m23.0s), 11/15 VUs, 90 complete and 0 interrupted iterations
+save_restore   [  84% ] 11/15 VUs  3m22.8s/4m00.0s
+
+running (3m24.0s), 11/15 VUs, 91 complete and 0 interrupted iterations
+save_restore   [  85% ] 11/15 VUs  3m23.8s/4m00.0s
+
+running (3m25.0s), 10/15 VUs, 92 complete and 0 interrupted iterations
+save_restore   [  85% ] 10/15 VUs  3m24.8s/4m00.0s
+
+running (3m26.0s), 10/15 VUs, 93 complete and 0 interrupted iterations
+save_restore   [  86% ] 10/15 VUs  3m25.8s/4m00.0s
+
+running (3m27.0s), 10/15 VUs, 93 complete and 0 interrupted iterations
+save_restore   [  86% ] 10/15 VUs  3m26.8s/4m00.0s
+
+running (3m28.0s), 10/15 VUs, 93 complete and 0 interrupted iterations
+save_restore   [  87% ] 10/15 VUs  3m27.8s/4m00.0s
+
+running (3m29.0s), 10/15 VUs, 95 complete and 0 interrupted iterations
+save_restore   [  87% ] 10/15 VUs  3m28.8s/4m00.0s
+
+running (3m30.0s), 10/15 VUs, 95 complete and 0 interrupted iterations
+save_restore   [  87% ] 10/15 VUs  3m29.8s/4m00.0s
+
+running (3m31.0s), 10/15 VUs, 95 complete and 0 interrupted iterations
+save_restore   [  88% ] 10/15 VUs  3m30.8s/4m00.0s
+
+running (3m32.0s), 10/15 VUs, 96 complete and 0 interrupted iterations
+save_restore   [  88% ] 10/15 VUs  3m31.8s/4m00.0s
+
+running (3m33.0s), 10/15 VUs, 96 complete and 0 interrupted iterations
+save_restore   [  89% ] 10/15 VUs  3m32.8s/4m00.0s
+
+running (3m34.0s), 10/15 VUs, 96 complete and 0 interrupted iterations
+save_restore   [  89% ] 10/15 VUs  3m33.8s/4m00.0s
+
+running (3m35.0s), 09/15 VUs, 99 complete and 0 interrupted iterations
+save_restore   [  89% ] 09/15 VUs  3m34.8s/4m00.0s
+
+running (3m36.0s), 08/15 VUs, 100 complete and 0 interrupted iterations
+save_restore   [  90% ] 08/15 VUs  3m35.8s/4m00.0s
+
+running (3m37.0s), 08/15 VUs, 100 complete and 0 interrupted iterations
+save_restore   [  90% ] 08/15 VUs  3m36.8s/4m00.0s
+
+running (3m38.0s), 08/15 VUs, 100 complete and 0 interrupted iterations
+save_restore   [  91% ] 08/15 VUs  3m37.8s/4m00.0s
+
+running (3m39.0s), 08/15 VUs, 100 complete and 0 interrupted iterations
+save_restore   [  91% ] 08/15 VUs  3m38.8s/4m00.0s
+
+running (3m40.0s), 08/15 VUs, 100 complete and 0 interrupted iterations
+save_restore   [  92% ] 08/15 VUs  3m39.8s/4m00.0s
+
+running (3m41.0s), 08/15 VUs, 101 complete and 0 interrupted iterations
+save_restore   [  92% ] 08/15 VUs  3m40.8s/4m00.0s
+
+running (3m42.0s), 07/15 VUs, 102 complete and 0 interrupted iterations
+save_restore   [  92% ] 07/15 VUs  3m41.8s/4m00.0s
+
+running (3m43.0s), 07/15 VUs, 102 complete and 0 interrupted iterations
+save_restore   [  93% ] 07/15 VUs  3m42.8s/4m00.0s
+
+running (3m44.0s), 06/15 VUs, 103 complete and 0 interrupted iterations
+save_restore   [  93% ] 06/15 VUs  3m43.8s/4m00.0s
+
+running (3m45.0s), 06/15 VUs, 103 complete and 0 interrupted iterations
+save_restore   [  94% ] 06/15 VUs  3m44.8s/4m00.0s
+
+running (3m46.0s), 06/15 VUs, 103 complete and 0 interrupted iterations
+save_restore   [  94% ] 06/15 VUs  3m45.8s/4m00.0s
+
+running (3m47.0s), 05/15 VUs, 105 complete and 0 interrupted iterations
+save_restore   [  94% ] 05/15 VUs  3m46.8s/4m00.0s
+
+running (3m48.0s), 05/15 VUs, 105 complete and 0 interrupted iterations
+save_restore   [  95% ] 05/15 VUs  3m47.8s/4m00.0s
+
+running (3m49.0s), 05/15 VUs, 105 complete and 0 interrupted iterations
+save_restore   [  95% ] 05/15 VUs  3m48.8s/4m00.0s
+
+running (3m50.0s), 05/15 VUs, 106 complete and 0 interrupted iterations
+save_restore   [  96% ] 05/15 VUs  3m49.8s/4m00.0s
+
+running (3m51.0s), 05/15 VUs, 106 complete and 0 interrupted iterations
+save_restore   [  96% ] 05/15 VUs  3m50.8s/4m00.0s
+
+running (3m52.0s), 05/15 VUs, 106 complete and 0 interrupted iterations
+save_restore   [  97% ] 05/15 VUs  3m51.8s/4m00.0s
+
+running (3m53.0s), 04/15 VUs, 108 complete and 0 interrupted iterations
+save_restore   [  97% ] 04/15 VUs  3m52.8s/4m00.0s
+
+running (3m54.0s), 04/15 VUs, 108 complete and 0 interrupted iterations
+save_restore   [  97% ] 04/15 VUs  3m53.8s/4m00.0s
+
+running (3m55.0s), 04/15 VUs, 108 complete and 0 interrupted iterations
+save_restore   [  98% ] 04/15 VUs  3m54.8s/4m00.0s
+
+running (3m56.0s), 04/15 VUs, 108 complete and 0 interrupted iterations
+save_restore   [  98% ] 04/15 VUs  3m55.8s/4m00.0s
+
+running (3m57.0s), 04/15 VUs, 108 complete and 0 interrupted iterations
+save_restore   [  99% ] 04/15 VUs  3m56.8s/4m00.0s
+
+running (3m58.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore   [  99% ] 03/15 VUs  3m57.8s/4m00.0s
+
+running (3m59.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore   [  99% ] 03/15 VUs  3m58.8s/4m00.0s
+
+running (4m00.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore   [ 100% ] 03/15 VUs  3m59.8s/4m00.0s
+
+running (4m01.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m02.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m03.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m04.0s), 03/15 VUs, 109 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m05.0s), 02/15 VUs, 110 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m06.0s), 02/15 VUs, 110 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m07.0s), 01/15 VUs, 111 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m08.0s), 01/15 VUs, 111 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m09.0s), 01/15 VUs, 111 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+running (4m10.0s), 01/15 VUs, 111 complete and 0 interrupted iterations
+save_restore ↓ [ 100% ] 03/15 VUs  4m0s
+
+
+  █ THRESHOLDS 
+
+    http_req_failed
+    ✓ 'rate<0.2' rate=10.80%
+
+    restore_from_db_ms
+    ✓ 'p(95)<5000' p(95)=54ms
+
+    save_to_db_ms
+    ✓ 'p(95)<5000' p(95)=66ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 448     1.788168/s
+    checks_succeeded...: 100.00% 448 out of 448
+    checks_failed......: 0.00%   0 out of 448
+
+    ✓ Calculator save+restore ok
+    ✓ Advanced save+restore ok
+    ✓ DataExchange save+restore ok
+    ✓ Geospatial save+restore ok
+
+    CUSTOM
+    list_states_ms.................: avg=46.74ms min=35ms    med=45ms    max=298ms   p(90)=49.3ms  p(95)=58.64ms
+    restore_from_db_ms.............: avg=45.97ms min=36ms    med=44ms    max=154ms   p(90)=49.3ms  p(95)=54ms   
+    restore_verify_ms..............: avg=41.16ms min=33ms    med=39ms    max=144ms   p(90)=46ms    p(95)=51.64ms
+    save_restore_fail..............: 448    1.788168/s
+    save_restore_ok................: 448    1.788168/s
+    save_to_db_ms..................: avg=46.5ms  min=35ms    med=43ms    max=193ms   p(90)=52ms    p(95)=66ms   
+
+    HTTP
+    http_req_duration..............: avg=48.72ms min=33.17ms med=43.49ms max=465.4ms p(90)=52.56ms p(95)=80.25ms
+      { expected_response:true }...: avg=49.19ms min=33.17ms med=43.72ms max=465.4ms p(90)=53.18ms p(95)=85.87ms
+    http_req_failed................: 10.80% 448 out of 4146
+    http_reqs......................: 4146   16.548541/s
+
+    EXECUTION
+    iteration_duration.............: avg=17.83s  min=17.64s  med=17.81s  max=18.32s  p(90)=18.01s  p(95)=18.05s 
+    iterations.....................: 112    0.447042/s
+    vus............................: 1      min=1           max=15
+    vus_max........................: 15     min=15          max=15
+
+    NETWORK
+    data_received..................: 3.5 MB 14 kB/s
+    data_sent......................: 1.5 MB 6.1 kB/s
+
+
+
+
+running (4m10.5s), 00/15 VUs, 112 complete and 0 interrupted iterations
+save_restore ✓ [ 100% ] 00/15 VUs  4m0s
