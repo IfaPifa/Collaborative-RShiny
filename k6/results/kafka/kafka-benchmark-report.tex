@@ -1,0 +1,277 @@
+% ==========================================================================
+%  ShinySwarm — Kafka Architecture Benchmark Report
+%  Generated from k6 results on 2026-06-10
+%  Cluster: Hetzner CX32 (8 vCPU / 16 GB RAM), K3s single-node
+%  Kafka: KRaft mode 3.7.0, reactivePoll(100ms), consumer$consume(100)
+% ==========================================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs,tabularx,longtable}
+\usepackage{xcolor,colortbl}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\definecolor{pass}{HTML}{2E7D32}
+\definecolor{fail}{HTML}{C62828}
+\definecolor{warn}{HTML}{F57F17}
+\newcommand{\pass}{\textcolor{pass}{\textbf{PASS}}}
+\newcommand{\fail}{\textcolor{fail}{\textbf{FAIL}}}
+\newcommand{\warn}{\textcolor{warn}{\textbf{WARN}}}
+
+\title{ShinySwarm Benchmark Report\\[4pt]\large Kafka Architecture}
+\author{Iva Gunjaca — University of Amsterdam}
+\date{10 June 2026}
+
+\begin{document}
+\maketitle
+
+% ------------------------------------------------------------------
+\section{Test Environment}
+% ------------------------------------------------------------------
+
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parameter}       & \textbf{Value} \\
+\midrule
+Server                    & Hetzner CX32 — 8 vCPU, 16\,GB RAM \\
+Kubernetes                & K3s v1.31 single-node \\
+Kafka                     & KRaft mode 3.7.0 (no ZooKeeper) \\
+R Shiny polling           & \texttt{reactivePoll(100\,ms)}, \texttt{consume(100)} \\
+Backend                   & Spring Boot 3.x, PostgreSQL 16, Redis 7 \\
+Frontend                  & Angular 19 + nginx reverse proxy \\
+Load generator            & k6 v0.55 (remote, via SSH tunnel) \\
+Apps under test           & 8 collaborative R Shiny applications \\
+Date                      & 2026-06-10 \\
+\bottomrule
+\end{tabular}
+
+% ------------------------------------------------------------------
+\section{Summary}
+% ------------------------------------------------------------------
+
+\begin{tabularx}{\textwidth}{@{}lccX@{}}
+\toprule
+\textbf{\#} & \textbf{Benchmark} & \textbf{Result} & \textbf{Key Finding} \\
+\midrule
+01 & State Relay Latency       & \fail & p95 = 11.84\,s (threshold 10\,s); 2 of 8 apps fail relay \\
+02 & Collaboration Latency     & \fail & Propagation avg 6.73\,s, p95 = 15.04\,s; 4 of 8 apps fail \\
+03 & Save \& Restore Latency   & \pass & Save 46.5\,ms, restore 46.0\,ms (p95 $<$ 5\,s) \\
+04 & Throughput                 & \pass & 27.4 req/s sustained, p95 = 4.78\,s \\
+05 & Data Loss                 & \pass & 0\% loss across all 8 apps \\
+06 & Cross-Contamination       & \pass & 0 contamination events \\
+07 & Session Lifecycle          & \pass & 100\% lifecycle completion \\
+08 & Multi-User Collaboration   & \fail & All-users p95 = 36.67\,s; 4 of 8 apps fail \\
+09 & WebSocket Presence         & \pass & 99.7\% success, connect p95 = 135\,ms \\
+\midrule
+   & \textbf{Overall}          & \multicolumn{2}{l}{\textbf{6 / 9 passed} — latency benchmarks fail due to Kafka consumer lag} \\
+\bottomrule
+\end{tabularx}
+
+% ------------------------------------------------------------------
+\section{Detailed Results}
+% ------------------------------------------------------------------
+
+% ---- 01 ----
+\subsection{01 — State Relay Latency}
+
+Measures round-trip time: POST state $\to$ Kafka producer $\to$ R consumer $\to$ GET state.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{relay\_total\_ms}  & 5,750  & 74   & 174.5 & 12,050 & 11,780 & 11,840 \\
+\texttt{relay\_post\_ms}   & 46.6   & 35   & 44    & 156    & 52     & 65     \\
+\texttt{relay\_poll\_ms}   & 5,700  & 34   & 93.5  & 12,000 & 11,740 & 11,790 \\
+\texttt{http\_req\_duration} & 42.6 & 32.7 & 39.4  & 535.9  & 47.2   & 53.8   \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent\textbf{Checks:} 232 / 452 passed (51.3\%).
+Analytics and MonteCarlo relay failed (0/58 each).
+Threshold \texttt{relay\_total\_ms p(95) < 10\,s}: \fail{} (11.84\,s).
+
+% ---- 02 ----
+\subsection{02 — Collaboration Latency}
+
+Host posts state; guest polls until the update appears.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{collab\_propagation\_ms} & 6,730  & 34   & 11,620 & 20,950 & 13,970 & 15,040 \\
+\texttt{collab\_host\_post\_ms}  & 110.7  & 36   & 88     & 1,220  & 200    & 295    \\
+\texttt{http\_req\_duration}     & 127.0  & 30.6 & 49.7   & 3,420  & 217.0  & 496.0  \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent\textbf{Checks:} 219 / 453 passed (48.3\%).
+Analytics, MonteCarlo, ClimateAnomaly, and MLTrainer failed.
+Threshold \texttt{collab\_propagation\_ms p(95) < 10\,s}: \fail{} (15.04\,s).
+
+% ---- 03 ----
+\subsection{03 — Save \& Restore Latency}
+
+Snapshot current session state to PostgreSQL and restore it.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{save\_to\_db\_ms}       & 46.5  & 35   & 43   & 193   & 52    & 66   \\
+\texttt{restore\_from\_db\_ms}  & 46.0  & 36   & 44   & 154   & 49.3  & 54   \\
+\texttt{http\_req\_duration}    & 48.7  & 33.2 & 43.5 & 465.4 & 52.6  & 80.3 \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent\textbf{Checks:} 448 / 448 passed (100\%).
+Threshold \texttt{p(95) < 5\,s}: \pass.
+
+% ---- 04 ----
+\subsection{04 — Throughput}
+
+Ramp from 0 to 100 VUs over 5.5 minutes; measure sustained request rate.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{http\_req\_duration} & 1,640 & 32.3 & 1,290 & 10,660 & 3,770 & 4,780 \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent
+\textbf{Throughput:} 27.4 req/s (9,060 requests / 330\,s). \\
+\textbf{Iterations:} 1,294 completed (3.92 iter/s). \\
+\textbf{Checks:} 1,294 / 1,294 passed (100\%). \\
+Threshold \texttt{http\_req\_duration p(95) < 15\,s}: \pass{} (4.78\,s).
+
+% ---- 05 ----
+\subsection{05 — Data Loss}
+
+Send 1,800 state updates across all 8 apps; verify all are retrievable.
+
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+States sent     & 1,800 \\
+States received & 1,800 \\
+Loss rate       & 0\% \\
+Checks passed   & 120 / 120 (100\%) \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent Threshold \texttt{dataloss\_pct p(95) < 5\%}: \pass.
+
+% ---- 06 ----
+\subsection{06 — Cross-Contamination}
+
+Run two parallel sessions per app; verify state isolation.
+
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Contamination events & 0 \\
+Checks passed        & 90 / 90 (100\%) \\
+Apps tested          & 8 (16 sessions) \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent Threshold \texttt{contamination\_events count == 0}: \pass.
+
+% ---- 07 ----
+\subsection{07 — Session Lifecycle}
+
+Full create $\to$ join $\to$ post $\to$ get $\to$ save $\to$ leave cycle under load.
+
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Iterations completed & 473 \\
+Lifecycle errors     & 0 / 4,257 (0\%) \\
+Checks passed        & 473 / 473 (100\%) \\
+\texttt{http\_req\_duration} p95 & 3.18\,s \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent Threshold \texttt{http\_req\_duration p(95) < 15\,s}: \pass.
+
+% ---- 08 ----
+\subsection{08 — Multi-User Collaboration}
+
+One host posts state; 3, 5, and 10 guests poll for the update.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{multi\_propagation\_first\_ms} & 39    & 36   & 39    & 44     & 40.9  & 42.3  \\
+\texttt{multi\_propagation\_all\_ms}   & 13,640 & 76  & 10,190 & 36,690 & 36,600 & 36,670 \\
+\texttt{http\_req\_duration}           & 44.4  & 29.0 & 39.1  & 461.7  & 46.5  & 55.7  \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent\textbf{Checks:} 24 / 48 passed (50\%).
+Analytics, MonteCarlo, ClimateAnomaly, and MLTrainer failed all tiers.
+Threshold \texttt{multi\_propagation\_all\_ms p(95) < 30\,s}: \fail{} (36.67\,s).
+
+% ---- 09 ----
+\subsection{09 — WebSocket Presence}
+
+STOMP-over-WebSocket connect and JOIN round-trip.
+
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{avg} & \textbf{min} & \textbf{med} & \textbf{max} & \textbf{p90} & \textbf{p95} \\
+\midrule
+\texttt{ws\_connect\_ms}        & 121.3 & 100 & 119 & 339 & 129 & 135 \\
+\texttt{ws\_join\_roundtrip\_ms} & 46.0  & 36  & 45  & 83  & 50  & 53.5 \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\noindent\textbf{Checks:} 622 / 624 passed (99.7\%).
+Threshold \texttt{ws\_connect\_ms p(95) < 5\,s}: \pass{} (135\,ms).
+
+% ------------------------------------------------------------------
+\section{Analysis}
+% ------------------------------------------------------------------
+
+The Kafka architecture passes 6 of 9 benchmarks. The three failures share a root cause:
+the R Shiny consumer loop (\texttt{consumer\$consume(100)} inside \texttt{reactivePoll(100\,ms)})
+is single-threaded and processes messages sequentially. Under concurrent load, the consumer
+falls behind, causing poll latency to dominate total relay time.
+
+\begin{itemize}
+  \item \textbf{Relay latency} (01): The POST to Kafka is fast (avg 46.6\,ms), but the
+        poll-until-visible step averages 5.7\,s because the R consumer must drain its
+        backlog before the new message appears in Redis.
+  \item \textbf{Collaboration propagation} (02): Same mechanism — the guest's GET sees
+        stale state until the consumer catches up (avg 6.73\,s).
+  \item \textbf{Multi-user scaling} (08): With 10 concurrent guests polling, the first
+        guest sees the update in 39\,ms (already in Redis), but the last guest waits
+        up to 36.7\,s due to consumer lag compounding across apps.
+  \item \textbf{App-specific failures}: Analytics and MonteCarlo consistently fail relay
+        checks. These apps have heavier R processing (dataset joins, simulation loops),
+        which slows their consumer further.
+\end{itemize}
+
+Benchmarks that bypass the Kafka consumer path (save/restore via PostgreSQL, session
+lifecycle via Spring Boot, WebSocket presence via STOMP) perform well, confirming the
+bottleneck is isolated to the Kafka $\to$ R consumer $\to$ Redis pipeline.
+
+\end{document}
