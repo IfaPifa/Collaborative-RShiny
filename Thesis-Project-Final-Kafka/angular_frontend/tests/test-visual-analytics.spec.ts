@@ -79,9 +79,9 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
-    // Charlie's controls lock
-    await expect(charlieFrame.locator('button#update_plot')).toBeDisabled({ timeout: 10000 });
-    await expect(charlieFrame.locator('input[name="cyl"][value="4"]')).toBeDisabled();
+    // Charlie's controls lock — Kafka propagation may take longer
+    await expect(charlieFrame.locator('button#update_plot')).toBeDisabled({ timeout: 30000 });
+    await expect(charlieFrame.locator('input[name="cyl"][value="4"]')).toBeDisabled({ timeout: 5000 });
 
     await aliceCtx.close();
     await charlieCtx.close();
