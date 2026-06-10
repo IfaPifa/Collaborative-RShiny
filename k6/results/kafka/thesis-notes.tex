@@ -1,0 +1,322 @@
+% ==========================================================================
+%  Thesis Notes — Kafka + R: Findings, Limitations, and Future Work
+%  For inclusion/reference in the final thesis document
+% ==========================================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, breaklines=true}
+
+\title{Thesis Notes\\[4pt]\large Kafka Architecture Limitations in R Shiny}
+\author{Iva Gunjaca — University of Amsterdam}
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+% ------------------------------------------------------------------
+\section{Core Finding: R's Runtime is the Bottleneck}
+% ------------------------------------------------------------------
+
+The Kafka architecture fails three of nine performance benchmarks (state relay,
+collaboration latency, multi-user propagation) despite the Hetzner cluster
+running at only 11\% CPU and 26\% RAM utilization. The bottleneck is not
+infrastructure capacity but R's single-threaded execution model.
+
+R Shiny runs all application logic---UI rendering, reactive computations,
+and Kafka message consumption---on a single thread. The \texttt{reactivePoll()}
+mechanism fires a callback at a fixed interval (e.g.\ every 150\,ms), and
+\texttt{consumer\$consume(timeout)} blocks that thread for up to
+\texttt{timeout} milliseconds waiting for a message. During this blocking
+window, no UI updates, plot rendering, or other reactive computations can
+execute.
+
+This creates a fundamental conflict: lowering the consume timeout improves
+UI responsiveness but reduces the chance of catching a message per cycle;
+raising it improves message throughput but starves the UI. No configuration
+of these two parameters resolves the underlying issue.
+
+% ------------------------------------------------------------------
+\section{The R Kafka Ecosystem}
+% ------------------------------------------------------------------
+
+As of June 2026, only two R packages for Apache Kafka exist:
+
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+\textbf{Package} & \textbf{Status} & \textbf{Mechanism} \\
+\midrule
+\texttt{kafka} (INWTlab/r-kafka) & Active, not on CRAN &
+  C wrapper around librdkafka via Rcpp. Exposes synchronous
+  \texttt{consume(timeout\_ms)} and \texttt{produce(topic, value, key)}.
+  No async API, no callbacks, no batch consumption. \\
+\texttt{rkafka} & Archived from CRAN (May 2023) &
+  rJava wrapper requiring a JVM inside the R process.
+  Removed for unresolved build issues. Deprecated. \\
+\bottomrule
+\end{tabularx}
+
+Neither package provides the primitives needed for real-time streaming:
+asynchronous message delivery, background thread consumption, or
+event-driven callbacks. This is not an oversight---R is not used for
+streaming workloads, so the demand for such libraries does not exist.
+
+% ------------------------------------------------------------------
+\section{Why Polling Tuning Does Not Help}
+% ------------------------------------------------------------------
+
+Two benchmark runs were conducted with different polling configurations:
+
+\begin{tabularx}{\textwidth}{@{}lrrX@{}}
+\toprule
+\textbf{Config} & \textbf{relay\_total avg} & \textbf{relay\_total p95} & \textbf{Apps failing} \\
+\midrule
+Run-01: poll 200\,ms, consume 10\,ms  & 5,750\,ms & 11,840\,ms & Analytics, MonteCarlo, ClimateAnomaly, MLTrainer \\
+Run-02: poll 150\,ms, consume 50\,ms  & 5,720\,ms & 11,760\,ms & Same four apps \\
+\bottomrule
+\end{tabularx}
+
+The difference is within noise ($<$2\%). The bottleneck is structural:
+the single-threaded R process cannot drain the Kafka consumer fast enough,
+regardless of how frequently it polls or how long it waits per poll.
+
+% ------------------------------------------------------------------
+\section{Why More Users Increases Latency}
+% ------------------------------------------------------------------
+
+All Kafka consumers in the Shiny frontends subscribe to a shared
+\texttt{output} topic. When multiple users are active:
+
+\begin{enumerate}
+  \item Each user's consumer reads from the same topic partition(s).
+  \item Each \texttt{consume()} call may return a message intended for a
+        different session or app, which is discarded.
+  \item The consumer must poll again (waiting another full cycle) to find
+        its own message.
+  \item Meanwhile, the R backend processes \texttt{input} messages
+        sequentially, falling further behind under concurrent load.
+\end{enumerate}
+
+This is a fan-out problem on a shared topic. With 10 concurrent guests,
+the probability of receiving an irrelevant message per poll increases,
+compounding latency. The benchmark data confirms this:
+\texttt{multi\_propagation\_first\_ms} (first guest) averages 39\,ms,
+while \texttt{multi\_propagation\_all\_ms} (all guests) averages 13.6\,s.
+
+In the REST architecture, this problem does not exist: each GET request
+performs an O(1) Redis lookup by session ID. No scanning, no shared queue.
+
+% ------------------------------------------------------------------
+\section{Why Separate Containers Do Not Help}
+% ------------------------------------------------------------------
+
+Shiny hosting platforms (shinyapps.io, Shiny Server Pro) isolate users
+into separate R processes. This helps when the bottleneck is CPU contention
+between users. However, the Kafka consumer bottleneck is per-session,
+not per-pod:
+
+\begin{itemize}
+  \item Resource monitoring shows each Shiny pod uses 25--70\,m CPU out of
+        a 750\,m limit. There is no CPU contention.
+  \item Even with a single user in a dedicated container, the
+        \texttt{consume()} call still blocks the R event loop.
+  \item The four failing apps (Analytics, MonteCarlo, ClimateAnomaly,
+        MLTrainer) fail at 0\% even with one user, because their heavier
+        R processing (ggplot rendering, simulation loops) leaves less
+        time for the consumer between UI updates.
+\end{itemize}
+
+% ------------------------------------------------------------------
+\section{Why a Better R Kafka Library Cannot Fully Solve This}
+% ------------------------------------------------------------------
+
+Even a hypothetical async Kafka library for R would face R's fundamental
+limitation: the interpreter is single-threaded. An async library could
+buffer messages on a background thread, but the R code that processes
+those messages (deserializing JSON, updating reactive values, triggering
+UI re-renders) still runs on the main thread and cannot be parallelized.
+
+The \texttt{httpuv} package (which powers Shiny's HTTP server) demonstrates
+this pattern: it runs a C++ event loop on a background thread for I/O,
+but all R callback execution is serialized on the main thread. A Kafka
+library could adopt the same design, but the throughput ceiling would
+remain R's single-threaded processing speed.
+
+% ------------------------------------------------------------------
+\section{Future Work: A Background-Thread Kafka Library for R}
+% ------------------------------------------------------------------
+
+A purpose-built R Kafka library could significantly reduce consumer
+latency, though not eliminate the single-thread constraint. The design
+would be:
+
+\begin{enumerate}
+  \item \textbf{Core in Rust or C++}, linked against librdkafka.
+        Rust's \texttt{rdkafka} crate or librdkafka's C API directly.
+  \item \textbf{Background consumer thread} that runs
+        \texttt{rd\_kafka\_consumer\_poll()} in a loop, independent of R's
+        event loop. Messages are pushed into a lock-free, thread-safe
+        ring buffer.
+  \item \textbf{Non-blocking R interface}: \texttt{consumer\$poll()} returns
+        immediately with whatever messages are buffered, or
+        \texttt{NULL} if none. No timeout, no blocking.
+  \item \textbf{Callback registration}: optionally, the library invokes
+        an R function when a message matching a filter (topic, key,
+        partition) arrives, scheduled via \texttt{later::later()} to
+        integrate with Shiny's event loop.
+  \item \textbf{Partition-aware consumption}: expose
+        \texttt{consumer\$assign(topic, partition)} so applications can
+        subscribe to specific partitions rather than scanning an entire
+        topic.
+\end{enumerate}
+
+The R-side integration with Shiny would replace \texttt{reactivePoll()}
+with a \texttt{later}-based callback:
+
+\begin{lstlisting}[language=R]
+# Hypothetical API
+consumer <- KafkaConsumer$new(brokers = "kafka:9092", group = "shiny")
+consumer$subscribe("output", key_filter = session_id)
+consumer$on_message(function(msg) {
+  data <- jsonlite::fromJSON(msg$value)
+  shared_state(data)  # update reactive value
+})
+\end{lstlisting}
+
+This eliminates the poll-wait-discard cycle entirely. The background
+thread handles all Kafka I/O; R only executes when a relevant message
+arrives.
+
+\subsection{Feasibility}
+
+The \texttt{extendr} package (Rust $\to$ R bindings) and the
+\texttt{cpp11} package (C++ $\to$ R bindings) provide mature foreign
+function interfaces. The \texttt{httpuv} package already proves that
+background-thread I/O with R callbacks is viable in production
+(it powers every Shiny application).
+
+The main engineering challenge is thread safety: R's C API is not
+thread-safe, so the background thread cannot call R functions directly.
+All R interaction must be marshalled through \texttt{later::later()},
+which schedules execution on R's main thread at the next idle point.
+This is a solved problem---\texttt{httpuv} and \texttt{promises} both
+use this pattern.
+
+Estimated effort: 2--3 months for a working prototype, assuming
+familiarity with Rust/C++ and librdkafka. Publication on CRAN would
+require additional documentation, Windows cross-compilation support,
+and integration tests.
+
+% ------------------------------------------------------------------
+\section{Future Work: Integration with NaaVRE}
+% ------------------------------------------------------------------
+
+NaaVRE (Notebook-as-a-Virtual-Research-Environment) is a JupyterLab-based
+platform developed at the University of Amsterdam that allows researchers
+to containerize notebook cells, compose them into workflows, and execute
+them on Kubernetes via Argo Workflows. Its architecture consists of
+JupyterLab frontend extensions communicating with backend API services
+through a central communication hub, with Keycloak providing OIDC
+authentication.
+
+A natural extension of this thesis is embedding collaborative R Shiny
+visualizations into NaaVRE as interactive workflow outputs. The ShinySwarm
+architecture developed in this thesis already solves the core technical
+challenges required for this integration.
+
+\subsection{How NaaVRE Containers Communicate}
+
+NaaVRE follows a microservice pattern on Kubernetes:
+
+\begin{itemize}
+  \item \textbf{UI components} are JupyterLab frontend extensions
+        (TypeScript), communicating with backend services through a
+        server extension called the NaaVRE Communicator.
+  \item \textbf{API services} are independent FastAPI or Django
+        microservices. They do not communicate with each other directly.
+  \item \textbf{Workflow execution} uses Argo Workflows: each notebook
+        cell is containerized into a Docker image and orchestrated as a
+        DAG. Cells pass data via workflow parameters or shared storage.
+  \item \textbf{Authentication} is centralized through Keycloak using
+        OIDC/JWT tokens, validated by each API service independently.
+\end{itemize}
+
+The key distinction from ShinySwarm: NaaVRE's inter-container
+communication is batch/pipeline-style (cell A produces output, cell B
+consumes it), not real-time. There is no persistent WebSocket or
+streaming channel between containers.
+
+\subsection{Proposed Integration Architecture}
+
+Collaborative Shiny applications can be integrated into NaaVRE as
+interactive visualization services. Three approaches are possible:
+
+\begin{enumerate}
+  \item \textbf{Shiny as a NaaVRE UI component (recommended).}
+        Deploy Shiny frontends as K8s services (as in this thesis) and
+        embed them in JupyterLab via a custom extension using iframes.
+        The JupyterLab extension replaces Angular as the host application,
+        communicating with Shiny via \texttt{postMessage} for RBAC and
+        STOMP-over-WebSocket for presence---the same mechanisms already
+        implemented and tested in ShinySwarm.
+
+  \item \textbf{Shiny as a workflow output viewer.}
+        An Argo workflow cell produces data and writes it to shared
+        storage (e.g.\ a PersistentVolumeClaim or S3 bucket). A Shiny
+        app reads from that storage to render interactive visualizations.
+        No real-time synchronization is needed; the Shiny app simply
+        displays the latest output.
+
+  \item \textbf{Shiny inside JupyterLab via \texttt{jupyter-shiny-proxy}.}
+        The existing \texttt{jupyter-shiny-proxy} package runs Shiny
+        apps as JupyterLab server extensions. Each user gets a dedicated
+        R process. However, this bypasses NaaVRE's containerization model
+        and does not support multi-user collaboration.
+\end{enumerate}
+
+\subsection{What ShinySwarm Already Provides}
+
+The architecture developed in this thesis provides a ready-made
+foundation for option~1:
+
+\begin{itemize}
+  \item \textbf{Iframe embedding with \texttt{postMessage} relay} for
+        propagating role-based access control (RBAC) changes from the
+        host application into the Shiny iframe. This mechanism is
+        framework-agnostic---it works identically whether the host is
+        Angular, React, or a JupyterLab extension.
+  \item \textbf{STOMP-over-WebSocket presence} for real-time user
+        awareness (who is viewing, who is editing). The Spring Boot
+        backend handles this independently of the frontend framework.
+  \item \textbf{State synchronization via REST API} (the better-performing
+        architecture from this thesis), using Redis as the state store
+        and PostgreSQL for persistence. The Shiny frontends poll
+        \texttt{/api/collab/\{sessionId\}/state} via HTTP---no Kafka
+        consumer needed.
+  \item \textbf{Session lifecycle management} (create, join, leave, save,
+        restore) exposed as REST endpoints, directly consumable by a
+        JupyterLab extension.
+\end{itemize}
+
+The migration effort from Angular to JupyterLab is a frontend change,
+not an architectural one. The Shiny services, Spring Boot backend, and
+state synchronization layer remain unchanged. The primary engineering
+task is implementing a JupyterLab extension that:
+
+\begin{enumerate}
+  \item Authenticates via Keycloak (using NaaVRE's existing OIDC flow),
+  \item Renders the Shiny iframe with the appropriate query parameters
+        (\texttt{userId}, \texttt{sessionId}, \texttt{permission}),
+  \item Relays RBAC updates via \texttt{postMessage}, and
+  \item Connects to the STOMP WebSocket for presence indicators.
+\end{enumerate}
+
+This represents approximately 500--800 lines of TypeScript, comparable
+to existing NaaVRE UI components such as the containerizer or workflow
+manager extensions.
+
+\end{document}
