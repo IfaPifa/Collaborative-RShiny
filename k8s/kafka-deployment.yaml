@@ -31,6 +31,17 @@ spec:
     requests:
       storage: 2Gi
 
+# 1b. SHINY POLLING TUNING
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-shiny-polling
+  labels: { arch: kafka }
+data:
+  POLL_INTERVAL_MS: "150"
+  CONSUME_TIMEOUT_MS: "50"
+
 # 2. KAFKA (KRaft mode — no Zookeeper)
 ---
 apiVersion: apps/v1
@@ -257,6 +268,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front.r }
           resources:
@@ -292,6 +305,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics.r }
           resources:
@@ -327,6 +342,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv.r }
           resources:
@@ -362,6 +379,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_csv_advanced.r }
             - { name: shared-data, mountPath: /app/shared_data }
@@ -400,6 +419,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_mc.r }
           resources:
@@ -435,6 +456,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_map.r }
           resources:
@@ -470,6 +493,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_analytics_advanced.r }
           resources:
@@ -505,6 +530,8 @@ spec:
           image: ghcr.io/ifapifa/collaborative-rshiny/kafka-shiny-services:latest
           command: ["R", "-e", "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"]
           ports: [{ containerPort: 3838 }]
+          envFrom:
+            - configMapRef: { name: kafka-shiny-polling }
           volumeMounts:
             - { name: script, mountPath: /app/app.R, subPath: shiny_front_ml.r }
           resources:
