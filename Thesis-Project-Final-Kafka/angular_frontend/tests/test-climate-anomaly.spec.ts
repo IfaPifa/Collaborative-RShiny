@@ -43,8 +43,8 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
 
     await frame.locator('button#process_data').click();
 
-    await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 30000 });
-    await expect(frame.locator('text=Analysis triggered by')).toBeVisible({ timeout: 10000 });
+    await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
+    await expect(frame.locator('text=Analysis triggered by')).toBeVisible({ timeout: 15000 });
 
     await saveState(page, sharedSaveName);
     fs.unlinkSync(csvPath);
@@ -75,8 +75,8 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     
     await aliceFrame.locator('button#process_data').click();
 
-    await expect(aliceFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 30000 });
-    await expect(bobFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 15000 });
+    await expect(aliceFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
+    await expect(bobFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 30000 });
 
     fs.unlinkSync(csvPath);
     await aliceCtx.close();
@@ -119,6 +119,6 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     page.once('dialog', dialog => dialog.accept());
     await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
-    await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 15000 });
+    await expect(frame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
   });
 });

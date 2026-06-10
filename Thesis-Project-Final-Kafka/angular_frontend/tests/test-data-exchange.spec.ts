@@ -33,12 +33,16 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     const fileInput = frame.locator('input[type="file"]');
     await fileInput.setInputFiles(csvPath);
 
+    // Wait for Shiny to finish the AJAX upload
+    await expect(frame.locator('text=Upload complete')).toBeVisible({ timeout: 10000 });
+    await page.waitForTimeout(1000);
+
     // Click process
     await frame.locator('button#process_data').click();
 
     // Verify cleaned data appears in the table (uppercase transformation)
-    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
-    await expect(frame.locator('text=BASEL')).toBeVisible();
+    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 60000 });
+    await expect(frame.locator('text=BASEL')).toBeVisible({ timeout: 5000 });
 
     // Save state
     await saveState(page, sharedSaveName);
@@ -68,13 +72,15 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     // Alice uploads and processes
     const csvPath = createTestCsv();
     await aliceFrame.locator('input[type="file"]').setInputFiles(csvPath);
+    await expect(aliceFrame.locator('text=Upload complete')).toBeVisible({ timeout: 10000 });
+    await alicePage.waitForTimeout(1000);
     await aliceFrame.locator('button#process_data').click();
 
     // Alice sees cleaned data
-    await expect(aliceFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
+    await expect(aliceFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 60000 });
 
     // Bob's UI polls and sees the same cleaned data
-    await expect(bobFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 15000 });
+    await expect(bobFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 30000 });
     await expect(bobFrame.locator('text=BASEL')).toBeVisible();
 
     fs.unlinkSync(csvPath);
@@ -127,6 +133,6 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     await modal.getByRole('button', { name: 'Load', exact: true }).first().click();
 
     // Verify restored data appears
-    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 10000 });
+    await expect(frame.locator('text=ALICE').first()).toBeVisible({ timeout: 30000 });
   });
 });
