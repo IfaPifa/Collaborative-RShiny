@@ -47,8 +47,19 @@ kubectl create configmap rest-scripts-ml \
   --from-file=shiny_back_ml.r=$SHINY/machine_learning/shiny_back_ml.r \
   --dry-run=client -o yaml | kubectl apply -f -
 
+echo "=== Creating benchmark test data ConfigMap ==="
+kubectl create configmap bench-climate-data \
+  --from-file=bench-climate-data.csv=k6/bench-climate-data.csv \
+  --dry-run=client -o yaml | kubectl apply -f -
+
 echo "=== Deploying REST architecture ==="
 kubectl apply -f k8s/rest-deployment.yaml
+
+echo "=== Copying test CSV to shared volume ==="
+echo "Waiting for a csv-advanced pod to be ready..."
+kubectl wait --for=condition=ready pod -l app=shiny-back-csv-advanced --timeout=120s
+CSV_POD=$(kubectl get pod -l app=shiny-back-csv-advanced -o jsonpath='{.items[0].metadata.name}')
+kubectl cp k6/bench-climate-data.csv "$CSV_POD":/app/shared_data/bench-climate-data.csv
 
 echo "=== Done. Pods: ==="
 kubectl get pods

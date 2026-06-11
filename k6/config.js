@@ -126,6 +126,7 @@ export const APPS = [
     payload: (vu, iter) => ({
       appName: 'ClimateAnomaly',
       action: 'ANALYZE_CLIMATE',
+      file: 'bench-climate-data.csv',
       station_id: `ST_${vu}`,
       threshold: 2.5,
       window_size: 30,
