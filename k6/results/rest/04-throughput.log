@@ -15,1179 +15,1162 @@
 
 
 running (0m01.0s), 000/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   0% ] 000/100 VUs  0m00.8s/5m30.0s
+throughput_ramp   [   0% ] 000/100 VUs  0m00.7s/5m30.0s
 
 running (0m02.0s), 000/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   1% ] 000/100 VUs  0m01.8s/5m30.0s
+throughput_ramp   [   1% ] 000/100 VUs  0m01.7s/5m30.0s
 
 running (0m03.0s), 000/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   1% ] 000/100 VUs  0m02.8s/5m30.0s
+throughput_ramp   [   1% ] 000/100 VUs  0m02.6s/5m30.0s
 
 running (0m04.0s), 001/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   1% ] 001/100 VUs  0m03.8s/5m30.0s
+throughput_ramp   [   1% ] 001/100 VUs  0m03.6s/5m30.0s
 
 running (0m05.0s), 001/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   1% ] 001/100 VUs  0m04.8s/5m30.0s
+throughput_ramp   [   1% ] 001/100 VUs  0m04.6s/5m30.0s
 
 running (0m06.0s), 001/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   2% ] 001/100 VUs  0m05.8s/5m30.0s
+throughput_ramp   [   2% ] 001/100 VUs  0m05.7s/5m30.0s
 
 running (0m07.0s), 002/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   2% ] 002/100 VUs  0m06.8s/5m30.0s
+throughput_ramp   [   2% ] 002/100 VUs  0m06.7s/5m30.0s
 
 running (0m08.0s), 002/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   2% ] 002/100 VUs  0m07.8s/5m30.0s
+throughput_ramp   [   2% ] 002/100 VUs  0m07.6s/5m30.0s
 
 running (0m09.0s), 002/100 VUs, 0 complete and 0 interrupted iterations
-throughput_ramp   [   3% ] 002/100 VUs  0m08.8s/5m30.0s
+throughput_ramp   [   3% ] 002/100 VUs  0m08.6s/5m30.0s
 
-running (0m10.0s), 003/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   3% ] 003/100 VUs  0m09.8s/5m30.0s
+running (0m10.0s), 003/100 VUs, 0 complete and 0 interrupted iterations
+throughput_ramp   [   3% ] 003/100 VUs  0m09.7s/5m30.0s
 
-running (0m11.0s), 003/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   3% ] 003/100 VUs  0m10.8s/5m30.0s
+running (0m11.0s), 003/100 VUs, 0 complete and 0 interrupted iterations
+throughput_ramp   [   3% ] 003/100 VUs  0m10.7s/5m30.0s
 
-running (0m12.0s), 003/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   4% ] 003/100 VUs  0m11.8s/5m30.0s
+running (0m12.0s), 003/100 VUs, 0 complete and 0 interrupted iterations
+throughput_ramp   [   4% ] 003/100 VUs  0m11.7s/5m30.0s
 
 running (0m13.0s), 004/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   4% ] 004/100 VUs  0m12.8s/5m30.0s
+throughput_ramp   [   4% ] 004/100 VUs  0m12.7s/5m30.0s
 
 running (0m14.0s), 004/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   4% ] 004/100 VUs  0m13.8s/5m30.0s
+throughput_ramp   [   4% ] 004/100 VUs  0m13.7s/5m30.0s
 
 running (0m15.0s), 004/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   4% ] 004/100 VUs  0m14.8s/5m30.0s
+throughput_ramp   [   4% ] 004/100 VUs  0m14.6s/5m30.0s
 
 running (0m16.0s), 005/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   5% ] 005/100 VUs  0m15.8s/5m30.0s
+throughput_ramp   [   5% ] 005/100 VUs  0m15.6s/5m30.0s
 
 running (0m17.0s), 005/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   5% ] 005/100 VUs  0m16.8s/5m30.0s
+throughput_ramp   [   5% ] 005/100 VUs  0m16.7s/5m30.0s
 
 running (0m18.0s), 005/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   5% ] 005/100 VUs  0m17.8s/5m30.0s
+throughput_ramp   [   5% ] 005/100 VUs  0m17.7s/5m30.0s
 
 running (0m19.0s), 006/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   6% ] 006/100 VUs  0m18.8s/5m30.0s
+throughput_ramp   [   6% ] 006/100 VUs  0m18.7s/5m30.0s
 
 running (0m20.0s), 006/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   6% ] 006/100 VUs  0m19.8s/5m30.0s
+throughput_ramp   [   6% ] 006/100 VUs  0m19.7s/5m30.0s
 
 running (0m21.0s), 006/100 VUs, 1 complete and 0 interrupted iterations
-throughput_ramp   [   6% ] 006/100 VUs  0m20.8s/5m30.0s
+throughput_ramp   [   6% ] 006/100 VUs  0m20.7s/5m30.0s
 
-running (0m22.0s), 007/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   7% ] 007/100 VUs  0m21.8s/5m30.0s
+running (0m22.0s), 007/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   7% ] 007/100 VUs  0m21.7s/5m30.0s
 
-running (0m23.0s), 007/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   7% ] 007/100 VUs  0m22.8s/5m30.0s
+running (0m23.0s), 007/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   7% ] 007/100 VUs  0m22.6s/5m30.0s
 
-running (0m24.0s), 007/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   7% ] 007/100 VUs  0m23.8s/5m30.0s
+running (0m24.0s), 007/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   7% ] 007/100 VUs  0m23.7s/5m30.0s
 
-running (0m25.0s), 008/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   8% ] 008/100 VUs  0m24.8s/5m30.0s
+running (0m25.0s), 008/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   7% ] 008/100 VUs  0m24.7s/5m30.0s
 
-running (0m26.0s), 008/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   8% ] 008/100 VUs  0m25.8s/5m30.0s
+running (0m26.0s), 008/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   8% ] 008/100 VUs  0m25.6s/5m30.0s
 
-running (0m27.0s), 008/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   8% ] 008/100 VUs  0m26.8s/5m30.0s
+running (0m27.0s), 008/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   8% ] 008/100 VUs  0m26.7s/5m30.0s
 
-running (0m28.0s), 009/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   8% ] 009/100 VUs  0m27.8s/5m30.0s
+running (0m28.0s), 009/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   8% ] 009/100 VUs  0m27.7s/5m30.0s
 
-running (0m29.0s), 009/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   9% ] 009/100 VUs  0m28.8s/5m30.0s
+running (0m29.0s), 009/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   9% ] 009/100 VUs  0m28.6s/5m30.0s
 
-running (0m30.0s), 009/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   9% ] 009/100 VUs  0m29.8s/5m30.0s
+running (0m30.0s), 009/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   9% ] 009/100 VUs  0m29.7s/5m30.0s
 
-running (0m31.0s), 010/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [   9% ] 010/100 VUs  0m30.8s/5m30.0s
+running (0m31.0s), 010/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [   9% ] 010/100 VUs  0m30.7s/5m30.0s
 
-running (0m32.0s), 010/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  10% ] 010/100 VUs  0m31.8s/5m30.0s
+running (0m32.0s), 010/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [  10% ] 010/100 VUs  0m31.6s/5m30.0s
 
-running (0m33.0s), 010/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  10% ] 010/100 VUs  0m32.8s/5m30.0s
+running (0m33.0s), 010/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [  10% ] 010/100 VUs  0m32.6s/5m30.0s
 
-running (0m34.0s), 010/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  10% ] 010/100 VUs  0m33.8s/5m30.0s
+running (0m34.0s), 010/100 VUs, 1 complete and 0 interrupted iterations
+throughput_ramp   [  10% ] 010/100 VUs  0m33.7s/5m30.0s
 
-running (0m35.0s), 011/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  11% ] 011/100 VUs  0m34.8s/5m30.0s
+running (0m35.0s), 011/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  11% ] 011/100 VUs  0m34.7s/5m30.0s
 
-running (0m36.0s), 011/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  11% ] 011/100 VUs  0m35.8s/5m30.0s
+running (0m36.0s), 011/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  11% ] 011/100 VUs  0m35.6s/5m30.0s
 
-running (0m37.0s), 011/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  11% ] 011/100 VUs  0m36.8s/5m30.0s
+running (0m37.0s), 011/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  11% ] 011/100 VUs  0m36.7s/5m30.0s
 
-running (0m38.0s), 011/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  11% ] 011/100 VUs  0m37.8s/5m30.0s
+running (0m38.0s), 011/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  11% ] 011/100 VUs  0m37.7s/5m30.0s
 
-running (0m39.0s), 012/100 VUs, 2 complete and 0 interrupted iterations
-throughput_ramp   [  12% ] 012/100 VUs  0m38.8s/5m30.0s
+running (0m39.0s), 012/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  12% ] 012/100 VUs  0m38.7s/5m30.0s
 
 running (0m40.0s), 012/100 VUs, 3 complete and 0 interrupted iterations
-throughput_ramp   [  12% ] 012/100 VUs  0m39.8s/5m30.0s
+throughput_ramp   [  12% ] 012/100 VUs  0m39.6s/5m30.0s
 
 running (0m41.0s), 012/100 VUs, 3 complete and 0 interrupted iterations
-throughput_ramp   [  12% ] 012/100 VUs  0m40.8s/5m30.0s
+throughput_ramp   [  12% ] 012/100 VUs  0m40.7s/5m30.0s
 
 running (0m42.0s), 012/100 VUs, 3 complete and 0 interrupted iterations
-throughput_ramp   [  13% ] 012/100 VUs  0m41.8s/5m30.0s
+throughput_ramp   [  13% ] 012/100 VUs  0m41.6s/5m30.0s
 
 running (0m43.0s), 013/100 VUs, 3 complete and 0 interrupted iterations
-throughput_ramp   [  13% ] 013/100 VUs  0m42.8s/5m30.0s
+throughput_ramp   [  13% ] 013/100 VUs  0m42.7s/5m30.0s
 
 running (0m44.0s), 013/100 VUs, 3 complete and 0 interrupted iterations
-throughput_ramp   [  13% ] 013/100 VUs  0m43.8s/5m30.0s
+throughput_ramp   [  13% ] 013/100 VUs  0m43.7s/5m30.0s
 
-running (0m45.0s), 013/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  14% ] 013/100 VUs  0m44.8s/5m30.0s
+running (0m45.0s), 013/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  14% ] 013/100 VUs  0m44.7s/5m30.0s
 
-running (0m46.0s), 013/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  14% ] 013/100 VUs  0m45.8s/5m30.0s
+running (0m46.0s), 013/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  14% ] 013/100 VUs  0m45.6s/5m30.0s
 
-running (0m47.0s), 014/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  14% ] 014/100 VUs  0m46.8s/5m30.0s
+running (0m47.0s), 014/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  14% ] 014/100 VUs  0m46.6s/5m30.0s
 
-running (0m48.0s), 014/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  14% ] 014/100 VUs  0m47.8s/5m30.0s
+running (0m48.0s), 014/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  14% ] 014/100 VUs  0m47.7s/5m30.0s
 
-running (0m49.0s), 014/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  15% ] 014/100 VUs  0m48.8s/5m30.0s
+running (0m49.0s), 014/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  15% ] 014/100 VUs  0m48.6s/5m30.0s
 
-running (0m50.0s), 014/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  15% ] 014/100 VUs  0m49.8s/5m30.0s
+running (0m50.0s), 014/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  15% ] 014/100 VUs  0m49.7s/5m30.0s
 
-running (0m51.0s), 015/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  15% ] 015/100 VUs  0m50.8s/5m30.0s
+running (0m51.0s), 015/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  15% ] 015/100 VUs  0m50.6s/5m30.0s
 
-running (0m52.0s), 015/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  16% ] 015/100 VUs  0m51.8s/5m30.0s
+running (0m52.0s), 015/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  16% ] 015/100 VUs  0m51.7s/5m30.0s
 
-running (0m53.0s), 015/100 VUs, 4 complete and 0 interrupted iterations
-throughput_ramp   [  16% ] 015/100 VUs  0m52.8s/5m30.0s
+running (0m53.0s), 015/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  16% ] 015/100 VUs  0m52.7s/5m30.0s
 
-running (0m54.0s), 015/100 VUs, 5 complete and 0 interrupted iterations
-throughput_ramp   [  16% ] 015/100 VUs  0m53.8s/5m30.0s
+running (0m54.0s), 015/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  16% ] 015/100 VUs  0m53.7s/5m30.0s
 
-running (0m55.0s), 016/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  17% ] 016/100 VUs  0m54.8s/5m30.0s
+running (0m55.0s), 016/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  17% ] 016/100 VUs  0m54.7s/5m30.0s
 
-running (0m56.0s), 016/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  17% ] 016/100 VUs  0m55.8s/5m30.0s
+running (0m56.0s), 016/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  17% ] 016/100 VUs  0m55.7s/5m30.0s
 
-running (0m57.0s), 016/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  17% ] 016/100 VUs  0m56.8s/5m30.0s
+running (0m57.0s), 016/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  17% ] 016/100 VUs  0m56.7s/5m30.0s
 
-running (0m58.0s), 016/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  18% ] 016/100 VUs  0m57.8s/5m30.0s
+running (0m58.0s), 016/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  17% ] 016/100 VUs  0m57.6s/5m30.0s
 
-running (0m59.0s), 017/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  18% ] 017/100 VUs  0m58.8s/5m30.0s
+running (0m59.0s), 017/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  18% ] 017/100 VUs  0m58.6s/5m30.0s
 
-running (1m00.0s), 017/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  18% ] 017/100 VUs  0m59.8s/5m30.0s
+running (1m00.0s), 017/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  18% ] 017/100 VUs  0m59.7s/5m30.0s
 
-running (1m01.0s), 017/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  18% ] 017/100 VUs  1m00.8s/5m30.0s
+running (1m01.0s), 017/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  18% ] 017/100 VUs  1m00.6s/5m30.0s
 
-running (1m02.0s), 017/100 VUs, 6 complete and 0 interrupted iterations
-throughput_ramp   [  19% ] 017/100 VUs  1m01.8s/5m30.0s
+running (1m02.0s), 017/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  19% ] 017/100 VUs  1m01.7s/5m30.0s
 
-running (1m03.0s), 018/100 VUs, 8 complete and 0 interrupted iterations
-throughput_ramp   [  19% ] 018/100 VUs  1m02.8s/5m30.0s
+running (1m03.0s), 018/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  19% ] 018/100 VUs  1m02.7s/5m30.0s
 
-running (1m04.0s), 018/100 VUs, 8 complete and 0 interrupted iterations
-throughput_ramp   [  19% ] 018/100 VUs  1m03.8s/5m30.0s
+running (1m04.0s), 018/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  19% ] 018/100 VUs  1m03.7s/5m30.0s
 
-running (1m05.0s), 018/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  20% ] 018/100 VUs  1m04.8s/5m30.0s
+running (1m05.0s), 018/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  20% ] 018/100 VUs  1m04.6s/5m30.0s
 
-running (1m06.0s), 018/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  20% ] 018/100 VUs  1m05.8s/5m30.0s
+running (1m06.0s), 018/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  20% ] 018/100 VUs  1m05.7s/5m30.0s
 
-running (1m07.0s), 019/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  20% ] 019/100 VUs  1m06.8s/5m30.0s
+running (1m07.0s), 019/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  20% ] 019/100 VUs  1m06.6s/5m30.0s
 
-running (1m08.0s), 019/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  21% ] 019/100 VUs  1m07.8s/5m30.0s
+running (1m08.0s), 019/100 VUs, 3 complete and 0 interrupted iterations
+throughput_ramp   [  21% ] 019/100 VUs  1m07.7s/5m30.0s
 
-running (1m09.0s), 019/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  21% ] 019/100 VUs  1m08.8s/5m30.0s
+running (1m09.0s), 019/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  21% ] 019/100 VUs  1m08.7s/5m30.0s
 
-running (1m10.0s), 019/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  21% ] 019/100 VUs  1m09.8s/5m30.0s
+running (1m10.0s), 019/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  21% ] 019/100 VUs  1m09.7s/5m30.0s
 
-running (1m11.0s), 020/100 VUs, 9 complete and 0 interrupted iterations
-throughput_ramp   [  21% ] 020/100 VUs  1m10.8s/5m30.0s
+running (1m11.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  21% ] 020/100 VUs  1m10.6s/5m30.0s
 
-running (1m12.0s), 020/100 VUs, 10 complete and 0 interrupted iterations
-throughput_ramp   [  22% ] 020/100 VUs  1m11.8s/5m30.0s
+running (1m12.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  22% ] 020/100 VUs  1m11.6s/5m30.0s
 
-running (1m13.0s), 020/100 VUs, 10 complete and 0 interrupted iterations
-throughput_ramp   [  22% ] 020/100 VUs  1m12.8s/5m30.0s
+running (1m13.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  22% ] 020/100 VUs  1m12.6s/5m30.0s
 
-running (1m14.0s), 020/100 VUs, 10 complete and 0 interrupted iterations
-throughput_ramp   [  22% ] 020/100 VUs  1m13.8s/5m30.0s
+running (1m14.0s), 020/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  22% ] 020/100 VUs  1m13.7s/5m30.0s
 
-running (1m15.0s), 021/100 VUs, 10 complete and 0 interrupted iterations
-throughput_ramp   [  23% ] 021/100 VUs  1m14.8s/5m30.0s
+running (1m15.0s), 021/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  23% ] 021/100 VUs  1m14.6s/5m30.0s
 
-running (1m16.0s), 021/100 VUs, 11 complete and 0 interrupted iterations
-throughput_ramp   [  23% ] 021/100 VUs  1m15.8s/5m30.0s
+running (1m16.0s), 021/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  23% ] 021/100 VUs  1m15.6s/5m30.0s
 
-running (1m17.0s), 021/100 VUs, 11 complete and 0 interrupted iterations
-throughput_ramp   [  23% ] 021/100 VUs  1m16.8s/5m30.0s
+running (1m17.0s), 021/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  23% ] 021/100 VUs  1m16.7s/5m30.0s
 
-running (1m18.0s), 021/100 VUs, 12 complete and 0 interrupted iterations
-throughput_ramp   [  24% ] 021/100 VUs  1m17.8s/5m30.0s
+running (1m18.0s), 021/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  24% ] 021/100 VUs  1m17.6s/5m30.0s
 
-running (1m19.0s), 022/100 VUs, 12 complete and 0 interrupted iterations
-throughput_ramp   [  24% ] 022/100 VUs  1m18.8s/5m30.0s
+running (1m19.0s), 022/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  24% ] 022/100 VUs  1m18.7s/5m30.0s
 
-running (1m20.0s), 022/100 VUs, 12 complete and 0 interrupted iterations
-throughput_ramp   [  24% ] 022/100 VUs  1m19.8s/5m30.0s
+running (1m20.0s), 022/100 VUs, 4 complete and 0 interrupted iterations
+throughput_ramp   [  24% ] 022/100 VUs  1m19.7s/5m30.0s
 
-running (1m21.0s), 022/100 VUs, 12 complete and 0 interrupted iterations
-throughput_ramp   [  24% ] 022/100 VUs  1m20.8s/5m30.0s
+running (1m21.0s), 022/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  24% ] 022/100 VUs  1m20.6s/5m30.0s
 
-running (1m22.0s), 022/100 VUs, 13 complete and 0 interrupted iterations
-throughput_ramp   [  25% ] 022/100 VUs  1m21.8s/5m30.0s
-time="2026-06-11T00:23:19+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (1m22.0s), 022/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  25% ] 022/100 VUs  1m21.6s/5m30.0s
 
-running (1m23.0s), 023/100 VUs, 15 complete and 0 interrupted iterations
-throughput_ramp   [  25% ] 023/100 VUs  1m22.8s/5m30.0s
+running (1m23.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  25% ] 023/100 VUs  1m22.6s/5m30.0s
 
-running (1m24.0s), 023/100 VUs, 15 complete and 0 interrupted iterations
-throughput_ramp   [  25% ] 023/100 VUs  1m23.8s/5m30.0s
+running (1m24.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  25% ] 023/100 VUs  1m23.7s/5m30.0s
 
-running (1m25.0s), 023/100 VUs, 15 complete and 0 interrupted iterations
-throughput_ramp   [  26% ] 023/100 VUs  1m24.8s/5m30.0s
-time="2026-06-11T00:23:22+02:00" level=warning msg="Request Failed" error="request timeout"
+running (1m25.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  26% ] 023/100 VUs  1m24.7s/5m30.0s
+time="2026-06-11T20:53:38+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/433a0856-111a-48d1-8965-f4b0ba22ba0b/state\": request timeout"
 
-running (1m26.0s), 023/100 VUs, 15 complete and 0 interrupted iterations
-throughput_ramp   [  26% ] 023/100 VUs  1m25.8s/5m30.0s
+running (1m26.0s), 023/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  26% ] 023/100 VUs  1m25.7s/5m30.0s
 
-running (1m27.0s), 024/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  26% ] 024/100 VUs  1m26.8s/5m30.0s
+running (1m27.0s), 024/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  26% ] 024/100 VUs  1m26.7s/5m30.0s
 
-running (1m28.0s), 024/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  27% ] 024/100 VUs  1m27.8s/5m30.0s
+running (1m28.0s), 024/100 VUs, 5 complete and 0 interrupted iterations
+throughput_ramp   [  27% ] 024/100 VUs  1m27.7s/5m30.0s
 
-running (1m29.0s), 024/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  27% ] 024/100 VUs  1m28.8s/5m30.0s
+running (1m29.0s), 024/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  27% ] 024/100 VUs  1m28.7s/5m30.0s
 
-running (1m30.0s), 024/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  27% ] 024/100 VUs  1m29.8s/5m30.0s
+running (1m30.0s), 024/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  27% ] 024/100 VUs  1m29.7s/5m30.0s
 
-running (1m31.0s), 025/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  28% ] 025/100 VUs  1m30.8s/5m30.0s
+running (1m31.0s), 025/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  27% ] 025/100 VUs  1m30.6s/5m30.0s
 
-running (1m32.0s), 025/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  28% ] 025/100 VUs  1m31.8s/5m30.0s
+running (1m32.0s), 025/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  28% ] 025/100 VUs  1m31.7s/5m30.0s
 
-running (1m33.0s), 026/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  28% ] 026/100 VUs  1m32.8s/5m30.0s
+running (1m33.0s), 026/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  28% ] 026/100 VUs  1m32.7s/5m30.0s
+time="2026-06-11T20:53:46+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (1m34.0s), 026/100 VUs, 16 complete and 0 interrupted iterations
-throughput_ramp   [  28% ] 026/100 VUs  1m33.8s/5m30.0s
+running (1m34.0s), 026/100 VUs, 7 complete and 0 interrupted iterations
+throughput_ramp   [  28% ] 026/100 VUs  1m33.6s/5m30.0s
 
-running (1m35.0s), 026/100 VUs, 17 complete and 0 interrupted iterations
-throughput_ramp   [  29% ] 026/100 VUs  1m34.8s/5m30.0s
+running (1m35.0s), 026/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  29% ] 026/100 VUs  1m34.7s/5m30.0s
 
-running (1m36.0s), 027/100 VUs, 18 complete and 0 interrupted iterations
-throughput_ramp   [  29% ] 027/100 VUs  1m35.8s/5m30.0s
+running (1m36.0s), 027/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  29% ] 027/100 VUs  1m35.7s/5m30.0s
 
-running (1m37.0s), 027/100 VUs, 19 complete and 0 interrupted iterations
-throughput_ramp   [  29% ] 027/100 VUs  1m36.8s/5m30.0s
+running (1m37.0s), 027/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  29% ] 027/100 VUs  1m36.7s/5m30.0s
 
-running (1m38.0s), 028/100 VUs, 19 complete and 0 interrupted iterations
-throughput_ramp   [  30% ] 028/100 VUs  1m37.8s/5m30.0s
+running (1m38.0s), 028/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  30% ] 028/100 VUs  1m37.6s/5m30.0s
 
-running (1m39.0s), 028/100 VUs, 19 complete and 0 interrupted iterations
-throughput_ramp   [  30% ] 028/100 VUs  1m38.8s/5m30.0s
+running (1m39.0s), 028/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  30% ] 028/100 VUs  1m38.7s/5m30.0s
 
-running (1m40.0s), 029/100 VUs, 21 complete and 0 interrupted iterations
-throughput_ramp   [  30% ] 029/100 VUs  1m39.8s/5m30.0s
+running (1m40.0s), 029/100 VUs, 8 complete and 0 interrupted iterations
+throughput_ramp   [  30% ] 029/100 VUs  1m39.7s/5m30.0s
 
-running (1m41.0s), 029/100 VUs, 21 complete and 0 interrupted iterations
-throughput_ramp   [  31% ] 029/100 VUs  1m40.8s/5m30.0s
+running (1m41.0s), 029/100 VUs, 9 complete and 0 interrupted iterations
+throughput_ramp   [  31% ] 029/100 VUs  1m40.7s/5m30.0s
 
-running (1m42.0s), 029/100 VUs, 21 complete and 0 interrupted iterations
-throughput_ramp   [  31% ] 029/100 VUs  1m41.8s/5m30.0s
+running (1m42.0s), 029/100 VUs, 9 complete and 0 interrupted iterations
+throughput_ramp   [  31% ] 029/100 VUs  1m41.7s/5m30.0s
 
-running (1m43.0s), 030/100 VUs, 22 complete and 0 interrupted iterations
-throughput_ramp   [  31% ] 030/100 VUs  1m42.8s/5m30.0s
+running (1m43.0s), 030/100 VUs, 10 complete and 0 interrupted iterations
+throughput_ramp   [  31% ] 030/100 VUs  1m42.6s/5m30.0s
 
-running (1m44.0s), 030/100 VUs, 24 complete and 0 interrupted iterations
-throughput_ramp   [  31% ] 030/100 VUs  1m43.8s/5m30.0s
+running (1m44.0s), 030/100 VUs, 10 complete and 0 interrupted iterations
+throughput_ramp   [  31% ] 030/100 VUs  1m43.7s/5m30.0s
 
-running (1m45.0s), 031/100 VUs, 24 complete and 0 interrupted iterations
-throughput_ramp   [  32% ] 031/100 VUs  1m44.8s/5m30.0s
+running (1m45.0s), 031/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  32% ] 031/100 VUs  1m44.6s/5m30.0s
 
-running (1m46.0s), 031/100 VUs, 24 complete and 0 interrupted iterations
-throughput_ramp   [  32% ] 031/100 VUs  1m45.8s/5m30.0s
+running (1m46.0s), 031/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  32% ] 031/100 VUs  1m45.6s/5m30.0s
 
-running (1m47.0s), 031/100 VUs, 24 complete and 0 interrupted iterations
-throughput_ramp   [  32% ] 031/100 VUs  1m46.8s/5m30.0s
+running (1m47.0s), 031/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  32% ] 031/100 VUs  1m46.7s/5m30.0s
 
-running (1m48.0s), 032/100 VUs, 25 complete and 0 interrupted iterations
-throughput_ramp   [  33% ] 032/100 VUs  1m47.8s/5m30.0s
+running (1m48.0s), 032/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  33% ] 032/100 VUs  1m47.6s/5m30.0s
 
-running (1m49.0s), 032/100 VUs, 25 complete and 0 interrupted iterations
-throughput_ramp   [  33% ] 032/100 VUs  1m48.8s/5m30.0s
+running (1m49.0s), 032/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  33% ] 032/100 VUs  1m48.7s/5m30.0s
 
-running (1m50.0s), 033/100 VUs, 26 complete and 0 interrupted iterations
-throughput_ramp   [  33% ] 033/100 VUs  1m49.8s/5m30.0s
+running (1m50.0s), 033/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  33% ] 033/100 VUs  1m49.7s/5m30.0s
 
-running (1m51.0s), 033/100 VUs, 26 complete and 0 interrupted iterations
-throughput_ramp   [  34% ] 033/100 VUs  1m50.8s/5m30.0s
+running (1m51.0s), 033/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  34% ] 033/100 VUs  1m50.7s/5m30.0s
 
-running (1m52.0s), 034/100 VUs, 26 complete and 0 interrupted iterations
-throughput_ramp   [  34% ] 034/100 VUs  1m51.8s/5m30.0s
+running (1m52.0s), 034/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  34% ] 034/100 VUs  1m51.7s/5m30.0s
 
-running (1m53.0s), 034/100 VUs, 26 complete and 0 interrupted iterations
-throughput_ramp   [  34% ] 034/100 VUs  1m52.8s/5m30.0s
+running (1m53.0s), 034/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  34% ] 034/100 VUs  1m52.6s/5m30.0s
 
-running (1m54.0s), 034/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  34% ] 034/100 VUs  1m53.8s/5m30.0s
+running (1m54.0s), 034/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  34% ] 034/100 VUs  1m53.7s/5m30.0s
 
-running (1m55.0s), 035/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  35% ] 035/100 VUs  1m54.8s/5m30.0s
+running (1m55.0s), 035/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  35% ] 035/100 VUs  1m54.7s/5m30.0s
 
-running (1m56.0s), 035/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  35% ] 035/100 VUs  1m55.8s/5m30.0s
+running (1m56.0s), 035/100 VUs, 11 complete and 0 interrupted iterations
+throughput_ramp   [  35% ] 035/100 VUs  1m55.7s/5m30.0s
 
-running (1m57.0s), 036/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  35% ] 036/100 VUs  1m56.8s/5m30.0s
+running (1m57.0s), 036/100 VUs, 12 complete and 0 interrupted iterations
+throughput_ramp   [  35% ] 036/100 VUs  1m56.6s/5m30.0s
 
-running (1m58.0s), 036/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  36% ] 036/100 VUs  1m57.8s/5m30.0s
+running (1m58.0s), 036/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  36% ] 036/100 VUs  1m57.7s/5m30.0s
 
-running (1m59.0s), 036/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  36% ] 036/100 VUs  1m58.8s/5m30.0s
+running (1m59.0s), 036/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  36% ] 036/100 VUs  1m58.6s/5m30.0s
 
-running (2m00.0s), 037/100 VUs, 27 complete and 0 interrupted iterations
-throughput_ramp   [  36% ] 037/100 VUs  1m59.8s/5m30.0s
+running (2m00.0s), 037/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  36% ] 037/100 VUs  1m59.6s/5m30.0s
 
-running (2m01.0s), 037/100 VUs, 28 complete and 0 interrupted iterations
-throughput_ramp   [  37% ] 037/100 VUs  2m00.8s/5m30.0s
-time="2026-06-11T00:23:58+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m01.0s), 037/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  37% ] 037/100 VUs  2m00.6s/5m30.0s
 
-running (2m02.0s), 038/100 VUs, 28 complete and 0 interrupted iterations
-throughput_ramp   [  37% ] 038/100 VUs  2m01.8s/5m30.0s
+running (2m02.0s), 038/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  37% ] 038/100 VUs  2m01.7s/5m30.0s
 
-running (2m03.0s), 038/100 VUs, 29 complete and 0 interrupted iterations
-throughput_ramp   [  37% ] 038/100 VUs  2m02.8s/5m30.0s
+running (2m03.0s), 038/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  37% ] 038/100 VUs  2m02.7s/5m30.0s
 
-running (2m04.0s), 039/100 VUs, 29 complete and 0 interrupted iterations
-throughput_ramp   [  38% ] 039/100 VUs  2m03.8s/5m30.0s
+running (2m04.0s), 039/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  37% ] 039/100 VUs  2m03.6s/5m30.0s
 
-running (2m05.0s), 039/100 VUs, 29 complete and 0 interrupted iterations
-throughput_ramp   [  38% ] 039/100 VUs  2m04.8s/5m30.0s
+running (2m05.0s), 039/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  38% ] 039/100 VUs  2m04.7s/5m30.0s
 
-running (2m06.0s), 039/100 VUs, 29 complete and 0 interrupted iterations
-throughput_ramp   [  38% ] 039/100 VUs  2m05.8s/5m30.0s
+running (2m06.0s), 039/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  38% ] 039/100 VUs  2m05.7s/5m30.0s
 
-running (2m07.0s), 040/100 VUs, 29 complete and 0 interrupted iterations
-throughput_ramp   [  38% ] 040/100 VUs  2m06.8s/5m30.0s
+running (2m07.0s), 040/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  38% ] 040/100 VUs  2m06.7s/5m30.0s
 
-running (2m08.0s), 040/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  39% ] 040/100 VUs  2m07.8s/5m30.0s
+running (2m08.0s), 040/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  39% ] 040/100 VUs  2m07.6s/5m30.0s
+time="2026-06-11T20:54:21+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/48f063a3-1caa-45ee-a36f-8b8044c8efd6/state\": request timeout"
 
-running (2m09.0s), 041/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  39% ] 041/100 VUs  2m08.8s/5m30.0s
+running (2m09.0s), 041/100 VUs, 13 complete and 0 interrupted iterations
+throughput_ramp   [  39% ] 041/100 VUs  2m08.7s/5m30.0s
+time="2026-06-11T20:54:22+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (2m10.0s), 041/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  39% ] 041/100 VUs  2m09.8s/5m30.0s
+running (2m10.0s), 041/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  39% ] 041/100 VUs  2m09.7s/5m30.0s
 
-running (2m11.0s), 041/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  40% ] 041/100 VUs  2m10.8s/5m30.0s
+running (2m11.0s), 041/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  40% ] 041/100 VUs  2m10.7s/5m30.0s
 
-running (2m12.0s), 042/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  40% ] 042/100 VUs  2m11.8s/5m30.0s
+running (2m12.0s), 042/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  40% ] 042/100 VUs  2m11.6s/5m30.0s
 
-running (2m13.0s), 042/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  40% ] 042/100 VUs  2m12.8s/5m30.0s
+running (2m13.0s), 042/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  40% ] 042/100 VUs  2m12.6s/5m30.0s
 
-running (2m14.0s), 043/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  41% ] 043/100 VUs  2m13.8s/5m30.0s
+running (2m14.0s), 043/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  40% ] 043/100 VUs  2m13.6s/5m30.0s
 
-running (2m15.0s), 043/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  41% ] 043/100 VUs  2m14.8s/5m30.0s
+running (2m15.0s), 043/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  41% ] 043/100 VUs  2m14.7s/5m30.0s
 
-running (2m16.0s), 044/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  41% ] 044/100 VUs  2m15.8s/5m30.0s
+running (2m16.0s), 044/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  41% ] 044/100 VUs  2m15.7s/5m30.0s
 
-running (2m17.0s), 044/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  41% ] 044/100 VUs  2m16.8s/5m30.0s
+running (2m17.0s), 044/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  41% ] 044/100 VUs  2m16.6s/5m30.0s
 
-running (2m18.0s), 044/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  42% ] 044/100 VUs  2m17.8s/5m30.0s
+running (2m18.0s), 044/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  42% ] 044/100 VUs  2m17.7s/5m30.0s
 
-running (2m19.0s), 045/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  42% ] 045/100 VUs  2m18.8s/5m30.0s
+running (2m19.0s), 045/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  42% ] 045/100 VUs  2m18.6s/5m30.0s
 
-running (2m20.0s), 045/100 VUs, 30 complete and 0 interrupted iterations
-throughput_ramp   [  42% ] 045/100 VUs  2m19.8s/5m30.0s
+running (2m20.0s), 045/100 VUs, 14 complete and 0 interrupted iterations
+throughput_ramp   [  42% ] 045/100 VUs  2m19.7s/5m30.0s
+time="2026-06-11T20:54:33+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:54:33+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/df9c9bf9-4b36-474b-91d7-157fc6a62c25/state\": request timeout"
 
-running (2m21.0s), 046/100 VUs, 31 complete and 0 interrupted iterations
-throughput_ramp   [  43% ] 046/100 VUs  2m20.8s/5m30.0s
+running (2m21.0s), 046/100 VUs, 15 complete and 0 interrupted iterations
+throughput_ramp   [  43% ] 046/100 VUs  2m20.7s/5m30.0s
+time="2026-06-11T20:54:34+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:54:34+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:54:34+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (2m22.0s), 046/100 VUs, 31 complete and 0 interrupted iterations
-throughput_ramp   [  43% ] 046/100 VUs  2m21.8s/5m30.0s
+running (2m22.0s), 046/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  43% ] 046/100 VUs  2m21.6s/5m30.0s
 
-running (2m23.0s), 046/100 VUs, 31 complete and 0 interrupted iterations
-throughput_ramp   [  43% ] 046/100 VUs  2m22.8s/5m30.0s
-time="2026-06-11T00:24:20+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:24:20+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m23.0s), 046/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  43% ] 046/100 VUs  2m22.7s/5m30.0s
 
-running (2m24.0s), 047/100 VUs, 32 complete and 0 interrupted iterations
-throughput_ramp   [  44% ] 047/100 VUs  2m23.8s/5m30.0s
-time="2026-06-11T00:24:20+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m24.0s), 047/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  44% ] 047/100 VUs  2m23.7s/5m30.0s
 
-running (2m25.0s), 047/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  44% ] 047/100 VUs  2m24.8s/5m30.0s
+running (2m25.0s), 047/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  44% ] 047/100 VUs  2m24.6s/5m30.0s
 
-running (2m26.0s), 048/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  44% ] 048/100 VUs  2m25.8s/5m30.0s
+running (2m26.0s), 048/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  44% ] 048/100 VUs  2m25.7s/5m30.0s
 
-running (2m27.0s), 048/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  44% ] 048/100 VUs  2m26.8s/5m30.0s
+running (2m27.0s), 048/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  44% ] 048/100 VUs  2m26.6s/5m30.0s
 
-running (2m28.0s), 049/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  45% ] 049/100 VUs  2m27.8s/5m30.0s
+running (2m28.0s), 049/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  45% ] 049/100 VUs  2m27.6s/5m30.0s
 
-running (2m29.0s), 049/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  45% ] 049/100 VUs  2m28.8s/5m30.0s
+running (2m29.0s), 049/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  45% ] 049/100 VUs  2m28.6s/5m30.0s
 
-running (2m30.0s), 049/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  45% ] 049/100 VUs  2m29.8s/5m30.0s
+running (2m30.0s), 049/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  45% ] 049/100 VUs  2m29.7s/5m30.0s
 
-running (2m31.0s), 050/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  46% ] 050/100 VUs  2m30.8s/5m30.0s
+running (2m31.0s), 050/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  46% ] 050/100 VUs  2m30.7s/5m30.0s
 
-running (2m32.0s), 050/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  46% ] 050/100 VUs  2m31.8s/5m30.0s
+running (2m32.0s), 050/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  46% ] 050/100 VUs  2m31.7s/5m30.0s
 
-running (2m33.0s), 051/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  46% ] 051/100 VUs  2m32.8s/5m30.0s
+running (2m33.0s), 051/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  46% ] 051/100 VUs  2m32.6s/5m30.0s
 
-running (2m34.0s), 051/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  47% ] 051/100 VUs  2m33.8s/5m30.0s
+running (2m34.0s), 051/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  47% ] 051/100 VUs  2m33.7s/5m30.0s
 
-running (2m35.0s), 051/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  47% ] 051/100 VUs  2m34.8s/5m30.0s
+running (2m35.0s), 051/100 VUs, 18 complete and 0 interrupted iterations
+throughput_ramp   [  47% ] 051/100 VUs  2m34.7s/5m30.0s
 
-running (2m36.0s), 052/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  47% ] 052/100 VUs  2m35.8s/5m30.0s
+running (2m36.0s), 052/100 VUs, 19 complete and 0 interrupted iterations
+throughput_ramp   [  47% ] 052/100 VUs  2m35.7s/5m30.0s
 
-running (2m37.0s), 052/100 VUs, 34 complete and 0 interrupted iterations
-throughput_ramp   [  48% ] 052/100 VUs  2m36.8s/5m30.0s
+running (2m37.0s), 052/100 VUs, 19 complete and 0 interrupted iterations
+throughput_ramp   [  47% ] 052/100 VUs  2m36.7s/5m30.0s
 
-running (2m38.0s), 053/100 VUs, 35 complete and 0 interrupted iterations
-throughput_ramp   [  48% ] 053/100 VUs  2m37.8s/5m30.0s
+running (2m38.0s), 053/100 VUs, 19 complete and 0 interrupted iterations
+throughput_ramp   [  48% ] 053/100 VUs  2m37.6s/5m30.0s
 
-running (2m39.0s), 053/100 VUs, 35 complete and 0 interrupted iterations
-throughput_ramp   [  48% ] 053/100 VUs  2m38.8s/5m30.0s
+running (2m39.0s), 053/100 VUs, 19 complete and 0 interrupted iterations
+throughput_ramp   [  48% ] 053/100 VUs  2m38.7s/5m30.0s
 
-running (2m40.0s), 054/100 VUs, 35 complete and 0 interrupted iterations
-throughput_ramp   [  48% ] 054/100 VUs  2m39.8s/5m30.0s
+running (2m40.0s), 054/100 VUs, 19 complete and 0 interrupted iterations
+throughput_ramp   [  48% ] 054/100 VUs  2m39.7s/5m30.0s
 
-running (2m41.0s), 054/100 VUs, 35 complete and 0 interrupted iterations
-throughput_ramp   [  49% ] 054/100 VUs  2m40.8s/5m30.0s
+running (2m41.0s), 054/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  49% ] 054/100 VUs  2m40.7s/5m30.0s
 
-running (2m42.0s), 054/100 VUs, 35 complete and 0 interrupted iterations
-throughput_ramp   [  49% ] 054/100 VUs  2m41.8s/5m30.0s
+running (2m42.0s), 054/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  49% ] 054/100 VUs  2m41.6s/5m30.0s
 
-running (2m43.0s), 055/100 VUs, 36 complete and 0 interrupted iterations
-throughput_ramp   [  49% ] 055/100 VUs  2m42.8s/5m30.0s
+running (2m43.0s), 055/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  49% ] 055/100 VUs  2m42.6s/5m30.0s
 
-running (2m44.0s), 055/100 VUs, 36 complete and 0 interrupted iterations
-throughput_ramp   [  50% ] 055/100 VUs  2m43.8s/5m30.0s
+running (2m44.0s), 055/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  50% ] 055/100 VUs  2m43.7s/5m30.0s
 
-running (2m45.0s), 056/100 VUs, 36 complete and 0 interrupted iterations
-throughput_ramp   [  50% ] 056/100 VUs  2m44.8s/5m30.0s
+running (2m45.0s), 056/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  50% ] 056/100 VUs  2m44.7s/5m30.0s
 
-running (2m46.0s), 056/100 VUs, 36 complete and 0 interrupted iterations
-throughput_ramp   [  50% ] 056/100 VUs  2m45.8s/5m30.0s
+running (2m46.0s), 056/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  50% ] 056/100 VUs  2m45.6s/5m30.0s
 
-running (2m47.0s), 056/100 VUs, 36 complete and 0 interrupted iterations
-throughput_ramp   [  51% ] 056/100 VUs  2m46.8s/5m30.0s
-time="2026-06-11T00:24:44+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m47.0s), 056/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  51% ] 056/100 VUs  2m46.7s/5m30.0s
 
-running (2m48.0s), 057/100 VUs, 38 complete and 0 interrupted iterations
-throughput_ramp   [  51% ] 057/100 VUs  2m47.8s/5m30.0s
-time="2026-06-11T00:24:45+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m48.0s), 057/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  51% ] 057/100 VUs  2m47.6s/5m30.0s
 
-running (2m49.0s), 057/100 VUs, 39 complete and 0 interrupted iterations
-throughput_ramp   [  51% ] 057/100 VUs  2m48.8s/5m30.0s
+running (2m49.0s), 057/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  51% ] 057/100 VUs  2m48.7s/5m30.0s
 
-running (2m50.0s), 058/100 VUs, 40 complete and 0 interrupted iterations
-throughput_ramp   [  51% ] 058/100 VUs  2m49.8s/5m30.0s
+running (2m50.0s), 058/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  51% ] 058/100 VUs  2m49.7s/5m30.0s
 
-running (2m51.0s), 058/100 VUs, 40 complete and 0 interrupted iterations
-throughput_ramp   [  52% ] 058/100 VUs  2m50.8s/5m30.0s
+running (2m51.0s), 058/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  52% ] 058/100 VUs  2m50.7s/5m30.0s
 
-running (2m52.0s), 059/100 VUs, 40 complete and 0 interrupted iterations
-throughput_ramp   [  52% ] 059/100 VUs  2m51.8s/5m30.0s
+running (2m52.0s), 059/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  52% ] 059/100 VUs  2m51.7s/5m30.0s
 
-running (2m53.0s), 059/100 VUs, 40 complete and 0 interrupted iterations
-throughput_ramp   [  52% ] 059/100 VUs  2m52.8s/5m30.0s
-time="2026-06-11T00:24:50+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (2m53.0s), 059/100 VUs, 20 complete and 0 interrupted iterations
+throughput_ramp   [  52% ] 059/100 VUs  2m52.7s/5m30.0s
 
-running (2m54.0s), 059/100 VUs, 40 complete and 0 interrupted iterations
-throughput_ramp   [  53% ] 059/100 VUs  2m53.8s/5m30.0s
+running (2m54.0s), 059/100 VUs, 21 complete and 0 interrupted iterations
+throughput_ramp   [  53% ] 059/100 VUs  2m53.6s/5m30.0s
 
-running (2m55.0s), 060/100 VUs, 41 complete and 0 interrupted iterations
-throughput_ramp   [  53% ] 060/100 VUs  2m54.8s/5m30.0s
+running (2m55.0s), 060/100 VUs, 21 complete and 0 interrupted iterations
+throughput_ramp   [  53% ] 060/100 VUs  2m54.7s/5m30.0s
 
-running (2m56.0s), 060/100 VUs, 41 complete and 0 interrupted iterations
-throughput_ramp   [  53% ] 060/100 VUs  2m55.8s/5m30.0s
+running (2m56.0s), 060/100 VUs, 21 complete and 0 interrupted iterations
+throughput_ramp   [  53% ] 060/100 VUs  2m55.6s/5m30.0s
+time="2026-06-11T20:55:09+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (2m57.0s), 061/100 VUs, 41 complete and 0 interrupted iterations
-throughput_ramp   [  54% ] 061/100 VUs  2m56.8s/5m30.0s
+running (2m57.0s), 061/100 VUs, 21 complete and 0 interrupted iterations
+throughput_ramp   [  54% ] 061/100 VUs  2m56.6s/5m30.0s
 
-running (2m58.0s), 061/100 VUs, 41 complete and 0 interrupted iterations
-throughput_ramp   [  54% ] 061/100 VUs  2m57.8s/5m30.0s
+running (2m58.0s), 061/100 VUs, 22 complete and 0 interrupted iterations
+throughput_ramp   [  54% ] 061/100 VUs  2m57.7s/5m30.0s
 
-running (2m59.0s), 061/100 VUs, 42 complete and 0 interrupted iterations
-throughput_ramp   [  54% ] 061/100 VUs  2m58.8s/5m30.0s
+running (2m59.0s), 061/100 VUs, 22 complete and 0 interrupted iterations
+throughput_ramp   [  54% ] 061/100 VUs  2m58.6s/5m30.0s
 
-running (3m00.0s), 062/100 VUs, 42 complete and 0 interrupted iterations
-throughput_ramp   [  54% ] 062/100 VUs  2m59.8s/5m30.0s
-time="2026-06-11T00:24:57+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:24:57+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m00.0s), 062/100 VUs, 22 complete and 0 interrupted iterations
+throughput_ramp   [  54% ] 062/100 VUs  2m59.6s/5m30.0s
 
-running (3m01.0s), 062/100 VUs, 43 complete and 0 interrupted iterations
-throughput_ramp   [  55% ] 062/100 VUs  3m00.8s/5m30.0s
-time="2026-06-11T00:24:58+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m01.0s), 062/100 VUs, 22 complete and 0 interrupted iterations
+throughput_ramp   [  55% ] 062/100 VUs  3m00.7s/5m30.0s
 
-running (3m02.0s), 063/100 VUs, 44 complete and 0 interrupted iterations
-throughput_ramp   [  55% ] 063/100 VUs  3m01.8s/5m30.0s
+running (3m02.0s), 063/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  55% ] 063/100 VUs  3m01.7s/5m30.0s
 
-running (3m03.0s), 063/100 VUs, 45 complete and 0 interrupted iterations
-throughput_ramp   [  55% ] 063/100 VUs  3m02.8s/5m30.0s
+running (3m03.0s), 063/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  55% ] 063/100 VUs  3m02.7s/5m30.0s
 
-running (3m04.0s), 064/100 VUs, 45 complete and 0 interrupted iterations
-throughput_ramp   [  56% ] 064/100 VUs  3m03.8s/5m30.0s
+running (3m04.0s), 064/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  56% ] 064/100 VUs  3m03.7s/5m30.0s
 
-running (3m05.0s), 064/100 VUs, 46 complete and 0 interrupted iterations
-throughput_ramp   [  56% ] 064/100 VUs  3m04.8s/5m30.0s
+running (3m05.0s), 064/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  56% ] 064/100 VUs  3m04.6s/5m30.0s
 
-running (3m06.0s), 064/100 VUs, 46 complete and 0 interrupted iterations
-throughput_ramp   [  56% ] 064/100 VUs  3m05.8s/5m30.0s
+running (3m06.0s), 064/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  56% ] 064/100 VUs  3m05.7s/5m30.0s
 
-running (3m07.0s), 065/100 VUs, 46 complete and 0 interrupted iterations
-throughput_ramp   [  57% ] 065/100 VUs  3m06.8s/5m30.0s
-time="2026-06-11T00:25:04+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:25:04+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m07.0s), 065/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  57% ] 065/100 VUs  3m06.7s/5m30.0s
 
-running (3m08.0s), 065/100 VUs, 46 complete and 0 interrupted iterations
-throughput_ramp   [  57% ] 065/100 VUs  3m07.8s/5m30.0s
+running (3m08.0s), 065/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  57% ] 065/100 VUs  3m07.6s/5m30.0s
 
-running (3m09.0s), 066/100 VUs, 48 complete and 0 interrupted iterations
-throughput_ramp   [  57% ] 066/100 VUs  3m08.8s/5m30.0s
-time="2026-06-11T00:25:06+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:25:06+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m09.0s), 066/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  57% ] 066/100 VUs  3m08.7s/5m30.0s
 
-running (3m10.0s), 066/100 VUs, 48 complete and 0 interrupted iterations
-throughput_ramp   [  58% ] 066/100 VUs  3m09.8s/5m30.0s
+running (3m10.0s), 066/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  57% ] 066/100 VUs  3m09.7s/5m30.0s
 
-running (3m11.0s), 066/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  58% ] 066/100 VUs  3m10.8s/5m30.0s
+running (3m11.0s), 066/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  58% ] 066/100 VUs  3m10.6s/5m30.0s
 
-running (3m12.0s), 067/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  58% ] 067/100 VUs  3m11.8s/5m30.0s
+running (3m12.0s), 067/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  58% ] 067/100 VUs  3m11.7s/5m30.0s
 
-running (3m13.0s), 067/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  58% ] 067/100 VUs  3m12.8s/5m30.0s
+running (3m13.0s), 067/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  58% ] 067/100 VUs  3m12.6s/5m30.0s
 
-running (3m14.0s), 068/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  59% ] 068/100 VUs  3m13.8s/5m30.0s
+running (3m14.0s), 068/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  59% ] 068/100 VUs  3m13.7s/5m30.0s
 
-running (3m15.0s), 068/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  59% ] 068/100 VUs  3m14.8s/5m30.0s
+running (3m15.0s), 068/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  59% ] 068/100 VUs  3m14.7s/5m30.0s
 
-running (3m16.0s), 069/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  59% ] 069/100 VUs  3m15.8s/5m30.0s
+running (3m16.0s), 069/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  59% ] 069/100 VUs  3m15.7s/5m30.0s
 
-running (3m17.0s), 069/100 VUs, 50 complete and 0 interrupted iterations
-throughput_ramp   [  60% ] 069/100 VUs  3m16.8s/5m30.0s
+running (3m17.0s), 069/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  60% ] 069/100 VUs  3m16.7s/5m30.0s
 
-running (3m18.0s), 069/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  60% ] 069/100 VUs  3m17.8s/5m30.0s
+running (3m18.0s), 069/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  60% ] 069/100 VUs  3m17.6s/5m30.0s
 
-running (3m19.0s), 070/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  60% ] 070/100 VUs  3m18.8s/5m30.0s
+running (3m19.0s), 070/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  60% ] 070/100 VUs  3m18.7s/5m30.0s
 
-running (3m20.0s), 070/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  61% ] 070/100 VUs  3m19.8s/5m30.0s
+running (3m20.0s), 070/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  61% ] 070/100 VUs  3m19.7s/5m30.0s
 
-running (3m21.0s), 071/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  61% ] 071/100 VUs  3m20.8s/5m30.0s
+running (3m21.0s), 071/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  61% ] 071/100 VUs  3m20.7s/5m30.0s
 
-running (3m22.0s), 071/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  61% ] 071/100 VUs  3m21.8s/5m30.0s
+running (3m22.0s), 071/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  61% ] 071/100 VUs  3m21.6s/5m30.0s
 
-running (3m23.0s), 071/100 VUs, 51 complete and 0 interrupted iterations
-throughput_ramp   [  61% ] 071/100 VUs  3m22.8s/5m30.0s
-time="2026-06-11T00:25:20+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:25:20+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m23.0s), 071/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  61% ] 071/100 VUs  3m22.7s/5m30.0s
 
-running (3m24.0s), 072/100 VUs, 52 complete and 0 interrupted iterations
-throughput_ramp   [  62% ] 072/100 VUs  3m23.8s/5m30.0s
+running (3m24.0s), 072/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  62% ] 072/100 VUs  3m23.7s/5m30.0s
 
-running (3m25.0s), 072/100 VUs, 53 complete and 0 interrupted iterations
-throughput_ramp   [  62% ] 072/100 VUs  3m24.8s/5m30.0s
+running (3m25.0s), 072/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  62% ] 072/100 VUs  3m24.7s/5m30.0s
 
-running (3m26.0s), 073/100 VUs, 53 complete and 0 interrupted iterations
-throughput_ramp   [  62% ] 073/100 VUs  3m25.8s/5m30.0s
+running (3m26.0s), 073/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  62% ] 073/100 VUs  3m25.7s/5m30.0s
 
-running (3m27.0s), 073/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  63% ] 073/100 VUs  3m26.8s/5m30.0s
+running (3m27.0s), 073/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  63% ] 073/100 VUs  3m26.6s/5m30.0s
 
-running (3m28.0s), 074/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  63% ] 074/100 VUs  3m27.8s/5m30.0s
+running (3m28.0s), 074/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  63% ] 074/100 VUs  3m27.6s/5m30.0s
 
-running (3m29.0s), 074/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  63% ] 074/100 VUs  3m28.8s/5m30.0s
+running (3m29.0s), 074/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  63% ] 074/100 VUs  3m28.7s/5m30.0s
 
-running (3m30.0s), 074/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  64% ] 074/100 VUs  3m29.8s/5m30.0s
+running (3m30.0s), 074/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  64% ] 074/100 VUs  3m29.6s/5m30.0s
 
-running (3m31.0s), 075/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  64% ] 075/100 VUs  3m30.8s/5m30.0s
+running (3m31.0s), 075/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  64% ] 075/100 VUs  3m30.6s/5m30.0s
 
-running (3m32.0s), 075/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  64% ] 075/100 VUs  3m31.8s/5m30.0s
+running (3m32.0s), 075/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  64% ] 075/100 VUs  3m31.7s/5m30.0s
 
-running (3m33.0s), 076/100 VUs, 54 complete and 0 interrupted iterations
-throughput_ramp   [  64% ] 076/100 VUs  3m32.8s/5m30.0s
+running (3m33.0s), 076/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  64% ] 076/100 VUs  3m32.7s/5m30.0s
+time="2026-06-11T20:55:46+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (3m34.0s), 076/100 VUs, 55 complete and 0 interrupted iterations
-throughput_ramp   [  65% ] 076/100 VUs  3m33.8s/5m30.0s
+running (3m34.0s), 076/100 VUs, 23 complete and 0 interrupted iterations
+throughput_ramp   [  65% ] 076/100 VUs  3m33.7s/5m30.0s
+time="2026-06-11T20:55:47+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:55:47+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (3m35.0s), 076/100 VUs, 55 complete and 0 interrupted iterations
-throughput_ramp   [  65% ] 076/100 VUs  3m34.8s/5m30.0s
+running (3m35.0s), 076/100 VUs, 24 complete and 0 interrupted iterations
+throughput_ramp   [  65% ] 076/100 VUs  3m34.6s/5m30.0s
+time="2026-06-11T20:55:48+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:55:48+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:55:48+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:55:48+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (3m36.0s), 077/100 VUs, 56 complete and 0 interrupted iterations
-throughput_ramp   [  65% ] 077/100 VUs  3m35.8s/5m30.0s
+running (3m36.0s), 077/100 VUs, 29 complete and 0 interrupted iterations
+throughput_ramp   [  65% ] 077/100 VUs  3m35.7s/5m30.0s
+time="2026-06-11T20:55:49+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:55:49+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (3m37.0s), 077/100 VUs, 56 complete and 0 interrupted iterations
-throughput_ramp   [  66% ] 077/100 VUs  3m36.8s/5m30.0s
+running (3m37.0s), 077/100 VUs, 32 complete and 0 interrupted iterations
+throughput_ramp   [  66% ] 077/100 VUs  3m36.7s/5m30.0s
 
-running (3m38.0s), 078/100 VUs, 56 complete and 0 interrupted iterations
-throughput_ramp   [  66% ] 078/100 VUs  3m37.8s/5m30.0s
-time="2026-06-11T00:25:35+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (3m38.0s), 078/100 VUs, 35 complete and 0 interrupted iterations
+throughput_ramp   [  66% ] 078/100 VUs  3m37.7s/5m30.0s
 
-running (3m39.0s), 078/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  66% ] 078/100 VUs  3m38.8s/5m30.0s
+running (3m39.0s), 078/100 VUs, 35 complete and 0 interrupted iterations
+throughput_ramp   [  66% ] 078/100 VUs  3m38.6s/5m30.0s
 
-running (3m40.0s), 079/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  67% ] 079/100 VUs  3m39.8s/5m30.0s
+running (3m40.0s), 079/100 VUs, 35 complete and 0 interrupted iterations
+throughput_ramp   [  67% ] 079/100 VUs  3m39.7s/5m30.0s
 
-running (3m41.0s), 079/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  67% ] 079/100 VUs  3m40.8s/5m30.0s
+running (3m41.0s), 079/100 VUs, 36 complete and 0 interrupted iterations
+throughput_ramp   [  67% ] 079/100 VUs  3m40.6s/5m30.0s
 
-running (3m42.0s), 079/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  67% ] 079/100 VUs  3m41.8s/5m30.0s
+running (3m42.0s), 079/100 VUs, 37 complete and 0 interrupted iterations
+throughput_ramp   [  67% ] 079/100 VUs  3m41.7s/5m30.0s
 
-running (3m43.0s), 080/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  68% ] 080/100 VUs  3m42.8s/5m30.0s
+running (3m43.0s), 080/100 VUs, 38 complete and 0 interrupted iterations
+throughput_ramp   [  67% ] 080/100 VUs  3m42.7s/5m30.0s
 
-running (3m44.0s), 080/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  68% ] 080/100 VUs  3m43.8s/5m30.0s
+running (3m44.0s), 080/100 VUs, 38 complete and 0 interrupted iterations
+throughput_ramp   [  68% ] 080/100 VUs  3m43.7s/5m30.0s
 
-running (3m45.0s), 081/100 VUs, 57 complete and 0 interrupted iterations
-throughput_ramp   [  68% ] 081/100 VUs  3m44.8s/5m30.0s
+running (3m45.0s), 081/100 VUs, 38 complete and 0 interrupted iterations
+throughput_ramp   [  68% ] 081/100 VUs  3m44.7s/5m30.0s
 
-running (3m46.0s), 081/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  68% ] 081/100 VUs  3m45.8s/5m30.0s
+running (3m46.0s), 081/100 VUs, 39 complete and 0 interrupted iterations
+throughput_ramp   [  68% ] 081/100 VUs  3m45.6s/5m30.0s
 
-running (3m47.0s), 081/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  69% ] 081/100 VUs  3m46.8s/5m30.0s
+running (3m47.0s), 081/100 VUs, 39 complete and 0 interrupted iterations
+throughput_ramp   [  69% ] 081/100 VUs  3m46.6s/5m30.0s
 
-running (3m48.0s), 082/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  69% ] 082/100 VUs  3m47.8s/5m30.0s
+running (3m48.0s), 082/100 VUs, 40 complete and 0 interrupted iterations
+throughput_ramp   [  69% ] 082/100 VUs  3m47.6s/5m30.0s
 
-running (3m49.0s), 082/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  69% ] 082/100 VUs  3m48.8s/5m30.0s
+running (3m49.0s), 082/100 VUs, 40 complete and 0 interrupted iterations
+throughput_ramp   [  69% ] 082/100 VUs  3m48.6s/5m30.0s
 
-running (3m50.0s), 083/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  70% ] 083/100 VUs  3m49.8s/5m30.0s
+running (3m50.0s), 083/100 VUs, 41 complete and 0 interrupted iterations
+throughput_ramp   [  70% ] 083/100 VUs  3m49.7s/5m30.0s
 
-running (3m51.0s), 083/100 VUs, 58 complete and 0 interrupted iterations
-throughput_ramp   [  70% ] 083/100 VUs  3m50.8s/5m30.0s
+running (3m51.0s), 083/100 VUs, 43 complete and 0 interrupted iterations
+throughput_ramp   [  70% ] 083/100 VUs  3m50.7s/5m30.0s
 
-running (3m52.0s), 084/100 VUs, 59 complete and 0 interrupted iterations
-throughput_ramp   [  70% ] 084/100 VUs  3m51.8s/5m30.0s
+running (3m52.0s), 084/100 VUs, 45 complete and 0 interrupted iterations
+throughput_ramp   [  70% ] 084/100 VUs  3m51.6s/5m30.0s
 
-running (3m53.0s), 084/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  71% ] 084/100 VUs  3m52.8s/5m30.0s
+running (3m53.0s), 084/100 VUs, 49 complete and 0 interrupted iterations
+throughput_ramp   [  71% ] 084/100 VUs  3m52.7s/5m30.0s
 
-running (3m54.0s), 084/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  71% ] 084/100 VUs  3m53.8s/5m30.0s
+running (3m54.0s), 084/100 VUs, 50 complete and 0 interrupted iterations
+throughput_ramp   [  71% ] 084/100 VUs  3m53.6s/5m30.0s
 
-running (3m55.0s), 085/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  71% ] 085/100 VUs  3m54.8s/5m30.0s
+running (3m55.0s), 085/100 VUs, 53 complete and 0 interrupted iterations
+throughput_ramp   [  71% ] 085/100 VUs  3m54.6s/5m30.0s
 
-running (3m56.0s), 085/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  71% ] 085/100 VUs  3m55.8s/5m30.0s
+running (3m56.0s), 085/100 VUs, 53 complete and 0 interrupted iterations
+throughput_ramp   [  71% ] 085/100 VUs  3m55.7s/5m30.0s
 
-running (3m57.0s), 086/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  72% ] 086/100 VUs  3m56.8s/5m30.0s
+running (3m57.0s), 086/100 VUs, 53 complete and 0 interrupted iterations
+throughput_ramp   [  72% ] 086/100 VUs  3m56.6s/5m30.0s
 
-running (3m58.0s), 086/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  72% ] 086/100 VUs  3m57.8s/5m30.0s
+running (3m58.0s), 086/100 VUs, 54 complete and 0 interrupted iterations
+throughput_ramp   [  72% ] 086/100 VUs  3m57.7s/5m30.0s
 
-running (3m59.0s), 086/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  72% ] 086/100 VUs  3m58.8s/5m30.0s
+running (3m59.0s), 086/100 VUs, 54 complete and 0 interrupted iterations
+throughput_ramp   [  72% ] 086/100 VUs  3m58.7s/5m30.0s
 
-running (4m00.0s), 087/100 VUs, 61 complete and 0 interrupted iterations
-throughput_ramp   [  73% ] 087/100 VUs  3m59.8s/5m30.0s
+running (4m00.0s), 087/100 VUs, 55 complete and 0 interrupted iterations
+throughput_ramp   [  73% ] 087/100 VUs  3m59.7s/5m30.0s
 
-running (4m01.0s), 087/100 VUs, 62 complete and 0 interrupted iterations
-throughput_ramp   [  73% ] 087/100 VUs  4m00.8s/5m30.0s
+running (4m01.0s), 087/100 VUs, 55 complete and 0 interrupted iterations
+throughput_ramp   [  73% ] 087/100 VUs  4m00.6s/5m30.0s
 
-running (4m02.0s), 088/100 VUs, 62 complete and 0 interrupted iterations
-throughput_ramp   [  73% ] 088/100 VUs  4m01.8s/5m30.0s
+running (4m02.0s), 088/100 VUs, 56 complete and 0 interrupted iterations
+throughput_ramp   [  73% ] 088/100 VUs  4m01.7s/5m30.0s
 
-running (4m03.0s), 088/100 VUs, 63 complete and 0 interrupted iterations
-throughput_ramp   [  74% ] 088/100 VUs  4m02.8s/5m30.0s
+running (4m03.0s), 088/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  74% ] 088/100 VUs  4m02.7s/5m30.0s
 
-running (4m04.0s), 089/100 VUs, 63 complete and 0 interrupted iterations
-throughput_ramp   [  74% ] 089/100 VUs  4m03.8s/5m30.0s
+running (4m04.0s), 089/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  74% ] 089/100 VUs  4m03.7s/5m30.0s
 
-running (4m05.0s), 089/100 VUs, 64 complete and 0 interrupted iterations
-throughput_ramp   [  74% ] 089/100 VUs  4m04.8s/5m30.0s
+running (4m05.0s), 089/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  74% ] 089/100 VUs  4m04.7s/5m30.0s
 
-running (4m06.0s), 089/100 VUs, 64 complete and 0 interrupted iterations
-throughput_ramp   [  74% ] 089/100 VUs  4m05.8s/5m30.0s
+running (4m06.0s), 089/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  74% ] 089/100 VUs  4m05.7s/5m30.0s
 
-running (4m07.0s), 090/100 VUs, 64 complete and 0 interrupted iterations
-throughput_ramp   [  75% ] 090/100 VUs  4m06.8s/5m30.0s
+running (4m07.0s), 090/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  75% ] 090/100 VUs  4m06.7s/5m30.0s
 
-running (4m08.0s), 090/100 VUs, 64 complete and 0 interrupted iterations
-throughput_ramp   [  75% ] 090/100 VUs  4m07.8s/5m30.0s
+running (4m08.0s), 090/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  75% ] 090/100 VUs  4m07.7s/5m30.0s
 
-running (4m09.0s), 091/100 VUs, 69 complete and 0 interrupted iterations
-throughput_ramp   [  75% ] 091/100 VUs  4m08.8s/5m30.0s
+running (4m09.0s), 091/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  75% ] 091/100 VUs  4m08.6s/5m30.0s
 
-running (4m10.0s), 091/100 VUs, 69 complete and 0 interrupted iterations
-throughput_ramp   [  76% ] 091/100 VUs  4m09.8s/5m30.0s
+running (4m10.0s), 091/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  76% ] 091/100 VUs  4m09.6s/5m30.0s
 
-running (4m11.0s), 091/100 VUs, 70 complete and 0 interrupted iterations
-throughput_ramp   [  76% ] 091/100 VUs  4m10.8s/5m30.0s
+running (4m11.0s), 091/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  76% ] 091/100 VUs  4m10.6s/5m30.0s
 
-running (4m12.0s), 092/100 VUs, 73 complete and 0 interrupted iterations
-throughput_ramp   [  76% ] 092/100 VUs  4m11.8s/5m30.0s
+running (4m12.0s), 092/100 VUs, 57 complete and 0 interrupted iterations
+throughput_ramp   [  76% ] 092/100 VUs  4m11.6s/5m30.0s
 
-running (4m13.0s), 092/100 VUs, 76 complete and 0 interrupted iterations
-throughput_ramp   [  77% ] 092/100 VUs  4m12.8s/5m30.0s
+running (4m13.0s), 092/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  77% ] 092/100 VUs  4m12.7s/5m30.0s
 
-running (4m14.0s), 093/100 VUs, 77 complete and 0 interrupted iterations
-throughput_ramp   [  77% ] 093/100 VUs  4m13.8s/5m30.0s
+running (4m14.0s), 093/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  77% ] 093/100 VUs  4m13.7s/5m30.0s
 
-running (4m15.0s), 093/100 VUs, 77 complete and 0 interrupted iterations
-throughput_ramp   [  77% ] 093/100 VUs  4m14.8s/5m30.0s
+running (4m15.0s), 093/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  77% ] 093/100 VUs  4m14.7s/5m30.0s
 
-running (4m16.0s), 094/100 VUs, 77 complete and 0 interrupted iterations
-throughput_ramp   [  78% ] 094/100 VUs  4m15.8s/5m30.0s
+running (4m16.0s), 094/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  77% ] 094/100 VUs  4m15.7s/5m30.0s
 
-running (4m17.0s), 094/100 VUs, 80 complete and 0 interrupted iterations
-throughput_ramp   [  78% ] 094/100 VUs  4m16.8s/5m30.0s
+running (4m17.0s), 094/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  78% ] 094/100 VUs  4m16.7s/5m30.0s
 
-running (4m18.0s), 094/100 VUs, 80 complete and 0 interrupted iterations
-throughput_ramp   [  78% ] 094/100 VUs  4m17.8s/5m30.0s
+running (4m18.0s), 094/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  78% ] 094/100 VUs  4m17.6s/5m30.0s
 
-running (4m19.0s), 095/100 VUs, 80 complete and 0 interrupted iterations
-throughput_ramp   [  78% ] 095/100 VUs  4m18.8s/5m30.0s
+running (4m19.0s), 095/100 VUs, 59 complete and 0 interrupted iterations
+throughput_ramp   [  78% ] 095/100 VUs  4m18.7s/5m30.0s
 
-running (4m20.0s), 095/100 VUs, 81 complete and 0 interrupted iterations
-throughput_ramp   [  79% ] 095/100 VUs  4m19.8s/5m30.0s
+running (4m20.0s), 095/100 VUs, 60 complete and 0 interrupted iterations
+throughput_ramp   [  79% ] 095/100 VUs  4m19.6s/5m30.0s
 
-running (4m21.0s), 096/100 VUs, 81 complete and 0 interrupted iterations
-throughput_ramp   [  79% ] 096/100 VUs  4m20.8s/5m30.0s
+running (4m21.0s), 096/100 VUs, 61 complete and 0 interrupted iterations
+throughput_ramp   [  79% ] 096/100 VUs  4m20.6s/5m30.0s
 
-running (4m22.0s), 096/100 VUs, 81 complete and 0 interrupted iterations
-throughput_ramp   [  79% ] 096/100 VUs  4m21.8s/5m30.0s
+running (4m22.0s), 096/100 VUs, 62 complete and 0 interrupted iterations
+throughput_ramp   [  79% ] 096/100 VUs  4m21.7s/5m30.0s
 
-running (4m23.0s), 096/100 VUs, 82 complete and 0 interrupted iterations
-throughput_ramp   [  80% ] 096/100 VUs  4m22.8s/5m30.0s
+running (4m23.0s), 096/100 VUs, 64 complete and 0 interrupted iterations
+throughput_ramp   [  80% ] 096/100 VUs  4m22.7s/5m30.0s
 
-running (4m24.0s), 097/100 VUs, 83 complete and 0 interrupted iterations
-throughput_ramp   [  80% ] 097/100 VUs  4m23.8s/5m30.0s
+running (4m24.0s), 097/100 VUs, 70 complete and 0 interrupted iterations
+throughput_ramp   [  80% ] 097/100 VUs  4m23.7s/5m30.0s
 
-running (4m25.0s), 097/100 VUs, 83 complete and 0 interrupted iterations
-throughput_ramp   [  80% ] 097/100 VUs  4m24.8s/5m30.0s
+running (4m25.0s), 097/100 VUs, 71 complete and 0 interrupted iterations
+throughput_ramp   [  80% ] 097/100 VUs  4m24.7s/5m30.0s
 
-running (4m26.0s), 098/100 VUs, 83 complete and 0 interrupted iterations
-throughput_ramp   [  81% ] 098/100 VUs  4m25.8s/5m30.0s
+running (4m26.0s), 098/100 VUs, 75 complete and 0 interrupted iterations
+throughput_ramp   [  81% ] 098/100 VUs  4m25.7s/5m30.0s
 
-running (4m27.0s), 098/100 VUs, 84 complete and 0 interrupted iterations
-throughput_ramp   [  81% ] 098/100 VUs  4m26.8s/5m30.0s
+running (4m27.0s), 098/100 VUs, 76 complete and 0 interrupted iterations
+throughput_ramp   [  81% ] 098/100 VUs  4m26.7s/5m30.0s
 
-running (4m28.0s), 099/100 VUs, 84 complete and 0 interrupted iterations
-throughput_ramp   [  81% ] 099/100 VUs  4m27.8s/5m30.0s
-time="2026-06-11T00:26:25+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (4m28.0s), 099/100 VUs, 76 complete and 0 interrupted iterations
+throughput_ramp   [  81% ] 099/100 VUs  4m27.7s/5m30.0s
 
-running (4m29.0s), 099/100 VUs, 84 complete and 0 interrupted iterations
-throughput_ramp   [  81% ] 099/100 VUs  4m28.8s/5m30.0s
+running (4m29.0s), 099/100 VUs, 78 complete and 0 interrupted iterations
+throughput_ramp   [  81% ] 099/100 VUs  4m28.7s/5m30.0s
 
-running (4m30.0s), 099/100 VUs, 85 complete and 0 interrupted iterations
-throughput_ramp   [  82% ] 099/100 VUs  4m29.8s/5m30.0s
+running (4m30.0s), 099/100 VUs, 78 complete and 0 interrupted iterations
+throughput_ramp   [  82% ] 099/100 VUs  4m29.7s/5m30.0s
 
-running (4m31.0s), 100/100 VUs, 85 complete and 0 interrupted iterations
-throughput_ramp   [  82% ] 100/100 VUs  4m30.8s/5m30.0s
+running (4m31.0s), 100/100 VUs, 79 complete and 0 interrupted iterations
+throughput_ramp   [  82% ] 100/100 VUs  4m30.7s/5m30.0s
 
-running (4m32.0s), 100/100 VUs, 86 complete and 0 interrupted iterations
-throughput_ramp   [  82% ] 100/100 VUs  4m31.8s/5m30.0s
+running (4m32.0s), 100/100 VUs, 80 complete and 0 interrupted iterations
+throughput_ramp   [  82% ] 100/100 VUs  4m31.6s/5m30.0s
 
-running (4m33.0s), 100/100 VUs, 86 complete and 0 interrupted iterations
-throughput_ramp   [  83% ] 100/100 VUs  4m32.8s/5m30.0s
-time="2026-06-11T00:26:30+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:26:30+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:26:30+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (4m33.0s), 100/100 VUs, 81 complete and 0 interrupted iterations
+throughput_ramp   [  83% ] 100/100 VUs  4m32.7s/5m30.0s
 
-running (4m34.0s), 100/100 VUs, 89 complete and 0 interrupted iterations
-throughput_ramp   [  83% ] 100/100 VUs  4m33.8s/5m30.0s
-time="2026-06-11T00:26:31+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (4m34.0s), 100/100 VUs, 84 complete and 0 interrupted iterations
+throughput_ramp   [  83% ] 100/100 VUs  4m33.7s/5m30.0s
 
-running (4m35.0s), 100/100 VUs, 91 complete and 0 interrupted iterations
-throughput_ramp   [  83% ] 100/100 VUs  4m34.8s/5m30.0s
+running (4m35.0s), 100/100 VUs, 87 complete and 0 interrupted iterations
+throughput_ramp   [  83% ] 100/100 VUs  4m34.7s/5m30.0s
 
-running (4m36.0s), 100/100 VUs, 91 complete and 0 interrupted iterations
-throughput_ramp   [  84% ] 100/100 VUs  4m35.8s/5m30.0s
+running (4m36.0s), 100/100 VUs, 88 complete and 0 interrupted iterations
+throughput_ramp   [  84% ] 100/100 VUs  4m35.7s/5m30.0s
 
-running (4m37.0s), 100/100 VUs, 91 complete and 0 interrupted iterations
-throughput_ramp   [  84% ] 100/100 VUs  4m36.8s/5m30.0s
+running (4m37.0s), 100/100 VUs, 88 complete and 0 interrupted iterations
+throughput_ramp   [  84% ] 100/100 VUs  4m36.6s/5m30.0s
 
-running (4m38.0s), 100/100 VUs, 91 complete and 0 interrupted iterations
-throughput_ramp   [  84% ] 100/100 VUs  4m37.8s/5m30.0s
+running (4m38.0s), 099/100 VUs, 90 complete and 0 interrupted iterations
+throughput_ramp   [  84% ] 099/100 VUs  4m37.6s/5m30.0s
 
-running (4m39.0s), 100/100 VUs, 92 complete and 0 interrupted iterations
-throughput_ramp   [  84% ] 100/100 VUs  4m38.8s/5m30.0s
+running (4m39.0s), 099/100 VUs, 90 complete and 0 interrupted iterations
+throughput_ramp   [  84% ] 099/100 VUs  4m38.7s/5m30.0s
 
-running (4m40.0s), 100/100 VUs, 94 complete and 0 interrupted iterations
-throughput_ramp   [  85% ] 100/100 VUs  4m39.8s/5m30.0s
+running (4m40.0s), 099/100 VUs, 90 complete and 0 interrupted iterations
+throughput_ramp   [  85% ] 099/100 VUs  4m39.6s/5m30.0s
 
-running (4m41.0s), 100/100 VUs, 95 complete and 0 interrupted iterations
-throughput_ramp   [  85% ] 100/100 VUs  4m40.8s/5m30.0s
+running (4m41.0s), 099/100 VUs, 90 complete and 0 interrupted iterations
+throughput_ramp   [  85% ] 099/100 VUs  4m40.7s/5m30.0s
+time="2026-06-11T20:56:54+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (4m42.0s), 100/100 VUs, 96 complete and 0 interrupted iterations
-throughput_ramp   [  85% ] 100/100 VUs  4m41.8s/5m30.0s
+running (4m42.0s), 099/100 VUs, 91 complete and 0 interrupted iterations
+throughput_ramp   [  85% ] 099/100 VUs  4m41.7s/5m30.0s
 
-running (4m43.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  86% ] 100/100 VUs  4m42.8s/5m30.0s
+running (4m43.0s), 099/100 VUs, 91 complete and 0 interrupted iterations
+throughput_ramp   [  86% ] 099/100 VUs  4m42.7s/5m30.0s
 
-running (4m44.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  86% ] 100/100 VUs  4m43.8s/5m30.0s
+running (4m44.0s), 099/100 VUs, 91 complete and 0 interrupted iterations
+throughput_ramp   [  86% ] 099/100 VUs  4m43.7s/5m30.0s
 
-running (4m45.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  86% ] 100/100 VUs  4m44.8s/5m30.0s
+running (4m45.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  86% ] 099/100 VUs  4m44.6s/5m30.0s
 
-running (4m46.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  87% ] 100/100 VUs  4m45.8s/5m30.0s
+running (4m46.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  87% ] 099/100 VUs  4m45.7s/5m30.0s
 
-running (4m47.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  87% ] 100/100 VUs  4m46.8s/5m30.0s
+running (4m47.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  87% ] 099/100 VUs  4m46.7s/5m30.0s
 
-running (4m48.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  87% ] 100/100 VUs  4m47.8s/5m30.0s
+running (4m48.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  87% ] 099/100 VUs  4m47.7s/5m30.0s
 
-running (4m49.0s), 100/100 VUs, 97 complete and 0 interrupted iterations
-throughput_ramp   [  88% ] 100/100 VUs  4m48.8s/5m30.0s
+running (4m49.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  87% ] 099/100 VUs  4m48.7s/5m30.0s
 
-running (4m50.0s), 100/100 VUs, 98 complete and 0 interrupted iterations
-throughput_ramp   [  88% ] 100/100 VUs  4m49.8s/5m30.0s
+running (4m50.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  88% ] 099/100 VUs  4m49.7s/5m30.0s
 
-running (4m51.0s), 100/100 VUs, 101 complete and 0 interrupted iterations
-throughput_ramp   [  88% ] 100/100 VUs  4m50.8s/5m30.0s
-time="2026-06-11T00:26:48+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (4m51.0s), 099/100 VUs, 92 complete and 0 interrupted iterations
+throughput_ramp   [  88% ] 099/100 VUs  4m50.6s/5m30.0s
+time="2026-06-11T20:57:04+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+time="2026-06-11T20:57:04+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (4m52.0s), 100/100 VUs, 101 complete and 0 interrupted iterations
-throughput_ramp   [  88% ] 100/100 VUs  4m51.8s/5m30.0s
-time="2026-06-11T00:26:49+02:00" level=warning msg="Request Failed" error="request timeout"
+running (4m52.0s), 099/100 VUs, 93 complete and 0 interrupted iterations
+throughput_ramp   [  88% ] 099/100 VUs  4m51.6s/5m30.0s
 
-running (4m53.0s), 099/100 VUs, 104 complete and 0 interrupted iterations
-throughput_ramp   [  89% ] 099/100 VUs  4m52.8s/5m30.0s
+running (4m53.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  89% ] 099/100 VUs  4m52.7s/5m30.0s
 
-running (4m54.0s), 098/100 VUs, 108 complete and 0 interrupted iterations
-throughput_ramp   [  89% ] 098/100 VUs  4m53.8s/5m30.0s
+running (4m54.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  89% ] 099/100 VUs  4m53.7s/5m30.0s
 
-running (4m55.0s), 097/100 VUs, 109 complete and 0 interrupted iterations
-throughput_ramp   [  89% ] 097/100 VUs  4m54.8s/5m30.0s
+running (4m55.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  89% ] 099/100 VUs  4m54.6s/5m30.0s
 
-running (4m56.0s), 097/100 VUs, 109 complete and 0 interrupted iterations
-throughput_ramp   [  90% ] 097/100 VUs  4m55.8s/5m30.0s
+running (4m56.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  90% ] 099/100 VUs  4m55.6s/5m30.0s
 
-running (4m57.0s), 097/100 VUs, 110 complete and 0 interrupted iterations
-throughput_ramp   [  90% ] 097/100 VUs  4m56.8s/5m30.0s
+running (4m57.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  90% ] 099/100 VUs  4m56.7s/5m30.0s
 
-running (4m58.0s), 097/100 VUs, 111 complete and 0 interrupted iterations
-throughput_ramp   [  90% ] 097/100 VUs  4m57.8s/5m30.0s
+running (4m58.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  90% ] 099/100 VUs  4m57.7s/5m30.0s
 
-running (4m59.0s), 096/100 VUs, 112 complete and 0 interrupted iterations
-throughput_ramp   [  91% ] 096/100 VUs  4m58.8s/5m30.0s
+running (4m59.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  90% ] 099/100 VUs  4m58.6s/5m30.0s
 
-running (5m00.0s), 095/100 VUs, 113 complete and 0 interrupted iterations
-throughput_ramp   [  91% ] 095/100 VUs  4m59.8s/5m30.0s
+running (5m00.0s), 099/100 VUs, 94 complete and 0 interrupted iterations
+throughput_ramp   [  91% ] 099/100 VUs  4m59.7s/5m30.0s
 
-running (5m01.0s), 094/100 VUs, 113 complete and 1 interrupted iterations
-throughput_ramp   [  91% ] 094/100 VUs  5m00.8s/5m30.0s
-time="2026-06-11T00:26:58+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m01.0s), 098/100 VUs, 94 complete and 1 interrupted iterations
+throughput_ramp   [  91% ] 098/100 VUs  5m00.6s/5m30.0s
 
-running (5m02.0s), 094/100 VUs, 113 complete and 1 interrupted iterations
-throughput_ramp   [  91% ] 094/100 VUs  5m01.8s/5m30.0s
+running (5m02.0s), 097/100 VUs, 94 complete and 2 interrupted iterations
+throughput_ramp   [  91% ] 097/100 VUs  5m01.7s/5m30.0s
 
-running (5m03.0s), 091/100 VUs, 115 complete and 2 interrupted iterations
-throughput_ramp   [  92% ] 091/100 VUs  5m02.8s/5m30.0s
+running (5m03.0s), 095/100 VUs, 94 complete and 4 interrupted iterations
+throughput_ramp   [  92% ] 095/100 VUs  5m02.6s/5m30.0s
 
-running (5m04.0s), 090/100 VUs, 115 complete and 3 interrupted iterations
-throughput_ramp   [  92% ] 090/100 VUs  5m03.8s/5m30.0s
-time="2026-06-11T00:27:01+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m04.0s), 093/100 VUs, 94 complete and 6 interrupted iterations
+throughput_ramp   [  92% ] 093/100 VUs  5m03.6s/5m30.0s
 
-running (5m05.0s), 089/100 VUs, 116 complete and 4 interrupted iterations
-throughput_ramp   [  92% ] 089/100 VUs  5m04.8s/5m30.0s
-time="2026-06-11T00:27:02+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m05.0s), 092/100 VUs, 94 complete and 7 interrupted iterations
+throughput_ramp   [  92% ] 092/100 VUs  5m04.7s/5m30.0s
 
-running (5m06.0s), 085/100 VUs, 120 complete and 6 interrupted iterations
-throughput_ramp   [  93% ] 085/100 VUs  5m05.8s/5m30.0s
+running (5m06.0s), 090/100 VUs, 94 complete and 9 interrupted iterations
+throughput_ramp   [  93% ] 090/100 VUs  5m05.6s/5m30.0s
 
-running (5m07.0s), 083/100 VUs, 122 complete and 8 interrupted iterations
-throughput_ramp   [  93% ] 083/100 VUs  5m06.8s/5m30.0s
+running (5m07.0s), 089/100 VUs, 94 complete and 10 interrupted iterations
+throughput_ramp   [  93% ] 089/100 VUs  5m06.7s/5m30.0s
 
-running (5m08.0s), 082/100 VUs, 122 complete and 9 interrupted iterations
-throughput_ramp   [  93% ] 082/100 VUs  5m07.8s/5m30.0s
-time="2026-06-11T00:27:05+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m08.0s), 088/100 VUs, 94 complete and 11 interrupted iterations
+throughput_ramp   [  93% ] 088/100 VUs  5m07.7s/5m30.0s
 
-running (5m09.0s), 079/100 VUs, 123 complete and 11 interrupted iterations
-throughput_ramp   [  94% ] 079/100 VUs  5m08.8s/5m30.0s
+running (5m09.0s), 086/100 VUs, 94 complete and 13 interrupted iterations
+throughput_ramp   [  94% ] 086/100 VUs  5m08.6s/5m30.0s
 
-running (5m10.0s), 077/100 VUs, 123 complete and 13 interrupted iterations
-throughput_ramp   [  94% ] 077/100 VUs  5m09.8s/5m30.0s
+running (5m10.0s), 084/100 VUs, 94 complete and 15 interrupted iterations
+throughput_ramp   [  94% ] 084/100 VUs  5m09.7s/5m30.0s
 
-running (5m11.0s), 076/100 VUs, 123 complete and 14 interrupted iterations
-throughput_ramp   [  94% ] 076/100 VUs  5m10.8s/5m30.0s
+running (5m11.0s), 082/100 VUs, 95 complete and 16 interrupted iterations
+throughput_ramp   [  94% ] 082/100 VUs  5m10.7s/5m30.0s
 
-running (5m12.0s), 074/100 VUs, 123 complete and 16 interrupted iterations
-throughput_ramp   [  94% ] 074/100 VUs  5m11.8s/5m30.0s
+running (5m12.0s), 080/100 VUs, 95 complete and 18 interrupted iterations
+throughput_ramp   [  94% ] 080/100 VUs  5m11.6s/5m30.0s
 
-running (5m13.0s), 069/100 VUs, 128 complete and 18 interrupted iterations
-throughput_ramp   [  95% ] 069/100 VUs  5m12.8s/5m30.0s
+running (5m13.0s), 078/100 VUs, 95 complete and 20 interrupted iterations
+throughput_ramp   [  95% ] 078/100 VUs  5m12.6s/5m30.0s
 
-running (5m14.0s), 067/100 VUs, 129 complete and 19 interrupted iterations
-throughput_ramp   [  95% ] 067/100 VUs  5m13.8s/5m30.0s
+running (5m14.0s), 077/100 VUs, 95 complete and 21 interrupted iterations
+throughput_ramp   [  95% ] 077/100 VUs  5m13.7s/5m30.0s
 
-running (5m15.0s), 066/100 VUs, 130 complete and 19 interrupted iterations
-throughput_ramp   [  95% ] 066/100 VUs  5m14.8s/5m30.0s
+running (5m15.0s), 075/100 VUs, 95 complete and 23 interrupted iterations
+throughput_ramp   [  95% ] 075/100 VUs  5m14.7s/5m30.0s
 
-running (5m16.0s), 062/100 VUs, 133 complete and 20 interrupted iterations
-throughput_ramp   [  96% ] 062/100 VUs  5m15.8s/5m30.0s
-time="2026-06-11T00:27:13+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m16.0s), 073/100 VUs, 95 complete and 25 interrupted iterations
+throughput_ramp   [  96% ] 073/100 VUs  5m15.6s/5m30.0s
 
-running (5m17.0s), 061/100 VUs, 133 complete and 21 interrupted iterations
-throughput_ramp   [  96% ] 061/100 VUs  5m16.8s/5m30.0s
-time="2026-06-11T00:27:14+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:27:14+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
-time="2026-06-11T00:27:14+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m17.0s), 072/100 VUs, 95 complete and 26 interrupted iterations
+throughput_ramp   [  96% ] 072/100 VUs  5m16.7s/5m30.0s
 
-running (5m18.0s), 059/100 VUs, 135 complete and 23 interrupted iterations
-throughput_ramp   [  96% ] 059/100 VUs  5m17.8s/5m30.0s
-time="2026-06-11T00:27:15+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m18.0s), 070/100 VUs, 95 complete and 28 interrupted iterations
+throughput_ramp   [  96% ] 070/100 VUs  5m17.7s/5m30.0s
 
-running (5m19.0s), 056/100 VUs, 137 complete and 25 interrupted iterations
-throughput_ramp   [  97% ] 056/100 VUs  5m18.8s/5m30.0s
+running (5m19.0s), 068/100 VUs, 96 complete and 30 interrupted iterations
+throughput_ramp   [  97% ] 068/100 VUs  5m18.7s/5m30.0s
 
-running (5m20.0s), 054/100 VUs, 140 complete and 25 interrupted iterations
-throughput_ramp   [  97% ] 054/100 VUs  5m19.8s/5m30.0s
+running (5m20.0s), 067/100 VUs, 96 complete and 31 interrupted iterations
+throughput_ramp   [  97% ] 067/100 VUs  5m19.6s/5m30.0s
 
-running (5m21.0s), 051/100 VUs, 142 complete and 26 interrupted iterations
-throughput_ramp   [  97% ] 051/100 VUs  5m20.8s/5m30.0s
+running (5m21.0s), 065/100 VUs, 96 complete and 33 interrupted iterations
+throughput_ramp   [  97% ] 065/100 VUs  5m20.7s/5m30.0s
 
-running (5m22.0s), 045/100 VUs, 146 complete and 28 interrupted iterations
-throughput_ramp   [  98% ] 045/100 VUs  5m21.8s/5m30.0s
+running (5m22.0s), 063/100 VUs, 96 complete and 35 interrupted iterations
+throughput_ramp   [  97% ] 063/100 VUs  5m21.7s/5m30.0s
 
-running (5m23.0s), 045/100 VUs, 146 complete and 28 interrupted iterations
-throughput_ramp   [  98% ] 045/100 VUs  5m22.8s/5m30.0s
+running (5m23.0s), 062/100 VUs, 97 complete and 36 interrupted iterations
+throughput_ramp   [  98% ] 062/100 VUs  5m22.7s/5m30.0s
+time="2026-06-11T20:57:36+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (5m24.0s), 044/100 VUs, 148 complete and 28 interrupted iterations
-throughput_ramp   [  98% ] 044/100 VUs  5m23.8s/5m30.0s
+running (5m24.0s), 058/100 VUs, 100 complete and 38 interrupted iterations
+throughput_ramp   [  98% ] 058/100 VUs  5m23.6s/5m30.0s
 
-running (5m25.0s), 039/100 VUs, 154 complete and 28 interrupted iterations
-throughput_ramp   [  98% ] 039/100 VUs  5m24.8s/5m30.0s
+running (5m25.0s), 056/100 VUs, 100 complete and 40 interrupted iterations
+throughput_ramp   [  98% ] 056/100 VUs  5m24.7s/5m30.0s
 
-running (5m26.0s), 037/100 VUs, 156 complete and 28 interrupted iterations
-throughput_ramp   [  99% ] 037/100 VUs  5m25.8s/5m30.0s
+running (5m26.0s), 055/100 VUs, 100 complete and 41 interrupted iterations
+throughput_ramp   [  99% ] 055/100 VUs  5m25.7s/5m30.0s
 
-running (5m27.0s), 036/100 VUs, 156 complete and 29 interrupted iterations
-throughput_ramp   [  99% ] 036/100 VUs  5m26.8s/5m30.0s
+running (5m27.0s), 053/100 VUs, 100 complete and 43 interrupted iterations
+throughput_ramp   [  99% ] 053/100 VUs  5m26.7s/5m30.0s
 
-running (5m28.0s), 035/100 VUs, 156 complete and 30 interrupted iterations
-throughput_ramp   [  99% ] 035/100 VUs  5m27.8s/5m30.0s
+running (5m28.0s), 051/100 VUs, 100 complete and 45 interrupted iterations
+throughput_ramp   [  99% ] 051/100 VUs  5m27.7s/5m30.0s
 
-running (5m29.0s), 035/100 VUs, 156 complete and 30 interrupted iterations
-throughput_ramp   [ 100% ] 035/100 VUs  5m28.8s/5m30.0s
+running (5m29.0s), 050/100 VUs, 100 complete and 46 interrupted iterations
+throughput_ramp   [ 100% ] 050/100 VUs  5m28.6s/5m30.0s
+time="2026-06-11T20:57:42+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (5m30.0s), 035/100 VUs, 156 complete and 30 interrupted iterations
-throughput_ramp   [ 100% ] 035/100 VUs  5m29.8s/5m30.0s
+running (5m30.0s), 047/100 VUs, 101 complete and 48 interrupted iterations
+throughput_ramp   [ 100% ] 047/100 VUs  5m29.6s/5m30.0s
 
-running (5m31.0s), 033/100 VUs, 156 complete and 32 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m31.0s), 045/100 VUs, 101 complete and 50 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m32.0s), 033/100 VUs, 156 complete and 32 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m32.0s), 044/100 VUs, 101 complete and 51 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m33.0s), 033/100 VUs, 156 complete and 32 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m33.0s), 040/100 VUs, 104 complete and 52 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m34.0s), 032/100 VUs, 156 complete and 33 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m34.0s), 035/100 VUs, 107 complete and 54 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m35.0s), 032/100 VUs, 156 complete and 33 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m35.0s), 033/100 VUs, 108 complete and 55 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m36.0s), 030/100 VUs, 156 complete and 35 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m36.0s), 033/100 VUs, 108 complete and 55 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m37.0s), 028/100 VUs, 156 complete and 37 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m37.0s), 031/100 VUs, 109 complete and 56 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m38.0s), 027/100 VUs, 156 complete and 38 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m38.0s), 030/100 VUs, 110 complete and 56 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m39.0s), 027/100 VUs, 156 complete and 38 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m39.0s), 028/100 VUs, 110 complete and 58 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
+time="2026-06-11T20:57:52+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (5m40.0s), 025/100 VUs, 156 complete and 40 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
-time="2026-06-11T00:27:37+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m40.0s), 027/100 VUs, 110 complete and 59 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m41.0s), 024/100 VUs, 156 complete and 41 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
-time="2026-06-11T00:27:37+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
+running (5m41.0s), 026/100 VUs, 111 complete and 59 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m42.0s), 020/100 VUs, 158 complete and 43 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m42.0s), 024/100 VUs, 113 complete and 59 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m43.0s), 019/100 VUs, 158 complete and 44 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m43.0s), 023/100 VUs, 113 complete and 60 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m44.0s), 019/100 VUs, 158 complete and 44 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m44.0s), 022/100 VUs, 113 complete and 61 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m45.0s), 019/100 VUs, 158 complete and 44 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m45.0s), 020/100 VUs, 113 complete and 63 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m46.0s), 018/100 VUs, 158 complete and 45 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m46.0s), 018/100 VUs, 113 complete and 65 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m47.0s), 017/100 VUs, 158 complete and 46 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m47.0s), 017/100 VUs, 113 complete and 66 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m48.0s), 016/100 VUs, 158 complete and 47 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m48.0s), 015/100 VUs, 113 complete and 68 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m49.0s), 015/100 VUs, 158 complete and 48 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m49.0s), 013/100 VUs, 113 complete and 70 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
+time="2026-06-11T20:58:02+02:00" level=warning msg="Request Failed" error="Get \"http://188.245.60.172:30001/api/collab\": request timeout"
 
-running (5m50.0s), 015/100 VUs, 158 complete and 48 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m50.0s), 012/100 VUs, 113 complete and 71 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m51.0s), 014/100 VUs, 158 complete and 49 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m51.0s), 009/100 VUs, 114 complete and 73 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m52.0s), 013/100 VUs, 158 complete and 50 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m52.0s), 008/100 VUs, 114 complete and 74 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m53.0s), 013/100 VUs, 158 complete and 50 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m53.0s), 007/100 VUs, 114 complete and 75 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m54.0s), 011/100 VUs, 158 complete and 52 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m54.0s), 006/100 VUs, 114 complete and 76 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m55.0s), 009/100 VUs, 158 complete and 54 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m55.0s), 006/100 VUs, 114 complete and 76 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m56.0s), 008/100 VUs, 158 complete and 55 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m56.0s), 005/100 VUs, 114 complete and 77 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m57.0s), 006/100 VUs, 158 complete and 57 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m57.0s), 004/100 VUs, 114 complete and 78 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m58.0s), 004/100 VUs, 158 complete and 59 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (5m58.0s), 002/100 VUs, 114 complete and 80 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
-running (5m59.0s), 003/100 VUs, 158 complete and 60 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
-
-running (6m00.0s), 001/100 VUs, 158 complete and 62 interrupted iterations
-throughput_ramp ↓ [ 100% ] 035/100 VUs  5m30s
+running (10m30.5s), 001/100 VUs, 114 complete and 81 interrupted iterations
+throughput_ramp ↓ [ 100% ] 047/100 VUs  5m30s
 
 
   █ THRESHOLDS 
 
     http_req_duration
-    ✗ 'p(95)<15000' p(95)=49.97s
+    ✗ 'p(95)<15000' p(95)=51.18s
 
     throughput_errors
-    ✗ 'rate<0.3' rate=54.63%
+    ✗ 'rate<0.3' rate=41.46%
 
 
   █ TOTAL RESULTS 
 
-    checks_total.......: 117     0.324809/s
-    checks_succeeded...: 0.00%   0 out of 117
-    checks_failed......: 100.00% 117 out of 117
+    checks_total.......: 62     0.098256/s
+    checks_succeeded...: 70.96% 44 out of 62
+    checks_failed......: 29.03% 18 out of 62
 
     ✗ Advanced full workflow ok
-      ↳  0% — ✓ 0 / ✗ 15
-    ✗ Analytics full workflow ok
-      ↳  0% — ✓ 0 / ✗ 14
-    ✗ DataExchange full workflow ok
-      ↳  0% — ✓ 0 / ✗ 16
-    ✗ Calculator full workflow ok
-      ↳  0% — ✓ 0 / ✗ 12
-    ✗ Geospatial full workflow ok
-      ↳  0% — ✓ 0 / ✗ 16
+      ↳  88% — ✓ 8 / ✗ 1
     ✗ MonteCarlo full workflow ok
-      ↳  0% — ✓ 0 / ✗ 15
-    ✗ MLTrainer full workflow ok
-      ↳  0% — ✓ 0 / ✗ 15
+      ↳  87% — ✓ 7 / ✗ 1
+    ✓ Geospatial full workflow ok
     ✗ ClimateAnomaly full workflow ok
-      ↳  0% — ✓ 0 / ✗ 14
+      ↳  0% — ✓ 0 / ✗ 8
+    ✓ Analytics full workflow ok
+    ✗ DataExchange full workflow ok
+      ↳  88% — ✓ 8 / ✗ 1
+    ✓ Calculator full workflow ok
+    ✗ MLTrainer full workflow ok
+      ↳  22% — ✓ 2 / ✗ 7
 
     CUSTOM
-    throughput_errors..............: 54.63% 401 out of 734
-    throughput_ops.................: 692    1.92109/s
-    throughput_response_ms.........: avg=16.94s min=36.04ms med=9.1s  max=1m0s  p(90)=42.99s p(95)=1m0s  
+    throughput_errors..............: 41.46% 221 out of 533
+    throughput_ops.................: 481    0.762278/s
+    throughput_response_ms.........: avg=21.72s min=35.13ms med=21.3s  max=1m0s   p(90)=48.79s p(95)=1m0s  
 
     HTTP
-    http_req_duration..............: avg=15.45s min=36.04ms med=9.17s max=1m0s  p(90)=38.52s p(95)=49.97s
-      { expected_response:true }...: avg=11.87s min=36.04ms med=6.35s max=59.3s p(90)=30.48s p(95)=39.38s
-    http_req_failed................: 37.37% 401 out of 1073
-    http_reqs......................: 1073   2.9788/s
+    http_req_duration..............: avg=20.38s min=35.13ms med=19.78s max=1m0s   p(90)=44.7s  p(95)=51.18s
+      { expected_response:true }...: avg=14.79s min=35.13ms med=13.47s max=55.18s p(90)=27.14s p(95)=36.35s
+    http_req_failed................: 27.31% 221 out of 809
+    http_reqs......................: 809    1.282085/s
 
     EXECUTION
-    iteration_duration.............: avg=1m23s  min=6.3s    med=1m22s max=2m54s p(90)=2m24s  p(95)=2m31s 
-    iterations.....................: 158    0.43863/s
-    vus............................: 1      min=0           max=100
-    vus_max........................: 100    min=100         max=100
+    iteration_duration.............: avg=1m30s  min=8.65s   med=1m33s  max=3m28s  p(90)=2m37s  p(95)=3m7s  
+    iterations.....................: 114    0.180665/s
+    vus............................: 1      min=0          max=100
+    vus_max........................: 100    min=100        max=100
 
     NETWORK
-    data_received..................: 38 MB  106 kB/s
-    data_sent......................: 348 kB 965 B/s
+    data_received..................: 23 MB  37 kB/s
+    data_sent......................: 269 kB 426 B/s
 
 
 
 
-running (6m00.2s), 000/100 VUs, 158 complete and 63 interrupted iterations
-throughput_ramp ✓ [ 100% ] 001/100 VUs  5m30s
-time="2026-06-11T00:27:57+02:00" level=error msg="thresholds on metrics 'http_req_duration, throughput_errors' have been crossed"
+running (10m31.0s), 000/100 VUs, 114 complete and 82 interrupted iterations
+throughput_ramp ✓ [ 100% ] 000/100 VUs  5m30s
+time="2026-06-11T21:02:44+02:00" level=error msg="thresholds on metrics 'http_req_duration, throughput_errors' have been crossed"

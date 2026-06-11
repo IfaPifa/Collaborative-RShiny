@@ -1,0 +1,905 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: k6/03-save-restore-latency.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 15 max VUs, 4m30s max duration (incl. graceful stop):
+              * save_restore: Up to 15 looping VUs for 4m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+
+Run            [ 100% ] setup()
+save_restore   [   0% ]
+
+Run            [ 100% ] setup()
+save_restore   [   0% ]
+
+Run            [ 100% ] setup()
+save_restore   [   0% ]
+
+running (0m04.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   0% ] 01/15 VUs  0m00.9s/4m00.0s
+
+running (0m05.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   1% ] 01/15 VUs  0m01.9s/4m00.0s
+
+running (0m06.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   1% ] 01/15 VUs  0m02.9s/4m00.0s
+
+running (0m07.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m03.9s/4m00.0s
+
+running (0m08.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m04.9s/4m00.0s
+
+running (0m09.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   2% ] 01/15 VUs  0m05.9s/4m00.0s
+
+running (0m10.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   3% ] 01/15 VUs  0m06.9s/4m00.0s
+
+running (0m11.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   3% ] 01/15 VUs  0m07.9s/4m00.0s
+
+running (0m12.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   4% ] 01/15 VUs  0m08.9s/4m00.0s
+
+running (0m13.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   4% ] 01/15 VUs  0m09.9s/4m00.0s
+
+running (0m14.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   5% ] 01/15 VUs  0m10.9s/4m00.0s
+
+running (0m15.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   5% ] 01/15 VUs  0m11.9s/4m00.0s
+
+running (0m16.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   5% ] 01/15 VUs  0m12.9s/4m00.0s
+
+running (0m17.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   6% ] 01/15 VUs  0m13.9s/4m00.0s
+
+running (0m18.0s), 01/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   6% ] 01/15 VUs  0m14.9s/4m00.0s
+
+running (0m19.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m15.9s/4m00.0s
+
+running (0m20.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m16.9s/4m00.0s
+
+running (0m21.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   7% ] 02/15 VUs  0m17.9s/4m00.0s
+
+running (0m22.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   8% ] 02/15 VUs  0m18.9s/4m00.0s
+
+running (0m23.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   8% ] 02/15 VUs  0m19.9s/4m00.0s
+
+running (0m24.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   9% ] 02/15 VUs  0m20.9s/4m00.0s
+
+running (0m25.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [   9% ] 02/15 VUs  0m21.9s/4m00.0s
+
+running (0m26.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  10% ] 02/15 VUs  0m22.9s/4m00.0s
+
+running (0m27.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  10% ] 02/15 VUs  0m23.9s/4m00.0s
+
+running (0m28.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  10% ] 02/15 VUs  0m24.9s/4m00.0s
+
+running (0m29.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  11% ] 02/15 VUs  0m25.9s/4m00.0s
+
+running (0m30.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  11% ] 02/15 VUs  0m26.9s/4m00.0s
+
+running (0m31.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m27.9s/4m00.0s
+
+running (0m32.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m28.9s/4m00.0s
+
+running (0m33.0s), 02/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  12% ] 02/15 VUs  0m29.9s/4m00.0s
+
+running (0m34.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  13% ] 03/15 VUs  0m30.9s/4m00.0s
+
+running (0m35.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  13% ] 03/15 VUs  0m31.9s/4m00.0s
+
+running (0m36.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  14% ] 03/15 VUs  0m32.9s/4m00.0s
+
+running (0m37.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  14% ] 03/15 VUs  0m33.9s/4m00.0s
+
+running (0m38.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  15% ] 03/15 VUs  0m34.9s/4m00.0s
+
+running (0m39.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  15% ] 03/15 VUs  0m35.9s/4m00.0s
+
+running (0m40.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  15% ] 03/15 VUs  0m36.9s/4m00.0s
+
+running (0m41.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  16% ] 03/15 VUs  0m37.9s/4m00.0s
+
+running (0m42.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  16% ] 03/15 VUs  0m38.9s/4m00.0s
+
+running (0m43.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m39.9s/4m00.0s
+
+running (0m44.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m40.9s/4m00.0s
+
+running (0m45.0s), 03/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  17% ] 03/15 VUs  0m41.9s/4m00.0s
+
+running (0m46.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  18% ] 04/15 VUs  0m42.9s/4m00.0s
+
+running (0m47.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  18% ] 04/15 VUs  0m43.9s/4m00.0s
+
+running (0m48.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  19% ] 04/15 VUs  0m44.9s/4m00.0s
+
+running (0m49.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  19% ] 04/15 VUs  0m45.9s/4m00.0s
+
+running (0m50.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  20% ] 04/15 VUs  0m46.9s/4m00.0s
+
+running (0m51.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  20% ] 04/15 VUs  0m47.9s/4m00.0s
+
+running (0m52.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  20% ] 04/15 VUs  0m48.9s/4m00.0s
+
+running (0m53.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  21% ] 04/15 VUs  0m49.9s/4m00.0s
+
+running (0m54.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  21% ] 04/15 VUs  0m50.9s/4m00.0s
+
+running (0m55.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m51.9s/4m00.0s
+
+running (0m56.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m52.9s/4m00.0s
+
+running (0m57.0s), 04/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  22% ] 04/15 VUs  0m53.9s/4m00.0s
+
+running (0m58.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  23% ] 05/15 VUs  0m54.9s/4m00.0s
+
+running (0m59.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  23% ] 05/15 VUs  0m55.9s/4m00.0s
+
+running (1m00.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  24% ] 05/15 VUs  0m56.9s/4m00.0s
+
+running (1m01.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  24% ] 05/15 VUs  0m57.9s/4m00.0s
+
+running (1m02.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  25% ] 05/15 VUs  0m58.9s/4m00.0s
+
+running (1m03.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  25% ] 05/15 VUs  0m59.9s/4m00.0s
+
+running (1m04.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  25% ] 05/15 VUs  1m00.9s/4m00.0s
+
+running (1m05.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  26% ] 05/15 VUs  1m01.9s/4m00.0s
+
+running (1m06.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  26% ] 05/15 VUs  1m02.9s/4m00.0s
+
+running (1m07.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m03.9s/4m00.0s
+
+running (1m08.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m04.9s/4m00.0s
+
+running (1m09.0s), 05/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  27% ] 05/15 VUs  1m05.9s/4m00.0s
+
+running (1m10.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  28% ] 06/15 VUs  1m06.9s/4m00.0s
+
+running (1m11.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  28% ] 06/15 VUs  1m07.9s/4m00.0s
+
+running (1m12.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  29% ] 06/15 VUs  1m08.9s/4m00.0s
+
+running (1m13.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  29% ] 06/15 VUs  1m09.9s/4m00.0s
+
+running (1m14.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  30% ] 06/15 VUs  1m10.9s/4m00.0s
+
+running (1m15.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  30% ] 06/15 VUs  1m11.9s/4m00.0s
+
+running (1m16.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  30% ] 06/15 VUs  1m12.9s/4m00.0s
+
+running (1m17.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  31% ] 06/15 VUs  1m13.9s/4m00.0s
+
+running (1m18.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  31% ] 06/15 VUs  1m14.9s/4m00.0s
+time="2026-06-11T20:48:58+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/6df8358a-ad1c-4b7c-acfb-cb9d24e6a3f5/state\": request timeout"
+
+running (1m19.0s), 06/15 VUs, 0 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m15.9s/4m00.0s
+
+running (1m20.0s), 06/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m16.9s/4m00.0s
+
+running (1m21.0s), 06/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  32% ] 06/15 VUs  1m17.9s/4m00.0s
+
+running (1m22.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  33% ] 07/15 VUs  1m18.9s/4m00.0s
+
+running (1m23.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  33% ] 07/15 VUs  1m19.9s/4m00.0s
+
+running (1m24.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  34% ] 07/15 VUs  1m20.9s/4m00.0s
+
+running (1m25.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  34% ] 07/15 VUs  1m21.9s/4m00.0s
+
+running (1m26.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  35% ] 07/15 VUs  1m22.9s/4m00.0s
+
+running (1m27.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  35% ] 07/15 VUs  1m23.9s/4m00.0s
+
+running (1m28.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  35% ] 07/15 VUs  1m24.9s/4m00.0s
+
+running (1m29.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  36% ] 07/15 VUs  1m25.9s/4m00.0s
+
+running (1m30.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  36% ] 07/15 VUs  1m26.9s/4m00.0s
+
+running (1m31.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m27.9s/4m00.0s
+
+running (1m32.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m28.9s/4m00.0s
+
+running (1m33.0s), 07/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  37% ] 07/15 VUs  1m29.9s/4m00.0s
+time="2026-06-11T20:49:13+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/fc652481-c79f-47f8-a3f3-43d81aff579f/state\": request timeout"
+
+running (1m34.0s), 08/15 VUs, 1 complete and 0 interrupted iterations
+save_restore   [  38% ] 08/15 VUs  1m30.9s/4m00.0s
+
+running (1m35.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  38% ] 08/15 VUs  1m31.9s/4m00.0s
+
+running (1m36.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  39% ] 08/15 VUs  1m32.9s/4m00.0s
+
+running (1m37.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  39% ] 08/15 VUs  1m33.9s/4m00.0s
+
+running (1m38.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  40% ] 08/15 VUs  1m34.9s/4m00.0s
+
+running (1m39.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  40% ] 08/15 VUs  1m35.9s/4m00.0s
+
+running (1m40.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  40% ] 08/15 VUs  1m36.9s/4m00.0s
+
+running (1m41.0s), 08/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  41% ] 08/15 VUs  1m37.9s/4m00.0s
+
+running (1m42.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  41% ] 09/15 VUs  1m38.9s/4m00.0s
+
+running (1m43.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m39.9s/4m00.0s
+
+running (1m44.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m40.9s/4m00.0s
+
+running (1m45.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  42% ] 09/15 VUs  1m41.9s/4m00.0s
+
+running (1m46.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  43% ] 09/15 VUs  1m42.9s/4m00.0s
+
+running (1m47.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  43% ] 09/15 VUs  1m43.9s/4m00.0s
+
+running (1m48.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  44% ] 09/15 VUs  1m44.9s/4m00.0s
+time="2026-06-11T20:49:28+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/3635fa0f-1e3e-49d3-89ab-07526f5d60ff/state\": request timeout"
+
+running (1m49.0s), 09/15 VUs, 2 complete and 0 interrupted iterations
+save_restore   [  44% ] 09/15 VUs  1m45.9s/4m00.0s
+
+running (1m50.0s), 09/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  45% ] 09/15 VUs  1m46.9s/4m00.0s
+
+running (1m51.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  45% ] 10/15 VUs  1m47.9s/4m00.0s
+
+running (1m52.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  45% ] 10/15 VUs  1m48.9s/4m00.0s
+
+running (1m53.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  46% ] 10/15 VUs  1m49.9s/4m00.0s
+
+running (1m54.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  46% ] 10/15 VUs  1m50.9s/4m00.0s
+
+running (1m55.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m51.9s/4m00.0s
+
+running (1m56.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m52.9s/4m00.0s
+
+running (1m57.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  47% ] 10/15 VUs  1m53.9s/4m00.0s
+
+running (1m58.0s), 10/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  48% ] 10/15 VUs  1m54.9s/4m00.0s
+
+running (1m59.0s), 11/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  48% ] 11/15 VUs  1m55.9s/4m00.0s
+
+running (2m00.0s), 11/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  49% ] 11/15 VUs  1m56.9s/4m00.0s
+time="2026-06-11T20:49:40+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/45380ca8-30d8-4959-8974-32c3d2d38b93/state\": request timeout"
+
+running (2m01.0s), 11/15 VUs, 3 complete and 0 interrupted iterations
+save_restore   [  49% ] 11/15 VUs  1m57.9s/4m00.0s
+
+running (2m02.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  50% ] 11/15 VUs  1m58.9s/4m00.0s
+
+running (2m03.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  50% ] 11/15 VUs  1m59.9s/4m00.0s
+
+running (2m04.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  50% ] 11/15 VUs  2m00.9s/4m00.0s
+
+running (2m05.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  51% ] 11/15 VUs  2m01.9s/4m00.0s
+
+running (2m06.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  51% ] 11/15 VUs  2m02.9s/4m00.0s
+
+running (2m07.0s), 11/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  52% ] 11/15 VUs  2m03.9s/4m00.0s
+
+running (2m08.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  52% ] 12/15 VUs  2m04.9s/4m00.0s
+
+running (2m09.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  52% ] 12/15 VUs  2m05.9s/4m00.0s
+
+running (2m10.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  53% ] 12/15 VUs  2m06.9s/4m00.0s
+
+running (2m11.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  53% ] 12/15 VUs  2m07.9s/4m00.0s
+
+running (2m12.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  54% ] 12/15 VUs  2m08.9s/4m00.0s
+time="2026-06-11T20:49:52+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/4543af58-a09f-4367-b666-61e436935c7e/state\": request timeout"
+
+running (2m13.0s), 12/15 VUs, 4 complete and 0 interrupted iterations
+save_restore   [  54% ] 12/15 VUs  2m09.9s/4m00.0s
+
+running (2m14.0s), 12/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  55% ] 12/15 VUs  2m10.9s/4m00.0s
+
+running (2m15.0s), 12/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  55% ] 12/15 VUs  2m11.9s/4m00.0s
+
+running (2m16.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  55% ] 13/15 VUs  2m12.9s/4m00.0s
+
+running (2m17.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  56% ] 13/15 VUs  2m13.9s/4m00.0s
+
+running (2m18.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  56% ] 13/15 VUs  2m14.9s/4m00.0s
+
+running (2m19.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m15.9s/4m00.0s
+
+running (2m20.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m16.9s/4m00.0s
+
+running (2m21.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  57% ] 13/15 VUs  2m17.9s/4m00.0s
+
+running (2m22.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  58% ] 13/15 VUs  2m18.9s/4m00.0s
+
+running (2m23.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  58% ] 13/15 VUs  2m19.9s/4m00.0s
+
+running (2m24.0s), 13/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  59% ] 13/15 VUs  2m20.9s/4m00.0s
+time="2026-06-11T20:50:04+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/e9785461-2d8a-42b7-be9a-2928b8992f85/state\": request timeout"
+
+running (2m25.0s), 14/15 VUs, 5 complete and 0 interrupted iterations
+save_restore   [  59% ] 14/15 VUs  2m21.9s/4m00.0s
+
+running (2m26.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  60% ] 14/15 VUs  2m22.9s/4m00.0s
+
+running (2m27.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  60% ] 14/15 VUs  2m23.9s/4m00.0s
+
+running (2m28.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  60% ] 14/15 VUs  2m24.9s/4m00.0s
+
+running (2m29.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  61% ] 14/15 VUs  2m25.9s/4m00.0s
+
+running (2m30.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  61% ] 14/15 VUs  2m26.9s/4m00.0s
+
+running (2m31.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m27.9s/4m00.0s
+
+running (2m32.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m28.9s/4m00.0s
+
+running (2m33.0s), 14/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  62% ] 14/15 VUs  2m29.9s/4m00.0s
+
+running (2m34.0s), 15/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  63% ] 15/15 VUs  2m30.9s/4m00.0s
+time="2026-06-11T20:50:14+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/370aa592-4230-4649-be03-ec62dd42a781/state\": request timeout"
+
+running (2m35.0s), 15/15 VUs, 6 complete and 0 interrupted iterations
+save_restore   [  63% ] 15/15 VUs  2m31.9s/4m00.0s
+
+running (2m36.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  64% ] 15/15 VUs  2m32.9s/4m00.0s
+
+running (2m37.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  64% ] 15/15 VUs  2m33.9s/4m00.0s
+
+running (2m38.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  65% ] 15/15 VUs  2m34.9s/4m00.0s
+
+running (2m39.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  65% ] 15/15 VUs  2m35.9s/4m00.0s
+
+running (2m40.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  65% ] 15/15 VUs  2m36.9s/4m00.0s
+
+running (2m41.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  66% ] 15/15 VUs  2m37.9s/4m00.0s
+
+running (2m42.0s), 15/15 VUs, 7 complete and 0 interrupted iterations
+save_restore   [  66% ] 15/15 VUs  2m38.9s/4m00.0s
+time="2026-06-11T20:50:21+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/bd607915-12cd-420b-b667-5d8d3223fa3f/state\": request timeout"
+
+running (2m43.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m39.9s/4m00.0s
+
+running (2m44.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m40.9s/4m00.0s
+
+running (2m45.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  67% ] 15/15 VUs  2m41.9s/4m00.0s
+
+running (2m46.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  68% ] 15/15 VUs  2m42.9s/4m00.0s
+
+running (2m47.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  68% ] 15/15 VUs  2m43.9s/4m00.0s
+
+running (2m48.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  69% ] 15/15 VUs  2m44.9s/4m00.0s
+
+running (2m49.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  69% ] 15/15 VUs  2m45.9s/4m00.0s
+
+running (2m50.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  70% ] 15/15 VUs  2m46.9s/4m00.0s
+
+running (2m51.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  70% ] 15/15 VUs  2m47.9s/4m00.0s
+
+running (2m52.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  70% ] 15/15 VUs  2m48.9s/4m00.0s
+
+running (2m53.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  71% ] 15/15 VUs  2m49.9s/4m00.0s
+
+running (2m54.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  71% ] 15/15 VUs  2m50.9s/4m00.0s
+
+running (2m55.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  72% ] 15/15 VUs  2m51.9s/4m00.0s
+
+running (2m56.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  72% ] 15/15 VUs  2m52.9s/4m00.0s
+
+running (2m57.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  72% ] 15/15 VUs  2m53.9s/4m00.0s
+
+running (2m58.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  73% ] 15/15 VUs  2m54.9s/4m00.0s
+
+running (2m59.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  73% ] 15/15 VUs  2m55.9s/4m00.0s
+
+running (3m00.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  74% ] 15/15 VUs  2m56.9s/4m00.0s
+
+running (3m01.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  74% ] 15/15 VUs  2m57.9s/4m00.0s
+
+running (3m02.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  75% ] 15/15 VUs  2m58.9s/4m00.0s
+
+running (3m03.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  75% ] 15/15 VUs  2m59.9s/4m00.0s
+time="2026-06-11T20:50:43+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/bba84004-f3ba-47c3-a41e-68810c4f7236/state\": request timeout"
+
+running (3m04.0s), 15/15 VUs, 8 complete and 0 interrupted iterations
+save_restore   [  75% ] 15/15 VUs  3m00.9s/4m00.0s
+
+running (3m05.0s), 15/15 VUs, 9 complete and 0 interrupted iterations
+save_restore   [  76% ] 15/15 VUs  3m01.9s/4m00.0s
+
+running (3m06.0s), 15/15 VUs, 9 complete and 0 interrupted iterations
+save_restore   [  76% ] 15/15 VUs  3m02.9s/4m00.0s
+time="2026-06-11T20:50:45+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/bd52cd33-2025-4077-8491-5be30fa6f482/state\": request timeout"
+
+running (3m07.0s), 15/15 VUs, 10 complete and 0 interrupted iterations
+save_restore   [  77% ] 15/15 VUs  3m03.9s/4m00.0s
+
+running (3m08.0s), 15/15 VUs, 10 complete and 0 interrupted iterations
+save_restore   [  77% ] 15/15 VUs  3m04.9s/4m00.0s
+
+running (3m09.0s), 15/15 VUs, 10 complete and 0 interrupted iterations
+save_restore   [  77% ] 15/15 VUs  3m05.9s/4m00.0s
+
+running (3m10.0s), 15/15 VUs, 10 complete and 0 interrupted iterations
+save_restore   [  78% ] 15/15 VUs  3m06.9s/4m00.0s
+
+running (3m11.0s), 15/15 VUs, 10 complete and 0 interrupted iterations
+save_restore   [  78% ] 15/15 VUs  3m07.9s/4m00.0s
+
+running (3m12.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  79% ] 14/15 VUs  3m08.9s/4m00.0s
+
+running (3m13.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  79% ] 14/15 VUs  3m09.9s/4m00.0s
+
+running (3m14.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  80% ] 14/15 VUs  3m10.9s/4m00.0s
+
+running (3m15.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  80% ] 14/15 VUs  3m11.9s/4m00.0s
+
+running (3m16.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  80% ] 14/15 VUs  3m12.9s/4m00.0s
+
+running (3m17.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  81% ] 14/15 VUs  3m13.9s/4m00.0s
+
+running (3m18.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  81% ] 14/15 VUs  3m14.9s/4m00.0s
+
+running (3m19.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  82% ] 14/15 VUs  3m15.9s/4m00.0s
+
+running (3m20.0s), 14/15 VUs, 10 complete and 1 interrupted iterations
+save_restore   [  82% ] 14/15 VUs  3m16.9s/4m00.0s
+
+running (3m21.0s), 13/15 VUs, 10 complete and 2 interrupted iterations
+save_restore   [  82% ] 13/15 VUs  3m17.9s/4m00.0s
+time="2026-06-11T20:51:01+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/93b46e19-16af-4f58-aa03-1dece9d27734/state\": request timeout"
+
+running (3m22.0s), 13/15 VUs, 10 complete and 2 interrupted iterations
+save_restore   [  83% ] 13/15 VUs  3m18.9s/4m00.0s
+
+running (3m23.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  83% ] 13/15 VUs  3m19.9s/4m00.0s
+
+running (3m24.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  84% ] 13/15 VUs  3m20.9s/4m00.0s
+
+running (3m25.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  84% ] 13/15 VUs  3m21.9s/4m00.0s
+
+running (3m26.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  85% ] 13/15 VUs  3m22.9s/4m00.0s
+
+running (3m27.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  85% ] 13/15 VUs  3m23.9s/4m00.0s
+
+running (3m28.0s), 13/15 VUs, 11 complete and 2 interrupted iterations
+save_restore   [  85% ] 13/15 VUs  3m24.9s/4m00.0s
+
+running (3m29.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  86% ] 12/15 VUs  3m25.9s/4m00.0s
+
+running (3m30.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  86% ] 12/15 VUs  3m26.9s/4m00.0s
+
+running (3m31.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  87% ] 12/15 VUs  3m27.9s/4m00.0s
+
+running (3m32.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  87% ] 12/15 VUs  3m28.9s/4m00.0s
+
+running (3m33.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  87% ] 12/15 VUs  3m29.9s/4m00.0s
+
+running (3m34.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  88% ] 12/15 VUs  3m30.9s/4m00.0s
+
+running (3m35.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  88% ] 12/15 VUs  3m31.9s/4m00.0s
+time="2026-06-11T20:51:15+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/260880ae-4070-4c18-813e-b9d296765f09/state\": request timeout"
+
+running (3m36.0s), 12/15 VUs, 11 complete and 3 interrupted iterations
+save_restore   [  89% ] 12/15 VUs  3m32.9s/4m00.0s
+
+running (3m37.0s), 12/15 VUs, 12 complete and 3 interrupted iterations
+save_restore   [  89% ] 12/15 VUs  3m33.9s/4m00.0s
+
+running (3m38.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  90% ] 11/15 VUs  3m34.9s/4m00.0s
+
+running (3m39.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  90% ] 11/15 VUs  3m35.9s/4m00.0s
+
+running (3m40.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  90% ] 11/15 VUs  3m36.9s/4m00.0s
+
+running (3m41.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  91% ] 11/15 VUs  3m37.9s/4m00.0s
+
+running (3m42.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  91% ] 11/15 VUs  3m38.9s/4m00.0s
+
+running (3m43.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  92% ] 11/15 VUs  3m39.9s/4m00.0s
+
+running (3m44.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  92% ] 11/15 VUs  3m40.9s/4m00.0s
+
+running (3m45.0s), 11/15 VUs, 12 complete and 4 interrupted iterations
+save_restore   [  92% ] 11/15 VUs  3m41.9s/4m00.0s
+
+running (3m46.0s), 10/15 VUs, 12 complete and 5 interrupted iterations
+save_restore   [  93% ] 10/15 VUs  3m42.9s/4m00.0s
+
+running (3m47.0s), 10/15 VUs, 12 complete and 5 interrupted iterations
+save_restore   [  93% ] 10/15 VUs  3m43.9s/4m00.0s
+
+running (3m48.0s), 10/15 VUs, 12 complete and 5 interrupted iterations
+save_restore   [  94% ] 10/15 VUs  3m44.9s/4m00.0s
+time="2026-06-11T20:51:27+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/811e333b-6ca4-47da-b7bb-8429af67b04d/state\": request timeout"
+
+running (3m49.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  94% ] 09/15 VUs  3m45.9s/4m00.0s
+
+running (3m50.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  95% ] 09/15 VUs  3m46.9s/4m00.0s
+
+running (3m51.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  95% ] 09/15 VUs  3m47.9s/4m00.0s
+
+running (3m52.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  95% ] 09/15 VUs  3m48.9s/4m00.0s
+
+running (3m53.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  96% ] 09/15 VUs  3m49.9s/4m00.0s
+
+running (3m54.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  96% ] 09/15 VUs  3m50.9s/4m00.0s
+
+running (3m55.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  97% ] 09/15 VUs  3m51.9s/4m00.0s
+
+running (3m56.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  97% ] 09/15 VUs  3m52.9s/4m00.0s
+
+running (3m57.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  97% ] 09/15 VUs  3m53.9s/4m00.0s
+
+running (3m58.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  98% ] 09/15 VUs  3m54.9s/4m00.0s
+
+running (3m59.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  98% ] 09/15 VUs  3m55.9s/4m00.0s
+
+running (4m00.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  99% ] 09/15 VUs  3m56.9s/4m00.0s
+
+running (4m01.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [  99% ] 09/15 VUs  3m57.9s/4m00.0s
+
+running (4m02.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [ 100% ] 09/15 VUs  3m58.9s/4m00.0s
+
+running (4m03.0s), 09/15 VUs, 13 complete and 5 interrupted iterations
+save_restore   [ 100% ] 09/15 VUs  3m59.9s/4m00.0s
+
+running (4m04.0s), 08/15 VUs, 13 complete and 6 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m05.0s), 08/15 VUs, 13 complete and 6 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m06.0s), 08/15 VUs, 13 complete and 6 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m07.0s), 08/15 VUs, 13 complete and 6 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m08.0s), 07/15 VUs, 13 complete and 7 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m09.0s), 07/15 VUs, 13 complete and 7 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m10.0s), 07/15 VUs, 13 complete and 7 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m11.0s), 07/15 VUs, 13 complete and 7 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m12.0s), 06/15 VUs, 13 complete and 8 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m13.0s), 06/15 VUs, 13 complete and 8 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m14.0s), 06/15 VUs, 13 complete and 8 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m15.0s), 06/15 VUs, 13 complete and 8 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m16.0s), 05/15 VUs, 13 complete and 9 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m17.0s), 05/15 VUs, 13 complete and 9 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+time="2026-06-11T20:51:56+02:00" level=warning msg="Request Failed" error="Post \"http://188.245.60.172:30001/api/collab/fd1b3267-96eb-4975-9d2e-a065bd8c6391/state\": request timeout"
+
+running (4m18.0s), 04/15 VUs, 14 complete and 9 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m19.0s), 04/15 VUs, 14 complete and 9 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m20.0s), 04/15 VUs, 14 complete and 9 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m21.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m22.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m23.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m24.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m25.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m26.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m27.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m28.0s), 03/15 VUs, 14 complete and 10 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m29.0s), 02/15 VUs, 14 complete and 11 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m30.0s), 02/15 VUs, 14 complete and 11 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m31.0s), 02/15 VUs, 14 complete and 11 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m32.0s), 02/15 VUs, 14 complete and 11 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+running (4m33.0s), 02/15 VUs, 14 complete and 11 interrupted iterations
+save_restore ↓ [ 100% ] 09/15 VUs  4m0s
+
+
+  █ THRESHOLDS 
+
+    http_req_failed
+    ✓ 'rate<0.2' rate=3.51%
+
+    restore_from_db_ms
+    ✓ 'p(95)<5000' p(95)=159ms
+
+    save_to_db_ms
+    ✗ 'p(95)<5000' p(95)=11.57s
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 141     0.51634/s
+    checks_succeeded...: 100.00% 141 out of 141
+    checks_failed......: 0.00%   0 out of 141
+
+    ✓ Calculator save+restore ok
+    ✓ Analytics save+restore ok
+    ✓ Advanced save+restore ok
+    ✓ DataExchange save+restore ok
+    ✓ MonteCarlo save+restore ok
+    ✓ Geospatial save+restore ok
+
+    CUSTOM
+    list_states_ms.................: avg=1.58s    min=178ms   med=205ms   max=14.49s p(90)=389ms    p(95)=14.08s
+    restore_from_db_ms.............: avg=715.23ms min=35ms    med=41ms    max=14.42s p(90)=51ms     p(95)=159ms 
+    restore_verify_ms..............: avg=39.46ms  min=34ms    med=39ms    max=53ms   p(90)=44ms     p(95)=44ms  
+    save_restore_fail..............: 34     0.124508/s
+    save_restore_ok................: 141    0.51634/s
+    save_to_db_ms..................: avg=3.51s    min=41ms    med=54ms    max=13.13s p(90)=11.13s   p(95)=11.57s
+
+    HTTP
+    http_req_duration..............: avg=1.9s     min=33.64ms med=50.92ms max=1m0s   p(90)=4.82s    p(95)=11.49s
+      { expected_response:true }...: avg=1.07s    min=33.64ms med=50.27ms max=14.48s p(90)=769.77ms p(95)=10.56s
+    http_req_failed................: 3.51%  34 out of 966
+    http_reqs......................: 966    3.537478/s
+
+    EXECUTION
+    iteration_duration.............: avg=1m30s    min=1m15s   med=1m18s   max=2m16s  p(90)=1m54s    p(95)=2m4s  
+    iterations.....................: 14     0.051268/s
+    vus............................: 2      min=0         max=15
+    vus_max........................: 15     min=15        max=15
+
+    NETWORK
+    data_received..................: 46 MB  170 kB/s
+    data_sent......................: 355 kB 1.3 kB/s
+
+
+
+
+running (4m33.1s), 00/15 VUs, 14 complete and 13 interrupted iterations
+save_restore ✓ [ 100% ] 02/15 VUs  4m0s
+time="2026-06-11T20:52:12+02:00" level=error msg="thresholds on metrics 'save_to_db_ms' have been crossed"
