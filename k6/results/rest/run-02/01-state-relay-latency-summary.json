@@ -1,0 +1,279 @@
+{
+    "setup_data": {},
+    "root_group": {
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                "relay_Calculator": {
+                    "path": "::relay_Calculator",
+                    "id": "b15cd39a80d15b7ac5e8d41fe8bed8e1",
+                    "groups": {},
+                    "checks": {
+                            "Calculator relay ok": {
+                                "name": "Calculator relay ok",
+                                "path": "::relay_Calculator::Calculator relay ok",
+                                "id": "0f42443778d6525f08544e9da519a1bb",
+                                "passes": 64,
+                                "fails": 0
+                            }
+                        },
+                    "name": "relay_Calculator"
+                },
+                "relay_Analytics": {
+                    "name": "relay_Analytics",
+                    "path": "::relay_Analytics",
+                    "id": "3f6e5c7330df17be5df28046122eaaf1",
+                    "groups": {},
+                    "checks": {
+                            "Analytics relay ok": {
+                                "name": "Analytics relay ok",
+                                "path": "::relay_Analytics::Analytics relay ok",
+                                "id": "b6e625cb0ee9bdce1473e69b610372f8",
+                                "passes": 64,
+                                "fails": 0
+                            }
+                        }
+                },
+                "relay_Advanced": {
+                    "checks": {
+                        "Advanced relay ok": {
+                            "name": "Advanced relay ok",
+                            "path": "::relay_Advanced::Advanced relay ok",
+                            "id": "d6b88e362e0a8d9e535bd73ae67a4fec",
+                            "passes": 64,
+                            "fails": 0
+                        }
+                    },
+                    "name": "relay_Advanced",
+                    "path": "::relay_Advanced",
+                    "id": "d2f8470bb6a73030e8afe1e5c458431b",
+                    "groups": {}
+                },
+                "relay_DataExchange": {
+                    "id": "2afc7dda5c4f3829b5f74104b74a6aae",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange relay ok": {
+                                "fails": 0,
+                                "name": "DataExchange relay ok",
+                                "path": "::relay_DataExchange::DataExchange relay ok",
+                                "id": "84786cb0d2c8b60407a679cd1f3a2585",
+                                "passes": 64
+                            }
+                        },
+                    "name": "relay_DataExchange",
+                    "path": "::relay_DataExchange"
+                },
+                "relay_MonteCarlo": {
+                    "name": "relay_MonteCarlo",
+                    "path": "::relay_MonteCarlo",
+                    "id": "463f30ea0fa8c29621dc3b12ed590cbd",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo relay ok": {
+                                "name": "MonteCarlo relay ok",
+                                "path": "::relay_MonteCarlo::MonteCarlo relay ok",
+                                "id": "e47cf37d138bb3bcfbf90558a1234757",
+                                "passes": 64,
+                                "fails": 0
+                            }
+                        }
+                },
+                "relay_Geospatial": {
+                    "name": "relay_Geospatial",
+                    "path": "::relay_Geospatial",
+                    "id": "65687095441089d06e99284df5d27ef2",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial relay ok": {
+                                "fails": 0,
+                                "name": "Geospatial relay ok",
+                                "path": "::relay_Geospatial::Geospatial relay ok",
+                                "id": "4173cc19bedb1f5ec3a732fe53355c71",
+                                "passes": 64
+                            }
+                        }
+                },
+                "relay_ClimateAnomaly": {
+                    "path": "::relay_ClimateAnomaly",
+                    "id": "bb360df4b5424979ea868ace1b882d7e",
+                    "groups": {},
+                    "checks": {},
+                    "name": "relay_ClimateAnomaly"
+                },
+                "relay_MLTrainer": {
+                    "name": "relay_MLTrainer",
+                    "path": "::relay_MLTrainer",
+                    "id": "dd4125415a9ee83ee19c6ec49c33bb87",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer relay ok": {
+                                "name": "MLTrainer relay ok",
+                                "path": "::relay_MLTrainer::MLTrainer relay ok",
+                                "id": "093ddf7d5c4ed6b58ad4bd64fa5ba30b",
+                                "passes": 42,
+                                "fails": 0
+                            }
+                        }
+                }
+            },
+            "checks": {}
+        },
+    "metrics": {
+            "http_req_blocked": {
+                "avg": 0.6780772193333332,
+                "min": 0.002212,
+                "med": 0.0091535,
+                "max": 43.780698,
+                "p(90)": 0.0175434,
+                "p(95)": 0.020388199999999995
+            },
+            "vus_max": {
+                "value": 20,
+                "min": 20,
+                "max": 20
+            },
+            "http_req_waiting": {
+                "max": 60001.309611,
+                "p(90)": 3673.1093113000015,
+                "p(95)": 8114.313821699996,
+                "avg": 1657.0923482706671,
+                "min": 35.015583,
+                "med": 63.6486285
+            },
+            "relay_poll_ms": {
+                "avg": 244.60093896713616,
+                "min": 35,
+                "med": 46,
+                "max": 7782,
+                "p(90)": 205,
+                "p(95)": 461.5
+            },
+            "relay_success": {
+                "count": 426,
+                "rate": 1.5702225430500791
+            },
+            "data_received": {
+                "rate": 6186.216073565947,
+                "count": 1678315
+            },
+            "iterations": {
+                "count": 49,
+                "rate": 0.18061245213486823
+            },
+            "http_req_sending": {
+                "med": 0.0383835,
+                "max": 5.884115,
+                "p(90)": 0.06638210000000001,
+                "p(95)": 0.07518119999999999,
+                "avg": 0.04733057733333332,
+                "min": 0.010023
+            },
+            "http_req_receiving": {
+                "avg": 0.23800581599999995,
+                "min": 0,
+                "med": 0.167609,
+                "max": 20.808552,
+                "p(90)": 0.36357770000000017,
+                "p(95)": 0.61573505
+            },
+            "http_req_failed": {
+                "passes": 71,
+                "fails": 1429,
+                "thresholds": {
+                    "rate<0.15": false
+                },
+                "value": 0.04733333333333333
+            },
+            "vus": {
+                "value": 1,
+                "min": 0,
+                "max": 20
+            },
+            "relay_post_ms": {
+                "min": 44,
+                "med": 100,
+                "max": 60002,
+                "p(90)": 12286.800000000003,
+                "p(95)": 26304.799999999996,
+                "avg": 3683.024096385542
+            },
+            "checks": {
+                "fails": 0,
+                "passes": 426,
+                "value": 1
+            },
+            "data_sent": {
+                "count": 585234,
+                "rate": 2157.154036993826
+            },
+            "http_req_duration{expected_response:true}": {
+                "avg": 1412.402689920224,
+                "min": 35.079934,
+                "med": 62.644586,
+                "max": 50686.596619,
+                "p(90)": 3459.6138708000035,
+                "p(95)": 6957.741791999991
+            },
+            "relay_total_ms": {
+                "min": 82,
+                "med": 175,
+                "max": 51085,
+                "p(90)": 11853.5,
+                "p(95)": 23650.75,
+                "avg": 3418.43896713615,
+                "thresholds": {
+                    "p(95)<10000": true
+                }
+            },
+            "http_reqs": {
+                "count": 1500,
+                "rate": 5.528952616373518
+            },
+            "iteration_duration": {
+                "p(95)": 77475.7787228,
+                "avg": 44730.08219612244,
+                "min": 17167.232692,
+                "med": 40887.350182,
+                "max": 93778.206199,
+                "p(90)": 74390.6455778
+            },
+            "http_req_tls_handshaking": {
+                "max": 0,
+                "p(90)": 0,
+                "p(95)": 0,
+                "avg": 0,
+                "min": 0,
+                "med": 0
+            },
+            "http_req_duration": {
+                "min": 35.079934,
+                "med": 63.939849,
+                "max": 60001.335922,
+                "p(90)": 3673.4676492000017,
+                "p(95)": 8115.256664749995,
+                "avg": 1657.377684663999
+            },
+            "group_duration": {
+                "max": 68206.746499,
+                "p(90)": 14157.633918600006,
+                "p(95)": 26417.499925,
+                "avg": 4744.845191342053,
+                "min": 95.431104,
+                "med": 275.047279
+            },
+            "relay_failure": {
+                "count": 71,
+                "rate": 0.26170375717501315
+            },
+            "http_req_connecting": {
+                "avg": 0.6649627166666666,
+                "min": 0,
+                "med": 0,
+                "max": 43.688446,
+                "p(90)": 0,
+                "p(95)": 0
+            }
+        }
+}
