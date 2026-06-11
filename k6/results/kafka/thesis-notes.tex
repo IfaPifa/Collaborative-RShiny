@@ -11,7 +11,7 @@
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily\small, breaklines=true}
 
-\title{Thesis Notes\\[4pt]\large Kafka Architecture Limitations in R Shiny}
+\title{Thesis Notes\\[4pt]\large REST vs Kafka Architecture Comparison in R Shiny}
 \author{Iva Gunjaca — University of Amsterdam}
 \date{June 2026}
 
@@ -22,10 +22,11 @@
 \section{Core Finding: R's Runtime is the Bottleneck}
 % ------------------------------------------------------------------
 
-The Kafka architecture fails three of nine performance benchmarks (state relay,
-collaboration latency, multi-user propagation) despite the Hetzner cluster
-running at only 11\% CPU and 26\% RAM utilization. The bottleneck is not
-infrastructure capacity but R's single-threaded execution model.
+Both architectures fail benchmarks despite the Hetzner cluster running at
+only 7--11\% CPU and 14--26\% RAM utilization. Kafka fails three of nine
+benchmarks (state relay, collaboration latency, multi-user propagation);
+REST fails one (throughput at 100 VUs). The bottleneck in both cases is
+not infrastructure capacity but R's single-threaded execution model.
 
 R Shiny runs all application logic---UI rendering, reactive computations,
 and Kafka message consumption---on a single thread. The \texttt{reactivePoll()}
@@ -83,6 +84,14 @@ Run-02: poll 150\,ms, consume 50\,ms  & 5,720\,ms & 11,760\,ms & Same four apps 
 The difference is within noise ($<$2\%). The bottleneck is structural:
 the single-threaded R process cannot drain the Kafka consumer fast enough,
 regardless of how frequently it polls or how long it waits per poll.
+
+\textbf{Note:} During analysis it was discovered that the k6 test payloads
+for MonteCarlo, ClimateAnomaly, and MLTrainer were missing required
+\texttt{command}/\texttt{action} fields, causing their Plumber/Kafka
+backends to return without processing. This means only \textbf{Analytics}
+was a genuine consumer bottleneck failure in these runs. The other three
+apps failed due to incorrect test payloads. A corrected Kafka run (run-03)
+with fixed payloads is needed to determine the true failure profile.
 
 % ------------------------------------------------------------------
 \section{Why More Users Increases Latency}
@@ -247,6 +256,150 @@ benchmarks (01, 02, 08) are exclusively latency-sensitive, while all
 correctness benchmarks (data loss, cross-contamination, session
 lifecycle) pass at 100\%. The architecture's weakness is responsiveness,
 not reliability---which aligns with Kafka's design priorities.
+
+% ------------------------------------------------------------------
+\section{REST vs Kafka: Benchmark Comparison}
+% ------------------------------------------------------------------
+
+Both architectures were benchmarked on the same Hetzner CX32 cluster
+(8 vCPU, 16\,GB RAM, K3s single-node) using identical k6 scripts and
+the same 8 collaborative R Shiny applications.
+
+\subsection{Overall Results}
+
+\begin{tabularx}{\textwidth}{@{}clccX@{}}
+\toprule
+\textbf{\#} & \textbf{Benchmark} & \textbf{REST} & \textbf{Kafka} & \textbf{Notes} \\
+\midrule
+01 & State Relay Latency       & \pass & \fail & REST 2.26\,s avg vs Kafka 5.72\,s \\
+02 & Collaboration Latency     & \pass & \fail & REST 2.46\,s avg vs Kafka 6.73\,s \\
+03 & Save \& Restore           & \pass & \pass & Both pass; REST slightly slower under load \\
+04 & Throughput (100 VUs)       & \fail & \pass & REST Plumber bottleneck at high concurrency \\
+05 & Data Loss                 & \pass & \pass & 0\% loss in both \\
+06 & Cross-Contamination       & \pass & \pass & 0 events in both \\
+07 & Session Lifecycle          & \pass & \pass & Both 100\% lifecycle completion \\
+08 & Multi-User Collaboration   & \pass & \fail & REST 329\,ms vs Kafka 13.6\,s \\
+09 & WebSocket Presence         & \pass & \pass & Both $>$99\% success \\
+\midrule
+   & \textbf{Total}            & \textbf{8/9} & \textbf{6/9} & \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Latency Comparison}
+
+\begin{tabularx}{\textwidth}{@{}lrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{REST avg} & \textbf{REST p95} & \textbf{Kafka avg} & \textbf{Kafka p95} \\
+\midrule
+State relay (01)            & 2,260\,ms  & 13,730\,ms & 5,720\,ms  & 11,760\,ms \\
+Collaboration (02)          & 2,460\,ms  & 14,480\,ms & 6,730\,ms  & 15,040\,ms \\
+Multi-user first guest (08) & 64\,ms     & 95\,ms     & 39\,ms     & 42\,ms     \\
+Multi-user all guests (08)  & 329\,ms    & 676\,ms    & 13,640\,ms & 36,670\,ms \\
+Save to DB (03)             & 3,510\,ms  & 11,570\,ms & 46.5\,ms   & 66\,ms     \\
+Restore from DB (03)        & 715\,ms    & 159\,ms    & 46.0\,ms   & 54\,ms     \\
+WebSocket connect (09)      & 116\,ms    & 127\,ms    & 121\,ms    & 135\,ms    \\
+\bottomrule
+\end{tabularx}
+
+\noindent Key observations:
+\begin{itemize}
+  \item REST is \textbf{2.5$\times$ faster} on state relay and collaboration
+        latency, and \textbf{41$\times$ faster} on multi-user propagation.
+  \item Kafka's ``first guest'' latency (39\,ms) is slightly faster than
+        REST's (64\,ms) because the message is already in Redis from a
+        previous consumer cycle. However, this advantage disappears
+        entirely when multiple guests poll concurrently.
+  \item Kafka's save/restore is faster (46\,ms vs 3.5\,s) because it
+        bypasses Plumber entirely---the Spring Boot backend writes
+        directly to PostgreSQL. REST's save path goes through Plumber
+        first, which is the bottleneck under load.
+\end{itemize}
+
+\subsection{Resource Usage Comparison}
+
+\begin{tabularx}{\textwidth}{@{}lrrrr@{}}
+\toprule
+\textbf{Component} & \textbf{REST CPU} & \textbf{REST RAM} & \textbf{Kafka CPU} & \textbf{Kafka RAM} \\
+\midrule
+Spring Boot Backend   & 481\,m  & 336\,Mi  & 378\,m  & 392\,Mi  \\
+Kafka Broker          & ---     & ---      & 42\,m   & 989\,Mi  \\
+Redis                 & 7\,m    & 3\,Mi    & ---     & ---      \\
+PostgreSQL            & 26\,m   & 52\,Mi   & 130\,m  & 53\,Mi   \\
+Angular + nginx       & 18\,m   & 11\,Mi   & 19\,m   & 12\,Mi   \\
+Shiny Frontends (8)   & 8\,m    & 1,101\,Mi & 244\,m & 1,879\,Mi \\
+Backends (8)          & 14\,m   & 719\,Mi  & 93\,m   & 869\,Mi  \\
+\midrule
+\textbf{Total}        & \textbf{555\,m} & \textbf{2,222\,Mi} & \textbf{906\,m} & \textbf{4,194\,Mi} \\
+\textbf{Utilization}  & \textbf{6.9\%}  & \textbf{13.6\%}    & \textbf{11.3\%} & \textbf{25.6\%}    \\
+\bottomrule
+\end{tabularx}
+
+\noindent REST uses approximately half the resources of Kafka:
+\begin{itemize}
+  \item The Kafka broker alone consumes $\sim$1\,GB RAM (KRaft mode
+        overhead) with minimal CPU. Redis uses only 3\,Mi.
+  \item Kafka's Shiny frontends use 1.9\,GB vs REST's 1.1\,GB because
+        each Kafka frontend runs a consumer thread that maintains
+        connection state and message buffers.
+  \item Both architectures are well within the 8 vCPU / 16\,GB node
+        capacity, confirming the bottleneck is R's runtime, not
+        infrastructure.
+\end{itemize}
+
+\subsection{Where Kafka Wins}
+
+Despite lower overall benchmark scores, Kafka has structural advantages:
+
+\begin{enumerate}
+  \item \textbf{Throughput under extreme load (04):} Kafka's POST is
+        asynchronous---it writes to a topic and returns immediately.
+        REST's POST is synchronous---it waits for Plumber to process
+        and respond. At 100 VUs, REST's Plumber backends queue requests
+        and timeout (41\% errors), while Kafka handles the same load
+        with 0\% HTTP errors (though consumer lag increases).
+  \item \textbf{Data integrity:} Kafka's append-only log guarantees
+        message ordering and durability. REST's last-write-wins model
+        can silently lose intermediate states under concurrent writes.
+  \item \textbf{Crash recovery:} Kafka consumers resume from the last
+        committed offset after a restart. REST loses in-flight state
+        if Redis restarts without persistence.
+\end{enumerate}
+
+\subsection{Where REST Wins}
+
+\begin{enumerate}
+  \item \textbf{Latency:} 2.5--41$\times$ faster across all
+        latency-sensitive benchmarks.
+  \item \textbf{Resource efficiency:} Half the CPU and RAM footprint.
+  \item \textbf{Horizontal scalability:} REST's Plumber backends are
+        stateless and can be scaled with \texttt{replicas: N} in
+        Kubernetes. Each replica is an independent R process handling
+        requests round-robin. Kafka's consumer bottleneck cannot be
+        solved by adding replicas---each replica creates a duplicate
+        consumer that reads the same messages.
+  \item \textbf{Simplicity:} No message broker to operate, no consumer
+        group management, no topic configuration. Fewer moving parts
+        means fewer failure modes.
+\end{enumerate}
+
+\subsection{Common Bottleneck}
+
+Both architectures ultimately hit the same wall: \textbf{R is
+single-threaded}. Whether the R code runs as a Kafka consumer
+(\texttt{consumer\$consume()}) or a Plumber HTTP handler
+(\texttt{@post /state}), it can only process one request at a time.
+
+The difference is where the bottleneck manifests:
+\begin{itemize}
+  \item \textbf{Kafka:} consumer lag in the Shiny frontend
+        (poll-wait-discard cycle on shared topic)
+  \item \textbf{REST:} request queuing in the Plumber backend
+        (synchronous HTTP call chain under high concurrency)
+\end{itemize}
+
+REST's bottleneck is more tractable: stateless Plumber backends can
+be horizontally scaled. Kafka's bottleneck is architectural---the
+shared topic fan-out problem cannot be solved by adding replicas.
 
 % ------------------------------------------------------------------
 \section{Benchmark Load Justification}

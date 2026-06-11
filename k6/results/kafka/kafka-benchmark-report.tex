@@ -252,7 +252,7 @@ Threshold \texttt{ws\_connect\_ms p(95) < 5\,s}: \pass{} (135\,ms).
 % ------------------------------------------------------------------
 
 The Kafka architecture passes 6 of 9 benchmarks. The three failures share a root cause:
-the R Shiny consumer loop (\texttt{consumer\$consume(100)} inside \texttt{reactivePoll(100\,ms)})
+the R Shiny consumer loop (\texttt{consumer\$consume()} inside \texttt{reactivePoll()})
 is single-threaded and processes messages sequentially. Under concurrent load, the consumer
 falls behind, causing poll latency to dominate total relay time.
 
@@ -265,10 +265,13 @@ falls behind, causing poll latency to dominate total relay time.
   \item \textbf{Multi-user scaling} (08): With 10 concurrent guests polling, the first
         guest sees the update in 39\,ms (already in Redis), but the last guest waits
         up to 36.7\,s due to consumer lag compounding across apps.
-  \item \textbf{App-specific failures}: Analytics and MonteCarlo consistently fail relay
-        checks. These apps have heavier R processing (dataset joins, simulation loops),
-        which slows their consumer further.
 \end{itemize}
+
+\textbf{Test payload correction:} The k6 payloads for MonteCarlo, ClimateAnomaly,
+and MLTrainer were missing required \texttt{command}/\texttt{action} fields, causing
+their backends to skip processing. Only \textbf{Analytics} was a confirmed consumer
+bottleneck failure in this run. A corrected run (run-03) with fixed payloads is
+needed to determine the true per-app failure profile.
 
 Benchmarks that bypass the Kafka consumer path (save/restore via PostgreSQL, session
 lifecycle via Spring Boot, WebSocket presence via STOMP) perform well, confirming the
