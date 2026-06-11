@@ -382,6 +382,68 @@ Despite lower overall benchmark scores, Kafka has structural advantages:
         means fewer failure modes.
 \end{enumerate}
 
+\subsection{Per-App Analysis: Lightweight vs Heavyweight Collaboration}
+
+The per-app benchmark results reveal that the architecture choice matters
+primarily for heavyweight applications. Lightweight apps perform well in
+both architectures.
+
+\begin{tabularx}{\textwidth}{@{}llccX@{}}
+\toprule
+\textbf{App} & \textbf{R Processing} & \textbf{REST} & \textbf{Kafka} & \textbf{Notes} \\
+\midrule
+Calculator    & Addition              & \pass & \pass & Passes all benchmarks in both \\
+Geospatial    & Leaflet map update    & \pass & \pass & Passes all benchmarks in both \\
+DataExchange  & String transform      & \pass & \pass & Fails only REST throughput at 100 VUs \\
+Analytics     & ggplot2 rendering     & \pass & \fail & Kafka consumer lag under load \\
+Advanced      & Plotly + dplyr        & \pass & \pass & Fails only REST throughput at 100 VUs \\
+MonteCarlo    & 1000-path simulation  & \pass & \fail & Heavy R computation \\
+ClimateAnomaly & Anomaly detection    & \pass & \fail & Heavy R computation \\
+MLTrainer     & Random forest (50 trees) & \pass & \fail & Heaviest R computation \\
+\bottomrule
+\end{tabularx}
+
+This pattern maps to distinct scientific collaboration use cases:
+
+\begin{tabularx}{\textwidth}{@{}lXlX@{}}
+\toprule
+\textbf{Interaction Pattern} & \textbf{Example} & \textbf{Latency?} & \textbf{Best Fit} \\
+\midrule
+Real-time co-editing &
+  Multiple researchers adjusting plot filters, map markers, or
+  parameters together and seeing changes instantly &
+  Yes &
+  REST \\
+Asynchronous result sharing &
+  One researcher configures a visualization and shares the final
+  state with a colleague for review &
+  No &
+  Either; Kafka provides durability \\
+Long-running computation &
+  Training an ML model or running a Monte Carlo simulation, then
+  sharing the output &
+  No &
+  Kafka (audit trail, crash recovery) \\
+\bottomrule
+\end{tabularx}
+
+\medskip
+\noindent For lightweight collaborative apps (Calculator, Geospatial,
+DataExchange), both architectures deliver acceptable real-time
+performance. The architecture choice only becomes significant for
+heavyweight apps---and for those apps, the interaction pattern is
+inherently asynchronous. A researcher waiting 30 seconds for a
+simulation to complete does not notice an additional 5-second relay
+delay. In this context, Kafka's data integrity guarantees (ordered
+append-only log, crash recovery, audit trail) outweigh its latency
+disadvantage.
+
+This aligns with the observation that scientists working with
+computationally intensive analyses prioritize \textbf{correctness and
+reproducibility} over \textbf{sub-second responsiveness}. The
+architecture should match the interaction pattern, not impose a
+one-size-fits-all latency target.
+
 \subsection{Common Bottleneck}
 
 Both architectures ultimately hit the same wall: \textbf{R is
@@ -618,5 +680,60 @@ task is implementing a JupyterLab extension that:
 This represents approximately 500--800 lines of TypeScript, comparable
 to existing NaaVRE UI components such as the containerizer or workflow
 manager extensions.
+
+% ------------------------------------------------------------------
+\section{Thesis Summary: Key Arguments}
+% ------------------------------------------------------------------
+
+\begin{enumerate}
+
+  \item \textbf{Both architectures achieve the goal for lightweight
+        collaboration.} Calculator, Geospatial, and DataExchange pass
+        all benchmarks in both REST and Kafka. The ShinySwarm platform
+        delivers functional real-time collaboration for apps with
+        lightweight R processing.
+
+  \item \textbf{The bottleneck is R's single-threaded runtime, not
+        infrastructure.} The cluster runs at 7--11\% CPU and 14--26\%
+        RAM utilization while benchmarks fail. No infrastructure
+        scaling, configuration tuning, or polling optimization resolves
+        this. It is a language-level limitation.
+
+  \item \textbf{REST and Kafka represent different trade-offs, not
+        better vs worse.} REST wins on latency (2.5--41$\times$ faster)
+        and resource efficiency (half the footprint). Kafka wins on
+        data durability (append-only log, crash recovery, audit trail).
+        The choice depends on the use case, not a universal ranking.
+
+  \item \textbf{REST can scale horizontally; Kafka cannot.} REST's
+        stateless Plumber backends accept \texttt{replicas: N} in
+        Kubernetes, multiplying concurrent request capacity. Kafka's
+        shared-topic consumer bottleneck is architectural---adding
+        replicas creates duplicate consumers, not parallel processing.
+
+  \item \textbf{The R Kafka ecosystem is insufficient for real-time
+        streaming.} Only one maintained library exists
+        (\texttt{INWTlab/r-kafka}), offering only synchronous blocking
+        consumption. No async primitives, no callbacks, no batch
+        processing. This is a finding about R's ecosystem maturity,
+        not about Kafka's design.
+
+  \item \textbf{Heavyweight apps do not need low latency.} Scientists
+        running simulations (MonteCarlo), training models (MLTrainer),
+        or analyzing climate data (ClimateAnomaly) wait seconds to
+        minutes for computation. An additional 5--11 seconds of relay
+        latency is negligible. For these use cases, Kafka's durability
+        and ordering guarantees matter more than sub-second
+        responsiveness.
+
+  \item \textbf{The platform is ready for NaaVRE integration.} The
+        iframe embedding, \texttt{postMessage} RBAC relay, and
+        STOMP-over-WebSocket presence mechanisms are
+        framework-agnostic. Replacing Angular with a JupyterLab
+        extension requires only frontend work ($\sim$500--800 lines
+        of TypeScript); the backend and state synchronization layer
+        remain unchanged.
+
+\end{enumerate}
 
 \end{document}

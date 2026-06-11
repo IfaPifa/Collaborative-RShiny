@@ -182,13 +182,18 @@ Send uniquely tagged state saves across all 8 apps; verify all are retrievable.
 \toprule
 \textbf{Metric} & \textbf{Value} \\
 \midrule
+States sent     & 2,704 \\
+States received & 2,700 \\
 Loss rate       & 0\% \\
-Checks passed   & 120 / 120 (100\%) \\
+HTTP errors     & 9.38\% (585 / 6,235) \\
+Checks passed   & All 8 apps: 0\% data loss \\
 \bottomrule
 \end{tabular}
 
 \medskip
-\noindent Threshold \texttt{dataloss\_pct p(95) < 5\%}: \pass.
+\noindent 4 POSTs failed under load but were never saved, so no data was
+lost. All saves that succeeded were fully retrievable.
+Threshold \texttt{dataloss\_pct p(95) < 5\%}: \pass.
 
 % ---- 06 ----
 \subsection{06 — Cross-Contamination}
