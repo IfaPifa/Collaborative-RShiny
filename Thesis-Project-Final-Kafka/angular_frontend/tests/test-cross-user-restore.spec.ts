@@ -32,11 +32,11 @@ test.describe('RQ5: Cross-User Checkpoint Restore', () => {
     const saveName = `RQ5-Cross-User-${Date.now()}`;
     await saveState(alicePage, saveName);
 
-    // Alice continues working — changes inputs to prove restore doesn't use live state
-    await setShinyNumericInput(aliceFrame, '#num1', '99');
-    await setShinyNumericInput(aliceFrame, '#num2', '1');
+    // Alice continues working — changes inputs to prove restore gets saved state, not live state
+    await setShinyNumericInput(aliceFrame, '#num1', '10');
+    await setShinyNumericInput(aliceFrame, '#num2', '5');
     await aliceFrame.locator('button#calculate').click();
-    await expect(aliceFrame.locator('#result')).toContainText('100', { timeout: 25000 });
+    await expect(aliceFrame.locator('#result')).toContainText('15', { timeout: 25000 });
 
     // Alice leaves the session
     await alicePage.click('button:has-text("Exit")');
