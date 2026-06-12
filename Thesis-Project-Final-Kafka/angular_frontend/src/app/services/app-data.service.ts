@@ -15,6 +15,7 @@ export interface SavedAppState {
   name: string;
   stateData: string;
   createdAt: string;
+  savedBy: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -37,20 +38,18 @@ export class AppDataService {
     return this.http.get<ShinyApp[]>(`${this.API_URL}/apps`, { headers: this.getHeaders() });
   }
 
-  getSavedStates(appId?: number) {
+  getSavedStates(opts?: { appId?: number; sessionId?: string | null }) {
+    const params: string[] = [];
+    if (opts?.appId) params.push(`appId=${opts.appId}`);
+    if (opts?.sessionId) params.push(`sessionId=${opts.sessionId}`);
     let url = `${this.API_URL}/states`;
-    
-    // If an appId is provided, append it to the URL so the backend can filter
-    if (appId) {
-      url += `?appId=${appId}`;
-    }
-    
+    if (params.length) url += `?${params.join('&')}`;
     return this.http.get<SavedAppState[]>(url, { headers: this.getHeaders() });
   }
 
   // Note: stateData is a JSON string
-  saveState(appId: number, name: string, stateData: string) {
-    const payload = { appId, name, stateData };
+  saveState(appId: number, name: string, sessionId?: string | null) {
+    const payload = { appId, name, sessionId };
     return this.http.post(
       `${this.API_URL}/states`, 
       payload, 
@@ -61,11 +60,14 @@ export class AppDataService {
     );
   }
 
-  // Restore a saved state by pushing it into Kafka
-  restoreStateToKafka(stateId: number) {
+  restoreState(stateId: number, sessionId?: string | null) {
+    let url = `${this.API_URL}/states/${stateId}/restore`;
+    if (sessionId) {
+      url += `?sessionId=${sessionId}`;
+    }
     return this.http.post(
-      `${this.API_URL}/states/${stateId}/restore`, 
-      {}, // Empty body
+      url, 
+      {},
       { 
         headers: this.getHeaders(), 
         responseType: 'text' 

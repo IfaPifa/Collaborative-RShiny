@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shinyswarm.app.ShinyApp;
 import com.example.shinyswarm.app.ShinyAppRepository;
+import com.example.shinyswarm.session.CollaborationSession;
+import com.example.shinyswarm.session.CollaborationSessionRepository;
 import com.example.shinyswarm.user.User;
 import com.example.shinyswarm.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 record SaveStateRequest(Long appId, String name, String sessionId) {}
-record SavedStateResponse(Long id, String appName, String name, String stateData, String createdAt) {}
+record SavedStateResponse(Long id, String appName, String name, String stateData, String createdAt, String savedBy) {}
 
 @RestController
 @RequestMapping("/api/states")
@@ -33,6 +35,7 @@ public class StateController {
     private final SavedStateRepository savedStateRepository;
     private final UserRepository userRepository;
     private final ShinyAppRepository shinyAppRepository;
+    private final CollaborationSessionRepository sessionRepository;
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper; 
     private final SessionStateMonitor sessionStateMonitor; 
@@ -40,12 +43,14 @@ public class StateController {
     public StateController(SavedStateRepository savedStateRepository, 
                            UserRepository userRepository, 
                            ShinyAppRepository shinyAppRepository,
+                           CollaborationSessionRepository sessionRepository,
                            StringRedisTemplate redisTemplate,
                            ObjectMapper objectMapper,
                            SessionStateMonitor sessionStateMonitor) {
         this.savedStateRepository = savedStateRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
+        this.sessionRepository = sessionRepository;
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
         this.sessionStateMonitor = sessionStateMonitor;
@@ -76,23 +81,48 @@ public class StateController {
             return ResponseEntity.badRequest().body("No data generated yet. Run the app analysis first before saving.");
         }
 
-        SavedState newState = new SavedState(request.name(), latestRealState, user, app);
+        // Store sessionId so other participants can see and restore this checkpoint.
+        // Solo-mode keys (e.g. "solo-1-alice") are not real session UUIDs — exclude them.
+        String sessionId = (request.sessionId() != null 
+                           && !request.sessionId().isEmpty()
+                           && !request.sessionId().startsWith("solo-")) 
+                           ? request.sessionId() : null;
+        SavedState newState = new SavedState(request.name(), latestRealState, user, app, sessionId);
         savedStateRepository.save(newState);
 
         return ResponseEntity.ok("State saved successfully");
     }
 
     @GetMapping
-    public List<SavedStateResponse> getMyStates(Principal principal) {
+    public List<SavedStateResponse> getMyStates(
+            @RequestParam(required = false) String sessionId,
+            Principal principal) {
         String username = principal.getName();
-        return savedStateRepository.findByUser_UsernameOrderByCreatedAtDesc(username)
-                .stream()
+        List<SavedState> states;
+
+        if (sessionId != null && !sessionId.isEmpty()) {
+            // In a collaboration session: show all checkpoints saved by any participant
+            // Verify the caller is actually a participant
+            CollaborationSession session = sessionRepository.findById(sessionId).orElse(null);
+            if (session == null || session.getParticipants().stream()
+                    .noneMatch(p -> p.getUser().getUsername().equals(username))) {
+                states = List.of();
+            } else {
+                states = savedStateRepository.findBySessionIdOrderByCreatedAtDesc(sessionId);
+            }
+        } else {
+            // Solo mode: show only the user's own saves
+            states = savedStateRepository.findByUser_UsernameOrderByCreatedAtDesc(username);
+        }
+
+        return states.stream()
                 .map(state -> new SavedStateResponse(
                         state.getId(),
                         state.getShinyApp().getName(),
                         state.getName(),
                         state.getStateData(),
-                        state.getCreatedAt().toString()
+                        state.getCreatedAt().toString(),
+                        state.getUser().getUsername()
                 ))
                 .collect(Collectors.toList());
     }
@@ -106,8 +136,21 @@ public class StateController {
         SavedState state = savedStateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("State not found"));
         
-        if (!state.getUser().getUsername().equals(principal.getName())) {
-             return ResponseEntity.status(403).body("Not your state");
+        String username = principal.getName();
+        boolean isOwner = state.getUser().getUsername().equals(username);
+        boolean isSessionParticipant = false;
+
+        // Allow restore if the checkpoint belongs to a session the user participates in
+        if (!isOwner && state.getSessionId() != null) {
+            CollaborationSession session = sessionRepository.findById(state.getSessionId()).orElse(null);
+            if (session != null) {
+                isSessionParticipant = session.getParticipants().stream()
+                        .anyMatch(p -> p.getUser().getUsername().equals(username));
+            }
+        }
+
+        if (!isOwner && !isSessionParticipant) {
+            return ResponseEntity.status(403).body("You do not have access to this checkpoint");
         }
 
         try {

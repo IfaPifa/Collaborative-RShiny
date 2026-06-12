@@ -15,6 +15,7 @@ export interface SavedAppState {
   name: string;
   stateData: string;
   createdAt: string;
+  savedBy: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -37,8 +38,12 @@ export class AppDataService {
     return this.http.get<ShinyApp[]>(`${this.API_URL}/apps`, { headers: this.getHeaders() });
   }
 
-  getSavedStates() {
-    return this.http.get<SavedAppState[]>(`${this.API_URL}/states`, { headers: this.getHeaders() });
+  getSavedStates(sessionId?: string | null) {
+    let url = `${this.API_URL}/states`;
+    if (sessionId) {
+      url += `?sessionId=${sessionId}`;
+    }
+    return this.http.get<SavedAppState[]>(url, { headers: this.getHeaders() });
   }
 
   // Note: stateData is a JSON string
@@ -55,11 +60,14 @@ export class AppDataService {
     );
   }
 
-  // Trigger the backend to push the saved state into Kafka
-  restoreStateToKafka(stateId: number) {
+  restoreState(stateId: number, sessionId?: string | null) {
+    let url = `${this.API_URL}/states/${stateId}/restore`;
+    if (sessionId) {
+      url += `?sessionId=${sessionId}`;
+    }
     return this.http.post(
-      `${this.API_URL}/states/${stateId}/restore`, 
-      {}, // Empty body
+      url, 
+      {},
       { 
         headers: this.getHeaders(), 
         responseType: 'text' 

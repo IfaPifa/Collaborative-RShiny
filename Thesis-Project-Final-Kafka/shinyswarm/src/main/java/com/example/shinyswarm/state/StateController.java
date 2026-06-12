@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.shinyswarm.app.ShinyApp;
 import com.example.shinyswarm.app.ShinyAppRepository;
+import com.example.shinyswarm.session.CollaborationSession;
+import com.example.shinyswarm.session.CollaborationSessionRepository;
 import com.example.shinyswarm.user.User;
 import com.example.shinyswarm.user.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// DTOs updated to match exactly what AppDataService.ts sends
 record SaveStateRequest(Long appId, String name, String sessionId) {}
-record SavedStateResponse(Long id, String appName, String name, String stateData, String createdAt) {}
+record SavedStateResponse(Long id, String appName, String name, String stateData, String createdAt, String savedBy) {}
 
 @RestController
 @RequestMapping("/api/states")
@@ -33,6 +34,7 @@ public class StateController {
     private final SavedStateRepository savedStateRepository;
     private final UserRepository userRepository;
     private final ShinyAppRepository shinyAppRepository;
+    private final CollaborationSessionRepository sessionRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper; 
     private final SessionStateMonitor sessionStateMonitor;
@@ -40,16 +42,17 @@ public class StateController {
     public StateController(SavedStateRepository savedStateRepository, 
                            UserRepository userRepository, 
                            ShinyAppRepository shinyAppRepository,
+                           CollaborationSessionRepository sessionRepository,
                            KafkaTemplate<String, String> kafkaTemplate,
                            ObjectMapper objectMapper,
-                           SessionStateMonitor sessionStateMonitor) { // Match the name here
-                           
+                           SessionStateMonitor sessionStateMonitor) {
         this.savedStateRepository = savedStateRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
+        this.sessionRepository = sessionRepository;
         this.kafkaTemplate = kafkaTemplate;
         this.objectMapper = objectMapper;
-        this.sessionStateMonitor = sessionStateMonitor; // Assign it properly here
+        this.sessionStateMonitor = sessionStateMonitor;
     }
 
     @PostMapping
@@ -77,7 +80,13 @@ public class StateController {
                 return ResponseEntity.status(409).body("No state captured yet. Try performing an action in the app first, then save again.");
             }
 
-            SavedState savedState = new SavedState(request.name(), stateData, user, app);
+            // Store sessionId so other participants can see and restore this checkpoint.
+            // Solo-mode keys are not real session UUIDs — exclude them.
+            String sessionId = (request.sessionId() != null 
+                               && !request.sessionId().isEmpty()
+                               && !request.sessionId().startsWith("solo-")) 
+                               ? request.sessionId() : null;
+            SavedState savedState = new SavedState(request.name(), stateData, user, app, sessionId);
             savedStateRepository.save(savedState);
 
             return ResponseEntity.ok("State saved successfully");
@@ -89,17 +98,25 @@ public class StateController {
 
     @GetMapping
     public List<SavedStateResponse> getMyStates(
-            @RequestParam(required = false) Long appId, // Accept the appId from Angular
+            @RequestParam(required = false) Long appId,
+            @RequestParam(required = false) String sessionId,
             Principal principal) {
         
         String username = principal.getName();
         List<SavedState> states;
 
-        // Context-Aware Routing: Filter by App ID if provided
-        if (appId != null) {
+        if (sessionId != null && !sessionId.isEmpty()) {
+            // In a collaboration session: show all checkpoints saved by any participant
+            CollaborationSession session = sessionRepository.findById(sessionId).orElse(null);
+            if (session == null || session.getParticipants().stream()
+                    .noneMatch(p -> p.getUser().getUsername().equals(username))) {
+                states = List.of();
+            } else {
+                states = savedStateRepository.findBySessionIdOrderByCreatedAtDesc(sessionId);
+            }
+        } else if (appId != null) {
             states = savedStateRepository.findByUser_UsernameAndShinyApp_IdOrderByCreatedAtDesc(username, appId);
         } else {
-            // Fallback for global "My Saves" view
             states = savedStateRepository.findByUser_UsernameOrderByCreatedAtDesc(username);
         }
 
@@ -109,7 +126,8 @@ public class StateController {
                         state.getShinyApp().getName(),
                         state.getName(),
                         state.getStateData(),
-                        state.getCreatedAt().toString()
+                        state.getCreatedAt().toString(),
+                        state.getUser().getUsername()
                 ))
                 .collect(Collectors.toList());
     }
@@ -123,15 +141,29 @@ public class StateController {
         SavedState state = savedStateRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("State not found"));
         
-        if (!state.getUser().getUsername().equals(principal.getName())) {
-             return ResponseEntity.status(403).body("Not your state");
+        String username = principal.getName();
+        boolean isOwner = state.getUser().getUsername().equals(username);
+        boolean isSessionParticipant = false;
+
+        // Allow restore if the checkpoint belongs to a session the user participates in
+        if (!isOwner && state.getSessionId() != null) {
+            CollaborationSession session = sessionRepository.findById(state.getSessionId()).orElse(null);
+            if (session != null) {
+                isSessionParticipant = session.getParticipants().stream()
+                        .anyMatch(p -> p.getUser().getUsername().equals(username));
+            }
+        }
+
+        if (!isOwner && !isSessionParticipant) {
+            return ResponseEntity.status(403).body("You do not have access to this checkpoint");
         }
 
         try {
             Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
             
             payload.put("sender", "System Restore");
-            payload.put("timestamp", System.currentTimeMillis());
+            // Use seconds (not millis) to match R's as.numeric(Sys.time())
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
             
             String kafkaPayload = objectMapper.writeValueAsString(payload);
 
@@ -139,9 +171,7 @@ public class StateController {
             if (sessionId != null && !sessionId.isEmpty()) {
                 kafkaKey = sessionId;
             } else {
-                User currentUser = userRepository.findByUsername(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-                kafkaKey = currentUser.getUsername(); 
+                kafkaKey = username; 
             }
 
             kafkaTemplate.send("output", kafkaKey, kafkaPayload);

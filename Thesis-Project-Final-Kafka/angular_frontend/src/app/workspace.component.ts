@@ -147,7 +147,7 @@ import { ModalComponent } from './modal.component';
             <div class="flex justify-between items-center">
               <div>
                 <p class="font-medium text-gray-800">{{ save.name }}</p>
-                <p class="text-xs text-gray-500">{{ save.createdAt }}</p>
+                <p class="text-xs text-gray-500">{{ save.createdAt }}@if (save.savedBy) { · by {{ save.savedBy }} }</p>
               </div>
               <button (click)="handleLoadFromModal(save)" class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded text-sm font-medium hover:bg-emerald-200 transition">Load</button>
             </div>
@@ -436,8 +436,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         error: (err) => alert('Error saving session: ' + (err.error || 'Unknown error'))
       });
     } else {
-      const mockState = JSON.stringify({ savedAt: new Date().toISOString() });
-      this.dataService.saveState(app.id, name, mockState).subscribe({
+      this.dataService.saveState(app.id, name, null).subscribe({
         next: () => {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
@@ -458,7 +457,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         error: () => alert('Failed to restore state')
       });
     } else {
-      this.dataService.restoreStateToKafka(save.id).subscribe({
+      this.dataService.restoreState(save.id).subscribe({
         next: () => alert('State loaded!'),
         error: () => alert('Failed to load state')
       });
@@ -466,14 +465,18 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
   }
 
   openLoadModal() {
-    // 1. Get the current app's ID
     const currentAppId = this.dataService.selectedApp()?.id;
-    
-    // 2. Fetch the fresh list of saves JUST for this app
-    this.dataService.getSavedStates(currentAppId).subscribe({
+    const session = this.collabService.activeSession();
+
+    // In collaborative mode, fetch all session checkpoints (any participant's saves).
+    // In solo mode, fetch only the current user's saves for this app.
+    this.dataService.getSavedStates({ 
+      appId: currentAppId, 
+      sessionId: session?.id 
+    }).subscribe({
       next: (states) => {
         this.savedAppStates.set(states);
-        this.showLoadModal.set(true); // 3. Open the modal after data arrives
+        this.showLoadModal.set(true);
       },
       error: () => alert("Failed to fetch checkpoints.")
     });

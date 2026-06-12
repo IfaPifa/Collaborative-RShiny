@@ -44,6 +44,10 @@ public class SavedState {
     @JoinColumn(name = "shiny_app_id", nullable = false)
     private ShinyApp shinyApp;
 
+    // Optional: links checkpoint to a collaboration session for cross-user sharing
+    @Column(name = "session_id")
+    private String sessionId;
+
     // --- Constructors ---
 
     public SavedState() {}
@@ -56,6 +60,11 @@ public class SavedState {
         this.createdAt = LocalDateTime.now();
     }
 
+    public SavedState(String name, String stateData, User user, ShinyApp shinyApp, String sessionId) {
+        this(name, stateData, user, shinyApp);
+        this.sessionId = sessionId;
+    }
+
     // --- Getters ---
     public Long getId() { return id; }
     public String getName() { return name; }
@@ -63,4 +72,5 @@ public class SavedState {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public User getUser() { return user; }
     public ShinyApp getShinyApp() { return shinyApp; }
+    public String getSessionId() { return sessionId; }
 }

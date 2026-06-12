@@ -217,18 +217,53 @@ ML Trainer & Long-running & Random Forest training & Async computation pattern \
   \item \textbf{Production:} Kubernetes managed via Rancher for the final benchmarking results. Full deployment manifests (\texttt{full-rancher-deployment.yaml}) are provided for both architectures.
 \end{itemize}
 
+\subsection{RQ5: Reproducibility}
+
+\begin{quote}
+\textit{To what extent does the combination of containerised deployment and checkpoint-based state persistence improve the reproducibility of collaborative R Shiny analyses?}
+\end{quote}
+
+\textbf{Context:} Reproducibility is the central motivation of this thesis (Baker, 2016; Peng, 2011; Stodden et al., 2016), yet RQ1--RQ4 address collaboration and performance without directly measuring whether the system actually improves reproducibility. The midterm committee identified this gap: the central research question promises reproducibility, so a sub-question must evaluate it.
+
+Reproducibility in ShinySwarm operates at three levels:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Environment reproducibility} --- Docker containers freeze the R version, installed packages, and system libraries. The same container image produces the same computational environment on any machine.
+  \item \textbf{Result reproducibility} --- The checkpoint mechanism (save/restore) serialises both inputs \textit{and} outputs as JSON. Restoring a checkpoint on a different machine, at a different time, or by a different user should yield an identical application state without recomputation.
+  \item \textbf{Deployment reproducibility} --- Kubernetes manifests and Docker Compose files define the full infrastructure declaratively. The same manifests produce the same deployment on any Kubernetes cluster.
+\end{enumerate}
+
+\textbf{How ShinySwarm answers this:} The experiment proceeds as follows:
+
+\begin{enumerate}[nosep]
+  \item User A runs each of the 8 Shiny apps, interacts with them (sets inputs, triggers computation), and saves a checkpoint.
+  \item User B, on a different machine or at a different time, restores the checkpoint.
+  \item Compare: are the restored inputs, outputs, and application state identical to what User A saved?
+  \item Repeat across all three architectures (monolithic, REST, Kafka).
+\end{enumerate}
+
+\textbf{What is measured:}
+\begin{itemize}[nosep]
+  \item \textbf{State field match rate} --- percentage of JSON fields (inputs + outputs) that are identical after restore. For deterministic apps (Calculator, Visual Analytics, Data Exchange), this should be 100\%. For stochastic apps (Monte Carlo, ML Trainer), exact reproducibility requires \texttt{set.seed()} --- without it, only the checkpoint mechanism preserves the exact result, because recomputation would produce different outputs.
+  \item \textbf{Cross-machine consistency} --- does restoring the same checkpoint on the Hetzner server and on a local laptop produce identical state? This validates environment reproducibility via Docker.
+  \item \textbf{Cross-architecture consistency} --- does the same logical operation (save in REST, restore in REST; save in Kafka, restore in Kafka) preserve state equally well? This validates that the synchronisation architecture does not introduce reproducibility differences.
+\end{itemize}
+
+\textbf{Key argument:} Traditional Shiny state sharing (\texttt{shinyURL}, bookmarking) transfers only inputs, forcing the receiving user to recompute all outputs. This breaks reproducibility for non-deterministic analyses. ShinySwarm's full-state checkpoints (inputs + outputs) guarantee exact reproducibility regardless of the computation's determinism, because the outputs are preserved, not recomputed.
+
 \subsection{How the Research Questions Connect}
 
-The four research questions form a logical chain:
+The five research questions form a logical chain:
 
 \begin{enumerate}
   \item \textbf{RQ1} defines \textit{what} collaboration means for Shiny --- the five modes and the permission model. This determines the functional requirements.
   \item \textbf{RQ2} defines \textit{what} needs to be synchronised --- both inputs and outputs as JSON payloads, with persistence via checkpoints. This determines the data model.
   \item \textbf{RQ3} defines \textit{how} to synchronise it --- REST (synchronous, Plumber + Redis) vs.\ Kafka (asynchronous, topics + consumers). This determines the system architecture.
-  \item \textbf{RQ4} measures \textit{how well} each approach works --- latency, throughput, data loss, cross-contamination across 8 apps. This produces the empirical evidence to answer the central question.
+  \item \textbf{RQ4} measures \textit{how well} each approach works --- latency, throughput, data loss, cross-contamination across 8 apps. This produces the empirical evidence for the performance comparison.
+  \item \textbf{RQ5} evaluates \textit{whether} the system achieves its reproducibility goal --- containerised environments + full-state checkpoints preserve exact analytical results across users, machines, and time.
 \end{enumerate}
 
-The central research question is answered by the combination of all four: RQ1 and RQ2 provide the theoretical framework, RQ3 provides the engineering contribution, and RQ4 provides the empirical validation.
+The central research question is answered by the combination of all five: RQ1 and RQ2 provide the theoretical framework, RQ3 provides the engineering contribution, RQ4 provides the empirical performance validation, and RQ5 validates the reproducibility claim.
 
 \newpage
 
@@ -310,11 +345,12 @@ Below are concrete suggestions for how to translate the summaries above into pre
 \begin{itemize}[nosep]
   \item \textbf{RQ1} (top-left): What does ``collaborative Shiny'' mean? $\rightarrow$ 5 modes + RBAC
   \item \textbf{RQ2} (top-right): How to share state without recomputation? $\rightarrow$ inputs + outputs as JSON
-  \item \textbf{RQ3} (bottom-left): REST vs.\ Kafka trade-offs? $\rightarrow$ synchronous vs.\ asynchronous
-  \item \textbf{RQ4} (bottom-right): How do they compare? $\rightarrow$ latency, throughput, data loss, cross-contamination
+  \item \textbf{RQ3} (middle-left): REST vs.\ Kafka trade-offs? $\rightarrow$ synchronous vs.\ asynchronous
+  \item \textbf{RQ4} (middle-right): How do they compare? $\rightarrow$ latency, throughput, data loss, cross-contamination
+  \item \textbf{RQ5} (bottom, full width): Does it actually improve reproducibility? $\rightarrow$ checkpoint restore across machines/users/time
 \end{itemize}
 
-\textbf{Visual suggestion:} Colour-code each RQ (e.g., blue, green, orange, red) and use the same colours consistently in later slides.
+\textbf{Visual suggestion:} Colour-code each RQ (e.g., blue, green, orange, red, purple) and use the same colours consistently in later slides.
 \end{slidebox}
 
 % ============================================================
@@ -428,15 +464,50 @@ Calculator, Visual Analytics, Advanced Analytics, Data Exchange, Climate Anomaly
 \end{slidebox}
 
 % ============================================================
-\section{Slide 8: Research Questions Connection Map}
+\section{Slide 8: RQ5 --- Reproducibility}
 % ============================================================
 
-\begin{slidebox}{Slide 8: ``How the Research Questions Connect''}
-\textbf{Layout:} A horizontal chain of four boxes with arrows between them, all converging into a central box below.
+\begin{slidebox}{Slide 8: ``RQ5: Does It Actually Improve Reproducibility?''}
+\textbf{Layout:} Two columns.
+
+\textbf{Left --- The Problem:}
+\begin{itemize}[nosep]
+  \item Existing Shiny state sharing (shinyURL, bookmarking) transfers only inputs
+  \item Receiving user must recompute all outputs $\rightarrow$ double computation
+  \item Non-deterministic analyses (Monte Carlo, ML) produce different results each time
+  \item No guarantee of identical results between users
+\end{itemize}
+
+\textbf{Right --- ShinySwarm's Solution:}
+\begin{itemize}[nosep]
+  \item Checkpoints save \textbf{both inputs and outputs} as JSON
+  \item Restore = exact state, no recomputation needed
+  \item Docker containers freeze the R environment (same version, same packages)
+  \item Kubernetes manifests = declarative, reproducible deployment
+\end{itemize}
+
+\textbf{Bottom --- Experiment:}
+\begin{enumerate}[nosep]
+  \item User A saves checkpoint on Machine X
+  \item User B restores checkpoint on Machine Y (different time, different machine)
+  \item Compare: are all state fields identical?
+  \item Repeat across all 8 apps $\times$ 3 architectures
+\end{enumerate}
+
+\textbf{Expected result:} 100\% match for deterministic apps. For stochastic apps, full-state checkpoints preserve exact results that input-only sharing cannot.
+\end{slidebox}
+
+% ============================================================
+\section{Slide 9: Research Questions Connection Map}
+% ============================================================
+
+\begin{slidebox}{Slide 9: ``How the Research Questions Connect''}
+\textbf{Layout:} A chain of five boxes with arrows, converging into a central box below.
 
 \textbf{Chain:}
 \begin{itemize}[nosep]
   \item RQ1 $\xrightarrow{\text{defines what to sync}}$ RQ2 $\xrightarrow{\text{determines architecture}}$ RQ3 $\xrightarrow{\text{measured by}}$ RQ4
+  \item RQ5 connects back to the central question from below: validates the reproducibility promise
 \end{itemize}
 
 \textbf{Central box below:}
@@ -445,9 +516,25 @@ Central RQ: How to architect collaborative containerised R Shiny?
 \end{quote}
 
 \textbf{One-line summary:}
-``RQ1 and RQ2 provide the theoretical framework. RQ3 provides the engineering contribution. RQ4 provides the empirical validation.''
+``RQ1 and RQ2 provide the theoretical framework. RQ3 provides the engineering contribution. RQ4 provides the empirical performance validation. RQ5 validates the reproducibility claim.''
 
-\textbf{Visual suggestion:} Use the same colour coding from Slide 3. This slide gives the audience a mental map and serves as a transition into the architecture/demo section of the presentation.
+\textbf{Visual suggestion:} Use the same colour coding from Slide 3. RQ5 in purple, positioned below the chain, with an arrow up to the central question.
 \end{slidebox}
+
+% ============================================================
+\section{Future Work Note: Input-Only vs.\ Full-State Comparison}
+% ============================================================
+
+\textbf{For the Discussion / Future Work chapter:}
+
+A natural extension of RQ5 is a controlled comparison between input-only sharing (the \texttt{shinyURL}/bookmarking approach) and full-state sharing (ShinySwarm's checkpoint mechanism). This would involve:
+
+\begin{enumerate}[nosep]
+  \item Stripping outputs from a saved checkpoint JSON, leaving only inputs.
+  \item Restoring the input-only payload and letting R recompute the outputs.
+  \item Comparing: (a) computation time (full-state = 0 recomputation vs.\ input-only = full recomputation), and (b) result consistency for non-deterministic apps (Monte Carlo, ML Trainer without \texttt{set.seed()}).
+\end{enumerate}
+
+This experiment would quantify the exact computational cost savings and reproducibility improvement of full-state sharing. It is deferred to future work because the current thesis scope focuses on the architectural comparison (REST vs.\ Kafka vs.\ monolithic), and the full-state mechanism is already validated by the checkpoint save/restore benchmarks (Test 03).
 
 \end{document}

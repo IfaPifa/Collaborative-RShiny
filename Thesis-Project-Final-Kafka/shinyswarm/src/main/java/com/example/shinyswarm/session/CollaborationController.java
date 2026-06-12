@@ -183,7 +183,7 @@ public class CollaborationController {
             return ResponseEntity.badRequest().body("No data available to save.");
         }
 
-        SavedState savedState = new SavedState(request.name(), currentState, user, session.getShinyApp());
+        SavedState savedState = new SavedState(request.name(), currentState, user, session.getShinyApp(), sessionId);
         savedStateRepository.save(savedState);
         return ResponseEntity.ok("Session state saved successfully");
     }
@@ -201,9 +201,27 @@ public class CollaborationController {
 
     // 6. Restore (Load Checkpoint)
     @PostMapping("/{sessionId}/restore/{stateId}")
-    public ResponseEntity<?> restoreState(@PathVariable String sessionId, @PathVariable Long stateId) {
+    public ResponseEntity<?> restoreState(@PathVariable String sessionId, @PathVariable Long stateId, Principal principal) {
         SavedState state = savedStateRepository.findById(stateId)
                 .orElseThrow(() -> new RuntimeException("State not found"));
+
+        // Allow restore if caller is the owner OR a participant of this session
+        String username = principal.getName();
+        boolean isOwner = state.getUser().getUsername().equals(username);
+        boolean isParticipant = false;
+
+        if (!isOwner) {
+            CollaborationSession session = sessionRepository.findById(sessionId).orElse(null);
+            if (session != null) {
+                isParticipant = session.getParticipants().stream()
+                        .anyMatch(p -> p.getUser().getUsername().equals(username));
+            }
+        }
+
+        if (!isOwner && !isParticipant) {
+            return ResponseEntity.status(403).body("You do not have access to this checkpoint");
+        }
+
         kafkaTemplate.send("input", sessionId, state.getStateData());
         return ResponseEntity.ok("State restored");
     }

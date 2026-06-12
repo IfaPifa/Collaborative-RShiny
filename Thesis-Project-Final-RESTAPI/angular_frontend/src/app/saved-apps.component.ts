@@ -88,7 +88,7 @@ export class SavedAppsComponent implements OnInit {
       
       // 3. Write restored state to Redis immediately — it persists there
       // until the Shiny app boots and picks it up via polling.
-      this.dataService.restoreStateToKafka(save.id).subscribe({
+      this.dataService.restoreState(save.id).subscribe({
         next: () => {
           this.isLoading.set(false);
           // 4. Navigate to workspace after restore is confirmed in Redis

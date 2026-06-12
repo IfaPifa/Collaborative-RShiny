@@ -83,7 +83,7 @@ export class SavedAppsComponent implements OnInit {
 
       // 4. Wait for the iframe and Kafka consumer to boot before restoring
       setTimeout(() => {
-        this.dataService.restoreStateToKafka(save.id).subscribe({
+        this.dataService.restoreState(save.id).subscribe({
           next: () => this.isLoading.set(false),
           error: () => {
             this.isLoading.set(false);

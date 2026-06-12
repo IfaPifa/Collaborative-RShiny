@@ -147,7 +147,7 @@ import { ModalComponent } from './modal.component';
             <div class="flex justify-between items-center">
               <div>
                 <p class="font-medium text-gray-800">{{ save.name }}</p>
-                <p class="text-xs text-gray-500">{{ save.createdAt }}</p>
+                <p class="text-xs text-gray-500">{{ save.createdAt }}@if (save.savedBy) { · by {{ save.savedBy }} }</p>
               </div>
               <button (click)="handleLoadFromModal(save)" class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded text-sm font-medium hover:bg-emerald-200 transition">Load</button>
             </div>
@@ -267,8 +267,13 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
     return null;
   });
 
+  private loadCheckpoints() {
+    const session = this.collabService.activeSession();
+    this.dataService.getSavedStates(session?.id).subscribe(states => this.savedAppStates.set(states));
+  }
+
   ngOnInit() {
-    this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
+    this.loadCheckpoints();
 
     const user = this.authService.currentUser();
     // Read the ID from the URL (e.g., /workspace/1234-abcd)
@@ -437,9 +442,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
           alert('Team snapshot saved!');
-          
-          // Refresh the saved states list for the modal
-          this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
+          this.loadCheckpoints();
         },
         error: (err) => alert('Error saving session: ' + (err.error || 'Unknown error'))
       });
@@ -450,9 +453,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
           this.showSaveModal.set(false);
           this.saveStateName.set('');
           alert('State saved!');
-          
-          // Refresh the saved states list for the modal
-          this.dataService.getSavedStates().subscribe(states => this.savedAppStates.set(states));
+          this.loadCheckpoints();
         },
         error: (err) => alert('Error saving state: ' + (err.error || 'Unknown error'))
       });
@@ -469,7 +470,7 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
         error: () => alert('Failed to restore state')
       });
     } else {
-      this.dataService.restoreStateToKafka(save.id).subscribe({
+      this.dataService.restoreState(save.id).subscribe({
         next: () => alert('State loaded!'),
         error: () => alert('Failed to load state')
       });
