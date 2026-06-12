@@ -1286,6 +1286,42 @@ The package could be published on CRAN or as a GitHub-installable package
 contribution accessible to the broader R~Shiny community without requiring
 Kubernetes or microservice infrastructure.
 
+\subsection{Why statesnap Is Not Used in the ShinySwarm Apps}
+
+The \texttt{statesnap} package was developed after the ShinySwarm platform was
+complete and benchmarked. The eight Shiny applications were built first, and the
+recurring full-state serialisation pattern was identified during development of
+the cross-user checkpoint restore feature (RQ5). The library was then extracted
+as a proof-of-concept to validate that the pattern generalises beyond ShinySwarm.
+
+Retrofitting \texttt{statesnap} into the existing applications was not performed
+for three reasons:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Risk to the benchmark environment.} Integrating the library
+        into 8 apps $\times$ 2 architectures = 16 codebases would risk
+        introducing regressions immediately before benchmark execution. The
+        apps were already working and tested; changing the state-handling layer
+        would invalidate existing test results.
+  \item \textbf{Separate evaluation purposes.} The apps benchmark REST vs Kafka
+        vs Monolithic architectures for state synchronisation. The library
+        demonstrates that the state-sharing mechanism is extractable and
+        reusable. These are separate contributions: one evaluates architecture
+        trade-offs, the other validates generalisability.
+  \item \textbf{The library already demonstrates correctness.} The
+        \texttt{statesnap} test suite (8 test files covering round-trip
+        fidelity, security, edge cases, and Monte Carlo reproducibility) and
+        the calculator example application prove that the extracted pattern
+        works correctly. Actually integrating it into the ShinySwarm apps is
+        engineering work, not research --- it would not produce new findings.
+\end{enumerate}
+
+A future iteration of ShinySwarm could replace the per-app state handling with
+\texttt{statesnap} calls, reducing each app's save/restore logic to two lines
+(\texttt{capture\_state()} and \texttt{restore\_state()}) and eliminating the
+Climate Anomaly enrichment mechanism in Spring Boot entirely (since
+\texttt{state\_file()} handles file embedding natively in R).
+
 % ------------------------------------------------------------------
 \section{Future Work: Integration with NaaVRE}
 % ------------------------------------------------------------------
