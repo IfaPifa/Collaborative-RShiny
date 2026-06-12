@@ -755,6 +755,56 @@ Estimated effort: 2--3 months for a working prototype, assuming
 familiarity with Rust/C++ and librdkafka.
 
 % ------------------------------------------------------------------
+\section{Future Work: Reusable R Package for State Sharing}
+% ------------------------------------------------------------------
+
+A natural extension of ShinySwarm's checkpoint mechanism is a standalone R package
+(e.g., \texttt{shinyswarm}) that any Shiny application can use for full-state
+serialisation and restoration, without requiring the full microservice architecture
+(Spring Boot, Redis, Kafka).
+
+The package would expose two core functions:
+
+\begin{itemize}[nosep]
+  \item \texttt{capture\_state(input, reactive\_vals)} --- serialises all
+        \texttt{input} values and registered \texttt{reactiveVal}/\texttt{reactiveValues}
+        objects into a JSON checkpoint containing both inputs and outputs.
+  \item \texttt{restore\_state(session, state\_json)} --- restores the checkpoint
+        by pushing values back into inputs via \texttt{session\$sendInputMessage()}
+        and setting reactive values directly.
+\end{itemize}
+
+The transport and storage layer would be deliberately excluded from the package:
+the library produces and consumes JSON, and the user decides how to transmit or
+persist it (file, database, REST API, Kafka topic, or any other mechanism).
+
+\textbf{Key challenges:}
+\begin{enumerate}[nosep]
+  \item R's reactive system does not expose a ``get all state'' API.
+        \texttt{reactiveVal} and \texttt{reactiveValues} objects must be
+        explicitly registered by the app developer; they cannot be discovered
+        automatically.
+  \item \texttt{fileInput} widgets cannot be restored via
+        \texttt{sendInputMessage} --- a workaround (e.g., pre-staging the file
+        and injecting a reference) would be required.
+  \item Rendered outputs (plots, tables) are server-side objects that cannot be
+        serialised directly. The package would store the \emph{data} that
+        generates them, not the rendered output itself.
+  \item Shiny modules use namespaced input IDs (\texttt{ns("id")}), which
+        require special handling during both capture and restore.
+\end{enumerate}
+
+This package would address the gap identified in the literature review: existing
+Shiny state-sharing mechanisms (\texttt{shinyURL}, bookmarking) transfer only
+inputs, forcing recomputation of all outputs. A full-state package would
+guarantee exact reproducibility for non-deterministic analyses (e.g., Monte Carlo
+simulations without \texttt{set.seed()}) by preserving outputs alongside inputs.
+
+The package could be published on CRAN or as a GitHub-installable package,
+making ShinySwarm's reproducibility contribution accessible to the broader
+R~Shiny community without requiring Kubernetes or microservice infrastructure.
+
+% ------------------------------------------------------------------
 \section{Future Work: Integration with NaaVRE}
 % ------------------------------------------------------------------
 

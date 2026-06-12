@@ -1,0 +1,317 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10}
+}
+
+\title{ShinySwarm --- Repository Context Document}
+\author{Iva Gunjaca \\ University of Amsterdam \\ MSc Software Engineering (18 ECTS)}
+\date{Last updated: June 2026}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ==================================================================
+\section{Project Overview}
+% ==================================================================
+
+ShinySwarm is a collaborative R~Shiny platform built as a Master's thesis
+project at the University of Amsterdam (UvA), Software Engineering track.
+It enables real-time collaboration on R~Shiny applications --- multiple users
+can simultaneously interact with the same Shiny app, see each other's changes,
+save/restore checkpoints, and share analytical results. The platform is designed
+for integration with NaaVRE (Notebook-as-a-Virtual-Research-Environment) at UvA.
+
+% ==================================================================
+\section{Repository Structure}
+% ==================================================================
+
+The repository contains three architectures for comparison:
+
+\begin{description}[style=nextline]
+  \item[\texttt{Thesis-Project-Final-RESTAPI/}]
+    REST architecture. Spring Boot backend (Java~21, Spring Security, JPA/Hibernate,
+    PostgreSQL). Angular~19 frontend. Plumber R backends for each Shiny app.
+    State synchronisation via Redis polling
+    (POST state $\rightarrow$ Redis $\rightarrow$ GET poll).
+
+  \item[\texttt{Thesis-Project-Final-Kafka/}]
+    Kafka architecture. Same Spring Boot + Angular stack, but state synchronisation
+    via Apache Kafka topics (produce to \texttt{input} topic $\rightarrow$ Kafka
+    consumer $\rightarrow$ \texttt{output} topic $\rightarrow$ Plumber polls).
+    Confluent Kafka + Zookeeper.
+
+  \item[\texttt{whole\_apps/}]
+    Monolithic baseline. 8 standalone Shiny apps with no collaboration layer.
+    Docker Compose + Nginx reverse proxy. Used as the computation floor for
+    benchmarking.
+\end{description}
+
+% ==================================================================
+\section{The 8 Shiny Applications}
+% ==================================================================
+
+Each architecture runs the same 8 applications:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Calculator} --- simple arithmetic (instant computation)
+  \item \textbf{Visual Analytics} --- mtcars dataset filtering with checkboxes (cyl values)
+  \item \textbf{Advanced Visual Analytics} --- airquality dataset with month/variable filters
+  \item \textbf{Data Exchange} --- CSV upload, processing (uppercase transformation), download
+  \item \textbf{Climate Anomaly Detector} --- sensor CSV upload, anomaly detection, date parsing
+  \item \textbf{Geospatial Editor} --- Leaflet map with marker placement (delta sync)
+  \item \textbf{Monte Carlo Simulator} --- population viability analysis (15--30s computation)
+  \item \textbf{ML Trainer (Habitat Suitability AI)} --- Random Forest training with ranger (30--60s computation)
+\end{enumerate}
+
+% ==================================================================
+\section{Technology Stack}
+% ==================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Layer} & \textbf{Technology} \\
+\midrule
+Backend        & Spring Boot 3.5, Java 21, Spring Security (JWT), Spring Data JPA, PostgreSQL 15 \\
+State sync     & Redis (REST architecture) / Kafka 3.9 + Zookeeper (Kafka architecture) \\
+Frontend       & Angular 19, TypeScript, Tailwind CSS, STOMP-over-WebSocket (presence) \\
+R backends     & Plumber API servers (one per Shiny app), state serialisation as JSON \\
+Shiny frontends & R Shiny apps embedded in iframes, HTTP polling to Plumber backends \\
+Infrastructure & Kubernetes (k3s), Hetzner CX32 (8 vCPU, 16\,GB RAM), Docker, Rancher \\
+Testing        & Playwright (end-to-end, 12 test files A--L), k6 (load testing, 10 benchmarks) \\
+CI/CD          & GitHub Actions (build Docker images on push to main, push to GHCR) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==================================================================
+\section{Key Architectural Patterns}
+% ==================================================================
+
+\begin{itemize}[nosep]
+  \item \textbf{Full-state serialisation:} Both inputs AND outputs are captured
+        as JSON (not just inputs like \texttt{shinyURL}/bookmarking). This enables
+        exact reproducibility for non-deterministic analyses.
+
+  \item \textbf{Collaboration modes:} Solo, real-time sync, role-based access
+        (OWNER/EDITOR/VIEWER), checkpoint save/restore, cross-user checkpoint
+        sharing (RQ5).
+
+  \item \textbf{Cross-user checkpoint sharing:} The \texttt{SavedState} entity
+        has a \texttt{sessionId} column. Any session participant can list and
+        restore checkpoints saved by other participants. Authorisation: owner
+        OR session participant.
+
+  \item \textbf{Solo-mode guard:} Session IDs starting with \texttt{"solo-"}
+        are filtered out to prevent accidental session association.
+\end{itemize}
+
+% ==================================================================
+\section{Research Questions}
+% ==================================================================
+
+\begin{quote}
+\textbf{Central RQ:} \textit{How can collaborative, containerised R~Shiny
+applications be architected to support reproducible, real-time multi-user
+scientific analyses?}
+\end{quote}
+
+\begin{description}[style=nextline, nosep]
+  \item[RQ1] What collaboration modes and permission models are needed for
+             interactive Shiny applications?
+  \item[RQ2] How can application state (inputs + outputs) be shared between
+             users without recomputation?
+  \item[RQ3] What are the trade-offs between REST (synchronous) and Kafka
+             (asynchronous) state synchronisation?
+  \item[RQ4] How do the architectures compare in latency, throughput, data loss,
+             and cross-contamination?
+  \item[RQ5] Does containerised deployment + checkpoint-based state persistence
+             improve the reproducibility of collaborative R~Shiny analyses?
+\end{description}
+
+% ==================================================================
+\section{Benchmarking (k6)}
+% ==================================================================
+
+\subsection{Test Suite}
+
+10 benchmarks, each targeting a specific performance dimension:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}cll@{}}
+\toprule
+\textbf{\#} & \textbf{Test} & \textbf{Measures} \\
+\midrule
+00 & Baseline           & Per-app response time (1 VU, 5 reps) \\
+01 & State relay        & POST $\rightarrow$ GET round-trip latency (20 VUs) \\
+02 & Collaboration      & State propagation between users (30 VUs) \\
+03 & Save/restore       & Checkpoint persistence latency (15 VUs) \\
+04 & Throughput          & Requests/sec under load (100 VUs) \\
+05 & Data loss          & Percentage of states lost in transit \\
+06 & Cross-contamination & State leaking between sessions \\
+07 & Session lifecycle   & Create/join/leave overhead (50 VUs) \\
+08 & Multi-user collab   & 3 VUs collaborating on each app \\
+09 & WebSocket presence  & STOMP connect + roundtrip (50 VUs) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Threshold Calibration}
+
+Per-app baseline-calibrated thresholds in \texttt{k6/config.js}. Each app has
+its own threshold based on baseline median $\times$ multiplier:
+
+\begin{itemize}[nosep]
+  \item $10\times$ for relay, propagation, lifecycle (single-threaded queuing)
+  \item $50\times$ for throughput (100 VUs)
+  \item $10\times$ for save/restore (PostgreSQL)
+\end{itemize}
+
+\subsection{Execution Plan}
+
+\begin{itemize}[nosep]
+  \item 5 runs per architecture $\times$ 2 locations (co-located on server +
+        remote from laptop) for statistical validity
+  \item Report mean $\pm$ 95\% CI ($\text{mean} \pm 1.96 \times \sigma / \sqrt{n}$, $n=5$)
+  \item Automated via \texttt{k6/run-suite.sh} (cooldown between tests, sleep
+        prevention, numbered output folders)
+\end{itemize}
+
+% ==================================================================
+\section{Playwright Tests}
+% ==================================================================
+
+12 test files ordered A--L, running sequentially (\texttt{fullyParallel: false}):
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}cll@{}}
+\toprule
+\textbf{File} & \textbf{Name} & \textbf{Scope} \\
+\midrule
+A & Login basics            & Login page loads, auth redirect \\
+B & Handshake               & WebSocket connection \\
+C & Collab sync             & Alice \& Bob see each other \\
+D & Cross-user restore      & RQ5 standalone (Calculator) + isolation test \\
+E & Calculator              & 5 tests: solo, collab, security, restore, RQ5 \\
+F & Visual Analytics        & 5 tests: solo, collab, security, restore, RQ5 \\
+G & Advanced Analytics      & 5 tests: solo, collab, security, restore, RQ5 \\
+H & Data Exchange           & 5 tests: solo, collab, security, restore, RQ5 \\
+I & Climate Anomaly         & 5 tests: solo, collab, security, restore, RQ5 \\
+J & Geospatial Delta        & 6 tests: solo, collab, security, restore, RQ5, delta sync \\
+K & Monte Carlo             & 5 tests: solo, collab, security, restore, RQ5 \\
+L & ML Trainer              & 5 tests: solo, collab, security, restore, RQ5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Per-App Test Pattern (Tests 1--5)}
+
+\begin{enumerate}[nosep]
+  \item \textbf{Solo mode:} Compute \& save state
+  \item \textbf{Collab mode:} Real-time synchronisation (Alice sends, Bob receives)
+  \item \textbf{Security:} Role-based permission (demote to VIEWER, verify inputs disabled)
+  \item \textbf{Time machine:} Restore checkpoint in solo mode
+  \item \textbf{RQ5 cross-user restore:} Alice saves, changes state to something
+        distinguishable, leaves session. Bob joins, restores Alice's checkpoint,
+        verifies he gets the saved state (not Alice's later changes)
+\end{enumerate}
+
+% ==================================================================
+\section{Key Files}
+% ==================================================================
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{k6/config.js}                    & App configs, thresholds, BASE\_URL \\
+\texttt{k6/run-suite.sh}                 & Automated benchmark runner (N runs) \\
+\texttt{k6/00-baseline.js} -- \texttt{09-*.js} & Individual k6 benchmark scripts \\
+\texttt{docs/thesis/introduction\_and\_research\_questions.tex} & RQs, methodology \\
+\texttt{docs/thesis/literature\_review\_summary.tex}            & 30+ sources \\
+\texttt{docs/thesis/architecture\_summary.tex}                  & Full architecture docs \\
+\texttt{docs/thesis/next-steps-benchmarking.md}                 & Remaining work roadmap \\
+\texttt{docs/thesis/repository-context.tex}                     & This document \\
+\texttt{k6/results/kafka/thesis-notes.tex}                      & Working thesis notes \\
+\texttt{k8s/deploy-rest.sh}              & Deploy REST to Kubernetes \\
+\texttt{k8s/deploy-kafka.sh}             & Deploy Kafka to Kubernetes \\
+\texttt{k8s/deploy-monolithic.sh}        & Deploy monolithic to Kubernetes \\
+\texttt{k8s/teardown.sh}                 & Tear down current deployment \\
+\texttt{.github/workflows/build-images.yml} & CI: build \& push Docker images \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==================================================================
+\section{Infrastructure and Deployment}
+% ==================================================================
+
+\begin{itemize}[nosep]
+  \item \textbf{Cluster:} Hetzner CX32, single node, 8 vCPU, 16\,GB RAM
+  \item \textbf{Server IP:} 188.245.60.172
+  \item \textbf{REST NodePort:} 30001
+  \item \textbf{Kafka NodePort:} 30002
+  \item \textbf{Test users:} alice, bob, charlie (password: \texttt{password})
+  \item \textbf{Docker images:} \texttt{ghcr.io/ifapifa/collaborative-rshiny/*}
+  \item \textbf{Kubernetes:} k3s, managed via Rancher
+\end{itemize}
+
+% ==================================================================
+\section{Conventions and Preferences}
+% ==================================================================
+
+\begin{itemize}[nosep]
+  \item Never push or commit without explicit permission from the student.
+  \item Explain complex concepts simply when asked.
+  \item The thesis is due in approximately 4 months (October 2026).
+  \item All three architectures (REST, Kafka, monolithic) must be benchmarked
+        with the same test suite for fair comparison.
+  \item Playwright tests are identical across REST and Kafka architectures
+        (same test files copied to both).
+  \item The \texttt{DataInitializer} seeds test users on Spring Boot startup
+        if they do not already exist in PostgreSQL.
+\end{itemize}
+
+% ==================================================================
+\section{Current Status (June 2026)}
+% ==================================================================
+
+\begin{itemize}[nosep]
+  \item[\checkmark] REST architecture deployed and benchmarked (1 run, all 10 tests)
+  \item[\checkmark] Per-app baseline-calibrated thresholds implemented
+  \item[\checkmark] Cross-user checkpoint sharing implemented (both architectures)
+  \item[\checkmark] RQ5 Playwright tests added to all 8 apps (both architectures)
+  \item[\checkmark] Test files renamed A--L for ordered execution
+  \item[\checkmark] \texttt{run-suite.sh} script for automated 5$\times$ runs
+  \item[$\circ$] Kafka benchmarks (in progress --- baseline running)
+  \item[$\circ$] REST benchmarks re-run 5$\times$ for statistical validity
+  \item[$\circ$] Monolithic benchmarks (deploy, instrument with \texttt{system.time()}, run)
+  \item[$\circ$] Data analysis: parse results, compute mean/CI, generate plots
+  \item[$\circ$] Thesis writing: Results, Discussion, Threats to Validity, Conclusion
+\end{itemize}
+
+\end{document}
