@@ -27,11 +27,12 @@ repeat {
       
       if (payload$action == "ANALYZE_CLIMATE") {
         
-        raw_file_path <- file.path(shared_dir, payload$file)
+        file_name <- if (!is.null(payload$file) && nchar(payload$file) > 0) payload$file else ""
+        raw_file_path <- file.path(shared_dir, file_name)
         
-        if (file.exists(raw_file_path)) {
+        if (file_name != "" && file.exists(raw_file_path)) {
           df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
-          df$Date <- as.Date(df$Timestamp)
+          df$Date <- as.Date(df$Timestamp, format = "%Y-%m-%d")
           
           summary_df <- df %>%
             group_by(SiteID, Date) %>%

@@ -12,8 +12,15 @@ dir.create(shared_dir, showWarnings = FALSE)
 #* @serializer unboxedJSON
 function(req) {
   raw_body <- req$body
-  if (is.raw(raw_body)) { body_text <- rawToChar(raw_body) } else if (is.character(raw_body)) { body_text <- raw_body } else { body_text <- NULL }
-  if (!is.null(body_text)) { body <- jsonlite::fromJSON(body_text, simplifyVector = TRUE) } else { body <- raw_body }
+  if (is.raw(raw_body)) {
+    body <- jsonlite::fromJSON(rawToChar(raw_body), simplifyVector = TRUE)
+  } else if (is.character(raw_body)) {
+    body <- jsonlite::fromJSON(raw_body, simplifyVector = TRUE)
+  } else if (is.list(raw_body)) {
+    body <- raw_body
+  } else {
+    body <- list()
+  }
 
   sender <- if (!is.null(body$sender)) body$sender else "unknown"
   action <- if (!is.null(body$action)) body$action else ""
@@ -22,16 +29,17 @@ function(req) {
     return(list(status = "ignored", message = "Unknown action"))
   }
 
-  raw_file_path <- file.path(shared_dir, body$file)
+  file_name <- if (!is.null(body$file) && nchar(body$file) > 0) body$file else ""
+  raw_file_path <- file.path(shared_dir, file_name)
   threshold <- if (!is.null(body$threshold)) as.numeric(body$threshold) else 28.5
 
-  if (!file.exists(raw_file_path)) {
+  if (file_name == "" || !file.exists(raw_file_path)) {
     return(list(status = "error", message = "File not found on shared volume"))
   }
 
   # Read and process the raw sensor data
   df <- read.csv(raw_file_path, stringsAsFactors = FALSE)
-  df$Date <- as.Date(df$Timestamp)
+  df$Date <- as.Date(df$Timestamp, format = "%Y-%m-%d")
 
   summary_df <- df %>%
     group_by(SiteID, Date) %>%
