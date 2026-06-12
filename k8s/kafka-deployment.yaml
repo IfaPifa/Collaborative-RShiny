@@ -153,6 +153,8 @@ spec:
                 secretKeyRef:
                   name: spring-cors-secret
                   key: SHINY_BASE_URL
+          volumeMounts:
+            - { name: shared-data, mountPath: /app/shared_data }
           readinessProbe:
             tcpSocket:
               port: 8085
@@ -167,6 +169,9 @@ spec:
           resources:
             requests: { cpu: 250m, memory: 512Mi }
             limits: { cpu: 750m, memory: 1Gi }
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim: { claimName: shared-data-pvc }
 ---
 apiVersion: v1
 kind: Service

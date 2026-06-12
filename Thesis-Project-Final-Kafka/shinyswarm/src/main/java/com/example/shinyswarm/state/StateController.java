@@ -1,6 +1,13 @@
 package com.example.shinyswarm.state;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,6 +86,11 @@ public class StateController {
             if (stateData == null) {
                 return ResponseEntity.status(409).body("No state captured yet. Try performing an action in the app first, then save again.");
             }
+
+            // Enrich Climate Anomaly checkpoints: embed the processed CSV inline
+            // so the checkpoint is self-contained (the file on the shared volume
+            // gets overwritten by subsequent uploads).
+            stateData = enrichClimateCheckpoint(stateData);
 
             // Store sessionId so other participants can see and restore this checkpoint.
             // Solo-mode keys are not real session UUIDs — exclude them.
@@ -161,6 +173,11 @@ public class StateController {
         try {
             Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
             
+            // If this is a Climate Anomaly checkpoint with embedded data,
+            // write the dataset back to the shared volume so the Shiny app
+            // can read it from disk (preserving the shared-volume pattern).
+            restoreClimateFile(payload);
+
             payload.put("sender", "System Restore");
             // Use seconds (not millis) to match R's as.numeric(Sys.time())
             payload.put("timestamp", System.currentTimeMillis() / 1000.0);
@@ -181,6 +198,106 @@ public class StateController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("Failed to parse state data");
+        }
+    }
+
+    /**
+     * If the state JSON is a CLIMATE_READY message with a file reference,
+     * read the CSV from the shared volume and embed it as a "dataset" field.
+     * This makes the checkpoint self-contained — the file on disk gets
+     * overwritten by subsequent uploads, but the checkpoint keeps its data.
+     */
+    @SuppressWarnings("unchecked")
+    private String enrichClimateCheckpoint(String stateData) {
+        try {
+            Map<String, Object> payload = objectMapper.readValue(stateData, Map.class);
+            String action = (String) payload.get("action");
+            String file = (String) payload.get("file");
+
+            if (!"CLIMATE_READY".equals(action) || file == null || file.isEmpty()) {
+                return stateData;
+            }
+
+            Path csvPath = Paths.get("/app/shared_data", file);
+            if (!Files.exists(csvPath)) {
+                return stateData;
+            }
+
+            // Parse CSV into list-of-maps (matching R's fromJSON(toJSON(df)) format)
+            List<Map<String, String>> rows = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader(csvPath.toFile()))) {
+                String headerLine = reader.readLine();
+                if (headerLine == null) return stateData;
+
+                String[] headers = headerLine.split(",");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(",", -1);
+                    Map<String, String> row = new LinkedHashMap<>();
+                    for (int i = 0; i < headers.length && i < values.length; i++) {
+                        // Strip surrounding quotes if present
+                        String h = headers[i].replaceAll("^\"|\"$", "");
+                        String v = values[i].replaceAll("^\"|\"$", "");
+                        row.put(h, v);
+                    }
+                    rows.add(row);
+                }
+            }
+
+            payload.put("dataset", rows);
+            return objectMapper.writeValueAsString(payload);
+
+        } catch (Exception e) {
+            // If enrichment fails, save the original state — don't block the save
+            System.err.println("Climate checkpoint enrichment failed: " + e.getMessage());
+            return stateData;
+        }
+    }
+
+    /**
+     * On restore: if the checkpoint contains an embedded "dataset", write it
+     * back to the shared volume as the referenced CSV file, then remove
+     * "dataset" from the payload so the Kafka message matches what Shiny expects.
+     */
+    @SuppressWarnings("unchecked")
+    private void restoreClimateFile(Map<String, Object> payload) {
+        try {
+            String action = (String) payload.get("action");
+            String file = (String) payload.get("file");
+            Object dataset = payload.get("dataset");
+
+            if (!"CLIMATE_READY".equals(action) || file == null || dataset == null) {
+                return;
+            }
+
+            List<Map<String, Object>> rows = (List<Map<String, Object>>) dataset;
+            if (rows.isEmpty()) return;
+
+            // Reconstruct CSV: header from first row's keys, then values
+            StringBuilder csv = new StringBuilder();
+            List<String> headers = new ArrayList<>(rows.get(0).keySet());
+            csv.append(String.join(",", headers)).append("\n");
+
+            for (Map<String, Object> row : rows) {
+                List<String> values = new ArrayList<>();
+                for (String h : headers) {
+                    Object v = row.get(h);
+                    String val = v != null ? v.toString() : "";
+                    // Quote values that contain commas
+                    if (val.contains(",")) val = "\"" + val + "\"";
+                    values.add(val);
+                }
+                csv.append(String.join(",", values)).append("\n");
+            }
+
+            Path csvPath = Paths.get("/app/shared_data", file);
+            Files.writeString(csvPath, csv.toString());
+
+            // Remove dataset from payload — Shiny reads from disk, not from JSON
+            payload.remove("dataset");
+
+        } catch (Exception e) {
+            System.err.println("Climate file restore failed: " + e.getMessage());
         }
     }
 }

@@ -692,6 +692,173 @@ architecture overhead. For scientific workloads involving long-running
 computations, the choice of messaging architecture is irrelevant.
 
 % ------------------------------------------------------------------
+\section{Climate Anomaly Checkpoint Enrichment}
+% ------------------------------------------------------------------
+
+The Climate Anomaly app uses a shared Kubernetes volume (PersistentVolumeClaim)
+for data exchange: the R backend processes an uploaded CSV, writes the result to
+\texttt{/app/shared\_data/processed\_summary.csv}, and sends a Kafka (or REST)
+message containing only a file reference (\texttt{"file": "processed\_summary.csv"}).
+The Shiny frontend reads the file from disk when it receives the message.
+
+This design is intentional --- it demonstrates the shared-volume communication
+pattern, which is architecturally distinct from the Data Exchange app's
+inline-JSON pattern (where the dataset is embedded directly in the message).
+Both patterns are benchmarked as part of the thesis comparison.
+
+\subsection{The Overwrite Problem}
+
+The file \texttt{processed\_summary.csv} is a singleton: every upload overwrites
+it. When a checkpoint is saved, the \texttt{SessionStateMonitor} (Kafka) or
+\texttt{SessionStateMonitor} (REST/Redis) captures the latest message, which
+contains only the file reference. If another user uploads new data before the
+checkpoint is restored, the file on disk no longer matches the checkpoint's
+original state. Cross-user restore (RQ5) fails because the Shiny app reads
+stale or unrelated data.
+
+\subsection{Solution: Save-Time Enrichment, Restore-Time File Reconstruction}
+
+The fix preserves the shared-volume pattern during normal operation while making
+checkpoints self-contained:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Save time:} Spring Boot's \texttt{StateController} (Kafka) or
+        \texttt{CollaborationController} (REST) detects \texttt{CLIMATE\_READY}
+        messages, reads the referenced CSV from the shared volume (mounted via
+        PVC at \texttt{/app/shared\_data}), parses it into a list of row objects,
+        and injects it as a \texttt{"dataset"} field in the checkpoint JSON
+        before persisting to the database.
+  \item \textbf{Restore time:} Before publishing the restored state, Spring Boot
+        extracts the \texttt{"dataset"} field, reconstructs the CSV file, writes
+        it back to the shared volume at the original path, and removes
+        \texttt{"dataset"} from the message payload. The Shiny frontend receives
+        the same file-reference message it expects and reads from disk as usual.
+\end{enumerate}
+
+This approach required mounting the shared-data PVC on the Spring Boot container
+(previously only the Shiny containers had access). On a single-node k3s cluster
+with \texttt{ReadWriteOnce} access mode, multiple pods on the same node can
+mount the same PVC without issue.
+
+\subsection{Why Not Inline Data in Normal Operation?}
+
+Sending the dataset inline during normal operation (as Data Exchange does) would
+work but would eliminate the architectural distinction between the two apps.
+The Climate Anomaly app exists specifically to benchmark the shared-volume
+pattern. The enrichment-at-save approach preserves this distinction: normal
+message flow uses file references (benchmarkable), while checkpoints embed the
+data (reproducible).
+
+\subsection{Known Limitation: CSV Parser}
+
+The Java CSV parser in \texttt{enrichClimateCheckpoint()} and
+\texttt{restoreClimateFile()} uses \texttt{String.split(",")} to tokenize rows.
+This does not handle RFC~4180 quoted fields correctly: a value like
+\texttt{"New York, NY"} would be split into two fields instead of one.
+
+For the Climate Anomaly data this is safe. The columns produced by the R backend
+are \texttt{SiteID} (e.g., \texttt{SITE\_A}), \texttt{Date}
+(\texttt{2026-06-01}), two numeric means, and \texttt{Heatwave\_Anomaly}
+(\texttt{YES}/\texttt{NO}) --- none of which contain commas. However, if the
+schema were extended to include free-text fields, the parser would silently
+corrupt data.
+
+A production implementation should use a proper CSV library such as OpenCSV
+(\texttt{com.opencsv.CSVReader}) which handles quoting, escaping, and
+multi-line values correctly. For the thesis scope, the simple parser is
+sufficient and avoids adding a new dependency.
+
+\subsection{Known Limitation: Code Duplication}
+
+The \texttt{enrichClimateCheckpoint()} and \texttt{restoreClimateFile()} methods
+are duplicated across three Java files:
+
+\begin{enumerate}[nosep]
+  \item \texttt{Kafka/StateController.java} --- solo-mode save/restore
+  \item \texttt{REST/StateController.java} --- solo-mode save/restore
+  \item \texttt{REST/CollaborationController.java} --- session-mode save/restore
+\end{enumerate}
+
+This violates the DRY (Don't Repeat Yourself) principle. A cleaner design would
+extract these methods into a shared Spring \texttt{@Component} (e.g.,
+\texttt{ClimateCheckpointHelper}) injected into both controllers. This was not
+done because the methods are small (approximately 40 lines each), the risk of
+divergence is low in a thesis project with a single developer, and the
+refactoring would add indirection without functional benefit. If the checkpoint
+enrichment logic were extended to additional apps, extracting a shared component
+would become necessary.
+
+\subsection{Known Limitation: Singleton File and Concurrent Restores}
+
+The restore operation writes the embedded data back to the shared volume at the
+original filename (\texttt{processed\_summary.csv}). If two users restore
+different Climate Anomaly checkpoints simultaneously, the second write
+overwrites the first, and one user may see incorrect data. This is the same
+singleton-file problem that motivated the enrichment in the first place, now
+occurring at restore time instead of upload time.
+
+A production fix would generate a unique filename per restore (e.g.,
+\texttt{processed\_summary\_\{stateId\}.csv}) and update the \texttt{file}
+field in the payload accordingly. For the thesis, concurrent restores are
+unlikely in the test scenarios and benchmarks.
+
+\subsection{Future Work: Object Storage (S3) Instead of PVC}
+
+The current shared-volume approach uses a Kubernetes PersistentVolumeClaim (PVC)
+with \texttt{ReadWriteOnce} access mode. This works on a single-node cluster
+but has fundamental limitations:
+
+\begin{itemize}[nosep]
+  \item \textbf{Single-node constraint:} \texttt{ReadWriteOnce} PVCs can only
+        be mounted by pods on the same node. Scaling to multiple nodes requires
+        \texttt{ReadWriteMany}, which needs a network filesystem (NFS, CephFS,
+        or a cloud provider's shared storage).
+  \item \textbf{No versioning:} Files are overwritten in place. The enrichment
+        mechanism works around this by embedding data in checkpoints, but the
+        underlying problem remains.
+  \item \textbf{No access control:} Any pod with the volume mount can read or
+        write any file. There is no per-user or per-session isolation.
+  \item \textbf{Tight coupling:} Spring Boot needed a PVC mount added to its
+        deployment just to read CSV files at checkpoint save time. Every new
+        consumer of shared data requires a deployment change.
+\end{itemize}
+
+An object storage service (e.g., Amazon S3, MinIO, or Google Cloud Storage)
+would address all of these:
+
+\begin{itemize}[nosep]
+  \item \textbf{Multi-node:} S3 is network-accessible; no volume mounts needed.
+        Any pod can read/write via HTTP, regardless of node placement.
+  \item \textbf{Versioning:} S3 supports object versioning natively. Each upload
+        creates a new version; checkpoints can reference a specific version ID
+        instead of embedding the data.
+  \item \textbf{Access control:} IAM policies and pre-signed URLs provide
+        fine-grained access control per object, per user, or per session.
+  \item \textbf{Loose coupling:} Services access data via an API client (e.g.,
+        the AWS SDK), not filesystem mounts. Adding a new consumer requires no
+        deployment changes.
+  \item \textbf{No enrichment needed:} With versioned objects, the checkpoint
+        stores the S3 key and version ID. The file is immutable at that version,
+        so restore simply reads the correct version --- no embedding, no file
+        reconstruction, no race conditions.
+\end{itemize}
+
+The trade-off is operational complexity: S3 requires either a cloud account or
+a self-hosted MinIO instance, plus credential management. For a thesis
+deployment on a single Hetzner node, the PVC approach is simpler and sufficient.
+For a production NaaVRE integration, S3 or MinIO would be the recommended
+approach.
+
+\subsection{Future Work: Kafka-Level Compression}
+
+For larger datasets, Kafka's built-in producer compression
+(\texttt{compression.type = gzip}) could reduce message sizes transparently
+without any application code changes. Similarly, a hybrid approach with a size
+threshold (inline for small datasets, file reference for large ones) could be
+implemented, but was not needed for the Climate Anomaly summary which is
+typically dozens of rows after aggregation.
+
+% ------------------------------------------------------------------
 \section{Future Work: A Background-Thread Kafka Library for R}
 % ------------------------------------------------------------------
 

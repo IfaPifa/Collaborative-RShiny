@@ -137,7 +137,6 @@ server <- function(input, output, session) {
             if (!is.null(data$action) && data$action == "CLIMATE_READY") {
               state$last_sender <- data$sender
               summary_file_path <- file.path(shared_dir, data$file)
-              
               if (file.exists(summary_file_path)) {
                 shared_df(read.csv(summary_file_path))
               }

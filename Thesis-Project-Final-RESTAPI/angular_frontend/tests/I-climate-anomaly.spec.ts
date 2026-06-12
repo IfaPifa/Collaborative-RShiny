@@ -164,7 +164,9 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
     bobPage.once('dialog', dialog => dialog.accept());
     await checkpointRow.getByRole('button', { name: 'Load' }).click();
 
-    // Verify: Bob sees SITE_A (saved state), not SITE_X (Alice's later upload)
+    // On restore, Spring Boot writes the checkpoint's embedded CSV data back
+    // to the shared volume, then publishes the file-reference message. The
+    // Shiny app reads from disk as usual — the shared-volume pattern is preserved.
     await expect(bobFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
 
     // Cleanup
