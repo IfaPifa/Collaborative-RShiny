@@ -235,6 +235,111 @@ The package passes \texttt{R~CMD~check} with a clean result (no errors, warnings
 or notes), the standard correctness bar for an R package.
 
 % --------------------------------------------------------------------------
+\section{Performance}
+\label{sec:performance}
+% --------------------------------------------------------------------------
+
+The library's cost is the in-process work of serialising and deserialising
+state. This is conceptually distinct from the system-level benchmarks reported
+elsewhere in this thesis, which measure HTTP, database, and session round-trips
+under load: the library's cost is the serialisation; the transport's cost is
+everything around it. The two should not be conflated. The benchmarks below were
+produced by \texttt{inst/benchmarks/benchmark.R}, which uses the
+\texttt{microbenchmark} package and runs headless via \texttt{Rscript}.
+
+\paragraph{Methodology and caveats.} Each case is timed over many iterations
+(the script defaults to 100; the illustrative run reported here used 50) and the
+\emph{median} is reported with the interquartile range (IQR), so that
+garbage-collector jitter does not distort the result. All figures
+were collected on a single machine with a warm cache and therefore characterise
+relative behaviour and scaling rather than absolute deployment latency. The
+numbers in Tables~\ref{tab:bench-latency}--\ref{tab:bench-tradeoff} are
+illustrative of a representative run; the script regenerates them, together with
+two plots, on any machine.
+
+\subsection{Latency versus payload size}
+
+Capture and restore latency scale approximately linearly with the size of the
+state, dominated by JSON serialisation and parsing. Small checkpoints (the
+common case for interactive applications, on the order of a few kilobytes)
+complete in well under a millisecond; multi-megabyte checkpoints cost tens to
+hundreds of milliseconds.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+\textbf{State size} & \textbf{JSON bytes} & \textbf{Capture (ms)} & \textbf{Restore (ms)} \\
+\midrule
+1 KB    & 1{,}398      & 0.66  & 0.07  \\
+10 KB   & 13{,}279     & 0.87  & 0.35  \\
+100 KB  & 133{,}694    & 3.53  & 3.66  \\
+1 MB    & 1{,}361{,}546  & 30.52 & 33.10 \\
+5 MB    & 6{,}878{,}022  & 292.71 & 182.13 \\
+10 MB   & 13{,}866{,}628 & 707.34 & 385.50 \\
+\bottomrule
+\end{tabular}
+\caption{Median capture/restore latency by payload size (illustrative run,
+50 iterations/case). Values scale roughly linearly with state size.}
+\label{tab:bench-latency}
+\end{table}
+
+\subsection{Compression effectiveness}
+
+Payloads are gzip-compressed before base64 encoding, which offsets base64's
+roughly one-third size inflation. The benefit depends heavily on the
+redundancy of the data: highly repetitive text (such as a tabular CSV) compresses
+by orders of magnitude, structured data frames compress moderately, and
+already-dense binary objects (such as a serialised model) compress least.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Case} & \textbf{Raw bytes} & \textbf{Gzip bytes} & \textbf{Ratio} & \textbf{Saved} \\
+\midrule
+CSV file (repetitive)   & 1{,}266{,}834 & 3{,}297     & 384.24$\times$ & 99.7\% \\
+data.frame (\texttt{state\_rds}) & 1{,}383{,}879 & 549{,}150 & 2.52$\times$ & 60.3\% \\
+\texttt{lm} model (\texttt{state\_rds}) & 4{,}003{,}695 & 2{,}555{,}874 & 1.57$\times$ & 36.2\% \\
+\bottomrule
+\end{tabular}
+\caption{Compression ratio by data type (illustrative run). Repetitive text
+benefits most; dense binary objects least.}
+\label{tab:bench-compression}
+\end{table}
+
+\subsection{Full-state versus input-only}
+
+The defining trade-off of the design can be quantified directly. Input-only
+sharing transfers a handful of bytes but cannot reproduce computed outputs;
+full-state sharing transfers the computed result as well, at a proportional cost
+in size and time, and in return reproduces non-deterministic results exactly.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Approach} & \textbf{JSON bytes} & \textbf{Capture (ms)} & \textbf{Reproduces non-det.\ output} \\
+\midrule
+input-only  & 137        & 0.41  & no  \\
+full-state  & 1{,}361{,}864 & 28.81 & yes \\
+\bottomrule
+\end{tabular}
+\caption{Full-state versus input-only for a representative application
+(inputs plus a 1~MB computed result; illustrative run). The size and time
+overhead is the measurable price of exact reproducibility.}
+\label{tab:bench-tradeoff}
+\end{table}
+
+For this case, full-state capture costs substantially more in both bytes and time
+than input-only sharing. This overhead is not a defect but the explicit cost of
+the guarantee the library provides: input-only approaches are cheaper precisely
+because they discard the computed state that full-state capture exists to
+preserve. The relevant comparison is therefore not ``cheaper versus more
+expensive'' but ``recomputed (and, for non-deterministic analyses, irreproducible)
+versus reproduced exactly''.
+
+% --------------------------------------------------------------------------
 \section{Limitations and Further Work}
 % --------------------------------------------------------------------------
 
@@ -245,8 +350,19 @@ design rather than to the library:
   \item \textbf{File-input widgets} cannot be restored through
     \texttt{sendInputMessage()}; the \texttt{state\_file()} wrapper embeds the
     uploaded content as a workaround.
-  \item \textbf{Shiny modules} use namespaced input identifiers. Restoring across
-    module session boundaries is not yet supported.
+  \item \textbf{Shiny modules} use namespaced input identifiers (for example,
+    \texttt{panel1-threshold}). Because \texttt{capture\_state()} reads
+    \texttt{names(input)} at the top level and \texttt{restore\_state()} pushes
+    values back through the parent \texttt{session}, the library does not model
+    the namespace hierarchy that modules introduce, and restoring across module
+    session boundaries is not yet supported. Supporting it would require either
+    namespace-aware capture (recording each value's namespace path) or recursive
+    capture and restore that is invoked from within each module's own
+    \texttt{session}, and merging the resulting fragments. This was deliberately
+    left out of scope for the prototype: the applications studied in this thesis
+    are flat (non-modular), so module support would address a case that does not
+    arise in the evaluation. It is documented here so that a future user who
+    adopts the library in a modular application is aware of the boundary.
   \item \textbf{Explicit registration} of reactive values is required, because R
     provides no API to enumerate them.
   \item \textbf{\texttt{reactiveValues} keys cannot be deleted} in Shiny; on
@@ -255,10 +371,11 @@ design rather than to the library:
 \end{itemize}
 
 Natural extensions include support for Shiny modules through recursive
-capture/restore across session hierarchies, a quantitative micro-benchmark of
-capture/restore overhead across the eight applications, and publication on CRAN
-to make the reproducibility contribution available to the wider R~Shiny
-community without any microservice infrastructure.
+capture/restore across session hierarchies (Section~\ref{sec:performance}
+benchmarks the flat case only), extending the micro-benchmarks to the specific
+state profiles of each studied application, and publication on CRAN to make the
+reproducibility contribution available to the wider R~Shiny community without any
+microservice infrastructure.
 
 % --------------------------------------------------------------------------
 \section{Contribution}
