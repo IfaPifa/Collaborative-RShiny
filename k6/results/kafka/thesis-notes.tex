@@ -1126,6 +1126,142 @@ functions with Kafka or REST transport.
         regenerate it.
 \end{enumerate}
 
+\subsection{Typed State Wrappers}
+
+The basic \texttt{capture\_state()} API handles scalar inputs and reactive values,
+but Shiny apps contain different \emph{types} of state that require different
+capture strategies:
+
+\begin{center}
+\begin{tabular}{lll}
+\textbf{State type} & \textbf{Example} & \textbf{Capture strategy} \\
+\hline
+Scalar inputs & \texttt{input\$num1 = 42} & \texttt{input[[name]]} \\
+Reactive dataframes & \texttt{shared\_df()} & \texttt{rv()} $\to$ JSON array \\
+File references & \texttt{processed\_summary.csv} & Read file $\to$ base64 encode \\
+Binary R objects & Trained ML model & \texttt{serialize()} $\to$ base64 \\
+\end{tabular}
+\end{center}
+
+Rather than creating separate functions (\texttt{capture\_state\_file()},
+\texttt{capture\_state\_json()}, etc.), the library uses \textbf{type-hinted
+wrappers} that tell \texttt{capture\_state()} how to handle each piece of state.
+The output is always a single JSON string --- the wrappers control what goes
+\emph{inside} that JSON.
+
+\subsubsection{Wrapper Functions}
+
+\begin{verbatim}
+# Wrapper: capture a file from disk (read + base64)
+state_file <- function(path) {
+  structure(list(path = path), class = "shinyswarm_file")
+}
+
+# Wrapper: capture an arbitrary R object via serialize()
+state_rds <- function(obj) {
+  structure(list(obj = obj), class = "shinyswarm_rds")
+}
+\end{verbatim}
+
+The developer registers each reactive with the appropriate wrapper:
+
+\begin{verbatim}
+json <- capture_state(
+  input,
+  result    = result,           # reactiveVal -- just call rv()
+  shared_df = shared_df,        # dataframe -- toJSON()
+  csv_file  = state_file(       # file -- read + base64
+    "/app/shared_data/processed_summary.csv"
+  ),
+  model     = state_rds(        # R object -- serialize() + base64
+    trained_model
+  )
+)
+\end{verbatim}
+
+\subsubsection{Capture Dispatch}
+
+Inside \texttt{capture\_state()}, the function dispatches based on the class
+of each registered value:
+
+\begin{verbatim}
+for (name in names(extras)) {
+  rv <- extras[[name]]
+
+  if (inherits(rv, "shinyswarm_file")) {
+    raw <- readBin(rv$path, "raw", file.info(rv$path)$size)
+    state$reactives[[name]] <- list(
+      type = "file",
+      filename = basename(rv$path),
+      content = base64enc::base64encode(raw)
+    )
+
+  } else if (inherits(rv, "shinyswarm_rds")) {
+    state$reactives[[name]] <- list(
+      type = "rds",
+      content = base64enc::base64encode(
+        serialize(rv$obj, NULL)
+      )
+    )
+
+  } else if (is.reactivevalues(rv)) {
+    state$reactives[[name]] <- list(
+      type = "reactiveValues",
+      content = reactiveValuesToList(rv)
+    )
+
+  } else {
+    state$reactives[[name]] <- list(
+      type = "reactiveVal",
+      content = rv()
+    )
+  }
+}
+\end{verbatim}
+
+\subsubsection{Restore Dispatch}
+
+\texttt{restore\_state()} reads the \texttt{type} field and reverses the
+operation:
+
+\begin{verbatim}
+for (name in names(state$reactives)) {
+  saved <- state$reactives[[name]]
+  rv <- extras[[name]]
+
+  if (saved$type == "file") {
+    raw <- base64enc::base64decode(saved$content)
+    path <- file.path("/app/shared_data", saved$filename)
+    writeBin(raw, path)
+
+  } else if (saved$type == "rds") {
+    obj <- unserialize(
+      base64enc::base64decode(saved$content)
+    )
+    rv(obj)
+
+  } else if (saved$type == "reactiveValues") {
+    for (key in names(saved$content)) {
+      rv[[key]] <- saved$content[[key]]
+    }
+
+  } else {
+    rv(saved$content)
+  }
+}
+\end{verbatim}
+
+\subsubsection{Relationship to Climate Anomaly Enrichment}
+
+This typed-wrapper design generalises the Climate Anomaly checkpoint enrichment
+already implemented in ShinySwarm. The current implementation performs the
+file-read-and-embed logic in Java (Spring Boot's \texttt{enrichClimateCheckpoint()}
+and \texttt{restoreClimateFile()} methods). With the R package, this logic would
+move into the Shiny app itself via \texttt{state\_file()}, eliminating the need
+for Spring Boot to mount the shared volume, parse CSV files, or reconstruct
+them on restore. The entire enrichment mechanism would reduce to a single
+wrapper call in the app's save handler.
+
 \subsection{Package Structure}
 
 \begin{verbatim}
@@ -1135,12 +1271,14 @@ shinyswarm/
   R/
     capture_state.R     # capture_state()
     restore_state.R     # restore_state()
-    utils.R             # helpers (base64 for fileInput)
+    wrappers.R          # state_file(), state_rds()
+    utils.R             # base64 helpers
   man/                  # auto-generated roxygen docs
   tests/
     testthat/
       test-capture.R
       test-restore.R
+      test-wrappers.R
 \end{verbatim}
 
 The package could be published on CRAN or as a GitHub-installable package
