@@ -155,18 +155,37 @@ export const APPS = [
 //
 // After running the baseline:
 //   k6 run -e BASE_URL=http://... --summary-export=k6/results/baseline.json k6/00-baseline.js
-// Read baseline_relay_ms, baseline_post_ms, baseline_save_ms per app_name
-// and multiply the median by 5 to fill in these values.
+// Read baseline metrics per app_name and apply multipliers:
+//   10× for relay/post/propagation/lifecycle (single-threaded R queuing, 20-50 VUs)
+//   50× for throughput (100 VUs, heavy queuing)
+//   10× for save/restore (PostgreSQL, parallel but pool-limited)
 // ---------------------------------------------------------------------------
 export const APP_THRESHOLDS = {
-  Calculator:     { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
-  Analytics:      { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
-  Advanced:       { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
-  DataExchange:   { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
-  MonteCarlo:     { relay: 15000, post: 10000, save: 5000,  restore: 3000,  propagation: 15000, lifecycle: 10000 },
-  Geospatial:     { relay: 10000, post: 5000,  save: 5000,  restore: 3000,  propagation: 10000, lifecycle: 5000  },
-  ClimateAnomaly: { relay: 30000, post: 20000, save: 10000, restore: 5000,  propagation: 30000, lifecycle: 20000 },
-  MLTrainer:      { relay: 60000, post: 45000, save: 10000, restore: 5000,  propagation: 60000, lifecycle: 45000 },
+  // Calibrated from baseline run (2026-06-12, Hetzner CX32, 3 replicas).
+  //
+  // Baseline medians (ms):
+  //   App              POST  Relay  Save  Restore  Total
+  //   Calculator         12      3     7        4     73
+  //   Analytics          13      3     6        6     83
+  //   Advanced           10      3     8        5     73
+  //   DataExchange       11      3     8        6     87
+  //   MonteCarlo         51      4     8        5    117
+  //   Geospatial         11      3     6        4     73
+  //   ClimateAnomaly     29      4     8        6    105
+  //   MLTrainer       14239      4     8        5  14300
+  //
+  // Multipliers (based on queuing at the R single-threaded backend):
+  //   relay/propagation/lifecycle = 10× total baseline  (tests 01,02,07,08: 20-50 VUs)
+  //   throughput                 = 50× POST baseline    (test 04: 100 VUs, ~33 per replica)
+  //   save/restore               = 10× baseline         (PostgreSQL, parallel but pool-limited)
+  Calculator:     { relay: 730,    save: 70,   restore: 40,  propagation: 730,    lifecycle: 730,    throughput: 600    },
+  Analytics:      { relay: 830,    save: 60,   restore: 60,  propagation: 830,    lifecycle: 830,    throughput: 650    },
+  Advanced:       { relay: 730,    save: 80,   restore: 50,  propagation: 730,    lifecycle: 730,    throughput: 500    },
+  DataExchange:   { relay: 870,    save: 80,   restore: 60,  propagation: 870,    lifecycle: 870,    throughput: 550    },
+  MonteCarlo:     { relay: 1170,   save: 80,   restore: 50,  propagation: 1170,   lifecycle: 1170,   throughput: 2550   },
+  Geospatial:     { relay: 730,    save: 60,   restore: 40,  propagation: 730,    lifecycle: 730,    throughput: 550    },
+  ClimateAnomaly: { relay: 1050,   save: 80,   restore: 60,  propagation: 1050,   lifecycle: 1050,   throughput: 1450   },
+  MLTrainer:      { relay: 143000, save: 80,   restore: 50,  propagation: 143000, lifecycle: 143000, throughput: 711950 },
 };
 
 // Build k6 threshold entries for a metric tagged with {app_name:X}.

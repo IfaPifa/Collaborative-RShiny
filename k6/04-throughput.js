@@ -44,7 +44,7 @@ export const options = {
   },
   thresholds: Object.assign(
     { 'throughput_errors': ['rate<0.3'] },
-    perAppThresholds('throughput_response_ms', 'post'),
+    perAppThresholds('throughput_response_ms', 'throughput'),
   ),
 };
 
