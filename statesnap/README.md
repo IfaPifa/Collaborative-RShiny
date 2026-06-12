@@ -5,9 +5,12 @@ Transport-agnostic full-state capture and restore for interactive R applications
 `statesnap` serialises a complete set of inputs and computed values — into a
 single JSON string, and restores it later. Unlike input-only sharing
 (`shinyURL`, bookmarking), which forces the receiver to recompute outputs,
-full-state capture preserves the outputs exactly. For non-deterministic analyses
-(e.g. a Monte Carlo simulation without `set.seed()`), this is the difference
-between reproducing a result and getting a different one.
+full-state capture preserves the computed outputs themselves. For
+non-deterministic analyses (e.g. a Monte Carlo simulation without `set.seed()`),
+this is the difference between reproducing a result and getting a different one —
+**and it needs no fixed seed**, because the computed result, not the recipe to
+recompute it, is what gets shared. (See [Fidelity caveats](#fidelity-caveats)
+for the precise meaning of "preserves".)
 
 The library is **transport-agnostic**: it produces and consumes JSON only. How
 that JSON is transmitted or persisted — REST, Kafka, Redis, a file, a database —
@@ -139,6 +142,31 @@ These are inherent to Shiny's design and are documented as further work:
 - **`reactiveValues` keys cannot be deleted** in Shiny; on restore, stale keys are
   cleared to `NULL` rather than removed, so their values do not leak.
 
+## Fidelity caveats
+
+The checkpoint is JSON, a text-based, schema-less format. It guarantees the
+**values** you put in, but not the full R type system around them. Two
+consequences are worth knowing:
+
+- **Numeric precision is very high, but not bit-identical for floating-point
+  vectors.** Numbers are written as decimal text with full precision
+  (`toJSON(..., digits = NA)`), but the decimal→binary→decimal conversion is not
+  guaranteed bit-exact. In practice a restored vector of doubles matches the
+  original to within ~1e-13 — far tighter than any analysis would observe, and
+  vastly better than the default 4-decimal rounding, but not literally
+  byte-for-byte. Scalars typically round-trip identically; the discrepancy shows
+  up across vectors. If you need byte-identical doubles, wrap the object in
+  `state_rds()`, which uses R's binary serialisation.
+- **Captured numeric vectors come back as lists.** `restore_state()` parses with
+  `simplifyVector = FALSE` so `jsonlite` cannot silently reshape your data. A
+  side effect is that a numeric vector stored inside a captured list returns as a
+  list of numbers — the values are intact, but the container type is not.
+  Recover the atomic vector with `as.numeric(unlist(x))`.
+
+These are the inherent boundary of JSON serialisation, documented so a value
+arriving as a list (or a double differing in its last digits) is expected
+behaviour, not a bug.
+
 ## Examples
 
 - `inst/examples/calculator/app.R` — a runnable Shiny app with Save/Restore
@@ -163,8 +191,12 @@ The suite (`tests/testthat/`) covers serialisation round-trips, non-deterministi
 reproducibility, the typed wrappers, the security defences (path traversal,
 `allow_rds` gate, size limits, decompression bomb), exact `reactiveValues`
 restore, and an integration test against Shiny's reactive engine via
-`shiny::testServer()`. The package passes `R CMD check` with no errors,
-warnings, or notes.
+`shiny::testServer()`. A Monte Carlo set (`test-montecarlo.R`), modelled on the
+ShinySwarm population-viability simulator, captures an unseeded stochastic result
+and asserts that a restore reproduces it while a fresh recomputation diverges; it
+also pins the two fidelity caveats above (floating-point tolerance, list-typed
+vector return). The package passes `R CMD check` with no errors, warnings, or
+notes.
 
 ## Status
 

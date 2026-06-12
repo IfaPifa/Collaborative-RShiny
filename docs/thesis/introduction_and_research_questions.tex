@@ -244,7 +244,7 @@ Reproducibility in ShinySwarm operates at three levels:
 
 \textbf{What is measured:}
 \begin{itemize}[nosep]
-  \item \textbf{State field match rate} --- percentage of JSON fields (inputs + outputs) that are identical after restore. For deterministic apps (Calculator, Visual Analytics, Data Exchange), this should be 100\%. For stochastic apps (Monte Carlo, ML Trainer), exact reproducibility requires \texttt{set.seed()} --- without it, only the checkpoint mechanism preserves the exact result, because recomputation would produce different outputs.
+  \item \textbf{State field match rate} --- percentage of JSON fields (inputs + outputs) that are identical after restore. For deterministic apps (Calculator, Visual Analytics, Data Exchange), this should be 100\%. For stochastic apps (Monte Carlo, ML Trainer), the checkpoint mechanism achieves an exact match \emph{without} \texttt{set.seed()}, because it shares the computed outputs directly rather than recomputing them. A recompute-from-inputs approach, by contrast, would need \texttt{set.seed()} to match and would otherwise produce different outputs --- which is precisely why full-state checkpointing, not input-only sharing, is required here.
   \item \textbf{Cross-machine consistency} --- does restoring the same checkpoint on the Hetzner server and on a local laptop produce identical state? This validates environment reproducibility via Docker.
   \item \textbf{Cross-architecture consistency} --- does the same logical operation (save in REST, restore in REST; save in Kafka, restore in Kafka) preserve state equally well? This validates that the synchronisation architecture does not introduce reproducibility differences.
 \end{itemize}

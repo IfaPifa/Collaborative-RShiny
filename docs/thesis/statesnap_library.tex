@@ -86,14 +86,25 @@ building JSON payloads using application-specific field names.
 Existing Shiny state-sharing mechanisms --- \texttt{shinyURL} and the built-in
 bookmarking facility --- transfer only \emph{inputs}, forcing the receiving
 session to recompute every output. For deterministic analyses this merely costs
-time. For non-deterministic analyses, such as a Monte Carlo simulation executed
-without \texttt{set.seed()}, recomputation produces \emph{different} results, so
-input-only sharing cannot reproduce what the original user saw.
+time. For non-deterministic analyses, such as a Monte Carlo simulation, the
+\emph{recompute-from-inputs} strategy these tools use can only reproduce the
+original result if the computation is pinned with \texttt{set.seed()}; otherwise
+each recomputation draws fresh random numbers and yields different outputs.
 
-The \texttt{statesnap} package addresses both problems. It standardises the
-duplicated logic into two function calls, and it captures computed reactive
-values \emph{alongside} inputs, so the restored session reproduces the original
-outputs exactly rather than recomputing them.
+The \texttt{statesnap} package addresses both problems, and crucially it does so
+\emph{without relying on a fixed seed}. It standardises the duplicated logic into
+two function calls, and it captures the computed reactive values themselves
+\emph{alongside} inputs. Because the receiving session is given the actual
+computed result --- not the recipe to recompute it --- the restored session
+reproduces the original outputs exactly regardless of whether the computation was
+seeded. This is exactly the strategy the ShinySwarm applications already use by
+hand: the Monte Carlo service, for example, runs its stochastic
+\texttt{rnorm}-based simulation once, stores the resulting trajectories
+(\texttt{mean\_path}, confidence bands, sample paths, extinction probability) as
+the shared state, and transmits \emph{those computed arrays} to other users, who
+assign them directly rather than re-running the simulation. No \texttt{set.seed()}
+is used or needed, because the stochastic output itself is the unit of sharing.
+The library generalises this pattern into a reusable interface.
 
 % --------------------------------------------------------------------------
 \section{Design}
@@ -183,6 +194,72 @@ server <- function(input, output, session) {
 Inputs are restored through Shiny's low-level \texttt{session\$sendInputMessage()}
 mechanism; reactive values are set directly through their accessors.
 
+The calculator above is deterministic, so it serves only to show the shape of the
+API. The library's distinguishing property appears in a \emph{stochastic}
+application, where recomputing from inputs would not reproduce the original
+result. The following example mirrors the ShinySwarm Monte Carlo simulator: a
+population-viability model that runs an unseeded \texttt{rnorm}-based simulation
+and stores its computed trajectories in a \texttt{reactiveValues} object.
+
+\begin{lstlisting}[language=R]
+library(shiny)
+library(statesnap)
+
+server <- function(input, output, session) {
+  # All computed simulation output lives here -- this is the state worth sharing.
+  state <- reactiveValues(results = NULL)
+
+  observeEvent(input$run_sim, {
+    n_paths <- input$paths; years <- input$years
+    n0 <- input$n0; r <- input$growth_rate; sigma <- input$env_var
+    K <- n0 * 10
+
+    paths <- matrix(0, nrow = n_paths, ncol = years + 1)
+    paths[, 1] <- n0
+    for (t in 2:(years + 1)) {
+      noise <- rnorm(n_paths, mean = 0, sd = sigma)   # no set.seed(): stochastic
+      growth <- r * paths[, t - 1] * (1 - paths[, t - 1] / K)
+      paths[, t] <- pmax(0, paths[, t - 1] + growth + noise * paths[, t - 1])
+    }
+
+    state$results <- list(
+      years           = 0:years,
+      mean_path       = colMeans(paths),
+      lower_95        = apply(paths, 2, quantile, probs = 0.025),
+      upper_95        = apply(paths, 2, quantile, probs = 0.975),
+      extinction_prob = mean(paths[, years + 1] < 1)
+    )
+  })
+
+  output$sim_plot <- renderPlotly({ req(state$results); plot_results(state$results) })
+
+  # Save: capture the COMPUTED results, not just the inputs.
+  observeEvent(input$save_btn, {
+    json <- capture_state(input, results = state)
+    writeLines(json, "checkpoint.json")   # transport chosen by caller
+  })
+
+  # Restore: a different user gets the exact same trajectories -- no rerun.
+  observeEvent(input$restore_btn, {
+    json <- paste(readLines("checkpoint.json"), collapse = "\n")
+    restore_state(session, json, results = state)
+  })
+}
+\end{lstlisting}
+
+The decisive line is \texttt{capture\_state(input, results = state)}: the
+simulation's \emph{output} --- the mean path, confidence bands, and extinction
+probability produced by an unseeded \texttt{rnorm} --- is serialised into the
+checkpoint. On restore, \texttt{restore\_state(session, json, results = state)}
+writes those exact arrays back into the live \texttt{reactiveValues}, and
+\texttt{output\$sim\_plot} re-renders from them. The receiving user therefore sees
+the identical forecast the original user saw. Had the application instead shared
+only \texttt{input\$paths}, \texttt{input\$years}, and the other inputs and let
+the receiver re-run the loop, the unseeded \texttt{rnorm} would draw different
+random numbers and produce a different forecast --- which is exactly the failure
+mode full-state capture exists to avoid, and the reason the ShinySwarm Monte Carlo
+service shares its computed result rather than recomputing it.
+
 \subsection{Restoring state into a live Shiny session}
 \label{sec:restore}
 
@@ -253,15 +330,58 @@ test doubles.
 \section{Reproducibility Guarantee}
 % --------------------------------------------------------------------------
 
-The package's defining property is exact reproduction of non-deterministic
-results. Because computed reactive values are stored in the checkpoint rather
-than recomputed on restore, a value produced by a stochastic process is
-preserved bit-for-bit. To make this hold, the JSON serialisation is configured
-to retain full numeric precision (\texttt{jsonlite::toJSON(..., digits = NA)});
-the default four-decimal rounding would silently break the guarantee. This was
-confirmed by a test in which a Monte Carlo mean computed without a fixed seed is
-captured, the live value is then changed to a different draw, and a restore
-recovers the original value exactly.
+The package's defining property is reproduction of non-deterministic results
+\emph{without requiring a fixed random seed}. Because computed reactive values
+are stored in the checkpoint and assigned directly on restore --- rather than
+recomputed from inputs --- a value produced by a stochastic process is preserved
+on the receiving side. The reproducibility comes from sharing the computed result
+itself, not from making the computation repeatable: \texttt{set.seed()} is
+neither used nor needed. This mirrors the ShinySwarm architectures, where the
+Monte Carlo service shares its computed trajectories rather than re-running the
+simulation on the receiving side. To preserve numeric fidelity, the JSON
+serialisation is configured to retain full precision
+(\texttt{jsonlite::toJSON(..., digits = NA)}); the default four-decimal rounding
+would visibly corrupt simulation output. This was confirmed by tests in which a
+Monte Carlo result computed without a fixed seed is captured, the live value is
+then changed to a different draw, and a restore recovers the original.
+
+\paragraph{Fidelity of the round-trip: two caveats worth stating.}
+Building and testing the prototype surfaced two properties of the JSON
+representation that qualify the word ``exact'' and are worth recording precisely,
+because they bound what a JSON-based checkpoint can and cannot promise.
+
+\begin{itemize}
+  \item \textbf{Numeric precision is very high, but not bit-identical for
+    floating-point values.} JSON has no native binary double; numbers are written
+    as decimal text. With \texttt{digits = NA} the text carries full precision,
+    but the decimal$\rightarrow$binary$\rightarrow$decimal conversion is not
+    guaranteed to be bit-exact. In testing, a restored vector of simulation means
+    matched the original to within roughly $10^{-13}$ in absolute terms --- far
+    tighter than any analysis would observe, and orders of magnitude better than
+    the default rounding, but not literally identical at the bit level. The
+    practical guarantee is therefore ``exact to within floating-point tolerance''
+    rather than ``byte-for-byte''. (A scalar value typically does round-trip
+    identically; the discrepancy appears across vectors of doubles.) For a
+    consumer that genuinely requires byte-identical doubles, the
+    \texttt{state\_rds()} wrapper, which serialises via R's binary format, is the
+    appropriate tool.
+  \item \textbf{Container types are not always preserved.} \texttt{restore\_state()}
+    parses checkpoints with \texttt{jsonlite::fromJSON(..., simplifyVector =
+    FALSE)} to avoid \texttt{jsonlite}'s heuristic vector simplification silently
+    reshaping the data. A consequence is that an R numeric \emph{vector} captured
+    inside a list returns as an R \emph{list} of numbers rather than as an atomic
+    vector: the values are preserved, but the container type is not. Consuming
+    code restores the atomic vector with \texttt{as.numeric(unlist(x))}. This is a
+    deliberate trade --- predictable, lossless-in-value parsing in exchange for a
+    type-coercion step on the consumer side --- and it is documented so that users
+    are not surprised by a list where they expected a vector.
+\end{itemize}
+
+These are not defects so much as the inherent boundary of a text-based,
+schema-less serialisation format: JSON guarantees the \emph{values} but not the
+\emph{R type system around them}, and represents reals as decimals rather than
+IEEE-754 bits. Stating the boundary explicitly is part of characterising the
+mechanism honestly.
 
 % --------------------------------------------------------------------------
 \section{Security Considerations}
@@ -311,12 +431,19 @@ users inherits this obligation.
 
 The package is verified at two levels. Unit tests exercise the capture/restore
 logic directly, including serialisation round-trips, the typed wrappers, the
-exact-reproducibility property for non-deterministic values, and the three
-security defences (path traversal, the \texttt{allow\_rds} gate, size limits, and
-the decompression-bomb guard). An integration test runs the save/restore cycle
-against Shiny's actual reactive engine using \texttt{shiny::testServer()},
-confirming the library works with real \texttt{reactiveVal} and
-\texttt{reactiveValues} objects rather than test doubles.
+reproducibility property for non-deterministic values, and the three security
+defences (path traversal, the \texttt{allow\_rds} gate, size limits, and the
+decompression-bomb guard). A dedicated set of Monte Carlo tests, modelled on the
+ShinySwarm population-viability simulator, captures an unseeded stochastic result
+and asserts that a restore reproduces it while a fresh recomputation diverges ---
+directly validating the seed-free reproducibility claim. These tests also pin the
+two fidelity caveats discussed above: they assert that the JSON round-trip
+preserves numeric values to within a tight floating-point tolerance ($<10^{-9}$)
+rather than bit-for-bit, and they account for the list-typed return of captured
+numeric vectors. An integration test runs the save/restore cycle against Shiny's
+actual reactive engine using \texttt{shiny::testServer()}, confirming the library
+works with real \texttt{reactiveVal} and \texttt{reactiveValues} objects rather
+than test doubles.
 
 The package passes \texttt{R~CMD~check} with a clean result (no errors, warnings,
 or notes), the standard correctness bar for an R package.
@@ -423,8 +550,9 @@ than input-only sharing. This overhead is not a defect but the explicit cost of
 the guarantee the library provides: input-only approaches are cheaper precisely
 because they discard the computed state that full-state capture exists to
 preserve. The relevant comparison is therefore not ``cheaper versus more
-expensive'' but ``recomputed (and, for non-deterministic analyses, irreproducible)
-versus reproduced exactly''.
+expensive'' but ``recomputed (and, for non-deterministic analyses, irreproducible
+unless the computation is seeded) versus reproduced exactly with no seed
+required''.
 
 % --------------------------------------------------------------------------
 \section{Limitations and Further Work}
