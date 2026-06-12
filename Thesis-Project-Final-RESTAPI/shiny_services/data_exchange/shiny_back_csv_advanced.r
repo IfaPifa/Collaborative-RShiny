@@ -26,7 +26,9 @@ function(req) {
   action <- if (!is.null(body$action)) body$action else ""
 
   if (action != "ANALYZE_CLIMATE") {
-    return(list(status = "ignored", message = "Unknown action"))
+    res <- list(status = "ignored", message = "Unknown action")
+    if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+    return(res)
   }
 
   file_name <- if (!is.null(body$file) && nchar(body$file) > 0) body$file else ""
@@ -34,7 +36,9 @@ function(req) {
   threshold <- if (!is.null(body$threshold)) as.numeric(body$threshold) else 28.5
 
   if (file_name == "" || !file.exists(raw_file_path)) {
-    return(list(status = "error", message = "File not found on shared volume"))
+    res <- list(status = "error", message = "File not found on shared volume")
+    if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
+    return(res)
   }
 
   # Read and process the raw sensor data
