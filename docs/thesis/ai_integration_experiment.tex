@@ -1,0 +1,226 @@
+% ==========================================================================
+%  NOTE: This is NOT the actual thesis. Working notes / scratch material on an
+%  EXPERIMENT: "how well can an AI agent integrate an existing scientific Shiny
+%  app (BioDT Honeybee) into the ShinySwarm architecture?". Same register as
+%  biodt_feasibility.tex -- raw notes to review and selectively pull into the
+%  real thesis later (Methods / Results / Discussion). Verify every claim
+%  against the live repos and the committed code before citing. Session run on
+%  2026-06-12 with an AI coding agent (Ona) inside the project devcontainer.
+% ==========================================================================
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,
+        columns=fullflexible,keepspaces=true}
+
+\title{\textbf{Experiment: AI-Assisted Integration of an Existing App into ShinySwarm}\\[0.5em]
+\large Can an agent re-engineer the BioDT Honeybee use case? (working notes)}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% --------------------------------------------------------------------------
+\section*{Attribution / Disclaimer}
+% --------------------------------------------------------------------------
+
+The honeybee (Beekeeper pDT) application re-engineered in this experiment
+originates with the \textbf{LTER LIFE project} (BioDT use case; repositories
+\texttt{BioDT/biodt-shiny} and \texttt{BioDT/uc-pollinators}). It is used here
+\textbf{with the permission of the LTER LIFE project} for the purpose of this
+Master's thesis. All credit for the original honeybee/BEEHAVE application, its
+scientific model, and its UI design belongs to the LTER LIFE / BioDT authors.
+The artifacts produced in this experiment are re-engineered adaptations for the
+ShinySwarm architecture with a \emph{simulated} compute backend; they are not
+the original work and do not reproduce the real BEEHAVE scientific compute.
+
+% --------------------------------------------------------------------------
+\section{What this experiment is (and is not)}
+% --------------------------------------------------------------------------
+
+The feasibility note (\texttt{biodt\_feasibility.tex}) argued \emph{on paper}
+that the deferred BioDT Honeybee use case could be brought into ShinySwarm. This
+note records a different thing: an \textbf{experiment} in which an AI coding
+agent was asked to \emph{actually perform} that integration inside the project
+repository, using the existing ShinySwarm benchmark apps as the pattern. The
+research interest is not the honeybee app per se but the \textbf{process}: how
+far an agent gets at integrating a real, third-party scientific application into
+an existing architecture, what it produces, and where it needs a human.
+
+\textbf{Scope honesty.} The environment cannot run the real BEEHAVE NetLogo
+container (\texttt{ghcr.io/biodt/beehave}), so the compute backend was
+\emph{simulated} -- a stand-in service that honours the same input/output
+contract. This is a deliberate, stated limitation: the experiment tests the
+\emph{integration plumbing and UI re-use}, not the scientific compute, which the
+feasibility note already showed is a solved, containerised problem.
+
+% --------------------------------------------------------------------------
+\section{Method}
+% --------------------------------------------------------------------------
+
+\begin{enumerate}[nosep]
+  \item \textbf{Prompt.} A single natural-language request: read the thesis docs
+    and assess/perform integrating the ``BioDT beehive app'' into ShinySwarm,
+    simulating backend values. Architecture target: \emph{both} REST and Kafka.
+  \item \textbf{Grounding.} The agent read the existing repo: the REST and Kafka
+    architectures, the eight benchmark apps (notably \texttt{map/} and
+    \texttt{monte\_carlo/}), the Spring \texttt{CollaborationController} state
+    relay, and the \texttt{statesnap} package.
+  \item \textbf{Source re-use (key step).} Rather than inventing a lookalike UI,
+    the agent cloned the \emph{real} upstream app \texttt{BioDT/biodt-shiny} and
+    read the actual honeybee module (\texttt{app/view/honeybee/*},
+    \texttt{app/logic/honeybee/*}) to extract the true input parameters and the
+    output result-table column layout.
+  \item \textbf{Build.} The agent wrote the integration artifacts (below) for
+    both architectures and registered the new app in the Spring backends,
+    \texttt{docker-compose}, and \texttt{nginx}.
+  \item \textbf{Verification.} R was installed in the environment; all four R
+    artifacts were parse-checked, and the simulation model was executed to
+    confirm it produces a BioDT-shaped, non-deterministic result table.
+\end{enumerate}
+
+% --------------------------------------------------------------------------
+\section{What the agent produced (artifacts)}
+% --------------------------------------------------------------------------
+
+\begin{table}[h]
+\centering\small
+\begin{tabular}{@{}lp{8.6cm}@{}}
+\toprule
+\textbf{Path} & \textbf{Role} \\
+\midrule
+\texttt{.../RESTAPI/shiny\_services/honeybee/shiny\_front\_beehave.r} &
+  BioDT honeybee UI (map, params, lookup, plot) flattened to plain Shiny,
+  wired to the REST relay + \texttt{statesnap}. \\
+\texttt{.../RESTAPI/shiny\_services/honeybee/shiny\_back\_beehave.r} &
+  Plumber service; simulated BEEHAVE honouring BioDT's CSV/result contract. \\
+\texttt{.../Kafka/shiny\_services/honeybee/shiny\_front\_beehave.r} &
+  Same UI, event-driven (Producer/Consumer) collaboration. \\
+\texttt{.../Kafka/shiny\_services/honeybee/shiny\_back\_beehave.r} &
+  Kafka consumer/producer worker running the same model. \\
+\texttt{CollaborationController.java} (REST) &
+  One line: \texttt{"Honeybee" -> http://shiny-back-beehave:8000/state}. \\
+\texttt{DataInitializer.java} (both) &
+  App \#9 seeded (IDs 1--8 preserved so k6 benchmarks stay valid). \\
+\texttt{docker-compose.yml}, \texttt{nginx.conf} (both) &
+  Front+back service entries, proxy port, route. \\
+\bottomrule
+\end{tabular}
+\caption{Artifacts produced by the agent in one session.}
+\end{table}
+
+\paragraph{Input contract reproduced verbatim.} The front sends BioDT's actual
+parameter names from \texttt{beekeeper\_param.R}:
+\texttt{N\_INITIAL\_BEES}, \texttt{N\_INITIAL\_MITES\_HEALTHY},
+\texttt{N\_INITIAL\_MITES\_INFECTED}, \texttt{HoneyHarvesting},
+\texttt{VarroaTreatment}, \texttt{DroneBroodRemoval}, plus the
+year/\texttt{DaysLimit} simulation window and the editable habitat lookup table.
+
+\paragraph{Output contract reproduced verbatim.} The backend emits the exact
+columns BioDT's \texttt{honeybee\_beekeeper\_plot.R} reads:
+\texttt{date}, \texttt{weather},
+\texttt{TotalIHbees + TotalForagers}, and
+\texttt{(honeyEnergyStore / ( ENERGY\_HONEY\_per\_g * 1000 ))}.
+
+% --------------------------------------------------------------------------
+\section{What ShinySwarm adds that BioDT lacked}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item \textbf{Real-time collaboration.} Apiary coordinates, edited lookup-table
+    cells, and run results are shared across users through the relay (REST poll
+    at 500\,ms) or Kafka topics (\texttt{input}/\texttt{output}, keyed by
+    session). Upstream BioDT is one-container-per-user ShinyProxy with no
+    cross-user sharing.
+  \item \textbf{Role/permission gating} reused from the benchmark apps
+    (VIEWER vs EDITOR/OWNER), driving both UI disabling and producer creation.
+  \item \textbf{Reproducible checkpoints} via \texttt{statesnap}: because the
+    BEEHAVE model is \emph{non-deterministic}, input-only Shiny bookmarking
+    cannot reproduce a colleague's exact run. The agent captured the
+    \emph{computed result} (\texttt{state\_rds}) alongside inputs, so restore
+    reproduces the exact trajectory -- the cross-user reproducibility claim the
+    proposal made, now on a real scientific app.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Verification results}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item \textbf{Syntax.} All four R artifacts parse cleanly (\texttt{R 4.3.3},
+    \texttt{parse()}); the \texttt{statesnap} sources parse cleanly.
+  \item \textbf{Execution.} The simulation function runs and returns a
+    $366\times4$ table for a 365-day run, with BioDT's column names.
+  \item \textbf{Non-determinism confirmed.} Two runs with different seeds gave
+    peak colony sizes of $18{,}995$ vs $19{,}323$ bees -- this is precisely the
+    property that makes the \texttt{statesnap} reproducibility argument non-trivial.
+  \item \textbf{Not yet run end-to-end.} The full Docker stack (Postgres, Redis,
+    Spring, Kafka, Angular) was \emph{not} brought up in this environment; the
+    Java/compose/nginx wiring is verified by inspection and convention-matching,
+    not by a live integration test. This is the obvious next validation step.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Where the agent needed a human / open issues}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item \textbf{Decisions, not code.} The human chose scope (full PoC, both
+    architectures) and the simulate-the-backend constraint. The agent executed.
+  \item \textbf{Rhino $\to$ plain Shiny flattening} was done by hand-translation:
+    the agent collapsed BioDT's nested \texttt{box}/\texttt{moduleServer} module
+    tree into a single flat app. This is faithful to the benchmark style but is
+    \emph{not} the ``integrate in place'' option, and it sidesteps the
+    \texttt{statesnap} module-namespace gap flagged in the feasibility note (the
+    flat app has no nested namespaces, so capture works as-is).
+  \item \textbf{Map fidelity.} BioDT's input map is a land-use raster with
+    in/out-of-boundary checks (\texttt{terra::extract}); the PoC uses a plain
+    basemap + draw tool. The collaboration/contract is faithful; the
+    geospatial validation is simplified.
+  \item \textbf{Licensing} (\texttt{biodt-shiny} = ``Other'') must be confirmed
+    before redistributing adapted UI code -- unchanged from the feasibility note.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Reading for the thesis (so what?)}
+% --------------------------------------------------------------------------
+
+As an integration-process result: an agent, given only the repo and a one-line
+brief, (i) located and read the \emph{real} upstream app, (ii) recovered its
+exact I/O contract, (iii) re-used the existing ShinySwarm collaboration pattern
+rather than inventing one, and (iv) produced parseable, contract-faithful
+artifacts for \emph{both} architectures plus the backend wiring, in a single
+session. The residual work is the same scoped, known work the feasibility note
+predicted (live end-to-end run; real BEEHAVE container; raster map fidelity;
+in-place Rhino integration with namespace-aware \texttt{statesnap}). The
+experiment therefore supports a narrow but useful claim for the discussion: the
+ShinySwarm architecture is \emph{regular enough} that adding a ninth, real-world
+app is largely mechanical -- mechanical enough that an agent can do the bulk of
+it -- which is itself evidence for the architecture's extensibility.
+
+% --------------------------------------------------------------------------
+\section{Provenance}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item Upstream read on 2026-06-12: \url{https://github.com/BioDT/biodt-shiny}
+    (\texttt{app/view/honeybee/*}, \texttt{app/logic/honeybee/*}).
+  \item Patterns re-used from this repo: \texttt{shiny\_services/map},
+    \texttt{shiny\_services/monte\_carlo}, \texttt{statesnap/},
+    \texttt{shinyswarm/.../session/CollaborationController.java}.
+  \item All artifacts committed under the two architecture directories; see the
+    table in \S4.
+\end{itemize}
+
+\end{document}

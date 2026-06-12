@@ -82,6 +82,7 @@ services:
       - shiny-front-mc
       - shiny-front-map
       - shiny-front-ml
+      - shiny-front-beehave
     ports:
       - "8080:80"
       - "8081:81"
@@ -91,6 +92,7 @@ services:
       - "8086:85"
       - "8087:87"
       - "8088:88"
+      - "8089:89"
     volumes:
       - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
@@ -236,6 +238,26 @@ services:
     container_name: shiny-back-ml
     volumes:
       - ./shiny_services/machine_learning/shiny_back_ml.r:/app/back.R
+    command: R -e "pr <- plumber::plumb('/app/back.R'); pr$$run(host='0.0.0.0', port=8000)"
+
+  # =============================================
+  # APP 9: BioDT HONEYBEE (Beekeeper pDT)
+  # Real BioDT use case re-engineered into ShinySwarm. Backend is a simulated
+  # stand-in for ghcr.io/biodt/beehave honouring the same CSV-in/result-out
+  # contract; swap APP_ROUTES to the real container for production.
+  # =============================================
+  shiny-front-beehave:
+    <<: *shiny-base
+    container_name: shiny-front-beehave
+    volumes:
+      - ./shiny_services/honeybee/shiny_front_beehave.r:/app/app.R
+    command: R -e "shiny::runApp('/app/app.R', host='0.0.0.0', port=3838)"
+
+  shiny-back-beehave:
+    <<: *shiny-base
+    container_name: shiny-back-beehave
+    volumes:
+      - ./shiny_services/honeybee/shiny_back_beehave.r:/app/back.R
     command: R -e "pr <- plumber::plumb('/app/back.R'); pr$$run(host='0.0.0.0', port=8000)"
 
 networks:

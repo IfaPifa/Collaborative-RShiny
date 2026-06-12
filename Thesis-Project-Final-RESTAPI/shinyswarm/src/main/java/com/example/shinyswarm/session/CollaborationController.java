@@ -74,7 +74,8 @@ public class CollaborationController {
         "ClimateAnomaly",   "http://shiny-back-csv-advanced:8000/state",
         "MonteCarlo",       "http://shiny-back-mc:8000/state",
         "Geospatial",       "http://shiny-back-map:8000/state",
-        "MLTrainer",        "http://shiny-back-ml:8000/state"
+        "MLTrainer",        "http://shiny-back-ml:8000/state",
+        "Honeybee",         "http://shiny-back-beehave:8000/state"
     );
 
     public CollaborationController(CollaborationSessionRepository sessionRepository,

@@ -90,6 +90,11 @@ public class DataInitializer {
                     "Asynchronous Random Forest training and real-time inference API.",
                     shinyBaseUrl + ":30087"
                 ));
+                appRepository.save(new ShinyApp(                          // ID 9
+                    "BioDT Honeybee (Beekeeper pDT)",
+                    "Real BioDT honeybee/BEEHAVE use case re-engineered into ShinySwarm: collaborative apiary placement, shared habitat lookup, and reproducible non-deterministic colony simulation.",
+                    shinyBaseUrl + ":30088"
+                ));
             }
         };
     }
