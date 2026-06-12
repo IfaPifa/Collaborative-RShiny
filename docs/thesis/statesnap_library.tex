@@ -1,8 +1,13 @@
 % ==========================================================================
-%  Thesis Section -- The statesnap R Package
+%  NOTE: This is NOT the actual thesis. This file is working notes / draft
+%  material about the statesnap R package prototype. It is scratch prose to
+%  be reviewed, edited, and selectively pulled into the real thesis -- not a
+%  finished thesis chapter.
+% ==========================================================================
+%  Working Notes -- The statesnap R Package
 %
 %  Standalone section describing the reusable R package prototype that
-%  generalises ShinySwarm's checkpoint mechanism (the library is named statesnap). This is thesis-ready prose
+%  generalises ShinySwarm's checkpoint mechanism (the library is named statesnap). This is draft prose
 %  (Discussion / Future Work material) describing WHAT the artifact is and
 %  WHY it matters. It is deliberately separate from thesis-notes.tex, which
 %  records HOW the library was built and is kept for reproducibility.
@@ -32,6 +37,14 @@
 
 \begin{document}
 \maketitle
+
+\begin{center}
+\fbox{\parbox{0.9\textwidth}{\centering\textbf{Note:} This document is not the
+actual thesis. It is working/draft notes about the \texttt{statesnap} prototype,
+intended for review and selective inclusion in the real thesis.}}
+\end{center}
+
+\vspace{1em}
 
 % --------------------------------------------------------------------------
 \section{Overview}
@@ -169,6 +182,72 @@ server <- function(input, output, session) {
 
 Inputs are restored through Shiny's low-level \texttt{session\$sendInputMessage()}
 mechanism; reactive values are set directly through their accessors.
+
+\subsection{Restoring state into a live Shiny session}
+\label{sec:restore}
+
+Producing a JSON checkpoint is the straightforward half of the problem; any
+general-purpose serialiser (for example \texttt{jsonlite}) can turn a list of
+values into a string. The contribution of \texttt{statesnap} is the other half:
+pushing a checkpoint back into a \emph{running} Shiny session so that the
+application returns to the captured state. This is not a serialisation concern at
+all --- it is Shiny-session plumbing that a generic JSON library cannot provide,
+because it must interact with the live reactive graph rather than with inert
+data.
+
+\texttt{restore\_state()} reverses each tagged value back into the correct kind
+of live object, dispatching on the type recorded at capture time:
+
+\begin{itemize}
+  \item \textbf{Inputs} are not assigned directly --- in Shiny an \texttt{input}
+    value is read-only from the server's perspective and is owned by the client
+    widget. The library instead calls
+    \texttt{session\$sendInputMessage(name, list(value = value))} for each input,
+    which instructs the browser widget to update itself; the widget then reports
+    the new value back through the normal input channel, so the reactive graph
+    re-fires exactly as if the user had set the control by hand.
+  \item \textbf{\texttt{reactiveVal} values} are restored by calling the
+    accessor as a setter, \texttt{rv(value)}, which writes into the reactive and
+    invalidates its dependants.
+  \item \textbf{\texttt{reactiveValues} objects} are restored key by key. To
+    reproduce the saved state \emph{exactly} rather than merging it with whatever
+    the receiving session already held, keys present in the live object but
+    absent from the checkpoint are first cleared (see below), and then every
+    saved key is assigned.
+  \item \textbf{Embedded files} (\texttt{state\_file()}) are decoded, size-checked,
+    written to disk under a sanitised name, and the restored path is handed to
+    the supplied setter; \textbf{serialised objects} (\texttt{state\_rds()}) are
+    reconstructed and assigned, subject to the \texttt{allow\_rds} trust gate.
+\end{itemize}
+
+Two properties of this restore path are worth drawing out, because they are the
+reason a hand-rolled ``read the JSON and assign the values'' approach is both
+insufficient and unsafe.
+
+\paragraph{Exact restore, not a merge.} A naive restore that simply assigns each
+saved key leaves behind any reactive-values key the receiving session already
+had. In the cross-user restore scenario this means user B's residual state
+leaks into the session user A authored. \texttt{restore\_state()} therefore
+clears keys that exist live but not in the checkpoint:
+
+\begin{lstlisting}[language=R]
+for (key in setdiff(live_keys, saved_keys)) rv[[key]] <- NULL
+\end{lstlisting}
+
+\noindent
+Shiny provides no way to truly delete a \texttt{reactiveValues} key, so a stale
+key is cleared to \texttt{NULL} rather than removed; the observable effect ---
+the restored session no longer carries the foreign value --- is the same.
+
+\paragraph{Round-trips through the real reactive engine.} Because inputs are
+restored via \texttt{sendInputMessage()} and reactive values via their accessors,
+the restored state propagates through Shiny's dependency graph exactly as a live
+edit would: outputs that depend on the restored values re-render, and
+\texttt{observeEvent}/\texttt{reactive} expressions re-execute. The restored
+session is therefore a genuinely live session, not a static snapshot of rendered
+output. This behaviour is verified against Shiny's actual reactive engine with
+\texttt{shiny::testServer()} (Section~\ref{sec:testing}), rather than against
+test doubles.
 
 % --------------------------------------------------------------------------
 \section{Reproducibility Guarantee}
