@@ -1,0 +1,228 @@
+{
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "WebSocket connected": {
+                    "name": "WebSocket connected",
+                    "path": "::WebSocket connected",
+                    "id": "3224ab6204f13fde193cdaa3d1d1c30e",
+                    "passes": 315,
+                    "fails": 0
+                },
+                "JOIN roundtrip received": {
+                    "id": "104205380794711919f7ea0a03684824",
+                    "passes": 315,
+                    "fails": 0,
+                    "name": "JOIN roundtrip received",
+                    "path": "::JOIN roundtrip received"
+                }
+            }
+    },
+    "metrics": {
+        "http_reqs": {
+            "count": 11,
+            "rate": 0.0857163446627408
+        },
+        "ws_connections": {
+            "count": 315,
+            "rate": 2.454604415342123
+        },
+        "http_req_waiting": {
+            "med": 6.536531,
+            "max": 163.18637,
+            "p(90)": 84.598187,
+            "p(95)": 123.8922785,
+            "avg": 27.11189854545455,
+            "min": 3.011417
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 50
+        },
+        "vus_max": {
+            "max": 50,
+            "value": 50,
+            "min": 50
+        },
+        "ws_session_duration": {
+            "avg": 8504.477449409529,
+            "min": 8502.369236,
+            "med": 8504.441712,
+            "max": 8507.048445,
+            "p(90)": 8505.4158938,
+            "p(95)": 8505.8054499
+        },
+        "ws_msgs_sent": {
+            "count": 1575,
+            "rate": 12.273022076710614
+        },
+        "http_req_failed": {
+            "fails": 11,
+            "passes": 0,
+            "value": 0
+        },
+        "data_received": {
+            "count": 1142363,
+            "rate": 8901.743694360233
+        },
+        "iterations": {
+            "count": 315,
+            "rate": 2.454604415342123
+        },
+        "http_req_duration": {
+            "med": 6.644294,
+            "max": 163.376088,
+            "p(90)": 84.999224,
+            "p(95)": 124.187656,
+            "avg": 27.280456363636368,
+            "min": 3.168755
+        },
+        "http_req_receiving": {
+            "p(95)": 0.1929415,
+            "avg": 0.11565754545454547,
+            "min": 0.060972,
+            "med": 0.101553,
+            "max": 0.199452,
+            "p(90)": 0.186431
+        },
+        "ws_sessions": {
+            "count": 315,
+            "rate": 2.454604415342123
+        },
+        "data_sent": {
+            "count": 282691,
+            "rate": 2202.8399262777143
+        },
+        "http_req_sending": {
+            "avg": 0.05290027272727273,
+            "min": 0.016044,
+            "med": 0.037186,
+            "max": 0.201585,
+            "p(90)": 0.079982,
+            "p(95)": 0.1407835
+        },
+        "http_req_duration{expected_response:true}": {
+            "min": 3.168755,
+            "med": 6.644294,
+            "max": 163.376088,
+            "p(90)": 84.999224,
+            "p(95)": 124.187656,
+            "avg": 27.280456363636368
+        },
+        "ws_connect_ms": {
+            "med": 4,
+            "max": 7,
+            "p(90)": 5,
+            "p(95)": 5,
+            "avg": 3.7333333333333334,
+            "min": 2,
+            "thresholds": {
+                "p(95)<5000": false
+            }
+        },
+        "ws_msgs_received": {
+            "count": 4044,
+            "rate": 31.512445256011254
+        },
+        "iteration_duration": {
+            "p(90)": 9506.441771,
+            "p(95)": 9506.8564115,
+            "avg": 9505.396452546023,
+            "min": 9503.2437,
+            "med": 9505.305368,
+            "max": 9508.613575
+        },
+        "ws_connecting": {
+            "min": 1.291495,
+            "med": 2.416436,
+            "max": 4.413439,
+            "p(90)": 3.1367912000000007,
+            "p(95)": 3.3565664,
+            "avg": 2.4669875936507943
+        },
+        "ws_join_roundtrip_ms": {
+            "avg": 5.660317460317461,
+            "min": 2,
+            "med": 6,
+            "max": 33,
+            "p(90)": 7,
+            "p(95)": 8.300000000000011,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_blocked": {
+            "p(95)": 0.5457654999999999,
+            "avg": 0.10376881818181817,
+            "min": 0.002574,
+            "med": 0.005618,
+            "max": 1.081146,
+            "p(90)": 0.010385
+        },
+        "ws_messages_received": {
+            "count": 3414,
+            "rate": 26.603236425327008
+        },
+        "http_req_connecting": {
+            "max": 0.309729,
+            "p(90)": 0,
+            "p(95)": 0.1548645,
+            "avg": 0.028157181818181817,
+            "min": 0,
+            "med": 0
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "checks": {
+            "passes": 630,
+            "fails": 0,
+            "value": 1
+        }
+    },
+    "setup_data": {
+        "sessions": [
+            {
+                "appName": "Calculator",
+                "sessionId": "f82c1c5a-1cd3-40fc-a356-b4b6e514671b"
+            },
+            {
+                "appName": "Analytics",
+                "sessionId": "e383911f-2e71-40c6-a8fa-78fdc2921dc1"
+            },
+            {
+                "appName": "Advanced",
+                "sessionId": "414d7b28-9664-4795-8fbf-6121404a94e4"
+            },
+            {
+                "sessionId": "5bd1a100-95ec-4912-a8ab-a2a46ec76055",
+                "appName": "DataExchange"
+            },
+            {
+                "appName": "MonteCarlo",
+                "sessionId": "11583e29-cc76-4506-9a83-0292eb26cc12"
+            },
+            {
+                "appName": "Geospatial",
+                "sessionId": "de0776b8-433c-49d6-9636-e20e89b24e11"
+            },
+            {
+                "appName": "ClimateAnomaly",
+                "sessionId": "07268904-8a65-4342-ba9a-2608c27639c9"
+            },
+            {
+                "appName": "MLTrainer",
+                "sessionId": "4f5b45d4-b58b-4675-9015-7c6c336e72df"
+            }
+        ]
+    }
+}
