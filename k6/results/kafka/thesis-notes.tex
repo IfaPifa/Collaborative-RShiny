@@ -930,46 +930,223 @@ A natural extension of ShinySwarm's checkpoint mechanism is a standalone R packa
 serialisation and restoration, without requiring the full microservice architecture
 (Spring Boot, Redis, Kafka).
 
-The package would expose two core functions:
+\subsection{Motivation}
 
-\begin{itemize}[nosep]
-  \item \texttt{capture\_state(input, reactive\_vals)} --- serialises all
-        \texttt{input} values and registered \texttt{reactiveVal}/\texttt{reactiveValues}
-        objects into a JSON checkpoint containing both inputs and outputs.
-  \item \texttt{restore\_state(session, state\_json)} --- restores the checkpoint
-        by pushing values back into inputs via \texttt{session\$sendInputMessage()}
-        and setting reactive values directly.
-\end{itemize}
+Every Shiny app in ShinySwarm follows the same pattern: capture state (inputs
+plus computed reactive values), serialise it to JSON, and later restore it by
+pushing values back into the app. Currently this logic is implemented
+individually in each of the eight apps, with each one manually building JSON
+payloads with app-specific field names. A library would standardise this into
+two function calls.
 
-The transport and storage layer would be deliberately excluded from the package:
-the library produces and consumes JSON, and the user decides how to transmit or
-persist it (file, database, REST API, Kafka topic, or any other mechanism).
+Existing Shiny state-sharing mechanisms (\texttt{shinyURL}, bookmarking)
+transfer only inputs, forcing recomputation of all outputs. For non-deterministic
+analyses (e.g., Monte Carlo simulations without \texttt{set.seed()}), recomputing
+produces different results. A full-state package preserves outputs alongside
+inputs, guaranteeing exact reproducibility.
 
-\textbf{Key challenges:}
+\subsection{API Design}
+
+The package exposes two core functions. The key design decision is that the
+library is \textbf{transport-agnostic}: it produces and consumes JSON strings.
+How the JSON is transmitted or persisted (REST API, Kafka, Redis, file, database)
+is the caller's responsibility.
+
+\subsubsection{\texttt{capture\_state()} --- Serialise Everything to JSON}
+
+\begin{verbatim}
+capture_state <- function(input, ...) {
+  state <- list()
+
+  # 1. Capture all input values
+  input_names <- names(input)
+  state$inputs <- lapply(
+    setNames(input_names, input_names),
+    function(name) input[[name]]
+  )
+
+  # 2. Capture registered reactive values
+  #    Passed explicitly because R cannot discover
+  #    reactiveVal objects automatically
+  extras <- list(...)
+  state$reactives <- lapply(extras, function(rv) {
+    if (is.reactivevalues(rv)) {
+      reactiveValuesToList(rv)
+    } else {
+      rv()  # reactiveVal -- call to get value
+    }
+  })
+
+  state$timestamp <- as.numeric(Sys.time())
+  toJSON(state, auto_unbox = TRUE, force = TRUE)
+}
+\end{verbatim}
+
+The developer passes reactive values by name: \texttt{capture\_state(input,
+result = result, shared\_df = shared\_df)}. The function reads all
+\texttt{input} values automatically via \texttt{names(input)}, then reads each
+registered reactive by calling it (for \texttt{reactiveVal}) or converting it
+(for \texttt{reactiveValues}).
+
+\subsubsection{\texttt{restore\_state()} --- Push Everything Back}
+
+\begin{verbatim}
+restore_state <- function(session, state_json, ...) {
+  state <- fromJSON(state_json, simplifyVector = FALSE)
+
+  # 1. Restore inputs
+  for (name in names(state$inputs)) {
+    value <- state$inputs[[name]]
+    session$sendInputMessage(name, list(value = value))
+  }
+
+  # 2. Restore reactive values
+  extras <- list(...)
+  for (name in names(state$reactives)) {
+    if (name %in% names(extras)) {
+      rv <- extras[[name]]
+      saved_value <- state$reactives[[name]]
+      if (is.reactivevalues(rv)) {
+        for (key in names(saved_value)) {
+          rv[[key]] <- saved_value[[key]]
+        }
+      } else {
+        rv(saved_value)  # reactiveVal -- set directly
+      }
+    }
+  }
+}
+\end{verbatim}
+
+Inputs are restored via \texttt{session\$sendInputMessage()}, which is the
+low-level Shiny mechanism for pushing a value into any input widget. Reactive
+values are set directly by calling the setter (for \texttt{reactiveVal}) or
+assigning keys (for \texttt{reactiveValues}).
+
+\subsection{Usage Example: Calculator App}
+
+With the library, the Calculator app's save/restore logic reduces to:
+
+\begin{verbatim}
+library(shiny)
+library(shinyswarm)
+
+server <- function(input, output, session) {
+  result <- reactiveVal(0)
+
+  observeEvent(input$calculate, {
+    result(input$num1 + input$num2)
+  })
+
+  output$result <- renderText({ result() })
+
+  # Save: one line
+  observeEvent(input$save_btn, {
+    json <- capture_state(input, result = result)
+    send_to_backend(json)  # REST, Kafka, file -- caller decides
+  })
+
+  # Restore: one line
+  observeEvent(input$restore_btn, {
+    json <- get_from_backend()
+    restore_state(session, json, result = result)
+  })
+}
+\end{verbatim}
+
+Compare this to the current approach where each app manually constructs JSON
+payloads with app-specific field names and handles each input individually.
+
+\subsection{Transport Agnosticism}
+
+The library deliberately excludes any transport or storage logic. The same
+\texttt{capture\_state()} output can be sent via any mechanism:
+
+\begin{verbatim}
+# Via REST API
+httr::POST("http://backend/state", body = json)
+
+# Via Kafka
+producer$produce("output", json, key = session_id)
+
+# Via file
+writeLines(json, "checkpoint.json")
+
+# Via database
+DBI::dbExecute(con,
+  "INSERT INTO states (data) VALUES (?)", list(json))
+\end{verbatim}
+
+This makes the package useful to any Shiny developer, not just ShinySwarm users.
+A researcher running a standalone Shiny app on their laptop could use it to save
+and restore state to a local file, while a ShinySwarm deployment uses the same
+functions with Kafka or REST transport.
+
+\subsection{Implementation Challenges}
+
 \begin{enumerate}[nosep]
-  \item R's reactive system does not expose a ``get all state'' API.
-        \texttt{reactiveVal} and \texttt{reactiveValues} objects must be
-        explicitly registered by the app developer; they cannot be discovered
-        automatically.
-  \item \texttt{fileInput} widgets cannot be restored via
-        \texttt{sendInputMessage} --- a workaround (e.g., pre-staging the file
-        and injecting a reference) would be required.
-  \item Rendered outputs (plots, tables) are server-side objects that cannot be
-        serialised directly. The package would store the \emph{data} that
-        generates them, not the rendered output itself.
-  \item Shiny modules use namespaced input IDs (\texttt{ns("id")}), which
-        require special handling during both capture and restore.
+  \item \textbf{No reactive discovery API.} R's reactive system does not expose
+        a ``get all reactive values'' function. \texttt{reactiveVal} and
+        \texttt{reactiveValues} objects must be explicitly registered by the app
+        developer --- they cannot be discovered automatically. This is a
+        fundamental limitation of Shiny's design, not something the library can
+        work around.
+
+  \item \textbf{\texttt{fileInput} cannot be restored.}
+        \texttt{session\$sendInputMessage()} does not work for file inputs.
+        The uploaded file existed at a temporary path that no longer exists
+        after the session ends. A workaround would store the file content
+        (base64-encoded) in the checkpoint JSON, then on restore write it to a
+        new temporary file and inject the path. This is similar to the Climate
+        Anomaly enrichment approach already implemented in ShinySwarm.
+
+  \item \textbf{Rendered outputs are server-side objects.} Plots
+        (\texttt{renderPlot}), tables (\texttt{renderTable}), and other outputs
+        cannot be serialised directly. The library stores the \emph{data} that
+        generates them (via the registered reactive values), not the rendered
+        output itself. On restore, the reactive dependency chain triggers
+        re-rendering automatically. This is correct for deterministic outputs
+        but means the restore is not instantaneous --- the app must recompute
+        the rendering.
+
+  \item \textbf{Shiny modules use namespaced IDs.} A module input
+        \texttt{"slider"} becomes \texttt{"module1-slider"} internally.
+        \texttt{capture\_state()} sees the namespaced ID, but
+        \texttt{restore\_state()} must route it through the module's session
+        object, not the parent session. Supporting modules would require either
+        a recursive capture/restore across session hierarchies, or requiring
+        each module to call \texttt{capture\_state()} independently.
+
+  \item \textbf{Non-deterministic outputs.} Monte Carlo simulations without
+        \texttt{set.seed()} produce different results each run. If only inputs
+        are stored (as \texttt{shinyURL} and bookmarking do), restoring and
+        recomputing gives different outputs. This is the primary motivation for
+        storing reactive values (computed results) alongside inputs --- the
+        checkpoint preserves the exact output, not just the recipe to
+        regenerate it.
 \end{enumerate}
 
-This package would address the gap identified in the literature review: existing
-Shiny state-sharing mechanisms (\texttt{shinyURL}, bookmarking) transfer only
-inputs, forcing recomputation of all outputs. A full-state package would
-guarantee exact reproducibility for non-deterministic analyses (e.g., Monte Carlo
-simulations without \texttt{set.seed()}) by preserving outputs alongside inputs.
+\subsection{Package Structure}
 
-The package could be published on CRAN or as a GitHub-installable package,
-making ShinySwarm's reproducibility contribution accessible to the broader
-R~Shiny community without requiring Kubernetes or microservice infrastructure.
+\begin{verbatim}
+shinyswarm/
+  DESCRIPTION
+  NAMESPACE
+  R/
+    capture_state.R     # capture_state()
+    restore_state.R     # restore_state()
+    utils.R             # helpers (base64 for fileInput)
+  man/                  # auto-generated roxygen docs
+  tests/
+    testthat/
+      test-capture.R
+      test-restore.R
+\end{verbatim}
+
+The package could be published on CRAN or as a GitHub-installable package
+(\texttt{remotes::install\_github("...")}), making ShinySwarm's reproducibility
+contribution accessible to the broader R~Shiny community without requiring
+Kubernetes or microservice infrastructure.
 
 % ------------------------------------------------------------------
 \section{Future Work: Integration with NaaVRE}
