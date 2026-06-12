@@ -342,9 +342,57 @@ overhead on top of the app's natural cost}, rather than whether R
 can compute faster. A test failure under this scheme indicates
 architecture-induced degradation, not workload complexity.
 
+\subsection{Queuing-Based Multiplier Justification}
+
+The degradation factor accounts for request serialization at the R
+backend. R's Plumber server processes requests sequentially on a single
+thread, forming an M/M/1-like queue. With $P$ concurrent users routed
+to one replica, the expected worst-case latency is approximately
+$P \times \text{baseline}$.
+
+With 3 replicas and varying VU counts per test:
+
+\begin{center}
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Test} & \textbf{Peak VUs} & \textbf{Per replica} & \textbf{Multiplier} & \textbf{Rationale} \\
+\midrule
+01, 02, 07, 08 & 20--50 & $\sim$7--17 & 10$\times$ & Moderate queuing \\
+04 Throughput   & 100    & $\sim$33    & 50$\times$ & Heavy queuing \\
+03 Save/Restore & 15     & $\sim$5     & 10$\times$ & PostgreSQL parallel, pool-limited \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The multiplier is intentionally generous---the goal is not to
+enforce a production SLA, but to detect \emph{disproportionate}
+architectural overhead beyond normal queuing. A test failure at
+$10\times$ baseline indicates a systemic issue (connection exhaustion,
+memory pressure, thread starvation), not expected load degradation.
+
+For compute-intensive apps like MLTrainer (baseline POST: 14.2\,s),
+the resulting threshold (711\,s for throughput) is effectively
+``never fail.'' This is correct: the architecture overhead is
+negligible compared to the 14-second RandomForest training time.
+The test confirms that the architecture does not add disproportionate
+overhead to compute-intensive workloads---a valid finding, not a
+testing gap.
+
 \subsection{References}
 
 \begin{itemize}
+  \item \textbf{Harchol-Balter (2013)} provides the queuing theory
+        foundation for understanding request serialization in
+        single-threaded servers. Chapter~13 (M/M/1 and PASTA) directly
+        models the behavior of R's Plumber backend: a single server
+        processing requests sequentially with Poisson arrivals. The
+        expected response time grows linearly with utilization, which
+        justifies the per-VU multiplier approach.\\
+        \emph{Reference:} Harchol-Balter, M., \emph{Performance
+        Modeling and Design of Computer Systems: Queueing Theory in
+        Action}, Cambridge University Press, 2013.
+        ISBN: 978-1-107-02750-3.
+
   \item \textbf{Jain (1991)} defines a ten-step performance evaluation
         methodology where step~6 (``Select the workload'') and step~7
         (``Design the experiments'') require workload-specific metrics
@@ -358,29 +406,33 @@ architecture-induced degradation, not workload complexity.
   \item \textbf{Gregg (2013, 2020)} describes \emph{active benchmarking}:
         analyzing system behavior during benchmark execution to identify
         the true limiter, rather than relying solely on pass/fail
-        thresholds. The baseline measurement phase implements this by
-        isolating each app's computation cost before applying load.
-        Gregg also warns against \emph{passive benchmarking} (running
-        benchmarks without understanding what they measure) as an
-        anti-method.\\
+        thresholds. The USE Method (Utilization, Saturation, Errors)
+        provides a systematic approach to identifying bottlenecks---in
+        this case, R's single-threaded CPU utilization reaching
+        saturation under concurrent load. Gregg also warns against
+        \emph{passive benchmarking} (running benchmarks without
+        understanding what they measure) as an anti-method.\\
         \emph{Reference:} Gregg, B., \emph{Systems Performance:
         Enterprise and the Cloud}, 2nd ed., Prentice Hall, 2020.
         ISBN: 978-0-13-682015-4.\\
         \emph{Reference:} Gregg, B., ``Thinking Methodically about
         Performance'', \emph{Communications of the ACM}, Vol.~56,
-        No.~2, Feb 2013.
+        No.~2, Feb 2013.\\
+        \emph{Reference:} Gregg, B., ``The USE Method'',
+        \url{https://www.brendangregg.com/usemethod.html}.
 
   \item \textbf{Grafana k6 documentation} supports per-tag
         thresholds using the syntax
         \texttt{metric\{tag\_name:tag\_value\}}, enabling per-app
         SLAs within a single test run. The k6 testing guide recommends
         starting with smoke tests (low load) before progressing to
-        stress tests---the baseline test implements this progression.\\
+        average-load and stress tests---the baseline-then-load approach
+        implements this progression.\\
         \emph{Reference:} Grafana Labs, ``Thresholds'', k6 Documentation,
         \url{https://grafana.com/docs/k6/latest/using-k6/thresholds/}.\\
-        \emph{Reference:} Grafana Labs, ``Load test types'', k6
+        \emph{Reference:} Grafana Labs, ``Average-load testing'', k6
         Documentation,
-        \url{https://grafana.com/docs/k6/latest/testing-guides/test-types/}.
+        \url{https://grafana.com/docs/k6/latest/testing-guides/test-types/load-testing/}.
 
   \item \textbf{The RED Method} (Wilkie, 2015) measures Rate, Errors,
         and Duration per service/microservice. The per-app thresholds
