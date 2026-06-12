@@ -1,7 +1,171 @@
 {
+    "metrics": {
+        "http_req_duration": {
+            "avg": 260.0675686077738,
+            "min": 1.602786,
+            "med": 6.587068,
+            "max": 14393.971452,
+            "p(90)": 26.396283200000003,
+            "p(95)": 34.87847719999999
+        },
+        "http_req_blocked": {
+            "min": 0.001853,
+            "med": 0.005679,
+            "max": 0.612556,
+            "p(90)": 0.009508,
+            "p(95)": 0.010705999999999997,
+            "avg": 0.009773657243816248
+        },
+        "group_duration": {
+            "p(90)": 13092.2446946,
+            "p(95)": 14304.44587305,
+            "avg": 1854.8373698749997,
+            "min": 50.895596,
+            "med": 86.673963,
+            "max": 14470.664636
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 1
+        },
+        "baseline_total_ms": {
+            "p(90)": 13092.400000000001,
+            "p(95)": 14304.15,
+            "avg": 1854.675,
+            "min": 51,
+            "med": 86.5,
+            "max": 14471
+        },
+        "baseline_ok": {
+            "count": 40,
+            "rate": 0.3067460981095732
+        },
+        "http_req_sending": {
+            "avg": 0.033593939929328645,
+            "min": 0.005468,
+            "med": 0.029916,
+            "max": 0.172901,
+            "p(90)": 0.057351,
+            "p(95)": 0.07041769999999996
+        },
+        "http_req_receiving": {
+            "avg": 1.1939050706713792,
+            "min": 0.027101,
+            "med": 0.109206,
+            "max": 29.556465,
+            "p(90)": 5.7637818,
+            "p(95)": 8.454440399999992
+        },
+        "baseline_post_ms": {
+            "avg": 1785.425,
+            "min": 8,
+            "med": 13.5,
+            "max": 14394,
+            "p(90)": 13013.400000000001,
+            "p(95)": 14242.699999999999
+        },
+        "iteration_duration": {
+            "p(90)": 130320.04203,
+            "p(95)": 130320.04203,
+            "avg": 130320.04203,
+            "min": 130320.04203,
+            "med": 130320.04203,
+            "max": 130320.04203
+        },
+        "baseline_restore_ms": {
+            "avg": 5.375,
+            "min": 3,
+            "med": 5,
+            "max": 8,
+            "p(90)": 7,
+            "p(95)": 7.049999999999997
+        },
+        "vus_max": {
+            "max": 1,
+            "value": 1,
+            "min": 1
+        },
+        "http_req_duration{expected_response:true}": {
+            "avg": 260.0675686077738,
+            "min": 1.602786,
+            "med": 6.587068,
+            "max": 14393.971452,
+            "p(90)": 26.396283200000003,
+            "p(95)": 34.87847719999999
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 0.406906,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.00241022261484099
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "data_sent": {
+            "rate": 781.0982642262172,
+            "count": 101856
+        },
+        "data_received": {
+            "count": 28949591,
+            "rate": 222004.35202795046
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 283,
+            "value": 0
+        },
+        "http_req_waiting": {
+            "min": 1.517086,
+            "med": 6.461878,
+            "max": 14393.767814,
+            "p(90)": 18.748105400000007,
+            "p(95)": 27.587415699999916,
+            "avg": 258.84006959717317
+        },
+        "baseline_get_ms": {
+            "med": 4,
+            "max": 6,
+            "p(90)": 5,
+            "p(95)": 5.049999999999997,
+            "avg": 3.775,
+            "min": 2
+        },
+        "baseline_save_ms": {
+            "med": 8,
+            "max": 10,
+            "p(90)": 9,
+            "p(95)": 9.049999999999997,
+            "avg": 7.25,
+            "min": 4
+        },
+        "http_reqs": {
+            "rate": 2.1702286441252308,
+            "count": 283
+        },
+        "iterations": {
+            "count": 1,
+            "rate": 0.007668652452739331
+        },
+        "baseline_relay_ms": {
+            "avg": 3.5,
+            "min": 1,
+            "med": 3,
+            "max": 8,
+            "p(90)": 5,
+            "p(95)": 6
+        }
+    },
     "setup_data": {},
     "root_group": {
-            "name": "",
             "path": "",
             "id": "d41d8cd98f00b204e9800998ecf8427e",
             "groups": {
@@ -13,18 +177,18 @@
                     "checks": {}
                 },
                 "baseline_Calculator_rep1": {
-                    "groups": {},
-                    "checks": {},
                     "name": "baseline_Calculator_rep1",
                     "path": "::baseline_Calculator_rep1",
-                    "id": "caafa6ccf9deab0964c4401c1d29851b"
+                    "id": "caafa6ccf9deab0964c4401c1d29851b",
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_Calculator_rep2": {
-                    "checks": {},
-                    "name": "baseline_Calculator_rep2",
                     "path": "::baseline_Calculator_rep2",
                     "id": "34cb3a0effc0bc9cea23cf562776c9c9",
-                    "groups": {}
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Calculator_rep2"
                 },
                 "baseline_Calculator_rep3": {
                     "checks": {},
@@ -34,18 +198,18 @@
                     "groups": {}
                 },
                 "baseline_Calculator_rep4": {
+                    "checks": {},
                     "name": "baseline_Calculator_rep4",
                     "path": "::baseline_Calculator_rep4",
                     "id": "65226b84f5fa928fcef07cbf0e9c1398",
-                    "groups": {},
-                    "checks": {}
+                    "groups": {}
                 },
                 "baseline_Analytics_rep0": {
-                    "checks": {},
                     "name": "baseline_Analytics_rep0",
                     "path": "::baseline_Analytics_rep0",
                     "id": "bf2ffe2896bb4e95b33633cafd3bd512",
-                    "groups": {}
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_Analytics_rep1": {
                     "name": "baseline_Analytics_rep1",
@@ -55,11 +219,11 @@
                     "checks": {}
                 },
                 "baseline_Analytics_rep2": {
-                    "name": "baseline_Analytics_rep2",
-                    "path": "::baseline_Analytics_rep2",
                     "id": "47e6ff600345d1ae48d9533ec5e9b70c",
                     "groups": {},
-                    "checks": {}
+                    "checks": {},
+                    "name": "baseline_Analytics_rep2",
+                    "path": "::baseline_Analytics_rep2"
                 },
                 "baseline_Analytics_rep3": {
                     "name": "baseline_Analytics_rep3",
@@ -69,18 +233,18 @@
                     "checks": {}
                 },
                 "baseline_Analytics_rep4": {
-                    "checks": {},
                     "name": "baseline_Analytics_rep4",
                     "path": "::baseline_Analytics_rep4",
                     "id": "fbb21b960c5df9a4cea90706bbfc5e2b",
-                    "groups": {}
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_Advanced_rep0": {
+                    "name": "baseline_Advanced_rep0",
+                    "path": "::baseline_Advanced_rep0",
                     "id": "3e6510e801ab80fd023a494c533572b3",
                     "groups": {},
-                    "checks": {},
-                    "name": "baseline_Advanced_rep0",
-                    "path": "::baseline_Advanced_rep0"
+                    "checks": {}
                 },
                 "baseline_Advanced_rep1": {
                     "name": "baseline_Advanced_rep1",
@@ -90,25 +254,25 @@
                     "checks": {}
                 },
                 "baseline_Advanced_rep2": {
+                    "groups": {},
                     "checks": {},
                     "name": "baseline_Advanced_rep2",
                     "path": "::baseline_Advanced_rep2",
-                    "id": "1728ffaa9c0d81c45ea92b46f2a16bd6",
-                    "groups": {}
+                    "id": "1728ffaa9c0d81c45ea92b46f2a16bd6"
                 },
                 "baseline_Advanced_rep3": {
+                    "name": "baseline_Advanced_rep3",
+                    "path": "::baseline_Advanced_rep3",
                     "id": "d9bda02daa2eff0383b5bb981f9dc950",
                     "groups": {},
-                    "checks": {},
-                    "name": "baseline_Advanced_rep3",
-                    "path": "::baseline_Advanced_rep3"
+                    "checks": {}
                 },
                 "baseline_Advanced_rep4": {
-                    "name": "baseline_Advanced_rep4",
                     "path": "::baseline_Advanced_rep4",
                     "id": "292ee4211f2c17b0cc6a3b5c09d64898",
                     "groups": {},
-                    "checks": {}
+                    "checks": {},
+                    "name": "baseline_Advanced_rep4"
                 },
                 "baseline_DataExchange_rep0": {
                     "name": "baseline_DataExchange_rep0",
@@ -118,11 +282,11 @@
                     "checks": {}
                 },
                 "baseline_DataExchange_rep1": {
+                    "name": "baseline_DataExchange_rep1",
+                    "path": "::baseline_DataExchange_rep1",
                     "id": "2ed31f5942086264f6f2511419910d04",
                     "groups": {},
-                    "checks": {},
-                    "name": "baseline_DataExchange_rep1",
-                    "path": "::baseline_DataExchange_rep1"
+                    "checks": {}
                 },
                 "baseline_DataExchange_rep2": {
                     "name": "baseline_DataExchange_rep2",
@@ -132,25 +296,25 @@
                     "checks": {}
                 },
                 "baseline_DataExchange_rep3": {
-                    "id": "0a745016fbfe7053eccc82ac5873e8b0",
                     "groups": {},
                     "checks": {},
                     "name": "baseline_DataExchange_rep3",
-                    "path": "::baseline_DataExchange_rep3"
+                    "path": "::baseline_DataExchange_rep3",
+                    "id": "0a745016fbfe7053eccc82ac5873e8b0"
                 },
                 "baseline_DataExchange_rep4": {
+                    "checks": {},
                     "name": "baseline_DataExchange_rep4",
                     "path": "::baseline_DataExchange_rep4",
                     "id": "b5239c922e094db339bcb46b45c1b1d9",
-                    "groups": {},
-                    "checks": {}
+                    "groups": {}
                 },
                 "baseline_MonteCarlo_rep0": {
-                    "checks": {},
-                    "name": "baseline_MonteCarlo_rep0",
                     "path": "::baseline_MonteCarlo_rep0",
                     "id": "b9622148c282c370fbc2c3b1dbb6cecf",
-                    "groups": {}
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_MonteCarlo_rep0"
                 },
                 "baseline_MonteCarlo_rep1": {
                     "name": "baseline_MonteCarlo_rep1",
@@ -160,11 +324,11 @@
                     "checks": {}
                 },
                 "baseline_MonteCarlo_rep2": {
-                    "checks": {},
                     "name": "baseline_MonteCarlo_rep2",
                     "path": "::baseline_MonteCarlo_rep2",
                     "id": "edefa9e3dda5af51497b64bf83e05ad5",
-                    "groups": {}
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_MonteCarlo_rep3": {
                     "name": "baseline_MonteCarlo_rep3",
@@ -174,25 +338,25 @@
                     "checks": {}
                 },
                 "baseline_MonteCarlo_rep4": {
+                    "groups": {},
                     "checks": {},
                     "name": "baseline_MonteCarlo_rep4",
                     "path": "::baseline_MonteCarlo_rep4",
-                    "id": "92d15a4204921ad75c834370cdd09978",
-                    "groups": {}
+                    "id": "92d15a4204921ad75c834370cdd09978"
                 },
                 "baseline_Geospatial_rep0": {
+                    "checks": {},
+                    "name": "baseline_Geospatial_rep0",
                     "path": "::baseline_Geospatial_rep0",
                     "id": "db72f0b876d9be602fb4eb4d87106944",
-                    "groups": {},
-                    "checks": {},
-                    "name": "baseline_Geospatial_rep0"
+                    "groups": {}
                 },
                 "baseline_Geospatial_rep1": {
-                    "groups": {},
-                    "checks": {},
                     "name": "baseline_Geospatial_rep1",
                     "path": "::baseline_Geospatial_rep1",
-                    "id": "0d25908a142103fd005085995333f9db"
+                    "id": "0d25908a142103fd005085995333f9db",
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_Geospatial_rep2": {
                     "name": "baseline_Geospatial_rep2",
@@ -202,11 +366,11 @@
                     "checks": {}
                 },
                 "baseline_Geospatial_rep3": {
-                    "groups": {},
-                    "checks": {},
                     "name": "baseline_Geospatial_rep3",
                     "path": "::baseline_Geospatial_rep3",
-                    "id": "fbc37a074f6a2c84162e201f98e66a17"
+                    "id": "fbc37a074f6a2c84162e201f98e66a17",
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_Geospatial_rep4": {
                     "name": "baseline_Geospatial_rep4",
@@ -216,18 +380,18 @@
                     "checks": {}
                 },
                 "baseline_ClimateAnomaly_rep0": {
-                    "checks": {},
-                    "name": "baseline_ClimateAnomaly_rep0",
                     "path": "::baseline_ClimateAnomaly_rep0",
                     "id": "222be298007e4e1002adc6eeccce4d5e",
-                    "groups": {}
-                },
-                "baseline_ClimateAnomaly_rep1": {
                     "groups": {},
                     "checks": {},
+                    "name": "baseline_ClimateAnomaly_rep0"
+                },
+                "baseline_ClimateAnomaly_rep1": {
                     "name": "baseline_ClimateAnomaly_rep1",
                     "path": "::baseline_ClimateAnomaly_rep1",
-                    "id": "49b4687e31312f9307bdaf21ae8c3b94"
+                    "id": "49b4687e31312f9307bdaf21ae8c3b94",
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_ClimateAnomaly_rep2": {
                     "name": "baseline_ClimateAnomaly_rep2",
@@ -237,39 +401,39 @@
                     "checks": {}
                 },
                 "baseline_ClimateAnomaly_rep3": {
+                    "id": "64b7f4547c43717552e2738c16e2a0ca",
+                    "groups": {},
                     "checks": {},
                     "name": "baseline_ClimateAnomaly_rep3",
-                    "path": "::baseline_ClimateAnomaly_rep3",
-                    "id": "64b7f4547c43717552e2738c16e2a0ca",
-                    "groups": {}
+                    "path": "::baseline_ClimateAnomaly_rep3"
                 },
                 "baseline_ClimateAnomaly_rep4": {
+                    "checks": {},
                     "name": "baseline_ClimateAnomaly_rep4",
                     "path": "::baseline_ClimateAnomaly_rep4",
                     "id": "188929749d19da671db6ef8a1dd3d9a4",
-                    "groups": {},
-                    "checks": {}
+                    "groups": {}
                 },
                 "baseline_MLTrainer_rep0": {
-                    "name": "baseline_MLTrainer_rep0",
-                    "path": "::baseline_MLTrainer_rep0",
                     "id": "2a30e589fab5210948b1cce437b1feee",
                     "groups": {},
-                    "checks": {}
+                    "checks": {},
+                    "name": "baseline_MLTrainer_rep0",
+                    "path": "::baseline_MLTrainer_rep0"
                 },
                 "baseline_MLTrainer_rep1": {
-                    "id": "941e972587ce376bf2e481c4eb9c7e13",
-                    "groups": {},
                     "checks": {},
                     "name": "baseline_MLTrainer_rep1",
-                    "path": "::baseline_MLTrainer_rep1"
+                    "path": "::baseline_MLTrainer_rep1",
+                    "id": "941e972587ce376bf2e481c4eb9c7e13",
+                    "groups": {}
                 },
                 "baseline_MLTrainer_rep2": {
-                    "groups": {},
-                    "checks": {},
                     "name": "baseline_MLTrainer_rep2",
                     "path": "::baseline_MLTrainer_rep2",
-                    "id": "da13202b3b7a45d4b4cb6f070868c78a"
+                    "id": "da13202b3b7a45d4b4cb6f070868c78a",
+                    "groups": {},
+                    "checks": {}
                 },
                 "baseline_MLTrainer_rep3": {
                     "name": "baseline_MLTrainer_rep3",
@@ -279,182 +443,14 @@
                     "checks": {}
                 },
                 "baseline_MLTrainer_rep4": {
+                    "groups": {},
+                    "checks": {},
                     "name": "baseline_MLTrainer_rep4",
                     "path": "::baseline_MLTrainer_rep4",
-                    "id": "4b4335a4bddd0a83b6809c18cdfda3e7",
-                    "groups": {},
-                    "checks": {}
+                    "id": "4b4335a4bddd0a83b6809c18cdfda3e7"
                 }
             },
-            "checks": {}
-        },
-    "metrics": {
-            "http_req_failed": {
-                "passes": 4,
-                "fails": 259,
-                "value": 0.015209125475285171
-            },
-            "baseline_fail": {
-                "count": 4,
-                "rate": 0.03190758631302228
-            },
-            "http_req_blocked": {
-                "max": 0.56938,
-                "p(90)": 0.011071800000000005,
-                "p(95)": 0.013094,
-                "avg": 0.00983371863117871,
-                "min": 0.001813,
-                "med": 0.00648
-            },
-            "http_req_waiting": {
-                "p(90)": 17.25140920000001,
-                "p(95)": 20.692829599999953,
-                "avg": 259.3547833726236,
-                "min": 1.474282,
-                "med": 6.927383,
-                "max": 14093.062786
-            },
-            "data_received": {
-                "count": 25051222,
-                "rate": 199831.00705292067
-            },
-            "baseline_save_ms": {
-                "avg": 7.805555555555555,
-                "min": 5,
-                "med": 8,
-                "max": 12,
-                "p(90)": 9.5,
-                "p(95)": 10.25
-            },
-            "baseline_relay_ms": {
-                "min": 1,
-                "med": 4,
-                "max": 8,
-                "p(90)": 6.5,
-                "p(95)": 7.25,
-                "avg": 4.027777777777778
-            },
-            "http_req_sending": {
-                "p(95)": 0.07415259999999992,
-                "avg": 0.03584828517110265,
-                "min": 0.005699,
-                "med": 0.03222,
-                "max": 0.215216,
-                "p(90)": 0.062308800000000004
-            },
-            "http_req_connecting": {
-                "avg": 0.002002802281368821,
-                "min": 0,
-                "med": 0,
-                "max": 0.38996,
-                "p(90)": 0,
-                "p(95)": 0
-            },
-            "http_req_tls_handshaking": {
-                "max": 0,
-                "p(90)": 0,
-                "p(95)": 0,
-                "avg": 0,
-                "min": 0,
-                "med": 0
-            },
-            "baseline_get_ms": {
-                "p(95)": 5,
-                "avg": 4.138888888888889,
-                "min": 2,
-                "med": 4,
-                "max": 9,
-                "p(90)": 5
-            },
-            "http_req_duration": {
-                "med": 7.026463,
-                "max": 14093.231341,
-                "p(90)": 24.936134600000003,
-                "p(95)": 36.879598599999824,
-                "avg": 260.64598446768065,
-                "min": 1.54034
-            },
-            "http_req_duration{expected_response:true}": {
-                "avg": 264.4463392509653,
-                "min": 1.54034,
-                "med": 6.987883,
-                "max": 14093.231341,
-                "p(90)": 25.004345800000003,
-                "p(95)": 37.79536929999999
-            },
-            "baseline_ok": {
-                "count": 36,
-                "rate": 0.28716827681720053
-            },
-            "baseline_total_ms": {
-                "max": 14154,
-                "p(90)": 12388,
-                "p(95)": 13378.25,
-                "avg": 1916.9166666666667,
-                "min": 51,
-                "med": 93
-            },
-            "baseline_restore_ms": {
-                "p(90)": 7,
-                "p(95)": 7,
-                "avg": 5.666666666666667,
-                "min": 3,
-                "med": 6,
-                "max": 8
-            },
-            "group_duration": {
-                "med": 91.80333,
-                "max": 14154.664945,
-                "p(90)": 12052.829411600002,
-                "p(95)": 13248.132729899999,
-                "avg": 1727.691976525,
-                "min": 22.700841
-            },
-            "iteration_duration": {
-                "avg": 125244.820054,
-                "min": 125244.820054,
-                "med": 125244.820054,
-                "max": 125244.820054,
-                "p(90)": 125244.820054,
-                "p(95)": 125244.820054
-            },
-            "http_req_receiving": {
-                "avg": 1.2553528098859317,
-                "min": 0.03254,
-                "med": 0.109756,
-                "max": 29.971935,
-                "p(90)": 6.2915104000000035,
-                "p(95)": 7.8310029
-            },
-            "http_reqs": {
-                "count": 263,
-                "rate": 2.0979238000812153
-            },
-            "iterations": {
-                "count": 1,
-                "rate": 0.00797689657825557
-            },
-            "data_sent": {
-                "count": 95213,
-                "rate": 759.5042539054476
-            },
-            "baseline_post_ms": {
-                "med": 14,
-                "max": 14093,
-                "p(90)": 11980.7,
-                "p(95)": 13162.899999999998,
-                "avg": 1660.575,
-                "min": 7
-            },
-            "vus_max": {
-                "value": 1,
-                "min": 1,
-                "max": 1
-            },
-            "vus": {
-                "max": 1,
-                "value": 1,
-                "min": 1
-            }
+            "checks": {},
+            "name": ""
         }
 }
