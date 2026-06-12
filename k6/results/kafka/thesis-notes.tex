@@ -272,6 +272,32 @@ The calibration follows a two-phase approach:
 \noindent Thresholds are applied per-app using k6's tagged threshold
 syntax: \texttt{metric\{app\_name:Calculator\}: ['p(95)<1000']}.
 
+\subsection{Deployment Consideration: Shared Volume with Replicas}
+
+The ClimateAnomaly application requires a CSV file on a shared volume
+(\texttt{/app/shared\_data/}). When running multiple backend replicas,
+the PersistentVolumeClaim is declared as \texttt{ReadWriteOnce}, meaning
+it can only be mounted by pods on the same node. On a single-node cluster
+all replicas share the same PVC, but \texttt{kubectl cp} only targets one
+pod. If the K8s Service load-balances a request to a different replica
+that has not yet written the file to its local cache, the request fails
+with a 500 error.
+
+The solution is to copy the test data to all replicas before running
+benchmarks:
+
+\begin{lstlisting}[language=bash]
+for POD in $(kubectl get pod -l app=shiny-back-csv-advanced -o name); do
+  kubectl cp k6/bench-climate-data.csv \
+    ${POD#pod/}:/app/shared_data/bench-climate-data.csv
+done
+\end{lstlisting}
+
+\noindent This is a test environment concern, not an architectural
+limitation. In production, the CSV would be uploaded via the application
+UI and written to the shared volume by the receiving pod, making it
+available to all replicas through the PVC.
+
 \subsection{What the Baseline Separates}
 
 The per-app threshold design separates two distinct latency components:
