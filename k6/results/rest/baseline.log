@@ -12,25 +12,25 @@
      scenarios: (100.00%) 1 scenario, 1 max VUs, 30m30s max duration (incl. graceful stop):
               * baseline: 1 iterations for each of 1 VUs (maxDuration: 30m0s, gracefulStop: 30s)
 
-time="2026-06-12T11:13:26Z" level=info msg="Health check passed. 8 apps registered." source=console
-time="2026-06-12T11:13:26Z" level=info msg="Running baseline: 1 VU, 5 repeats per app, no concurrency." source=console
-time="2026-06-12T11:13:27Z" level=info msg="Calculator rep0: post=25ms relay=4ms save=10ms restore=5ms total=99ms" source=console
+time="2026-06-12T11:38:27Z" level=info msg="Health check passed. 8 apps registered." source=console
+time="2026-06-12T11:38:27Z" level=info msg="Running baseline: 1 VU, 5 repeats per app, no concurrency." source=console
+time="2026-06-12T11:38:27Z" level=info msg="Calculator rep0: post=20ms relay=5ms save=51ms restore=7ms total=143ms" source=console
 
 running (00m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m00.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:28Z" level=info msg="Calculator rep1: post=14ms relay=4ms save=10ms restore=7ms total=87ms" source=console
+time="2026-06-12T11:38:28Z" level=info msg="Calculator rep1: post=9ms relay=3ms save=8ms restore=6ms total=84ms" source=console
 
 running (00m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m01.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:29Z" level=info msg="Calculator rep2: post=15ms relay=8ms save=8ms restore=6ms total=91ms" source=console
+time="2026-06-12T11:38:29Z" level=info msg="Calculator rep2: post=10ms relay=4ms save=9ms restore=8ms total=85ms" source=console
 
 running (00m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m02.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:30Z" level=info msg="Calculator rep3: post=10ms relay=3ms save=7ms restore=7ms total=78ms" source=console
+time="2026-06-12T11:38:30Z" level=info msg="Calculator rep3: post=12ms relay=4ms save=8ms restore=6ms total=90ms" source=console
 
 running (00m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m03.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:31Z" level=info msg="Calculator rep4: post=14ms relay=4ms save=9ms restore=6ms total=85ms" source=console
+time="2026-06-12T11:38:31Z" level=info msg="Calculator rep4: post=15ms relay=4ms save=9ms restore=6ms total=92ms" source=console
 
 running (00m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m04.9s/30m0s  0/1 iters, 1 per VU
@@ -40,26 +40,26 @@ baseline   [   0% ] 1 VUs  00m05.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m06.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:34Z" level=info msg="Analytics rep0: post=14ms relay=4ms save=7ms restore=4ms total=73ms" source=console
+time="2026-06-12T11:38:34Z" level=info msg="Analytics rep0: post=11ms relay=4ms save=7ms restore=7ms total=71ms" source=console
 
 running (00m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m07.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:35Z" level=info msg="Analytics rep1: post=12ms relay=4ms save=11ms restore=5ms total=76ms" source=console
+time="2026-06-12T11:38:35Z" level=info msg="Analytics rep1: post=15ms relay=5ms save=7ms restore=4ms total=61ms" source=console
 
 running (00m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m08.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:36Z" level=info msg="Analytics rep2: post=16ms relay=4ms save=9ms restore=7ms total=88ms" source=console
+time="2026-06-12T11:38:36Z" level=info msg="Analytics rep2: post=13ms relay=4ms save=12ms restore=8ms total=98ms" source=console
 
 running (00m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m09.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:37Z" level=info msg="Analytics rep3: post=11ms relay=3ms save=8ms restore=6ms total=71ms" source=console
 
 running (00m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m10.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:38:38Z" level=info msg="Analytics rep3: post=12ms relay=3ms save=7ms restore=5ms total=79ms" source=console
 
 running (00m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m11.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:38Z" level=info msg="Analytics rep4: post=10ms relay=3ms save=6ms restore=6ms total=72ms" source=console
+time="2026-06-12T11:38:39Z" level=info msg="Analytics rep4: post=15ms relay=4ms save=10ms restore=7ms total=95ms" source=console
 
 running (00m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m12.9s/30m0s  0/1 iters, 1 per VU
@@ -69,23 +69,23 @@ baseline   [   0% ] 1 VUs  00m13.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m14.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:41Z" level=info msg="Advanced rep0: post=10ms relay=4ms save=9ms restore=7ms total=84ms" source=console
+time="2026-06-12T11:38:42Z" level=info msg="Advanced rep0: post=13ms relay=4ms save=11ms restore=6ms total=91ms" source=console
 
 running (00m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m15.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:43Z" level=info msg="Advanced rep1: post=13ms relay=4ms save=7ms restore=6ms total=82ms" source=console
+time="2026-06-12T11:38:43Z" level=info msg="Advanced rep1: post=14ms relay=3ms save=9ms restore=4ms total=85ms" source=console
 
 running (00m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m16.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:44Z" level=info msg="Advanced rep2: post=12ms relay=2ms save=7ms restore=6ms total=75ms" source=console
+time="2026-06-12T11:38:44Z" level=info msg="Advanced rep2: post=11ms relay=4ms save=8ms restore=6ms total=86ms" source=console
 
 running (00m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m17.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:45Z" level=info msg="Advanced rep3: post=12ms relay=4ms save=7ms restore=6ms total=80ms" source=console
+time="2026-06-12T11:38:45Z" level=info msg="Advanced rep3: post=11ms relay=4ms save=7ms restore=5ms total=74ms" source=console
 
 running (00m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m18.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:46Z" level=info msg="Advanced rep4: post=11ms relay=4ms save=8ms restore=10ms total=85ms" source=console
+time="2026-06-12T11:38:46Z" level=info msg="Advanced rep4: post=13ms relay=4ms save=7ms restore=5ms total=82ms" source=console
 
 running (00m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m19.9s/30m0s  0/1 iters, 1 per VU
@@ -95,23 +95,23 @@ baseline   [   0% ] 1 VUs  00m20.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m21.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:49Z" level=info msg="DataExchange rep0: post=14ms relay=4ms save=9ms restore=7ms total=92ms" source=console
+time="2026-06-12T11:38:49Z" level=info msg="DataExchange rep0: post=9ms relay=4ms save=7ms restore=6ms total=72ms" source=console
 
 running (00m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m22.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:50Z" level=info msg="DataExchange rep1: post=14ms relay=4ms save=9ms restore=5ms total=88ms" source=console
+time="2026-06-12T11:38:50Z" level=info msg="DataExchange rep1: post=11ms relay=5ms save=5ms restore=6ms total=85ms" source=console
 
 running (00m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m23.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:51Z" level=info msg="DataExchange rep2: post=13ms relay=4ms save=7ms restore=7ms total=82ms" source=console
+time="2026-06-12T11:38:51Z" level=info msg="DataExchange rep2: post=16ms relay=5ms save=8ms restore=7ms total=83ms" source=console
 
 running (00m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m24.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:52Z" level=info msg="DataExchange rep3: post=15ms relay=5ms save=7ms restore=5ms total=88ms" source=console
+time="2026-06-12T11:38:52Z" level=info msg="DataExchange rep3: post=9ms relay=5ms save=6ms restore=6ms total=76ms" source=console
 
 running (00m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m25.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:53Z" level=info msg="DataExchange rep4: post=18ms relay=4ms save=9ms restore=6ms total=93ms" source=console
+time="2026-06-12T11:38:53Z" level=info msg="DataExchange rep4: post=13ms relay=3ms save=7ms restore=4ms total=68ms" source=console
 
 running (00m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m26.9s/30m0s  0/1 iters, 1 per VU
@@ -124,23 +124,23 @@ baseline   [   0% ] 1 VUs  00m28.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m29.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:56Z" level=info msg="MonteCarlo rep0: post=84ms relay=3ms save=4ms restore=5ms total=130ms" source=console
+time="2026-06-12T11:38:57Z" level=info msg="MonteCarlo rep0: post=107ms relay=4ms save=13ms restore=7ms total=185ms" source=console
 
 running (00m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m30.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:58Z" level=info msg="MonteCarlo rep1: post=58ms relay=3ms save=7ms restore=7ms total=118ms" source=console
+time="2026-06-12T11:38:58Z" level=info msg="MonteCarlo rep1: post=28ms relay=3ms save=6ms restore=4ms total=87ms" source=console
 
 running (00m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m31.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:13:59Z" level=info msg="MonteCarlo rep2: post=26ms relay=3ms save=6ms restore=5ms total=74ms" source=console
+time="2026-06-12T11:38:59Z" level=info msg="MonteCarlo rep2: post=60ms relay=5ms save=9ms restore=7ms total=137ms" source=console
 
 running (00m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m32.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:00Z" level=info msg="MonteCarlo rep3: post=23ms relay=6ms save=8ms restore=6ms total=82ms" source=console
+time="2026-06-12T11:39:00Z" level=info msg="MonteCarlo rep3: post=123ms relay=4ms save=8ms restore=6ms total=188ms" source=console
 
 running (00m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m33.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:01Z" level=info msg="MonteCarlo rep4: post=84ms relay=5ms save=9ms restore=6ms total=144ms" source=console
+time="2026-06-12T11:39:01Z" level=info msg="MonteCarlo rep4: post=21ms relay=2ms save=6ms restore=5ms total=70ms" source=console
 
 running (00m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m34.9s/30m0s  0/1 iters, 1 per VU
@@ -150,26 +150,26 @@ baseline   [   0% ] 1 VUs  00m35.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m36.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:04Z" level=info msg="Geospatial rep0: post=14ms relay=4ms save=7ms restore=6ms total=79ms" source=console
+time="2026-06-12T11:39:04Z" level=info msg="Geospatial rep0: post=15ms relay=4ms save=9ms restore=7ms total=95ms" source=console
 
 running (00m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m37.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:05Z" level=info msg="Geospatial rep1: post=11ms relay=3ms save=7ms restore=8ms total=75ms" source=console
+time="2026-06-12T11:39:05Z" level=info msg="Geospatial rep1: post=11ms relay=3ms save=10ms restore=4ms total=58ms" source=console
 
 running (00m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m38.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:06Z" level=info msg="Geospatial rep2: post=13ms relay=3ms save=9ms restore=6ms total=92ms" source=console
+time="2026-06-12T11:39:06Z" level=info msg="Geospatial rep2: post=14ms relay=3ms save=7ms restore=6ms total=84ms" source=console
 
 running (00m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m39.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:07Z" level=info msg="Geospatial rep3: post=14ms relay=5ms save=8ms restore=7ms total=91ms" source=console
+time="2026-06-12T11:39:07Z" level=info msg="Geospatial rep3: post=12ms relay=5ms save=7ms restore=5ms total=74ms" source=console
 
 running (00m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m40.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:14:08Z" level=info msg="Geospatial rep4: post=13ms relay=5ms save=9ms restore=6ms total=86ms" source=console
 
 running (00m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m41.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:09Z" level=info msg="Geospatial rep4: post=12ms relay=4ms save=6ms restore=7ms total=81ms" source=console
 
 running (00m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m42.9s/30m0s  0/1 iters, 1 per VU
@@ -179,18 +179,23 @@ baseline   [   0% ] 1 VUs  00m43.9s/30m0s  0/1 iters, 1 per VU
 
 running (00m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m44.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:12Z" level=error msg="ClimateAnomaly rep0: POST failed (500)" source=console
 
 running (00m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m45.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:13Z" level=error msg="ClimateAnomaly rep1: POST failed (500)" source=console
 
 running (00m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m46.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:14Z" level=error msg="ClimateAnomaly rep2: POST failed (500)" source=console
 
 running (00m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m47.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:15Z" level=error msg="ClimateAnomaly rep3: POST failed (500)" source=console
 
 running (00m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m48.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:16Z" level=error msg="ClimateAnomaly rep4: POST failed (500)" source=console
 
 running (00m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  00m49.9s/30m0s  0/1 iters, 1 per VU
@@ -242,6 +247,7 @@ baseline   [   0% ] 1 VUs  01m04.9s/30m0s  0/1 iters, 1 per VU
 
 running (01m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m05.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:33Z" level=info msg="MLTrainer rep0: post=13951ms relay=5ms save=9ms restore=7ms total=14034ms" source=console
 
 running (01m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m06.9s/30m0s  0/1 iters, 1 per VU
@@ -284,6 +290,7 @@ baseline   [   0% ] 1 VUs  01m18.9s/30m0s  0/1 iters, 1 per VU
 
 running (01m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m19.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:39:47Z" level=info msg="MLTrainer rep1: post=12897ms relay=4ms save=9ms restore=5ms total=12970ms" source=console
 
 running (01m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m20.9s/30m0s  0/1 iters, 1 per VU
@@ -329,6 +336,7 @@ baseline   [   0% ] 1 VUs  01m33.9s/30m0s  0/1 iters, 1 per VU
 
 running (01m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m34.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:40:02Z" level=info msg="MLTrainer rep2: post=14239ms relay=3ms save=8ms restore=5ms total=14295ms" source=console
 
 running (01m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m35.9s/30m0s  0/1 iters, 1 per VU
@@ -359,7 +367,6 @@ baseline   [   0% ] 1 VUs  01m43.9s/30m0s  0/1 iters, 1 per VU
 
 running (01m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m44.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:15:12Z" level=error msg="ClimateAnomaly rep0: relay timeout after 60695ms" source=console
 
 running (01m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m45.9s/30m0s  0/1 iters, 1 per VU
@@ -372,6 +379,7 @@ baseline   [   0% ] 1 VUs  01m47.9s/30m0s  0/1 iters, 1 per VU
 
 running (01m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m48.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:40:16Z" level=info msg="MLTrainer rep3: post=13233ms relay=3ms save=8ms restore=4ms total=13291ms" source=console
 
 running (01m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  01m49.9s/30m0s  0/1 iters, 1 per VU
@@ -417,6 +425,7 @@ baseline   [   0% ] 1 VUs  02m02.9s/30m0s  0/1 iters, 1 per VU
 
 running (02m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  02m03.9s/30m0s  0/1 iters, 1 per VU
+time="2026-06-12T11:40:31Z" level=info msg="MLTrainer rep4: post=13549ms relay=4ms save=8ms restore=7ms total=13621ms" source=console
 
 running (02m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  02m04.9s/30m0s  0/1 iters, 1 per VU
@@ -426,921 +435,9 @@ baseline   [   0% ] 1 VUs  02m05.9s/30m0s  0/1 iters, 1 per VU
 
 running (02m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
 baseline   [   0% ] 1 VUs  02m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m07.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m08.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m09.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m10.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m11.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m12.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m14.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m13.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m14.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m15.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m16.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m17.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m18.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m19.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m20.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m21.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m22.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m23.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m24.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m25.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m26.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m28.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m27.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m29.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m28.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m29.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m30.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m31.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m32.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m33.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m34.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m35.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m36.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m37.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m38.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m39.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m40.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m41.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m42.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m44.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m43.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m44.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m45.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m46.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:16:14Z" level=error msg="ClimateAnomaly rep1: relay timeout after 60693ms" source=console
-
-running (02m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m47.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m48.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m49.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m51.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m50.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m52.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m51.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m53.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m52.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m54.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m53.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m55.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m54.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m56.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m55.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m57.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m56.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m58.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m57.9s/30m0s  0/1 iters, 1 per VU
-
-running (02m59.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m58.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m00.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  02m59.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m00.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m01.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m02.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m03.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m04.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m05.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m07.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m08.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m09.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m10.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m11.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m12.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m14.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m13.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m14.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m15.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m16.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m17.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m18.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m19.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m20.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m21.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m22.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m23.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m24.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m25.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m26.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m28.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m27.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m29.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m28.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m29.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m30.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m31.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m32.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m33.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m34.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m35.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m36.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m37.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m38.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m39.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m40.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m41.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m42.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m44.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m43.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m44.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m45.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m46.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m47.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m48.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:17:15Z" level=error msg="ClimateAnomaly rep2: relay timeout after 60677ms" source=console
-
-running (03m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m49.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m51.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m50.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m52.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m51.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m53.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m52.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m54.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m53.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m55.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m54.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m56.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m55.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m57.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m56.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m58.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m57.9s/30m0s  0/1 iters, 1 per VU
-
-running (03m59.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m58.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m00.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  03m59.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m00.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m01.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m02.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m03.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m04.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m05.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m07.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m08.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m09.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m10.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m11.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m12.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m14.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m13.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m14.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m15.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m16.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m17.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m18.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m19.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m20.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m21.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m22.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m23.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m24.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m25.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m26.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m28.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m27.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m29.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m28.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m29.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m30.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m31.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m32.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m33.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m34.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m35.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m36.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m37.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m38.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m39.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m40.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m41.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m42.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m44.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m43.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m44.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m45.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m46.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m47.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m48.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m49.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:18:17Z" level=error msg="ClimateAnomaly rep3: relay timeout after 60699ms" source=console
-
-running (04m51.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m50.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m52.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m51.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m53.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m52.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m54.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m53.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m55.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m54.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m56.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m55.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m57.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m56.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m58.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m57.9s/30m0s  0/1 iters, 1 per VU
-
-running (04m59.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m58.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m00.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  04m59.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m00.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m01.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m02.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m03.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m04.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m05.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m07.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m08.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m09.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m10.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m11.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m12.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m14.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m13.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m14.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m15.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m16.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m17.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m18.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m19.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m20.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m21.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m22.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m23.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m24.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m25.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m26.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m28.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m27.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m29.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m28.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m29.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m30.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m31.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m32.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m33.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m34.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m35.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m36.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m37.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m38.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m39.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m40.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m41.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m42.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m44.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m43.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m44.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m45.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m46.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m47.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m48.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m49.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m51.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m50.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m52.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m51.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:19:19Z" level=error msg="ClimateAnomaly rep4: relay timeout after 60712ms" source=console
-
-running (05m53.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m52.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m54.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m53.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m55.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m54.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m56.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m55.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m57.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m56.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m58.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m57.9s/30m0s  0/1 iters, 1 per VU
-
-running (05m59.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m58.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m00.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  05m59.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m00.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m01.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m02.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m03.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m04.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m05.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m07.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:19:35Z" level=info msg="MLTrainer rep0: post=13235ms relay=2ms save=10ms restore=10ms total=13308ms" source=console
-
-running (06m09.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m08.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m10.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m09.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m11.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m10.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m12.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m11.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m13.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m12.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m14.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m13.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m15.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m14.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m16.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m15.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m17.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m16.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m18.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m17.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m19.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m18.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m20.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m19.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m21.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m20.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m22.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m21.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m23.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m22.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:19:49Z" level=info msg="MLTrainer rep1: post=13209ms relay=4ms save=9ms restore=7ms total=13282ms" source=console
-
-running (06m24.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m23.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m25.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m24.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m26.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m25.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m27.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m26.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m28.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m27.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m29.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m28.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m30.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m29.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m31.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m30.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m32.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m31.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m33.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m32.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m34.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m33.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m35.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m34.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m36.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m35.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m37.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m36.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:20:04Z" level=info msg="MLTrainer rep2: post=13727ms relay=2ms save=6ms restore=5ms total=13780ms" source=console
-
-running (06m38.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m37.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m39.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m38.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m40.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m39.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m41.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m40.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m42.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m41.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m43.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m42.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m44.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m43.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m45.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m44.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m46.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m45.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m47.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m46.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m48.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m47.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m49.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m48.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m50.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m49.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m51.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m50.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:20:18Z" level=info msg="MLTrainer rep3: post=12767ms relay=3ms save=7ms restore=6ms total=12829ms" source=console
-
-running (06m52.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m51.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m53.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m52.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m54.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m53.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m55.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m54.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m56.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m55.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m57.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m56.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m58.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m57.9s/30m0s  0/1 iters, 1 per VU
-
-running (06m59.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m58.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m00.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  06m59.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m01.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m00.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m02.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m01.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m03.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m02.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m04.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m03.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m05.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m04.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:20:32Z" level=info msg="MLTrainer rep4: post=13128ms relay=4ms save=7ms restore=5ms total=13192ms" source=console
-
-running (07m06.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m05.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m07.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m06.9s/30m0s  0/1 iters, 1 per VU
-
-running (07m08.0s), 1/1 VUs, 0 complete and 0 interrupted iterations
-baseline   [   0% ] 1 VUs  07m07.9s/30m0s  0/1 iters, 1 per VU
-time="2026-06-12T11:20:35Z" level=info msg="\n=== BASELINE COMPLETE ===" source=console
-time="2026-06-12T11:20:35Z" level=info msg="Use --summary-export to get per-app medians for threshold calibration." source=console
-time="2026-06-12T11:20:35Z" level=info msg="Set thresholds at 5x the baseline median for each app." source=console
+time="2026-06-12T11:40:34Z" level=info msg="\n=== BASELINE COMPLETE ===" source=console
+time="2026-06-12T11:40:34Z" level=info msg="Use --summary-export to get per-app medians for threshold calibration." source=console
+time="2026-06-12T11:40:34Z" level=info msg="Set thresholds at 5x the baseline median for each app." source=console
 
      █ baseline_Calculator_rep0
 
@@ -1422,32 +519,32 @@ time="2026-06-12T11:20:35Z" level=info msg="Set thresholds at 5x the baseline me
 
      █ baseline_MLTrainer_rep4
 
-     baseline_fail..................: 5      0.011658/s
-     baseline_get_ms................: avg=3.8ms    min=2ms     med=4ms      max=6ms      p(90)=5ms      p(95)=5ms     
-     baseline_ok....................: 35     0.081604/s
-     baseline_post_ms...............: avg=1.66s    min=10ms    med=14ms     max=13.72s   p(90)=12.8s    p(95)=13.21s  
-     baseline_relay_ms..............: avg=7.59s    min=2ms     med=4ms      max=1m0s     p(90)=1m0s     p(95)=1m0s    
-     baseline_restore_ms............: avg=6.25ms   min=4ms     med=6ms      max=10ms     p(90)=7ms      p(95)=8.59ms  
-     baseline_save_ms...............: avg=7.91ms   min=4ms     med=8ms      max=11ms     p(90)=9.6ms    p(95)=10ms    
-     baseline_total_ms..............: avg=1.97s    min=71ms    med=87ms     max=13.78s   p(90)=13.04s   p(95)=13.28s  
-     data_received..................: 21 MB  49 kB/s
-     data_sent......................: 286 kB 667 B/s
-     group_duration.................: avg=9.31s    min=71.55ms med=88.61ms  max=1m0s     p(90)=1m0s     p(95)=1m0s    
-     http_req_blocked...............: avg=10.84µs  min=1.76µs  med=8.46µs   max=1.16ms   p(90)=11.88µs  p(95)=13.78µs 
-     http_req_connecting............: avg=1.1µs    min=0s      med=0s       max=711.08µs p(90)=0s       p(95)=0s      
-     http_req_duration..............: avg=83.07ms  min=1.99ms  med=4.97ms   max=13.72s   p(90)=10.03ms  p(95)=16.99ms 
-       { expected_response:true }...: avg=83.07ms  min=1.99ms  med=4.97ms   max=13.72s   p(90)=10.03ms  p(95)=16.99ms 
-     http_req_failed................: 0.00%  0 out of 863
-     http_req_receiving.............: avg=353.04µs min=32.16µs med=104.46µs max=12.8ms   p(90)=160.58µs p(95)=211.73µs
-     http_req_sending...............: avg=37.2µs   min=5.69µs  med=35.94µs  max=239.66µs p(90)=49.79µs  p(95)=59.82µs 
-     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s       max=0s       p(90)=0s       p(95)=0s      
-     http_req_waiting...............: avg=82.68ms  min=1.94ms  med=4.83ms   max=13.72s   p(90)=9.63ms   p(95)=13.54ms 
-     http_reqs......................: 863    2.01212/s
-     iteration_duration.............: avg=7m8s     min=7m8s    med=7m8s     max=7m8s     p(90)=7m8s     p(95)=7m8s    
-     iterations.....................: 1      0.002332/s
-     vus............................: 1      min=1        max=1
-     vus_max........................: 1      min=1        max=1
+     baseline_fail..................: 5     0.039258/s
+     baseline_get_ms................: avg=4.08ms   min=2ms     med=4ms      max=9ms      p(90)=5.6ms   p(95)=6ms    
+     baseline_ok....................: 35    0.274803/s
+     baseline_post_ms...............: avg=1.71s    min=9ms     med=14ms     max=14.23s   p(90)=12.93s  p(95)=13.56s 
+     baseline_relay_ms..............: avg=3.91ms   min=2ms     med=4ms      max=5ms      p(90)=5ms     p(95)=5ms    
+     baseline_restore_ms............: avg=5.85ms   min=4ms     med=6ms      max=8ms      p(90)=7ms     p(95)=7.29ms 
+     baseline_save_ms...............: avg=9.31ms   min=5ms     med=8ms      max=51ms     p(90)=10.6ms  p(95)=12.29ms
+     baseline_total_ms..............: avg=2.02s    min=58ms    med=85ms     max=14.29s   p(90)=13.16s  p(95)=13.74s 
+     data_received..................: 22 MB 169 kB/s
+     data_sent......................: 94 kB 735 B/s
+     group_duration.................: avg=1.77s    min=21.44ms med=84.3ms   max=14.29s   p(90)=13s     p(95)=13.64s 
+     http_req_blocked...............: avg=10.73µs  min=1.81µs  med=5.83µs   max=701.49µs p(90)=9.62µs  p(95)=11.99µs
+     http_req_connecting............: avg=2.42µs   min=0s      med=0s       max=351.17µs p(90)=0s      p(95)=0s     
+     http_req_duration..............: avg=273.94ms min=1.71ms  med=7.37ms   max=14.23s   p(90)=23.06ms p(95)=26.25ms
+       { expected_response:true }...: avg=279.02ms min=1.71ms  med=7.15ms   max=14.23s   p(90)=23.08ms p(95)=26.71ms
+     http_req_failed................: 1.93% 5 out of 258
+     http_req_receiving.............: avg=961.65µs min=37.08µs med=105.47µs max=11.25ms  p(90)=5.65ms  p(95)=6.85ms 
+     http_req_sending...............: avg=35.47µs  min=7.88µs  med=32.16µs  max=207.66µs p(90)=55.47µs p(95)=69.23µs
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s       max=0s       p(90)=0s      p(95)=0s     
+     http_req_waiting...............: avg=272.94ms min=1.66ms  med=7.26ms   max=14.23s   p(90)=16.53ms p(95)=21.99ms
+     http_reqs......................: 258   2.025687/s
+     iteration_duration.............: avg=2m7s     min=2m7s    med=2m7s     max=2m7s     p(90)=2m7s    p(95)=2m7s   
+     iterations.....................: 1     0.007852/s
+     vus............................: 1     min=1        max=1
+     vus_max........................: 1     min=1        max=1
 
 
-running (07m08.9s), 0/1 VUs, 1 complete and 0 interrupted iterations
-baseline ✓ [ 100% ] 1 VUs  07m08.8s/30m0s  1/1 iters, 1 per VU
+running (02m07.4s), 0/1 VUs, 1 complete and 0 interrupted iterations
+baseline ✓ [ 100% ] 1 VUs  02m07.2s/30m0s  1/1 iters, 1 per VU
