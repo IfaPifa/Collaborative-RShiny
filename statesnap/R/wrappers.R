@@ -16,7 +16,7 @@ NULL
 #' written back to disk.
 #'
 #' @param path Path to the file to embed.
-#' @return An object of class `shinyswarm_file`.
+#' @return An object of class `statesnap_file`.
 #' @export
 #' @examples
 #' state_file("/tmp/data.csv")
@@ -24,7 +24,7 @@ state_file <- function(path) {
   if (!is.character(path) || length(path) != 1L) {
     stop("state_file() requires a single file path", call. = FALSE)
   }
-  structure(list(path = path), class = "shinyswarm_file")
+  structure(list(path = path), class = "statesnap_file")
 }
 
 #' Capture an arbitrary R object
@@ -35,10 +35,10 @@ state_file <- function(path) {
 #' [base::unserialize()].
 #'
 #' @param obj Any R object.
-#' @return An object of class `shinyswarm_rds`.
+#' @return An object of class `statesnap_rds`.
 #' @export
 #' @examples
 #' state_rds(lm(mpg ~ wt, data = mtcars))
 state_rds <- function(obj) {
-  structure(list(obj = obj), class = "shinyswarm_rds")
+  structure(list(obj = obj), class = "statesnap_rds")
 }

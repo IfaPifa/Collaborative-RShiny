@@ -10,7 +10,7 @@ state_rds(obj)
 \item{obj}{Any R object.}
 }
 \value{
-An object of class `shinyswarm_rds`.
+An object of class `statesnap_rds`.
 }
 \description{
 Marks an R object (e.g. a trained model) so that [capture_state()]

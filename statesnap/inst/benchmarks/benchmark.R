@@ -1,5 +1,5 @@
 # ==========================================================================
-#  shinyswarm microbenchmarks
+#  statesnap microbenchmarks
 #
 #  Measures the IN-PROCESS cost of the library: capture_state() and
 #  restore_state() latency, payload size, and compression effectiveness.
@@ -8,7 +8,7 @@
 #  serialisation work; the transport's cost is measured elsewhere.
 #
 #  Headless: no Shiny server, no browser. Run with:
-#     Rscript shinyswarm/inst/benchmarks/benchmark.R
+#     Rscript statesnap/inst/benchmarks/benchmark.R
 #  from the repository root (or with the package installed).
 #
 #  Outputs (written next to this script, under results/):
@@ -21,16 +21,16 @@
 # ==========================================================================
 
 suppressWarnings(suppressMessages({
-  if (requireNamespace("shinyswarm", quietly = TRUE)) {
-    library(shinyswarm)
-  } else if (dir.exists("shinyswarm/R")) {
-    invisible(lapply(list.files("shinyswarm/R", "[.]R$", full.names = TRUE), source))
+  if (requireNamespace("statesnap", quietly = TRUE)) {
+    library(statesnap)
+  } else if (dir.exists("statesnap/R")) {
+    invisible(lapply(list.files("statesnap/R", "[.]R$", full.names = TRUE), source))
     library(jsonlite); library(base64enc)
   } else if (dir.exists("R")) {
     invisible(lapply(list.files("R", "[.]R$", full.names = TRUE), source))
     library(jsonlite); library(base64enc)
   } else {
-    stop("Run from the repo root or install the shinyswarm package.")
+    stop("Run from the repo root or install the statesnap package.")
   }
   library(microbenchmark)
   have_ggplot <- requireNamespace("ggplot2", quietly = TRUE)
@@ -55,8 +55,8 @@ out_dir <- local({
     fa <- sub("^--file=", "", args[grep("^--file=", args)])
     if (length(fa) == 1L && nzchar(fa)) {
       base <- dirname(normalizePath(fa))
-    } else if (file.exists("shinyswarm/inst/benchmarks/benchmark.R")) {
-      base <- "shinyswarm/inst/benchmarks"          # run from repo root
+    } else if (file.exists("statesnap/inst/benchmarks/benchmark.R")) {
+      base <- "statesnap/inst/benchmarks"          # run from repo root
     } else if (file.exists("inst/benchmarks/benchmark.R")) {
       base <- "inst/benchmarks"                      # run from package root
     } else {
@@ -69,7 +69,7 @@ out_dir <- local({
 })
 
 TIMES <- as.integer(Sys.getenv("SHINYSWARM_BENCH_TIMES", "100"))
-cat(sprintf("shinyswarm benchmark | %d iterations/case | output: %s\n\n",
+cat(sprintf("statesnap benchmark | %d iterations/case | output: %s\n\n",
             TIMES, out_dir))
 
 # A reactiveVal stand-in so the benchmark needs no running Shiny session.
@@ -226,7 +226,7 @@ if (have_ggplot) {
     geom_line() + geom_point() +
     scale_x_log10(labels = function(x) paste0(x/1e3, "KB")) +
     scale_y_log10() +
-    labs(title = "shinyswarm capture/restore latency",
+    labs(title = "statesnap capture/restore latency",
          x = "approx. state size (log)", y = "median ms (log)",
          colour = NULL) +
     theme_minimal()
@@ -239,7 +239,7 @@ if (have_ggplot) {
   p2 <- ggplot(sz_long, aes(case, bytes, fill = kind)) +
     geom_col(position = "dodge") +
     scale_y_continuous(labels = function(x) paste0(round(x/1e3), "KB")) +
-    labs(title = "shinyswarm payload size: raw vs gzip",
+    labs(title = "statesnap payload size: raw vs gzip",
          x = NULL, y = "JSON bytes", fill = NULL) +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 20, hjust = 1))
@@ -254,7 +254,7 @@ if (have_ggplot) {
 # --------------------------------------------------------------------------
 fmt <- function(x, d = 2) formatC(x, format = "f", digits = d)
 md <- c(
-  "# shinyswarm benchmark results",
+  "# statesnap benchmark results",
   "",
   sprintf("_Generated %s. %d iterations per case. R %s, %s._",
           format(Sys.Date()), TIMES, getRversion(),

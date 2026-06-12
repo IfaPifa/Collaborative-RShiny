@@ -21,7 +21,7 @@ base64 encoding. Offsets base64's ~33 percent inflation. Defaults to `TRUE`.}
 }
 \value{
 A JSON string (length-1 character vector) of class
-  `shinyswarm_state`.
+  `statesnap_state`.
 }
 \description{
 Serialises every input value plus the explicitly registered reactive values

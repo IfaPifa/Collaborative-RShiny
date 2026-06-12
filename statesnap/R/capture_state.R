@@ -31,7 +31,7 @@
 #' @param compress Whether to gzip-compress file and object payloads before
 #'   base64 encoding. Offsets base64's ~33 percent inflation. Defaults to `TRUE`.
 #' @return A JSON string (length-1 character vector) of class
-#'   `shinyswarm_state`.
+#'   `statesnap_state`.
 #' @seealso [restore_state()]
 #' @importFrom jsonlite toJSON
 #' @importFrom base64enc base64encode
@@ -66,12 +66,12 @@ capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
   json <- jsonlite::toJSON(
     state, auto_unbox = TRUE, force = TRUE, null = "null", digits = NA
   )
-  structure(as.character(json), class = "shinyswarm_state")
+  structure(as.character(json), class = "statesnap_state")
 }
 
 # Dispatch a single registered value to its tagged representation.
 .capture_one <- function(rv, max_size, compress) {
-  if (inherits(rv, "shinyswarm_file")) {
+  if (inherits(rv, "statesnap_file")) {
     raw <- .read_file_raw(rv$path, max_size = max_size)
     if (compress) raw <- .gzip_raw(raw)
     return(list(
@@ -81,7 +81,7 @@ capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
     ))
   }
 
-  if (inherits(rv, "shinyswarm_rds")) {
+  if (inherits(rv, "statesnap_rds")) {
     raw <- serialize(rv$obj, NULL)
     .check_blob_size(raw, "rds", max_size = max_size)
     if (compress) raw <- .gzip_raw(raw)

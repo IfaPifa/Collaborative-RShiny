@@ -2,7 +2,7 @@ test_that("capture_state serialises inputs to JSON", {
   input <- list(num1 = 42, num2 = 58, label = "hi")
   json <- capture_state(input)
 
-  expect_s3_class(json, "shinyswarm_state")
+  expect_s3_class(json, "statesnap_state")
   expect_length(json, 1L)
 
   parsed <- jsonlite::fromJSON(json, simplifyVector = FALSE)

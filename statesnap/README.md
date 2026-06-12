@@ -1,31 +1,37 @@
-# shinyswarm
+# statesnap
 
-Full-state capture and restore for Shiny applications.
+Transport-agnostic full-state capture and restore for interactive R applications.
 
-`shinyswarm` serialises the complete state of a Shiny session — both inputs and
-computed reactive values — into a single JSON string, and restores it later.
-Unlike input-only sharing (`shinyURL`, bookmarking), which forces the receiving
-session to recompute outputs, full-state capture preserves the outputs exactly.
-For non-deterministic analyses (e.g. a Monte Carlo simulation without
-`set.seed()`), this is the difference between reproducing a result and getting a
-different one.
+`statesnap` serialises a complete set of inputs and computed values — into a
+single JSON string, and restores it later. Unlike input-only sharing
+(`shinyURL`, bookmarking), which forces the receiver to recompute outputs,
+full-state capture preserves the outputs exactly. For non-deterministic analyses
+(e.g. a Monte Carlo simulation without `set.seed()`), this is the difference
+between reproducing a result and getting a different one.
 
 The library is **transport-agnostic**: it produces and consumes JSON only. How
 that JSON is transmitted or persisted — REST, Kafka, Redis, a file, a database —
 is the caller's concern.
 
+**Shiny is supported but not required.** The inputs and accessors are duck-typed,
+so the core works with any list-like collection of values and any getter/setter
+function; Shiny `reactiveVal`/`reactiveValues` are just one supported case. Shiny
+is a suggested dependency, needed only for live `reactiveValues` and for pushing
+inputs back through a session.
+
 This package is the standalone, reusable distillation of the checkpoint
-mechanism built for the ShinySwarm thesis. It works with any Shiny app and needs
-no microservice infrastructure.
+mechanism built for the *ShinySwarm* thesis system (the package is named
+`statesnap` to keep the library distinct from that system). It needs no
+microservice infrastructure.
 
 ## Installation
 
 ```r
 # from a local source checkout
-install.packages("shinyswarm", repos = NULL, type = "source")
+install.packages("statesnap", repos = NULL, type = "source")
 
 # or, during development
-# remotes::install_github("<user>/shinyswarm")
+# remotes::install_github("<user>/statesnap")
 ```
 
 Dependencies: `jsonlite`, `base64enc`. `shiny` is suggested (required only to
@@ -46,7 +52,7 @@ ones you want to capture by name through `...`.
 
 ```r
 library(shiny)
-library(shinyswarm)
+library(statesnap)
 
 server <- function(input, output, session) {
   result <- reactiveVal(0)

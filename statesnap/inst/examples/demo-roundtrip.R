@@ -1,4 +1,4 @@
-# Standalone, headless demo of shinyswarm capture/restore.
+# Standalone, headless demo of statesnap capture/restore.
 # No Shiny server or browser required.
 #
 # If the package is installed:   Rscript demo-roundtrip.R
@@ -6,16 +6,16 @@
 #                                sources R/ directly when the package is not
 #                                installed.
 
-if (requireNamespace("shinyswarm", quietly = TRUE)) {
-  library(shinyswarm)
+if (requireNamespace("statesnap", quietly = TRUE)) {
+  library(statesnap)
 } else if (dir.exists("R")) {
-  message("shinyswarm not installed; sourcing R/ from the source tree")
+  message("statesnap not installed; sourcing R/ from the source tree")
   invisible(lapply(list.files("R", pattern = "[.]R$", full.names = TRUE), source))
 } else {
-  stop("Install shinyswarm, or run this script from the package root.")
+  stop("Install statesnap, or run this script from the package root.")
 }
 
-cat("== shinyswarm round-trip demo ==\n\n")
+cat("== statesnap round-trip demo ==\n\n")
 
 # A reactiveVal is just a function; emulate one with a closure so this script
 # needs no running Shiny session.

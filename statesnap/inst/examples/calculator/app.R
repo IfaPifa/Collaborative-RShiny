@@ -1,4 +1,4 @@
-# Calculator demo for the shinyswarm package.
+# Calculator demo for the statesnap package.
 #
 # Shows the full-state save/restore pattern from the thesis: the app saves a
 # checkpoint with capture_state(), the user changes inputs, then restore_state()
@@ -6,12 +6,12 @@
 # same JSON could go to REST, Kafka, Redis, or a database unchanged.
 
 library(shiny)
-library(shinyswarm)
+library(statesnap)
 
 CHECKPOINT <- file.path(tempdir(), "calculator-checkpoint.json")
 
 ui <- fluidPage(
-  titlePanel("shinyswarm - Calculator demo"),
+  titlePanel("statesnap - Calculator demo"),
   sidebarLayout(
     sidebarPanel(
       numericInput("num1", "Number 1", value = 10),

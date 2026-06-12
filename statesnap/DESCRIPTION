@@ -1,15 +1,17 @@
-Package: shinyswarm
+Package: statesnap
 Type: Package
-Title: Full-State Capture and Restore for Shiny Applications
+Title: Transport-Agnostic Full-State Capture and Restore
 Version: 0.1.0
 Authors@R: person(given = "Iva", family = "Gunjaca", role = c("aut", "cre"), email = "gunjaca.iva@gmail.com")
 Description: Transport-agnostic full-state serialisation and restoration for
-    Shiny applications. Captures both inputs and computed reactive values to a
-    single JSON string and restores them later, guaranteeing exact
+    interactive R applications. Captures a set of inputs and computed values to
+    a single JSON string and restores them later, guaranteeing exact
     reproducibility without recomputation. The library produces and consumes
     JSON only; how it is transmitted or persisted (REST, Kafka, Redis, file,
     database) is left to the caller. Typed wrappers handle file references and
-    arbitrary binary R objects. Prototype accompanying the ShinySwarm thesis.
+    arbitrary binary R objects. Shiny is supported but not required: inputs and
+    setters are duck-typed, so the core works with any list-like state and any
+    accessor function. Prototype accompanying the ShinySwarm thesis.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Imports:

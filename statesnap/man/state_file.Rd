@@ -10,7 +10,7 @@ state_file(path)
 \item{path}{Path to the file to embed.}
 }
 \value{
-An object of class `shinyswarm_file`.
+An object of class `statesnap_file`.
 }
 \description{
 Marks a path so that [capture_state()] reads the file and embeds its
