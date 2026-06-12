@@ -29,7 +29,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, USERS, login, createSession, joinSession,
-  postState, getState, healthCheck,
+  postState, getState, healthCheck, perAppThresholds,
 } from './config.js';
 
 const collabPropagation = new Trend('collab_propagation_ms', true);
@@ -51,10 +51,10 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    'collab_propagation_ms': ['p(95)<10000'],
-    'http_req_failed':       ['rate<0.2'],
-  },
+  thresholds: Object.assign(
+    { 'http_req_failed': ['rate<0.2'] },
+    perAppThresholds('collab_propagation_ms', 'propagation'),
+  ),
 };
 
 export function setup() {

@@ -32,6 +32,7 @@ import { Trend, Rate, Counter } from 'k6/metrics';
 import {
   API, APPS, USERS, login, authHeaders, appForVU, healthCheck,
   createSession, joinSession, postState, getState, saveSessionState,
+  perAppThresholds,
 } from './config.js';
 
 const opMs     = new Trend('lifecycle_op_ms', true);
@@ -52,10 +53,10 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    'lifecycle_errors':  ['rate<0.25'],
-    'http_req_duration': ['p(95)<15000'],
-  },
+  thresholds: Object.assign(
+    { 'lifecycle_errors': ['rate<0.25'] },
+    perAppThresholds('lifecycle_op_ms', 'lifecycle'),
+  ),
 };
 
 function trackOp(res, operation, appName) {

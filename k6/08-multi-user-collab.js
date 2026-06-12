@@ -26,7 +26,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, USERS, login, createSession, joinSession,
-  postState, getState, healthCheck,
+  postState, getState, healthCheck, perAppThresholds,
 } from './config.js';
 
 const multiPropAll   = new Trend('multi_propagation_all_ms', true);
@@ -45,10 +45,10 @@ export const options = {
       maxDuration: '5m',
     },
   },
-  thresholds: {
-    'multi_propagation_all_ms': ['p(95)<15000'],
-    'http_req_failed':          ['rate<0.3'],
-  },
+  thresholds: Object.assign(
+    { 'http_req_failed': ['rate<0.3'] },
+    perAppThresholds('multi_propagation_all_ms', 'propagation'),
+  ),
 };
 
 export function setup() {

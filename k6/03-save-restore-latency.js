@@ -25,6 +25,7 @@ import {
   APPS, login, userForVU, healthCheck,
   createSession, postState, getState,
   saveSessionState, getMySavedStates, restoreState,
+  perAppThresholds,
 } from './config.js';
 
 const saveToDbMs      = new Trend('save_to_db_ms', true);
@@ -48,11 +49,11 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    'save_to_db_ms':      ['p(95)<5000'],
-    'restore_from_db_ms': ['p(95)<5000'],
-    'http_req_failed':    ['rate<0.2'],
-  },
+  thresholds: Object.assign(
+    { 'http_req_failed': ['rate<0.2'] },
+    perAppThresholds('save_to_db_ms', 'save'),
+    perAppThresholds('restore_from_db_ms', 'restore'),
+  ),
 };
 
 export function setup() {

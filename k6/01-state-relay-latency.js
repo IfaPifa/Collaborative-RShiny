@@ -23,6 +23,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, login, userForVU, createSession, postState, getState, healthCheck,
+  perAppThresholds,
 } from './config.js';
 
 const relayPostMs  = new Trend('relay_post_ms', true);
@@ -45,10 +46,10 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    'relay_total_ms':  ['p(95)<10000'],
-    'http_req_failed': ['rate<0.15'],
-  },
+  thresholds: Object.assign(
+    { 'http_req_failed': ['rate<0.15'] },
+    perAppThresholds('relay_total_ms', 'relay'),
+  ),
 };
 
 export function setup() {

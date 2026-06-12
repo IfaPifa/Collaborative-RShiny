@@ -141,14 +141,46 @@ export const APPS = [
     payload: (vu, iter) => ({
       appName: 'MLTrainer',
       command: 'TRAIN_MODEL',
-      n_trees: 50,
-      target_var: 'presence',
-      train_ratio: 0.7,
+      trees: 500,
+      mtry: 2,
       sender: `user_${vu}`,
       timestamp: Date.now() / 1000,
     }),
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Per-app thresholds (calibrate by running 00-baseline.js, then set to 5×
+// the baseline median). Values are in milliseconds unless noted.
+//
+// After running the baseline:
+//   k6 run -e BASE_URL=http://... --summary-export=k6/results/baseline.json k6/00-baseline.js
+// Read baseline_relay_ms, baseline_post_ms, baseline_save_ms per app_name
+// and multiply the median by 5 to fill in these values.
+// ---------------------------------------------------------------------------
+export const APP_THRESHOLDS = {
+  Calculator:     { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
+  Analytics:      { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
+  Advanced:       { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
+  DataExchange:   { relay: 5000,  post: 3000,  save: 3000,  restore: 3000,  propagation: 5000,  lifecycle: 3000  },
+  MonteCarlo:     { relay: 15000, post: 10000, save: 5000,  restore: 3000,  propagation: 15000, lifecycle: 10000 },
+  Geospatial:     { relay: 10000, post: 5000,  save: 5000,  restore: 3000,  propagation: 10000, lifecycle: 5000  },
+  ClimateAnomaly: { relay: 30000, post: 20000, save: 10000, restore: 5000,  propagation: 30000, lifecycle: 20000 },
+  MLTrainer:      { relay: 60000, post: 45000, save: 10000, restore: 5000,  propagation: 60000, lifecycle: 45000 },
+};
+
+// Build k6 threshold entries for a metric tagged with {app_name:X}.
+// Returns an object like: { 'metric{app_name:Calculator}': ['p(95)<5000'], ... }
+export function perAppThresholds(metricName, thresholdKey, op = 'p(95)') {
+  const result = {};
+  for (const [app, limits] of Object.entries(APP_THRESHOLDS)) {
+    const limit = limits[thresholdKey];
+    if (limit !== undefined) {
+      result[`${metricName}{app_name:${app}}`] = [`${op}<${limit}`];
+    }
+  }
+  return result;
+}
 
 // ---------------------------------------------------------------------------
 // Helpers

@@ -19,6 +19,7 @@ import { Trend, Rate, Counter } from 'k6/metrics';
 import {
   API, login, authHeaders, userForVU, appForVU, healthCheck,
   createSession, postState, getState, saveSessionState,
+  perAppThresholds,
 } from './config.js';
 
 const responseMs = new Trend('throughput_response_ms', true);
@@ -41,10 +42,10 @@ export const options = {
       ],
     },
   },
-  thresholds: {
-    'http_req_duration': ['p(95)<15000'],
-    'throughput_errors': ['rate<0.3'],
-  },
+  thresholds: Object.assign(
+    { 'throughput_errors': ['rate<0.3'] },
+    perAppThresholds('throughput_response_ms', 'post'),
+  ),
 };
 
 function track(res, op, appName) {
