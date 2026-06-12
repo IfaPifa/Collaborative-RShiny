@@ -45,7 +45,8 @@ test.describe('RQ5: Cross-User Checkpoint Restore', () => {
     await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
 
     // Bob should see Alice's checkpoint (cross-user visibility)
-    const checkpointRow = modal.locator('div').filter({ hasText: saveName });
+    // Target the specific row container that has the Load button as a sibling
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
     await expect(checkpointRow).toBeVisible({ timeout: 10000 });
 
     // Verify it shows "by alice"
