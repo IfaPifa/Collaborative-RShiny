@@ -87,6 +87,28 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     await charlieCtx.close();
   });
 
+  // TEST 4: Time Machine — Restore Checkpoint
+  test('4. Time Machine: Restoring Historical States', async ({ page }) => {
+    await login(page, 'alice');
+    await launchSolo(page, 'Visual Analytics');
+
+    const frame = page.frameLocator('iframe');
+    await waitForShinyBoot(frame);
+
+    await frame.locator('input[name="cyl"][value="4"]').check();
+
+    await page.click('button:has-text("Load Checkpoint")');
+    const modal = page.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+    page.once('dialog', dialog => dialog.accept());
+    
+    // Explicitly target the named checkpoint to avoid ambiguity
+    await modal.locator('*').filter({ hasText: sharedSaveName }).getByRole('button', { name: 'Load', exact: true }).first().click();
+
+    await expect(frame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 15000 });
+    await expect(frame.locator('text=Last filter sync by')).toContainText('System Restore', { timeout: 15000 });
+  });
+
   // TEST 5: RQ5 — Cross-User Checkpoint Restore
   test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
@@ -141,27 +163,5 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     await expect(bobFrame.locator('input[name="cyl"][value="8"]')).toBeChecked({ timeout: 15000 });
 
     await bobCtx.close();
-  });
-
-  // TEST 4: Time Machine — Restore Checkpoint
-  test('4. Time Machine: Restoring Historical States', async ({ page }) => {
-    await login(page, 'alice');
-    await launchSolo(page, 'Visual Analytics');
-
-    const frame = page.frameLocator('iframe');
-    await waitForShinyBoot(frame);
-
-    await frame.locator('input[name="cyl"][value="4"]').check();
-
-    await page.click('button:has-text("Load Checkpoint")');
-    const modal = page.locator('app-modal');
-    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
-    page.once('dialog', dialog => dialog.accept());
-    
-    // Explicitly target the named checkpoint to avoid ambiguity
-    await modal.locator('*').filter({ hasText: sharedSaveName }).getByRole('button', { name: 'Load', exact: true }).first().click();
-
-    await expect(frame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 15000 });
-    await expect(frame.locator('text=Last filter sync by')).toContainText('System Restore', { timeout: 15000 });
   });
 });
