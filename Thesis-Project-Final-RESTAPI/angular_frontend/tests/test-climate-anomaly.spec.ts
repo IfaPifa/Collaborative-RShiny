@@ -2,9 +2,10 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
 function createSensorCsv(): string {
-  const csvPath = path.join(__dirname, 'test-sensor-data.csv');
+  const csvPath = path.join(os.tmpdir(), 'test-sensor-data.csv');
   const rows = ['Timestamp,SiteID,Temperature,SoilMoisture'];
   const sites = ['SITE_A', 'SITE_B'];
   for (let day = 1; day <= 5; day++) {
@@ -19,6 +20,7 @@ function createSensorCsv(): string {
 }
 
 test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000);
   let sharedSaveName: string;
 
@@ -102,6 +104,73 @@ test.describe('Climate Anomaly Detector: Core Four Matrix', () => {
 
     await aliceCtx.close();
     await charlieCtx.close();
+  });
+
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Climate Anomaly Detector', 'RQ5 Climate Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    // Alice uploads first sensor CSV (SITE_A, SITE_B) and processes
+    const csv1Path = createSensorCsv();
+    await aliceFrame.locator('input[type="file"]').setInputFiles(csv1Path);
+    await alicePage.waitForTimeout(1500);
+    await aliceFrame.locator('button#process_data').click();
+    await expect(aliceFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
+
+    const saveName = `RQ5-Climate-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice uploads a DIFFERENT CSV with different site names
+    const csv2Path = path.join(os.tmpdir(), 'rq5-climate2.csv');
+    const rows2 = ['Timestamp,SiteID,Temperature,SoilMoisture'];
+    for (let day = 1; day <= 5; day++) {
+      rows2.push(`2026-06-${String(day).padStart(2, '0')} 12:00:00,SITE_X,${(30 + Math.random() * 5).toFixed(1)},${(40 + Math.random() * 10).toFixed(1)}`);
+      rows2.push(`2026-06-${String(day).padStart(2, '0')} 12:00:00,SITE_Y,${(20 + Math.random() * 5).toFixed(1)},${(50 + Math.random() * 10).toFixed(1)}`);
+    }
+    fs.writeFileSync(csv2Path, rows2.join('\n'));
+    await aliceFrame.locator('input[type="file"]').setInputFiles(csv2Path);
+    await alicePage.waitForTimeout(1500);
+    await aliceFrame.locator('button#process_data').click();
+    await expect(aliceFrame.locator('text=SITE_X').first()).toBeVisible({ timeout: 60000 });
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: Bob sees SITE_A (saved state), not SITE_X (Alice's later upload)
+    await expect(bobFrame.locator('text=SITE_A').first()).toBeVisible({ timeout: 60000 });
+
+    // Cleanup
+    fs.unlinkSync(csv1Path);
+    fs.unlinkSync(csv2Path);
+    await bobCtx.close();
   });
 
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {

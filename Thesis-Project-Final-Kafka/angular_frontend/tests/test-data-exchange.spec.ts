@@ -117,6 +117,73 @@ test.describe('Data Exchange: Core Four Matrix', () => {
     await charlieCtx.close();
   });
 
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Data Exchange', 'RQ5 CSV Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    // Alice uploads first CSV and processes
+    const csv1Path = path.join(os.tmpdir(), 'rq5-csv1.csv');
+    fs.writeFileSync(csv1Path, 'Name,City,Score\nalice,basel,95\nbob,zurich,88\n');
+    await aliceFrame.locator('input[type="file"]').setInputFiles(csv1Path);
+    await expect(aliceFrame.locator('text=Upload complete')).toBeVisible({ timeout: 10000 });
+    await alicePage.waitForTimeout(1000);
+    await aliceFrame.locator('button#process_data').click();
+    await expect(aliceFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 60000 });
+    await expect(aliceFrame.locator('text=BASEL')).toBeVisible({ timeout: 5000 });
+
+    const saveName = `RQ5-CSV-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice uploads a DIFFERENT CSV to change the state
+    const csv2Path = path.join(os.tmpdir(), 'rq5-csv2.csv');
+    fs.writeFileSync(csv2Path, 'Name,City,Score\ndave,london,60\neve,paris,75\n');
+    await aliceFrame.locator('input[type="file"]').setInputFiles(csv2Path);
+    await expect(aliceFrame.locator('text=Upload complete')).toBeVisible({ timeout: 10000 });
+    await alicePage.waitForTimeout(1000);
+    await aliceFrame.locator('button#process_data').click();
+    await expect(aliceFrame.locator('text=DAVE').first()).toBeVisible({ timeout: 60000 });
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: Bob sees CSV1 data (ALICE/BASEL), not CSV2 data (DAVE/LONDON)
+    await expect(bobFrame.locator('text=ALICE').first()).toBeVisible({ timeout: 30000 });
+    await expect(bobFrame.locator('text=BASEL')).toBeVisible({ timeout: 5000 });
+
+    // Cleanup
+    fs.unlinkSync(csv1Path);
+    fs.unlinkSync(csv2Path);
+    await bobCtx.close();
+  });
+
   // TEST 4: Time Machine — Restore Checkpoint
   test('4. Time Machine: Restoring Historical States', async ({ page }) => {
     await login(page, 'alice');

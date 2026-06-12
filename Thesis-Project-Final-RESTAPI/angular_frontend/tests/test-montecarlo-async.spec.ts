@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser, setShinyNumericInput } from './helpers';
 
 test.describe('Monte Carlo Simulator: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000); // Simulations can take time
   let sharedSaveName: string;
 
@@ -91,6 +92,65 @@ test.describe('Monte Carlo Simulator: Core Four Matrix', () => {
 
     await aliceCtx.close();
     await charlieCtx.close();
+  });
+
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    test.setTimeout(180000); // Two full simulations
+
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Monte Carlo Simulator', 'RQ5 MC Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    // Alice runs simulation with n0=200
+    await setShinyNumericInput(aliceFrame, '#n0', '200');
+    await aliceFrame.locator('button#run_sim').click();
+    await expect(aliceFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 45000 });
+    await expect(aliceFrame.locator('button#run_sim')).toBeEnabled();
+
+    const saveName = `RQ5-MC-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice runs a DIFFERENT simulation with n0=500
+    await setShinyNumericInput(aliceFrame, '#n0', '500');
+    await aliceFrame.locator('button#run_sim').click();
+    await expect(aliceFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 45000 });
+    await expect(aliceFrame.locator('button#run_sim')).toBeEnabled();
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: Bob sees n0=200 (saved state), not n0=500 (Alice's later run)
+    await expect(bobFrame.locator('#n0')).toHaveValue('200', { timeout: 15000 });
+    await expect(bobFrame.locator('text=Extinction Risk')).toBeVisible({ timeout: 15000 });
+
+    await bobCtx.close();
   });
 
   // TEST 4: Time Machine — Restore Checkpoint

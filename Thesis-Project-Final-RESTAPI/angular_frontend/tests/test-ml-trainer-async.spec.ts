@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
 test.describe('ML Trainer: Core Four Matrix', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(90000); // Model training can take time
   let sharedSaveName: string;
 
@@ -95,6 +96,69 @@ test.describe('ML Trainer: Core Four Matrix', () => {
 
     await aliceCtx.close();
     await charlieCtx.close();
+  });
+
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    test.setTimeout(180000); // Two full training runs
+
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Habitat Suitability AI', 'RQ5 ML Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    // Alice trains with default params (500 trees)
+    await aliceFrame.locator('button#train_btn').click();
+    await expect(aliceFrame.locator('#importance_plot')).toBeVisible({ timeout: 60000 });
+    await expect(aliceFrame.locator('text=COMPLETE')).toBeVisible();
+    await expect(aliceFrame.locator('button#train_btn')).toBeEnabled();
+
+    const saveName = `RQ5-ML-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice changes mtry slider and trains again to produce different results
+    // Use JavaScript to set the slider value since Playwright can't drag Shiny sliders easily
+    await aliceFrame.locator('#mtry').evaluate((el: HTMLInputElement) => {
+      el.value = '5';
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await aliceFrame.locator('button#train_btn').click();
+    await expect(aliceFrame.locator('#importance_plot')).toBeVisible({ timeout: 60000 });
+    await expect(aliceFrame.locator('text=COMPLETE')).toBeVisible();
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: Bob sees the first training results (importance plot + COMPLETE status)
+    await expect(bobFrame.locator('#importance_plot')).toBeVisible({ timeout: 15000 });
+    await expect(bobFrame.locator('text=COMPLETE')).toBeVisible({ timeout: 15000 });
+
+    await bobCtx.close();
   });
 
   // TEST 4: Time Machine — Restore Checkpoint

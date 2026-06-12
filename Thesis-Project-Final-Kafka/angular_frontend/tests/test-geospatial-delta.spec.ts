@@ -107,7 +107,74 @@ test.describe('Geospatial Editor: Core Four Matrix', () => {
     await expect(frame.locator('text=Last sensor placed by')).toBeVisible({ timeout: 10000 });
   });
 
-  test('5. Delta Sync: Multiple Markers from Multiple Users', async ({ browser }) => {
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Geospatial Editor', 'RQ5 Map Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    const mapContainer = aliceFrame.locator('#map');
+    await expect(mapContainer).toBeVisible({ timeout: 15000 });
+    const mapBox = await mapContainer.boundingBox();
+
+    // Alice places first marker (top-left area)
+    if (mapBox) {
+      await mapContainer.click({ position: { x: mapBox.width / 4, y: mapBox.height / 4 } });
+    }
+    await expect(aliceFrame.locator('.awesome-marker').first()).toBeVisible({ timeout: 15000 });
+    await expect(aliceFrame.locator('text=Last sensor placed by')).toBeVisible({ timeout: 10000 });
+
+    await alicePage.waitForTimeout(3000);
+    const saveName = `RQ5-Map-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice places a second marker at a different position (bottom-right area)
+    if (mapBox) {
+      await mapContainer.click({ position: { x: mapBox.width * 3 / 4, y: mapBox.height * 3 / 4 } });
+    }
+    await expect(async () => {
+      const count = await aliceFrame.locator('.awesome-marker').count();
+      expect(count).toBeGreaterThanOrEqual(2);
+    }).toPass({ timeout: 15000 });
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: Bob sees at least one marker from the restored state
+    await bobPage.waitForTimeout(5000);
+    await expect(bobFrame.locator('.awesome-marker').first()).toBeVisible({ timeout: 15000 });
+    await expect(bobFrame.locator('text=Last sensor placed by')).toBeVisible({ timeout: 10000 });
+
+    await bobCtx.close();
+  });
+
+  test('6. Delta Sync: Multiple Markers from Multiple Users', async ({ browser }) => {
     const aliceCtx = await browser.newContext();
     const bobCtx = await browser.newContext();
     const alicePage = await aliceCtx.newPage();

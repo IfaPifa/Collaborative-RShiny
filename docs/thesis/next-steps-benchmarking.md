@@ -192,21 +192,46 @@ ALTER TABLE saved_states ADD COLUMN session_id VARCHAR(255);
 
 Or just let Hibernate auto-update if `spring.jpa.hibernate.ddl-auto=update` is set (it should be in dev).
 
-### Automated Playwright test
+### Automated Playwright tests
 
-A Playwright test has been written for both architectures:
-- `Thesis-Project-Final-RESTAPI/angular_frontend/tests/test-cross-user-restore.spec.ts`
-- `Thesis-Project-Final-Kafka/angular_frontend/tests/test-cross-user-restore.spec.ts`
+Cross-user checkpoint restore (RQ5 Test 5) has been added to **all 8 apps** in both architectures. Each app's existing test file now includes a "5. RQ5: Cross-User Checkpoint Restore" test.
 
-Each test file contains two tests:
+Additionally, a standalone `test-cross-user-restore.spec.ts` exists for Calculator with a non-participant isolation test.
 
-1. **Alice saves, Bob restores** — Alice creates a collaborative Calculator session, computes 42+58=100, saves a checkpoint. Bob joins the same session, opens Load Checkpoint, sees Alice's checkpoint (with "by alice" label), restores it, and verifies his UI shows num1=42, num2=58, result=100.
+#### Test pattern (all 8 apps)
 
-2. **Non-participant isolation** — Alice saves a checkpoint in a session. Charlie (not a participant) opens the saved-apps page and does NOT see Alice's checkpoint.
+1. Alice creates a collaborative session and performs an action (computes, uploads, trains)
+2. Alice saves a checkpoint
+3. Alice changes the state to something different (different inputs, different CSV, different params)
+4. Alice clicks Exit and leaves the session
+5. Bob joins the same session, opens Load Checkpoint
+6. Bob sees Alice's checkpoint (with "by alice" label)
+7. Bob restores → verifies he gets Alice's **saved** state, not her later changes
 
-Run them with:
+#### Per-app specifics
+
+| App | Alice saves | Alice changes to | Bob verifies |
+|-----|------------|-----------------|--------------|
+| Calculator | num1=42, num2=58 → 100 | num1=10, num2=5 → 15 | num1=42, num2=58 |
+| Visual Analytics | cyl 4 unchecked | cyl 4 checked, cyl 8 unchecked | cyl 4 unchecked, cyl 8 checked |
+| Advanced Analytics | May unchecked | May checked, June unchecked | May unchecked, June checked |
+| Data Exchange | CSV1: alice/basel | CSV2: dave/london | ALICE/BASEL visible |
+| Climate Anomaly | CSV: SITE_A/SITE_B | CSV: SITE_X/SITE_Y | SITE_A visible |
+| Monte Carlo | n0=200, runs sim | n0=500, runs sim | n0=200 |
+| ML Trainer | 500 trees, trains | mtry=5, trains again | importance_plot + COMPLETE |
+| Geospatial | 1 marker (top-left) | 2nd marker (bottom-right) | marker visible |
+
+#### Run all RQ5 tests
+
 ```bash
+# Run just the RQ5 tests across all apps
+npx playwright test -g "RQ5"
+
+# Run the standalone cross-user restore test (Calculator + isolation)
 npx playwright test test-cross-user-restore.spec.ts
+
+# Run everything
+npx playwright test
 ```
 
 ### Additional manual experiment steps

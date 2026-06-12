@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { login, createCollabSession, joinCollabSession, launchSolo, waitForShinyBoot, saveState, demoteUser } from './helpers';
 
 test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
+  test.describe.configure({ mode: 'serial' });
   test.setTimeout(60000);
   let sharedSaveName: string;
 
@@ -78,12 +79,68 @@ test.describe('Visual Analytics: Core Four Matrix (Unified)', () => {
     // Alice demotes Charlie
     await demoteUser(alicePage, 'charlie');
 
-    // Charlie's controls lock
+    // Charlie's controls lock — Kafka propagation may take longer
     await expect(charlieFrame.locator('button#update_plot')).toBeDisabled({ timeout: 30000 });
     await expect(charlieFrame.locator('input[name="cyl"][value="4"]')).toBeDisabled({ timeout: 5000 });
 
     await aliceCtx.close();
     await charlieCtx.close();
+  });
+
+  // TEST 5: RQ5 — Cross-User Checkpoint Restore
+  test('5. RQ5: Cross-User Checkpoint Restore', async ({ browser }) => {
+    const aliceCtx = await browser.newContext();
+    const bobCtx = await browser.newContext();
+    const alicePage = await aliceCtx.newPage();
+    const bobPage = await bobCtx.newPage();
+
+    await login(alicePage, 'alice');
+    const sessionId = await createCollabSession(alicePage, 'Visual Analytics', 'RQ5 Analytics Test');
+
+    const aliceFrame = alicePage.frameLocator('iframe');
+    await waitForShinyBoot(aliceFrame);
+
+    // Alice unchecks cyl 4 and syncs
+    await aliceFrame.locator('input[name="cyl"][value="4"]').uncheck();
+    await aliceFrame.locator('button#update_plot').click();
+    await alicePage.waitForTimeout(3000);
+
+    const saveName = `RQ5-Analytics-${Date.now()}`;
+    await saveState(alicePage, saveName);
+
+    // Alice changes state: re-checks cyl 4, unchecks cyl 8
+    await aliceFrame.locator('input[name="cyl"][value="4"]').check();
+    await aliceFrame.locator('input[name="cyl"][value="8"]').uncheck();
+    await aliceFrame.locator('button#update_plot').click();
+    await alicePage.waitForTimeout(2000);
+
+    // Alice leaves
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
+    // Bob joins and restores
+    await login(bobPage, 'bob');
+    await joinCollabSession(bobPage, sessionId);
+    const bobFrame = bobPage.frameLocator('iframe');
+    await waitForShinyBoot(bobFrame);
+
+    await bobPage.click('button:has-text("Load Checkpoint")');
+    const modal = bobPage.locator('app-modal');
+    await expect(modal.getByRole('heading', { name: 'Load Checkpoint' })).toBeVisible({ timeout: 5000 });
+
+    const checkpointRow = modal.locator('div.flex.justify-between').filter({ hasText: saveName });
+    await expect(checkpointRow).toBeVisible({ timeout: 10000 });
+    await expect(checkpointRow.locator('text=by alice')).toBeVisible();
+
+    bobPage.once('dialog', dialog => dialog.accept());
+    await checkpointRow.getByRole('button', { name: 'Load' }).click();
+
+    // Verify: cyl 4 unchecked (saved state), cyl 8 checked (not Alice's later change)
+    await expect(bobFrame.locator('input[name="cyl"][value="4"]')).not.toBeChecked({ timeout: 15000 });
+    await expect(bobFrame.locator('input[name="cyl"][value="8"]')).toBeChecked({ timeout: 15000 });
+
+    await bobCtx.close();
   });
 
   // TEST 4: Time Machine — Restore Checkpoint
