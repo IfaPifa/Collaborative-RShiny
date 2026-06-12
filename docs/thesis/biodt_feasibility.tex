@@ -1,0 +1,282 @@
+% ==========================================================================
+%  NOTE: This is NOT the actual thesis. Working notes / draft material on the
+%  feasibility of bringing the BioDT Honeybee Shiny application into the
+%  ShinySwarm architecture. Scratch prose to review and selectively pull into
+%  the real thesis (Future Work / Discussion). Verify all repo facts against
+%  the live repositories before citing -- they were inspected on 2026-06-12.
+% ==========================================================================
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\title{\textbf{Feasibility: BioDT Honeybee in ShinySwarm}\\[0.5em]
+\large Working notes on re-engineering the deferred use case}
+\author{Iva Gunjaca\\
+Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% --------------------------------------------------------------------------
+\section{Why this section exists}
+% --------------------------------------------------------------------------
+
+The original proposal named a concrete scientific use case --- the
+\textbf{BioDT Honeybee pDT / Pollinators UC} Shiny application --- as the
+real-world subject onto which the ShinySwarm collaborative architecture would be
+applied. That re-engineering was \emph{deferred to future work}, and a suite of
+eight purpose-built Shiny apps was used for the benchmark instead, to gain full
+control over experimental variables. This section assesses whether, and how, the
+BioDT Honeybee application could be brought into ShinySwarm --- i.e.\ the
+feasibility of completing the originally proposed use case.
+
+\textbf{Bottom line up front.} It is feasible, and the application is a
+\emph{better} architectural fit for ShinySwarm than the proposal assumed,
+because the BioDT team has \emph{already} moved the compute to a microservice
+(a containerised NetLogo/BEEHAVE job, optionally launched as a Kubernetes Job).
+The remaining work is not ``decompose a monolith'' --- that is largely done ---
+but ``add the collaboration and shared-state layer,'' which is exactly what
+ShinySwarm contributes. The principal mismatch is framework-level: the BioDT app
+is built on \textbf{Rhino} with \texttt{box} modules, whereas the ShinySwarm
+apps are plain Shiny; this affects how state capture (\texttt{statesnap}) is
+wired, not whether it can be done.
+
+% --------------------------------------------------------------------------
+\section{What the application actually is}
+% --------------------------------------------------------------------------
+
+The naming in the proposal is slightly misleading, so it is worth pinning down
+the real artefacts. There is no single ``BioDT Honeybee Shiny app'' repository;
+the use case is split across several BioDT GitHub repositories:
+
+\begin{itemize}[nosep]
+  \item \textbf{\texttt{BioDT/biodt-shiny}} --- the actual Shiny front end. A
+    large, actively maintained (last push 2026-04), \textbf{Rhino}-framework
+    application (\textasciitilde 630~kB of R) that hosts \emph{multiple} BioDT
+    use cases as tabs/modules: honeybee, grassland, forest, disease outbreaks,
+    crop wild relatives (cwr), cultural ecosystem services (ces), invasive alien
+    species (ias), real-time bird monitoring (rtbm). The honeybee module is one
+    pDT among many. License: ``Other'' (check before reuse).
+  \item \textbf{\texttt{BioDT/uc-pollinators}} --- \emph{not} a Shiny app. The
+    honeybee simulation pipeline: R scripts in three steps (prepare habitat
+    JSONs $\rightarrow$ build BEEHAVE input $\rightarrow$ run BEEHAVE), packaged
+    in a Docker image with NetLogo~6.3 + OpenJDK~17 + HyperQueue, designed to run
+    on HPC (LUMI) or in the cloud. This is what the proposal called the
+    ``Honeybee application,'' but it is the compute backend, not the UI. MIT.
+  \item \textbf{\texttt{BioDT/uc-pollinators-beehave}} (NetLogo model) and
+    \textbf{\texttt{BioDT/uc-pollinators-container}} (Docker build) --- git
+    submodules of \texttt{uc-pollinators} holding the model and the container
+    definition.
+\end{itemize}
+
+So the ``app'' the thesis would re-engineer is the \textbf{honeybee module of
+\texttt{biodt-shiny}}, which orchestrates the \texttt{uc-pollinators} compute
+container. The proposal's mention of components by \emph{Sandro Boelsz} refers to
+this pipeline work.
+
+% --------------------------------------------------------------------------
+\section{Current architecture of the honeybee module}
+% --------------------------------------------------------------------------
+
+The honeybee module is already cleanly decomposed (Rhino \texttt{box} modules
+under \texttt{app/view/honeybee/} and \texttt{app/logic/honeybee/}):
+
+\begin{itemize}[nosep]
+  \item \texttt{honeybee\_beekeeper.R} --- parent module wiring the sub-modules
+    together and holding the shared reactive values (\texttt{map},
+    \texttt{leaflet\_map}, \texttt{lookup\_table}, \texttt{experiment\_list}).
+  \item \texttt{beekeeper\_map.R} --- Leaflet map; the user picks a location
+    (\texttt{coordinates()}).
+  \item \texttt{beekeeper\_param.R} --- simulation parameters.
+  \item \texttt{beekeeper\_lookup.R} --- editable lookup table (habitat $\to$
+    forage).
+  \item \texttt{beekeeper\_runsimulation.R} --- writes the inputs (map crop,
+    lookup, parameters, locations as CSV/GeoTIFF) into a per-run directory and
+    \emph{launches the compute container}.
+  \item \texttt{beekeeper\_plot.R} --- plots the result CSV.
+  \item \texttt{honeybee/k8s.R} --- creates a Kubernetes \texttt{batch/v1} Job
+    that runs \texttt{ghcr.io/biodt/beehave:0.3.13}, watches it to completion,
+    then deletes it.
+\end{itemize}
+
+Crucially, the run step already supports \textbf{two executors}, selected by
+\texttt{config\$get("executor")}:
+\begin{enumerate}[nosep]
+  \item \texttt{"docker"} --- shells out with \texttt{system()} to
+    \texttt{docker run ... ghcr.io/biodt/beehave:0.3.13}, bind-mounting a run
+    directory.
+  \item \texttt{"k8s"} --- POSTs a Job spec to the in-cluster Kubernetes API
+    (token from the mounted service account), mounts per-user PVCs keyed by
+    \texttt{SHINYPROXY\_ID}, waits via a watch stream, deletes the Job.
+\end{enumerate}
+
+Deployment today is \textbf{ShinyProxy on Kubernetes}: one container per user
+session (hence \texttt{SHINYPROXY\_ID} and per-user PVC names), with the heavy
+simulation offloaded to ephemeral Job pods. State is held in per-session reactive
+values and in a per-session ``shared'' directory on disk; there is \emph{no}
+cross-user sharing and \emph{no} real-time collaboration.
+
+\textbf{Implication.} BioDT has independently arrived at part of ShinySwarm's
+thesis: containerise the scientific compute and orchestrate it on Kubernetes.
+What it lacks is precisely ShinySwarm's contribution --- multi-user, real-time
+\emph{collaboration} and portable, reproducible \emph{shared state}.
+
+% --------------------------------------------------------------------------
+\section{Feasibility of bringing it into ShinySwarm}
+% --------------------------------------------------------------------------
+
+Mapping the honeybee module onto ShinySwarm's two architectures (REST API with
+Plumber + Redis; or Kafka event-driven) is feasible. The work decomposes into
+four parts, in rough order of effort.
+
+\subsection{1. Compute service --- already done (low effort)}
+
+ShinySwarm's premise is that R computation lives behind a service. For honeybee
+this already exists: \texttt{ghcr.io/biodt/beehave} is a self-contained compute
+container with a CSV/GeoTIFF-in, CSV-out contract. It can be driven unchanged.
+The only adaptation is \emph{how it is invoked}:
+\begin{itemize}[nosep]
+  \item In the REST variant, wrap the existing Docker/k8s launch behind a Plumber
+    endpoint (\texttt{POST /simulate} with the input bundle, returns a run id;
+    \texttt{GET /result/\{id\}}), instead of calling \texttt{system()} from the
+    UI session. The launch logic in \texttt{beekeeper\_runsimulation.R} and
+    \texttt{k8s.R} moves almost verbatim into the service.
+  \item In the Kafka variant, the UI produces a ``simulate'' message to a topic;
+    a consumer launches the BEEHAVE Job and produces a ``result-ready'' message
+    with the output location. This matches BEEHAVE's 2--4~minute, long-running,
+    asynchronous nature far better than a synchronous request, and is a strong
+    argument for the event-driven architecture on this use case.
+\end{itemize}
+
+\subsection{2. Shared state and collaboration --- the real work (medium)}
+
+This is what ShinySwarm adds and the BioDT app lacks. The honeybee module's
+collaborative state is small and well-defined, which helps:
+\begin{itemize}[nosep]
+  \item \textbf{Inputs to share:} selected coordinates, parameters, the editable
+    lookup table, and the chronological \texttt{experiment\_list} of runs.
+  \item \textbf{Outputs to share:} the result CSV(s) and the rendered plot/map.
+\end{itemize}
+Under ShinySwarm these become shared state synchronised through Redis (REST) or
+Kafka topics (event-driven), so that multiple beekeepers/researchers see the same
+map selection, parameters, and run history in real time --- the live ``shared
+state management'' the proposal promised.
+
+\subsection{3. Reproducible state capture with \texttt{statesnap} (low--medium)}
+
+The honeybee module is an almost ideal showcase for \texttt{statesnap}, because
+its result is the output of a \textbf{non-deterministic BEEHAVE simulation}.
+Re-running from the same inputs need not reproduce the same population trajectory,
+so input-only sharing (Shiny bookmarking) cannot reproduce a colleague's exact
+result --- whereas \texttt{statesnap}, which captures the \emph{computed} result,
+can. Concretely:
+\begin{itemize}[nosep]
+  \item Register the module's reactives by name (\texttt{coordinates},
+    \texttt{parameters}, \texttt{lookup}, \texttt{experiment\_list}).
+  \item Embed the input map crop and the result CSV with \texttt{state\_file()};
+    the bundle is self-contained.
+  \item A captured checkpoint becomes a shareable, reproducible ``saved
+    exploration'' --- the cross-user restore the benchmark's RQ5 already exercises
+    on the eight custom apps, now demonstrated on a real scientific application.
+\end{itemize}
+\textbf{Caveat (framework):} \texttt{statesnap} currently reads
+\texttt{names(input)} at the top level and pushes values through the parent
+session; it does not yet handle Shiny \emph{module namespaces}. The honeybee UI is
+deeply modular (Rhino \texttt{box} + nested \texttt{moduleServer}). So either
+(a)~capture/restore is invoked \emph{inside} each module's own server and the
+fragments merged, or (b)~\texttt{statesnap} gains namespace-aware capture (already
+listed as further work). This is the single most important technical dependency
+and should be stated as such.
+
+\subsection{4. Framework reconciliation --- Rhino vs plain Shiny (medium)}
+
+The ShinySwarm benchmark apps are plain Shiny; \texttt{biodt-shiny} is Rhino with
+\texttt{box} imports, \texttt{config} profiles, an \texttt{i18n} translation
+layer, SCSS/JS build via webpack, and Cypress tests. None of this blocks
+integration --- Rhino apps are still Shiny --- but it means the integration cannot
+be a copy-paste of the benchmark harness. Options:
+\begin{itemize}[nosep]
+  \item \textbf{Extract} the honeybee module into a standalone Shiny app and wrap
+    it in ShinySwarm (cleanest for a controlled experiment; loses the multi-pDT
+    context).
+  \item \textbf{Integrate in place} --- add the ShinySwarm REST/Kafka client and
+    shared-state layer as Rhino \texttt{logic} modules inside \texttt{biodt-shiny}
+    (most faithful to the real system; more coupling to BioDT's build).
+\end{itemize}
+
+\subsection{Other integration considerations}
+
+\begin{itemize}[nosep]
+  \item \textbf{Per-session vs shared model.} BioDT uses ShinyProxy
+    one-container-per-user with per-user PVCs. ShinySwarm's collaborative model
+    deliberately shares state across users; the deployment topology (shared
+    container vs container-per-user) is itself one of the architectural variables
+    the proposal set out to study, so honeybee is a natural place to revisit it.
+  \item \textbf{Auth.} \texttt{biodt-shiny} runs behind ShinyProxy; ShinySwarm
+    uses JWT (Spring Security). A real deployment would reconcile these (and,
+    longer term, a shared Keycloak/OIDC layer as discussed in the NaaVRE notes).
+  \item \textbf{Data dependencies.} The module needs habitat map tiles, a lookup
+    table, and (for weather) Copernicus CDS / HDA credentials. These must be
+    provisioned to the compute service rather than the UI.
+  \item \textbf{Licensing.} \texttt{uc-pollinators} is MIT; \texttt{biodt-shiny}
+    is ``Other'' --- confirm terms before redistributing modified code.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Effort summary and risk}
+% --------------------------------------------------------------------------
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Work item} & \textbf{Effort} & \textbf{Risk / dependency} \\
+\midrule
+Drive existing BEEHAVE container via service & Low & Contract already CSV/CSV \\
+REST (Plumber+Redis) wrapper & Low--Med & Reuse existing launch code \\
+Kafka async wrapper & Medium & Best fit for 2--4 min jobs \\
+Shared state + real-time sync & Medium & Core ShinySwarm contribution \\
+\texttt{statesnap} reproducible checkpoints & Low--Med & \emph{Needs module-namespace support} \\
+Rhino vs plain-Shiny reconciliation & Medium & Build/i18n/test coupling \\
+Auth (ShinyProxy $\to$ JWT/OIDC) & Medium & Cross-system identity \\
+\bottomrule
+\end{tabular}
+\caption{Feasibility breakdown for the BioDT Honeybee use case in ShinySwarm.}
+\end{table}
+
+\textbf{Conclusion.} Re-engineering the BioDT Honeybee use case into ShinySwarm
+is feasible and would strengthen the thesis by validating the architecture on a
+real, non-deterministic scientific application rather than synthetic apps. The
+compute is already a container, so the proposal's hardest assumed task is
+effectively pre-solved; the substantive work is the collaboration and shared-state
+layer that ShinySwarm exists to provide. The two genuine prerequisites are
+(i)~\texttt{statesnap} module-namespace support, needed for reproducible state
+capture in the deeply modular Rhino UI, and (ii)~a decision between extracting the
+honeybee module versus integrating ShinySwarm in place. Neither is a blocker;
+both are scoped, known pieces of work --- which is precisely why the
+re-engineering was a reasonable item to defer to future work rather than abandon.
+
+% --------------------------------------------------------------------------
+\section{Source provenance}
+% --------------------------------------------------------------------------
+
+Repositories inspected on 2026-06-12 (GitHub API + raw file reads):
+\begin{itemize}[nosep]
+  \item \url{https://github.com/BioDT/biodt-shiny} (honeybee module, config.yml,
+    docker-compose.yml, k8s.R, runsimulation module).
+  \item \url{https://github.com/BioDT/uc-pollinators} (compute pipeline,
+    Dockerfile, Makefile, submodules).
+  \item Proposal reference [5]: BioDT, ``uc-pollinators: Honeybee pDT/pollinators
+    UC main repository,'' 2024.
+\end{itemize}
+
+\end{document}
