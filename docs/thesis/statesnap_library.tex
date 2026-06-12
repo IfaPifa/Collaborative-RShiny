@@ -108,6 +108,7 @@ The library generalises this pattern into a reusable interface.
 
 % --------------------------------------------------------------------------
 \section{Design}
+\label{sec:design}
 % --------------------------------------------------------------------------
 
 \subsection{Transport agnosticism}
@@ -591,6 +592,94 @@ benchmarks the flat case only), extending the micro-benchmarks to the specific
 state profiles of each studied application, and publication on CRAN to make the
 reproducibility contribution available to the wider R~Shiny community without any
 microservice infrastructure.
+
+\subsection{Integration with NaaVRE}
+% --------------------------------------------------------------------------
+
+A further direction situates \texttt{statesnap} inside the Notebook-as-a-VRE
+(NaaVRE) platform developed by the QCDIS group at the University of Amsterdam ---
+the same group in which this thesis is supervised (Zhao et al., 2022). The
+general relationship between ShinySwarm and NaaVRE is treated separately; this
+subsection concerns the narrower question of what the \texttt{statesnap}
+primitive specifically contributes to that ecosystem.
+
+\paragraph{The gap statesnap fills.}
+NaaVRE makes the \emph{Jupyter notebook} a collaborative, reproducible,
+containerised citizen of a Virtual Research Environment. Reproducibility in that
+setting rests on two artefacts: the container image, which fixes the
+\emph{environment}, and the notebook file, which fixes the \emph{code and its
+captured cell outputs}. The \texttt{.ipynb} format is instructive here, because
+it is the closest existing analogue to what \texttt{statesnap} does: it is a JSON
+document that stores both the inputs (code cells) and the computed outputs
+(rich result representations), and Jupyter even attaches a trust/signature
+mechanism so that outputs originating from an untrusted notebook are not rendered
+until they are re-executed or explicitly trusted. The \texttt{statesnap} design
+mirrors both properties --- a JSON artefact that stores inputs together with
+computed results, and an explicit trust boundary on restore (the
+\texttt{allow\_rds} gate, the path-traversal defence, the decompression ceiling).
+
+What NaaVRE has no equivalent of is a way to capture and move the \emph{full
+computed state of a live, reactive interactive application}. A notebook records
+the outputs of a linear document; it does not record the running state of an
+interactive dashboard that a domain scientist hands to a collaborator to explore
+results. \texttt{statesnap} is precisely that missing primitive, expressed for
+the interactive-application modality rather than the linear-notebook one.
+
+\paragraph{Why this matters for non-deterministic science.}
+The argument is sharpest for the stochastic analyses that motivate NaaVRE's
+own application domains, such as the ecosystem and digital-twin simulations
+reported by the group (Pelouze et al., 2025). For any non-deterministic
+computation, the recompute-from-inputs strategy that notebook re-execution and
+Shiny bookmarking both rely on is not merely expensive --- it is
+\emph{incorrect}, because re-execution yields a different result. Sharing the
+computed state, as \texttt{statesnap} does, is the only way to let a second
+researcher see the same realisation of a stochastic result that the first
+researcher saw. This is the same seed-free reproducibility property validated by
+the Monte Carlo test in Section~\ref{sec:testing}, recast as a requirement of the
+VRE setting.
+
+\paragraph{Concrete integration paths.}
+Three integrations follow directly, all consistent with NaaVRE's existing
+architecture:
+
+\begin{itemize}
+  \item \textbf{Transport reuse.} Because \texttt{statesnap} emits and consumes
+    plain JSON and leaves transport to the caller, a captured checkpoint can be
+    moved through NaaVRE's existing service mesh --- stored in the catalogue,
+    passed between workflow components, or attached to a shared Virtual Lab asset
+    --- without the library taking any dependency on that infrastructure. The
+    transport-agnostic design (Section~\ref{sec:design}) is what makes this
+    drop-in rather than a rewrite.
+  \item \textbf{Checkpoint as a catalogue artefact.} A \texttt{statesnap}
+    checkpoint could become a first-class, shareable item in NaaVRE's catalogue,
+    alongside notebooks and workflow components: a saved, reproducible state of
+    an interactive R~Shiny exploration that another member of a Virtual Lab can
+    open and obtain the identical computed view, including non-deterministic
+    results. The \texttt{state\_file()} and \texttt{state\_rds()} wrappers let
+    such an artefact embed the data files and fitted model objects the state
+    depends on, so the checkpoint is self-contained.
+  \item \textbf{Shared trust model.} NaaVRE authenticates users through Keycloak
+    and treats shared assets as potentially originating from other users.
+    \texttt{statesnap} already treats a checkpoint as untrusted cross-user input;
+    aligning its \texttt{allow\_rds} decision with NaaVRE's identity layer (trust
+    a checkpoint's serialised objects only when its author is a trusted Virtual
+    Lab member) would let the two trust models compose rather than conflict. The
+    parallel with Jupyter's own notebook-trust signature suggests this is the
+    natural shape for any system that ships computed outputs between users.
+\end{itemize}
+
+\paragraph{Framing.}
+In NaaVRE's own terms, ShinySwarm extends the ``private notebook $\rightarrow$
+collaborative cloud VRE'' thesis from the linear-notebook modality to the
+live-interactive-application modality, and \texttt{statesnap} is the enabling
+primitive for that extension: the unit of reproducible, shareable, trust-bounded
+interactive state. None of the surveyed tools --- Shiny's native bookmarking and
+\texttt{shinyURL} (input-only, recompute-based), \texttt{shinyStore} and Dash's
+\texttt{dcc.Store} (browser-bound key--value stores), Streamlit's
+\texttt{session\_state} (in-memory, non-persisted, with an insecure
+pickle-serialisation option), or the package- and environment-level snapshot
+tools on CRAN such as \texttt{renv} --- provides this combination, which leaves a
+clear, citable gap for \texttt{statesnap} to occupy within the VRE programme.
 
 % --------------------------------------------------------------------------
 \section{Contribution}
