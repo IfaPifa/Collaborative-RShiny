@@ -56,8 +56,8 @@ function(req) {
       Heatwave_Anomaly = ifelse(Daily_Mean_Temp > threshold, "YES", "NO")
     )
 
-  # Save processed data with matching fingerprint
-  summary_file_name <- sub("^raw_", "processed_", body$file)
+  # Save processed data — always prefix with "processed_" to avoid overwriting input
+  summary_file_name <- paste0("processed_", body$file)
   write.csv(summary_df, file.path(shared_dir, summary_file_name), row.names = FALSE)
 
   res <- list(

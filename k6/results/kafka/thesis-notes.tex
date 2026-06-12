@@ -298,6 +298,28 @@ limitation. In production, the CSV would be uploaded via the application
 UI and written to the shared volume by the receiving pod, making it
 available to all replicas through the PVC.
 
+\subsection{Bug: Output File Overwrites Input File}
+
+The ClimateAnomaly backend writes its processed summary CSV back to the
+shared volume. The output filename was derived using
+\texttt{sub("\^{}raw\_", "processed\_", body\$file)}, which only adds the
+\texttt{processed\_} prefix if the input filename starts with
+\texttt{raw\_}. The benchmark test file \texttt{bench-climate-data.csv}
+does not, so the output was written to the same path as the input,
+overwriting it.
+
+On the first request, the backend reads the 98-row input CSV, processes
+it into a 5-row summary, and writes the summary back to
+\texttt{bench-climate-data.csv}. On the second request, the backend reads
+the now-5-row summary file, attempts \texttt{as.Date(df\$Timestamp)} on
+a column that no longer exists, and crashes with
+\texttt{replacement has 0 rows, data has 5}.
+
+The fix: always prefix the output filename with \texttt{processed\_}
+using \texttt{paste0("processed\_", body\$file)} instead of \texttt{sub()}.
+This ensures the input file is never overwritten regardless of its naming
+convention.
+
 \subsection{What the Baseline Separates}
 
 The per-app threshold design separates two distinct latency components:
