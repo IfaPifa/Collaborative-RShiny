@@ -1,0 +1,400 @@
+% ==========================================================================
+%  Thesis Section -- The statesnap R Package
+%
+%  Standalone section describing the reusable R package prototype that
+%  generalises ShinySwarm's checkpoint mechanism (the library is named statesnap). This is thesis-ready prose
+%  (Discussion / Future Work material) describing WHAT the artifact is and
+%  WHY it matters. It is deliberately separate from thesis-notes.tex, which
+%  records HOW the library was built and is kept for reproducibility.
+% ==========================================================================
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  framesep=4pt,
+  xleftmargin=4pt
+}
+
+\title{The \texttt{statesnap} R Package:\\
+  A Reusable, Transport-Agnostic Full-State Capture and Restore Library}
+\author{Iva Gunjaca\\Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+% --------------------------------------------------------------------------
+\section{Overview}
+% --------------------------------------------------------------------------
+
+To validate that ShinySwarm's checkpoint mechanism generalises beyond the
+specific microservice architecture in which it was developed, a standalone R
+package, \texttt{statesnap}, was implemented as a prototype. The package
+distils the full-state capture-and-restore pattern --- previously implemented
+individually inside each of the eight Shiny applications --- into two functions
+that any Shiny application can use, with no dependency on Spring Boot, Redis,
+Kafka, or Kubernetes.
+
+The package is named \texttt{statesnap} to distinguish the reusable library from
+\emph{ShinySwarm}, the collaborative microservice system that is the subject of
+this thesis. Although it was extracted from that system and is demonstrated with
+Shiny, the library does not depend on Shiny: its input and accessor objects are
+duck-typed, so the core works with any list-like collection of values and any
+getter/setter function. Shiny is therefore a suggested, not a required,
+dependency.
+
+The package is a proof of concept. Its purpose in this thesis is to demonstrate
+the \emph{feasibility and generality} of the design proposed in the future-work
+notes: that exact, reproducible state sharing for interactive applications
+can be expressed as a small, transport-agnostic library. The prototype passes
+\texttt{R~CMD~check} without errors, warnings, or notes, and is covered by an
+automated test suite (Section~\ref{sec:testing}).
+
+% --------------------------------------------------------------------------
+\section{Motivation}
+% --------------------------------------------------------------------------
+
+Every application in ShinySwarm follows the same checkpoint pattern: capture the
+session state (inputs plus computed reactive values), serialise it to JSON, and
+later restore it by pushing the values back into the running application. In the
+eight-application suite this logic was duplicated, with each application manually
+building JSON payloads using application-specific field names.
+
+Existing Shiny state-sharing mechanisms --- \texttt{shinyURL} and the built-in
+bookmarking facility --- transfer only \emph{inputs}, forcing the receiving
+session to recompute every output. For deterministic analyses this merely costs
+time. For non-deterministic analyses, such as a Monte Carlo simulation executed
+without \texttt{set.seed()}, recomputation produces \emph{different} results, so
+input-only sharing cannot reproduce what the original user saw.
+
+The \texttt{statesnap} package addresses both problems. It standardises the
+duplicated logic into two function calls, and it captures computed reactive
+values \emph{alongside} inputs, so the restored session reproduces the original
+outputs exactly rather than recomputing them.
+
+% --------------------------------------------------------------------------
+\section{Design}
+% --------------------------------------------------------------------------
+
+\subsection{Transport agnosticism}
+
+The central design decision is that the library produces and consumes JSON
+strings only. It contains no networking, persistence, or broker logic. How a
+checkpoint is transmitted or stored --- a REST request, a Kafka message, a Redis
+entry, a local file, a database row --- is left entirely to the caller. The same
+\texttt{capture\_state()} output is therefore usable in every ShinySwarm
+architecture and in a plain single-user Shiny application running on a laptop.
+
+\subsection{Public interface}
+
+The package exposes two core functions and two typed wrappers:
+
+\begin{lstlisting}[language=R]
+capture_state(input, ..., max_size = NULL, compress = TRUE)
+restore_state(session, state_json, ..., file_dir = tempdir(),
+              allow_rds = FALSE, max_size = NULL)
+state_file(path)   # wrap a file to embed
+state_rds(obj)     # wrap an R object to serialise
+\end{lstlisting}
+
+Because R's reactive system exposes no mechanism to discover
+\texttt{reactiveVal} or \texttt{reactiveValues} objects automatically, the
+reactive values to capture or restore are registered explicitly by name through
+\texttt{...}. This is a deliberate consequence of Shiny's design, not a
+limitation of the library.
+
+\subsection{Typed wrappers}
+
+A Shiny application holds several kinds of state, each requiring a different
+capture strategy. Rather than proliferating functions, the library uses
+type-hinted wrappers that tell \texttt{capture\_state()} how to handle each
+piece of state. The result is always a single JSON string; the wrappers control
+what goes inside it.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{State type} & \textbf{Example} & \textbf{Capture strategy} \\
+\midrule
+Scalar input        & \texttt{input\$num1 = 42}    & stored as-is \\
+Reactive value      & \texttt{result()}             & accessor called, value stored \\
+Reactive dataframe  & \texttt{shared\_df()}         & converted to a JSON array \\
+File reference       & \texttt{summary.csv}          & \texttt{state\_file()}: read, gzip, base64 \\
+Binary R object      & trained model                 & \texttt{state\_rds()}: serialise, gzip, base64 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This generalises the Climate Anomaly checkpoint enrichment, which in the
+microservice implementation embeds a processed CSV file into the checkpoint. In
+the architecture that logic lives in the Spring Boot backend; in the library it
+reduces to a single \texttt{state\_file()} call inside the application's save
+handler, removing the need for the backend to mount shared volumes or parse CSV.
+
+\subsection{Usage example}
+
+With the library, an application's save and restore logic each reduce to a single
+call:
+
+\begin{lstlisting}[language=R]
+library(shiny)
+library(statesnap)
+
+server <- function(input, output, session) {
+  result <- reactiveVal(0)
+  observeEvent(input$calculate, result(input$num1 + input$num2))
+  output$result <- renderText(result())
+
+  observeEvent(input$save_btn, {
+    json <- capture_state(input, result = result)
+    writeLines(json, "checkpoint.json")   # transport chosen by caller
+  })
+
+  observeEvent(input$restore_btn, {
+    json <- paste(readLines("checkpoint.json"), collapse = "\n")
+    restore_state(session, json, result = result)
+  })
+}
+\end{lstlisting}
+
+Inputs are restored through Shiny's low-level \texttt{session\$sendInputMessage()}
+mechanism; reactive values are set directly through their accessors.
+
+% --------------------------------------------------------------------------
+\section{Reproducibility Guarantee}
+% --------------------------------------------------------------------------
+
+The package's defining property is exact reproduction of non-deterministic
+results. Because computed reactive values are stored in the checkpoint rather
+than recomputed on restore, a value produced by a stochastic process is
+preserved bit-for-bit. To make this hold, the JSON serialisation is configured
+to retain full numeric precision (\texttt{jsonlite::toJSON(..., digits = NA)});
+the default four-decimal rounding would silently break the guarantee. This was
+confirmed by a test in which a Monte Carlo mean computed without a fixed seed is
+captured, the live value is then changed to a different draw, and a restore
+recovers the original value exactly.
+
+% --------------------------------------------------------------------------
+\section{Security Considerations}
+% --------------------------------------------------------------------------
+
+Building the prototype surfaced a consideration that is absent from input-only
+sharing approaches and that connects directly to the cross-user restore scenario
+of RQ5: \textbf{a checkpoint is untrusted input}. When user B restores a
+checkpoint authored by user A, the checkpoint must be treated as data from an
+untrusted source. The restore path therefore defends against three classes of
+attack.
+
+\begin{table}[h]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Attack} & \textbf{Defence} \\
+\midrule
+Path traversal via a crafted embedded filename
+  & Filenames are reduced to a safe basename; path separators, drive letters,
+    home-directory expansion, and \texttt{..} are rejected, so a restored file
+    cannot escape its target directory. \\[4pt]
+Arbitrary code execution via \texttt{unserialize()}
+  & Restoring a serialised object can execute code while the object is
+    reconstructed. \texttt{state\_rds} restoration is therefore disabled by
+    default (\texttt{allow\_rds = FALSE}) and must be explicitly enabled for
+    trusted checkpoints. \\[4pt]
+Memory exhaustion (``decompression bomb'')
+  & A small compressed payload can expand to many gigabytes. Decompression is
+    performed as a bounded stream that aborts as soon as the running output size
+    exceeds \texttt{max\_size}, so peak memory stays bounded regardless of the
+    claimed decompressed size. \\
+\bottomrule
+\end{tabularx}
+\caption{Security defences in \texttt{restore\_state()}.}
+\end{table}
+
+This is a research observation in its own right: full-state sharing trades the
+recomputation cost of input-only sharing for a serialisation surface that must
+be treated as a trust boundary. Any system that shares computed state across
+users inherits this obligation.
+
+% --------------------------------------------------------------------------
+\section{Testing and Verification}
+\label{sec:testing}
+% --------------------------------------------------------------------------
+
+The package is verified at two levels. Unit tests exercise the capture/restore
+logic directly, including serialisation round-trips, the typed wrappers, the
+exact-reproducibility property for non-deterministic values, and the three
+security defences (path traversal, the \texttt{allow\_rds} gate, size limits, and
+the decompression-bomb guard). An integration test runs the save/restore cycle
+against Shiny's actual reactive engine using \texttt{shiny::testServer()},
+confirming the library works with real \texttt{reactiveVal} and
+\texttt{reactiveValues} objects rather than test doubles.
+
+The package passes \texttt{R~CMD~check} with a clean result (no errors, warnings,
+or notes), the standard correctness bar for an R package.
+
+% --------------------------------------------------------------------------
+\section{Performance}
+\label{sec:performance}
+% --------------------------------------------------------------------------
+
+The library's cost is the in-process work of serialising and deserialising
+state. This is conceptually distinct from the system-level benchmarks reported
+elsewhere in this thesis, which measure HTTP, database, and session round-trips
+under load: the library's cost is the serialisation; the transport's cost is
+everything around it. The two should not be conflated. The benchmarks below were
+produced by \texttt{inst/benchmarks/benchmark.R}, which uses the
+\texttt{microbenchmark} package and runs headless via \texttt{Rscript}.
+
+\paragraph{Methodology and caveats.} Each case is timed over many iterations
+(the script defaults to 100; the illustrative run reported here used 50) and the
+\emph{median} is reported with the interquartile range (IQR), so that
+garbage-collector jitter does not distort the result. All figures
+were collected on a single machine with a warm cache and therefore characterise
+relative behaviour and scaling rather than absolute deployment latency. The
+numbers in Tables~\ref{tab:bench-latency}--\ref{tab:bench-tradeoff} are
+illustrative of a representative run; the script regenerates them, together with
+two plots, on any machine.
+
+\subsection{Latency versus payload size}
+
+Capture and restore latency scale approximately linearly with the size of the
+state, dominated by JSON serialisation and parsing. Small checkpoints (the
+common case for interactive applications, on the order of a few kilobytes)
+complete in well under a millisecond; multi-megabyte checkpoints cost tens to
+hundreds of milliseconds.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+\textbf{State size} & \textbf{JSON bytes} & \textbf{Capture (ms)} & \textbf{Restore (ms)} \\
+\midrule
+1 KB    & 1{,}398      & 0.66  & 0.07  \\
+10 KB   & 13{,}279     & 0.87  & 0.35  \\
+100 KB  & 133{,}694    & 3.53  & 3.66  \\
+1 MB    & 1{,}361{,}546  & 30.52 & 33.10 \\
+5 MB    & 6{,}878{,}022  & 292.71 & 182.13 \\
+10 MB   & 13{,}866{,}628 & 707.34 & 385.50 \\
+\bottomrule
+\end{tabular}
+\caption{Median capture/restore latency by payload size (illustrative run,
+50 iterations/case). Values scale roughly linearly with state size.}
+\label{tab:bench-latency}
+\end{table}
+
+\subsection{Compression effectiveness}
+
+Payloads are gzip-compressed before base64 encoding, which offsets base64's
+roughly one-third size inflation. The benefit depends heavily on the
+redundancy of the data: highly repetitive text (such as a tabular CSV) compresses
+by orders of magnitude, structured data frames compress moderately, and
+already-dense binary objects (such as a serialised model) compress least.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Case} & \textbf{Raw bytes} & \textbf{Gzip bytes} & \textbf{Ratio} & \textbf{Saved} \\
+\midrule
+CSV file (repetitive)   & 1{,}266{,}834 & 3{,}297     & 384.24$\times$ & 99.7\% \\
+data.frame (\texttt{state\_rds}) & 1{,}383{,}879 & 549{,}150 & 2.52$\times$ & 60.3\% \\
+\texttt{lm} model (\texttt{state\_rds}) & 4{,}003{,}695 & 2{,}555{,}874 & 1.57$\times$ & 36.2\% \\
+\bottomrule
+\end{tabular}
+\caption{Compression ratio by data type (illustrative run). Repetitive text
+benefits most; dense binary objects least.}
+\label{tab:bench-compression}
+\end{table}
+
+\subsection{Full-state versus input-only}
+
+The defining trade-off of the design can be quantified directly. Input-only
+sharing transfers a handful of bytes but cannot reproduce computed outputs;
+full-state sharing transfers the computed result as well, at a proportional cost
+in size and time, and in return reproduces non-deterministic results exactly.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrc}
+\toprule
+\textbf{Approach} & \textbf{JSON bytes} & \textbf{Capture (ms)} & \textbf{Reproduces non-det.\ output} \\
+\midrule
+input-only  & 137        & 0.41  & no  \\
+full-state  & 1{,}361{,}864 & 28.81 & yes \\
+\bottomrule
+\end{tabular}
+\caption{Full-state versus input-only for a representative application
+(inputs plus a 1~MB computed result; illustrative run). The size and time
+overhead is the measurable price of exact reproducibility.}
+\label{tab:bench-tradeoff}
+\end{table}
+
+For this case, full-state capture costs substantially more in both bytes and time
+than input-only sharing. This overhead is not a defect but the explicit cost of
+the guarantee the library provides: input-only approaches are cheaper precisely
+because they discard the computed state that full-state capture exists to
+preserve. The relevant comparison is therefore not ``cheaper versus more
+expensive'' but ``recomputed (and, for non-deterministic analyses, irreproducible)
+versus reproduced exactly''.
+
+% --------------------------------------------------------------------------
+\section{Limitations and Further Work}
+% --------------------------------------------------------------------------
+
+The prototype has known limitations, several of which are inherent to Shiny's
+design rather than to the library:
+
+\begin{itemize}
+  \item \textbf{File-input widgets} cannot be restored through
+    \texttt{sendInputMessage()}; the \texttt{state\_file()} wrapper embeds the
+    uploaded content as a workaround.
+  \item \textbf{Shiny modules} use namespaced input identifiers (for example,
+    \texttt{panel1-threshold}). Because \texttt{capture\_state()} reads
+    \texttt{names(input)} at the top level and \texttt{restore\_state()} pushes
+    values back through the parent \texttt{session}, the library does not model
+    the namespace hierarchy that modules introduce, and restoring across module
+    session boundaries is not yet supported. Supporting it would require either
+    namespace-aware capture (recording each value's namespace path) or recursive
+    capture and restore that is invoked from within each module's own
+    \texttt{session}, and merging the resulting fragments. This was deliberately
+    left out of scope for the prototype: the applications studied in this thesis
+    are flat (non-modular), so module support would address a case that does not
+    arise in the evaluation. It is documented here so that a future user who
+    adopts the library in a modular application is aware of the boundary.
+  \item \textbf{Explicit registration} of reactive values is required, because R
+    provides no API to enumerate them.
+  \item \textbf{\texttt{reactiveValues} keys cannot be deleted} in Shiny; on
+    restore, keys absent from the checkpoint are cleared to \texttt{NULL} so
+    their values do not leak, rather than being removed entirely.
+\end{itemize}
+
+Natural extensions include support for Shiny modules through recursive
+capture/restore across session hierarchies (Section~\ref{sec:performance}
+benchmarks the flat case only), extending the micro-benchmarks to the specific
+state profiles of each studied application, and publication on CRAN to make the
+reproducibility contribution available to the wider R~Shiny community without any
+microservice infrastructure.
+
+% --------------------------------------------------------------------------
+\section{Contribution}
+% --------------------------------------------------------------------------
+
+The \texttt{statesnap} package shows that the reproducibility mechanism
+developed for the ShinySwarm architecture is not tied to that architecture. The
+same guarantee --- exact reproduction of computed results across users,
+machines, and time --- can be delivered by a minimal, transport-agnostic library
+usable by any Shiny developer. In doing so it both validates the design proposed
+as future work and isolates a general security obligation for any system that
+shares computed application state.
+
+\end{document}
