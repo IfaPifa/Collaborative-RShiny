@@ -1,0 +1,881 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: ./k6/02-collaboration-latency.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 30 max VUs, 4m30s max duration (incl. graceful stop):
+              * collab_latency: Up to 30 looping VUs for 4m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+time="2026-06-12T13:35:21Z" level=warning msg="Error from API server" error="listen tcp 127.0.0.1:6565: bind: address already in use"
+
+running (0m01.0s), 01/30 VUs, 0 complete and 0 interrupted iterations
+collab_latency   [   0% ] 01/30 VUs  0m00.8s/4m00.0s
+
+running (0m02.0s), 01/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   1% ] 01/30 VUs  0m01.8s/4m00.0s
+
+running (0m03.0s), 01/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   1% ] 01/30 VUs  0m02.8s/4m00.0s
+
+running (0m04.0s), 02/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   2% ] 02/30 VUs  0m03.8s/4m00.0s
+
+running (0m05.0s), 02/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   2% ] 02/30 VUs  0m04.8s/4m00.0s
+
+running (0m06.0s), 02/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   2% ] 02/30 VUs  0m05.8s/4m00.0s
+
+running (0m07.0s), 03/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   3% ] 03/30 VUs  0m06.8s/4m00.0s
+
+running (0m08.0s), 03/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   3% ] 03/30 VUs  0m07.8s/4m00.0s
+
+running (0m09.0s), 03/30 VUs, 1 complete and 0 interrupted iterations
+collab_latency   [   4% ] 03/30 VUs  0m08.8s/4m00.0s
+
+running (0m10.0s), 03/30 VUs, 4 complete and 0 interrupted iterations
+collab_latency   [   4% ] 03/30 VUs  0m09.8s/4m00.0s
+
+running (0m11.0s), 04/30 VUs, 4 complete and 0 interrupted iterations
+collab_latency   [   5% ] 04/30 VUs  0m10.8s/4m00.0s
+
+running (0m12.0s), 04/30 VUs, 4 complete and 0 interrupted iterations
+collab_latency   [   5% ] 04/30 VUs  0m11.8s/4m00.0s
+
+running (0m13.0s), 04/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   5% ] 04/30 VUs  0m12.8s/4m00.0s
+
+running (0m14.0s), 05/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   6% ] 05/30 VUs  0m13.8s/4m00.0s
+
+running (0m15.0s), 05/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   6% ] 05/30 VUs  0m14.8s/4m00.0s
+
+running (0m16.0s), 05/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   7% ] 05/30 VUs  0m15.8s/4m00.0s
+
+running (0m17.0s), 06/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   7% ] 06/30 VUs  0m16.8s/4m00.0s
+
+running (0m18.0s), 06/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   7% ] 06/30 VUs  0m17.8s/4m00.0s
+
+running (0m19.0s), 06/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   8% ] 06/30 VUs  0m18.8s/4m00.0s
+
+running (0m20.0s), 06/30 VUs, 5 complete and 0 interrupted iterations
+collab_latency   [   8% ] 06/30 VUs  0m19.8s/4m00.0s
+
+running (0m21.0s), 07/30 VUs, 6 complete and 0 interrupted iterations
+collab_latency   [   9% ] 07/30 VUs  0m20.8s/4m00.0s
+
+running (0m22.0s), 07/30 VUs, 8 complete and 0 interrupted iterations
+collab_latency   [   9% ] 07/30 VUs  0m21.8s/4m00.0s
+
+running (0m23.0s), 07/30 VUs, 9 complete and 0 interrupted iterations
+collab_latency   [  10% ] 07/30 VUs  0m22.8s/4m00.0s
+
+running (0m24.0s), 08/30 VUs, 11 complete and 0 interrupted iterations
+collab_latency   [  10% ] 08/30 VUs  0m23.8s/4m00.0s
+
+running (0m25.0s), 08/30 VUs, 12 complete and 0 interrupted iterations
+collab_latency   [  10% ] 08/30 VUs  0m24.8s/4m00.0s
+
+running (0m26.0s), 08/30 VUs, 14 complete and 0 interrupted iterations
+collab_latency   [  11% ] 08/30 VUs  0m25.8s/4m00.0s
+
+running (0m27.0s), 09/30 VUs, 18 complete and 0 interrupted iterations
+collab_latency   [  11% ] 09/30 VUs  0m26.8s/4m00.0s
+
+running (0m28.0s), 09/30 VUs, 18 complete and 0 interrupted iterations
+collab_latency   [  12% ] 09/30 VUs  0m27.8s/4m00.0s
+
+running (0m29.0s), 09/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  12% ] 09/30 VUs  0m28.8s/4m00.0s
+
+running (0m30.0s), 09/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  12% ] 09/30 VUs  0m29.8s/4m00.0s
+
+running (0m31.0s), 10/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  13% ] 10/30 VUs  0m30.8s/4m00.0s
+
+running (0m32.0s), 10/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  13% ] 10/30 VUs  0m31.8s/4m00.0s
+
+running (0m33.0s), 10/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  14% ] 10/30 VUs  0m32.8s/4m00.0s
+
+running (0m34.0s), 10/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  14% ] 10/30 VUs  0m33.8s/4m00.0s
+
+running (0m35.0s), 10/30 VUs, 19 complete and 0 interrupted iterations
+collab_latency   [  15% ] 10/30 VUs  0m34.8s/4m00.0s
+
+running (0m36.0s), 10/30 VUs, 25 complete and 0 interrupted iterations
+collab_latency   [  15% ] 10/30 VUs  0m35.8s/4m00.0s
+
+running (0m37.0s), 11/30 VUs, 26 complete and 0 interrupted iterations
+collab_latency   [  15% ] 11/30 VUs  0m36.8s/4m00.0s
+
+running (0m38.0s), 11/30 VUs, 26 complete and 0 interrupted iterations
+collab_latency   [  16% ] 11/30 VUs  0m37.8s/4m00.0s
+
+running (0m39.0s), 11/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  16% ] 11/30 VUs  0m38.8s/4m00.0s
+
+running (0m40.0s), 11/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  17% ] 11/30 VUs  0m39.8s/4m00.0s
+
+running (0m41.0s), 11/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  17% ] 11/30 VUs  0m40.8s/4m00.0s
+
+running (0m42.0s), 11/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  17% ] 11/30 VUs  0m41.8s/4m00.0s
+
+running (0m43.0s), 12/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  18% ] 12/30 VUs  0m42.8s/4m00.0s
+
+running (0m44.0s), 12/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  18% ] 12/30 VUs  0m43.8s/4m00.0s
+
+running (0m45.0s), 12/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  19% ] 12/30 VUs  0m44.8s/4m00.0s
+
+running (0m46.0s), 12/30 VUs, 32 complete and 0 interrupted iterations
+collab_latency   [  19% ] 12/30 VUs  0m45.8s/4m00.0s
+
+running (0m47.0s), 12/30 VUs, 37 complete and 0 interrupted iterations
+collab_latency   [  20% ] 12/30 VUs  0m46.8s/4m00.0s
+
+running (0m48.0s), 12/30 VUs, 38 complete and 0 interrupted iterations
+collab_latency   [  20% ] 12/30 VUs  0m47.8s/4m00.0s
+
+running (0m49.0s), 13/30 VUs, 38 complete and 0 interrupted iterations
+collab_latency   [  20% ] 13/30 VUs  0m48.8s/4m00.0s
+
+running (0m50.0s), 13/30 VUs, 39 complete and 0 interrupted iterations
+collab_latency   [  21% ] 13/30 VUs  0m49.8s/4m00.0s
+
+running (0m51.0s), 13/30 VUs, 39 complete and 0 interrupted iterations
+collab_latency   [  21% ] 13/30 VUs  0m50.8s/4m00.0s
+
+running (0m52.0s), 13/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  22% ] 13/30 VUs  0m51.8s/4m00.0s
+
+running (0m53.0s), 13/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  22% ] 13/30 VUs  0m52.8s/4m00.0s
+
+running (0m54.0s), 13/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  22% ] 13/30 VUs  0m53.8s/4m00.0s
+
+running (0m55.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  23% ] 14/30 VUs  0m54.8s/4m00.0s
+
+running (0m56.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  23% ] 14/30 VUs  0m55.8s/4m00.0s
+
+running (0m57.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  24% ] 14/30 VUs  0m56.8s/4m00.0s
+
+running (0m58.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  24% ] 14/30 VUs  0m57.8s/4m00.0s
+
+running (0m59.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  25% ] 14/30 VUs  0m58.8s/4m00.0s
+
+running (1m00.0s), 14/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  25% ] 14/30 VUs  0m59.8s/4m00.0s
+
+running (1m01.0s), 15/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  25% ] 15/30 VUs  1m00.8s/4m00.0s
+
+running (1m02.0s), 15/30 VUs, 44 complete and 0 interrupted iterations
+collab_latency   [  26% ] 15/30 VUs  1m01.8s/4m00.0s
+
+running (1m03.0s), 15/30 VUs, 45 complete and 0 interrupted iterations
+collab_latency   [  26% ] 15/30 VUs  1m02.8s/4m00.0s
+
+running (1m04.0s), 15/30 VUs, 45 complete and 0 interrupted iterations
+collab_latency   [  27% ] 15/30 VUs  1m03.8s/4m00.0s
+
+running (1m05.0s), 15/30 VUs, 45 complete and 0 interrupted iterations
+collab_latency   [  27% ] 15/30 VUs  1m04.8s/4m00.0s
+
+running (1m06.0s), 15/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  27% ] 15/30 VUs  1m05.8s/4m00.0s
+
+running (1m07.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  28% ] 16/30 VUs  1m06.8s/4m00.0s
+
+running (1m08.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  28% ] 16/30 VUs  1m07.8s/4m00.0s
+
+running (1m09.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  29% ] 16/30 VUs  1m08.8s/4m00.0s
+
+running (1m10.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  29% ] 16/30 VUs  1m09.8s/4m00.0s
+
+running (1m11.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  30% ] 16/30 VUs  1m10.8s/4m00.0s
+
+running (1m12.0s), 16/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  30% ] 16/30 VUs  1m11.8s/4m00.0s
+
+running (1m13.0s), 17/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  30% ] 17/30 VUs  1m12.8s/4m00.0s
+
+running (1m14.0s), 17/30 VUs, 50 complete and 0 interrupted iterations
+collab_latency   [  31% ] 17/30 VUs  1m13.8s/4m00.0s
+
+running (1m15.0s), 17/30 VUs, 51 complete and 0 interrupted iterations
+collab_latency   [  31% ] 17/30 VUs  1m14.8s/4m00.0s
+
+running (1m16.0s), 17/30 VUs, 59 complete and 0 interrupted iterations
+collab_latency   [  32% ] 17/30 VUs  1m15.8s/4m00.0s
+
+running (1m17.0s), 17/30 VUs, 60 complete and 0 interrupted iterations
+collab_latency   [  32% ] 17/30 VUs  1m16.8s/4m00.0s
+
+running (1m18.0s), 17/30 VUs, 61 complete and 0 interrupted iterations
+collab_latency   [  32% ] 17/30 VUs  1m17.8s/4m00.0s
+
+running (1m19.0s), 18/30 VUs, 61 complete and 0 interrupted iterations
+collab_latency   [  33% ] 18/30 VUs  1m18.8s/4m00.0s
+
+running (1m20.0s), 18/30 VUs, 66 complete and 0 interrupted iterations
+collab_latency   [  33% ] 18/30 VUs  1m19.8s/4m00.0s
+
+running (1m21.0s), 18/30 VUs, 71 complete and 0 interrupted iterations
+collab_latency   [  34% ] 18/30 VUs  1m20.8s/4m00.0s
+
+running (1m22.0s), 18/30 VUs, 71 complete and 0 interrupted iterations
+collab_latency   [  34% ] 18/30 VUs  1m21.8s/4m00.0s
+
+running (1m23.0s), 18/30 VUs, 75 complete and 0 interrupted iterations
+collab_latency   [  35% ] 18/30 VUs  1m22.8s/4m00.0s
+
+running (1m24.0s), 18/30 VUs, 80 complete and 0 interrupted iterations
+collab_latency   [  35% ] 18/30 VUs  1m23.8s/4m00.0s
+
+running (1m25.0s), 19/30 VUs, 80 complete and 0 interrupted iterations
+collab_latency   [  35% ] 19/30 VUs  1m24.8s/4m00.0s
+
+running (1m26.0s), 19/30 VUs, 80 complete and 0 interrupted iterations
+collab_latency   [  36% ] 19/30 VUs  1m25.8s/4m00.0s
+
+running (1m27.0s), 19/30 VUs, 80 complete and 0 interrupted iterations
+collab_latency   [  36% ] 19/30 VUs  1m26.8s/4m00.0s
+
+running (1m28.0s), 19/30 VUs, 81 complete and 0 interrupted iterations
+collab_latency   [  37% ] 19/30 VUs  1m27.8s/4m00.0s
+
+running (1m29.0s), 19/30 VUs, 82 complete and 0 interrupted iterations
+collab_latency   [  37% ] 19/30 VUs  1m28.8s/4m00.0s
+
+running (1m30.0s), 19/30 VUs, 89 complete and 0 interrupted iterations
+collab_latency   [  37% ] 19/30 VUs  1m29.8s/4m00.0s
+
+running (1m31.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  38% ] 20/30 VUs  1m30.8s/4m00.0s
+
+running (1m32.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  38% ] 20/30 VUs  1m31.8s/4m00.0s
+
+running (1m33.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  39% ] 20/30 VUs  1m32.8s/4m00.0s
+
+running (1m34.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  39% ] 20/30 VUs  1m33.8s/4m00.0s
+
+running (1m35.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  40% ] 20/30 VUs  1m34.8s/4m00.0s
+
+running (1m36.0s), 20/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  40% ] 20/30 VUs  1m35.8s/4m00.0s
+
+running (1m37.0s), 21/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  40% ] 21/30 VUs  1m36.8s/4m00.0s
+
+running (1m38.0s), 21/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  41% ] 21/30 VUs  1m37.8s/4m00.0s
+
+running (1m39.0s), 21/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  41% ] 21/30 VUs  1m38.8s/4m00.0s
+
+running (1m40.0s), 21/30 VUs, 92 complete and 0 interrupted iterations
+collab_latency   [  42% ] 21/30 VUs  1m39.8s/4m00.0s
+
+running (1m41.0s), 21/30 VUs, 103 complete and 0 interrupted iterations
+collab_latency   [  42% ] 21/30 VUs  1m40.8s/4m00.0s
+
+running (1m42.0s), 21/30 VUs, 104 complete and 0 interrupted iterations
+collab_latency   [  42% ] 21/30 VUs  1m41.8s/4m00.0s
+
+running (1m43.0s), 22/30 VUs, 104 complete and 0 interrupted iterations
+collab_latency   [  43% ] 22/30 VUs  1m42.8s/4m00.0s
+
+running (1m44.0s), 22/30 VUs, 104 complete and 0 interrupted iterations
+collab_latency   [  43% ] 22/30 VUs  1m43.8s/4m00.0s
+
+running (1m45.0s), 22/30 VUs, 118 complete and 0 interrupted iterations
+collab_latency   [  44% ] 22/30 VUs  1m44.8s/4m00.0s
+
+running (1m46.0s), 22/30 VUs, 119 complete and 0 interrupted iterations
+collab_latency   [  44% ] 22/30 VUs  1m45.8s/4m00.0s
+
+running (1m47.0s), 22/30 VUs, 119 complete and 0 interrupted iterations
+collab_latency   [  45% ] 22/30 VUs  1m46.8s/4m00.0s
+
+running (1m48.0s), 22/30 VUs, 119 complete and 0 interrupted iterations
+collab_latency   [  45% ] 22/30 VUs  1m47.8s/4m00.0s
+time="2026-06-12T13:37:10Z" level=warning msg="Request Failed" error="Post \"http://localhost:30001/api/collab/8f1df6af-c164-41ff-8846-ba6b6086901e/state\": request timeout"
+
+running (1m49.0s), 23/30 VUs, 120 complete and 0 interrupted iterations
+collab_latency   [  45% ] 23/30 VUs  1m48.8s/4m00.0s
+
+running (1m50.0s), 23/30 VUs, 130 complete and 0 interrupted iterations
+collab_latency   [  46% ] 23/30 VUs  1m49.8s/4m00.0s
+
+running (1m51.0s), 23/30 VUs, 130 complete and 0 interrupted iterations
+collab_latency   [  46% ] 23/30 VUs  1m50.8s/4m00.0s
+
+running (1m52.0s), 23/30 VUs, 132 complete and 0 interrupted iterations
+collab_latency   [  47% ] 23/30 VUs  1m51.8s/4m00.0s
+
+running (1m53.0s), 23/30 VUs, 132 complete and 0 interrupted iterations
+collab_latency   [  47% ] 23/30 VUs  1m52.8s/4m00.0s
+
+running (1m54.0s), 23/30 VUs, 132 complete and 0 interrupted iterations
+collab_latency   [  47% ] 23/30 VUs  1m53.8s/4m00.0s
+
+running (1m55.0s), 24/30 VUs, 135 complete and 0 interrupted iterations
+collab_latency   [  48% ] 24/30 VUs  1m54.8s/4m00.0s
+
+running (1m56.0s), 24/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  48% ] 24/30 VUs  1m55.8s/4m00.0s
+
+running (1m57.0s), 24/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  49% ] 24/30 VUs  1m56.8s/4m00.0s
+
+running (1m58.0s), 24/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  49% ] 24/30 VUs  1m57.8s/4m00.0s
+
+running (1m59.0s), 24/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  50% ] 24/30 VUs  1m58.8s/4m00.0s
+
+running (2m00.0s), 24/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  50% ] 24/30 VUs  1m59.8s/4m00.0s
+time="2026-06-12T13:37:22Z" level=warning msg="Request Failed" error="Post \"http://localhost:30001/api/collab/4a636fc7-05c9-40ef-952b-7330d2a930fc/state\": request timeout"
+
+running (2m01.0s), 25/30 VUs, 140 complete and 0 interrupted iterations
+collab_latency   [  50% ] 25/30 VUs  2m00.8s/4m00.0s
+
+running (2m02.0s), 25/30 VUs, 141 complete and 0 interrupted iterations
+collab_latency   [  51% ] 25/30 VUs  2m01.8s/4m00.0s
+
+running (2m03.0s), 25/30 VUs, 141 complete and 0 interrupted iterations
+collab_latency   [  51% ] 25/30 VUs  2m02.8s/4m00.0s
+
+running (2m04.0s), 25/30 VUs, 141 complete and 0 interrupted iterations
+collab_latency   [  52% ] 25/30 VUs  2m03.8s/4m00.0s
+
+running (2m05.0s), 25/30 VUs, 141 complete and 0 interrupted iterations
+collab_latency   [  52% ] 25/30 VUs  2m04.8s/4m00.0s
+
+running (2m06.0s), 25/30 VUs, 142 complete and 0 interrupted iterations
+collab_latency   [  52% ] 25/30 VUs  2m05.8s/4m00.0s
+
+running (2m07.0s), 26/30 VUs, 145 complete and 0 interrupted iterations
+collab_latency   [  53% ] 26/30 VUs  2m06.8s/4m00.0s
+
+running (2m08.0s), 26/30 VUs, 145 complete and 0 interrupted iterations
+collab_latency   [  53% ] 26/30 VUs  2m07.8s/4m00.0s
+
+running (2m09.0s), 26/30 VUs, 148 complete and 0 interrupted iterations
+collab_latency   [  54% ] 26/30 VUs  2m08.8s/4m00.0s
+
+running (2m10.0s), 26/30 VUs, 148 complete and 0 interrupted iterations
+collab_latency   [  54% ] 26/30 VUs  2m09.8s/4m00.0s
+
+running (2m11.0s), 26/30 VUs, 148 complete and 0 interrupted iterations
+collab_latency   [  55% ] 26/30 VUs  2m10.8s/4m00.0s
+
+running (2m12.0s), 26/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  55% ] 26/30 VUs  2m11.8s/4m00.0s
+
+running (2m13.0s), 27/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  55% ] 27/30 VUs  2m12.8s/4m00.0s
+
+running (2m14.0s), 27/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  56% ] 27/30 VUs  2m13.8s/4m00.0s
+
+running (2m15.0s), 27/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  56% ] 27/30 VUs  2m14.8s/4m00.0s
+
+running (2m16.0s), 27/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  57% ] 27/30 VUs  2m15.8s/4m00.0s
+
+running (2m17.0s), 27/30 VUs, 151 complete and 0 interrupted iterations
+collab_latency   [  57% ] 27/30 VUs  2m16.8s/4m00.0s
+
+running (2m18.0s), 27/30 VUs, 163 complete and 0 interrupted iterations
+collab_latency   [  57% ] 27/30 VUs  2m17.8s/4m00.0s
+
+running (2m19.0s), 28/30 VUs, 166 complete and 0 interrupted iterations
+collab_latency   [  58% ] 28/30 VUs  2m18.8s/4m00.0s
+
+running (2m20.0s), 28/30 VUs, 167 complete and 0 interrupted iterations
+collab_latency   [  58% ] 28/30 VUs  2m19.8s/4m00.0s
+
+running (2m21.0s), 28/30 VUs, 169 complete and 0 interrupted iterations
+collab_latency   [  59% ] 28/30 VUs  2m20.8s/4m00.0s
+
+running (2m22.0s), 28/30 VUs, 171 complete and 0 interrupted iterations
+collab_latency   [  59% ] 28/30 VUs  2m21.8s/4m00.0s
+
+running (2m23.0s), 28/30 VUs, 172 complete and 0 interrupted iterations
+collab_latency   [  60% ] 28/30 VUs  2m22.8s/4m00.0s
+
+running (2m24.0s), 28/30 VUs, 172 complete and 0 interrupted iterations
+collab_latency   [  60% ] 28/30 VUs  2m23.8s/4m00.0s
+
+running (2m25.0s), 29/30 VUs, 180 complete and 0 interrupted iterations
+collab_latency   [  60% ] 29/30 VUs  2m24.8s/4m00.0s
+
+running (2m26.0s), 29/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  61% ] 29/30 VUs  2m25.8s/4m00.0s
+
+running (2m27.0s), 29/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  61% ] 29/30 VUs  2m26.8s/4m00.0s
+
+running (2m28.0s), 29/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  62% ] 29/30 VUs  2m27.8s/4m00.0s
+
+running (2m29.0s), 29/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  62% ] 29/30 VUs  2m28.8s/4m00.0s
+
+running (2m30.0s), 29/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  62% ] 29/30 VUs  2m29.8s/4m00.0s
+
+running (2m31.0s), 30/30 VUs, 196 complete and 0 interrupted iterations
+collab_latency   [  63% ] 30/30 VUs  2m30.8s/4m00.0s
+
+running (2m32.0s), 30/30 VUs, 198 complete and 0 interrupted iterations
+collab_latency   [  63% ] 30/30 VUs  2m31.8s/4m00.0s
+
+running (2m33.0s), 30/30 VUs, 216 complete and 0 interrupted iterations
+collab_latency   [  64% ] 30/30 VUs  2m32.8s/4m00.0s
+
+running (2m34.0s), 30/30 VUs, 219 complete and 0 interrupted iterations
+collab_latency   [  64% ] 30/30 VUs  2m33.8s/4m00.0s
+
+running (2m35.0s), 30/30 VUs, 219 complete and 0 interrupted iterations
+collab_latency   [  65% ] 30/30 VUs  2m34.8s/4m00.0s
+
+running (2m36.0s), 30/30 VUs, 219 complete and 0 interrupted iterations
+collab_latency   [  65% ] 30/30 VUs  2m35.8s/4m00.0s
+
+running (2m37.0s), 30/30 VUs, 220 complete and 0 interrupted iterations
+collab_latency   [  65% ] 30/30 VUs  2m36.8s/4m00.0s
+
+running (2m38.0s), 30/30 VUs, 220 complete and 0 interrupted iterations
+collab_latency   [  66% ] 30/30 VUs  2m37.8s/4m00.0s
+
+running (2m39.0s), 30/30 VUs, 221 complete and 0 interrupted iterations
+collab_latency   [  66% ] 30/30 VUs  2m38.8s/4m00.0s
+
+running (2m40.0s), 30/30 VUs, 221 complete and 0 interrupted iterations
+collab_latency   [  67% ] 30/30 VUs  2m39.8s/4m00.0s
+
+running (2m41.0s), 30/30 VUs, 221 complete and 0 interrupted iterations
+collab_latency   [  67% ] 30/30 VUs  2m40.8s/4m00.0s
+
+running (2m42.0s), 30/30 VUs, 222 complete and 0 interrupted iterations
+collab_latency   [  67% ] 30/30 VUs  2m41.8s/4m00.0s
+
+running (2m43.0s), 30/30 VUs, 222 complete and 0 interrupted iterations
+collab_latency   [  68% ] 30/30 VUs  2m42.8s/4m00.0s
+
+running (2m44.0s), 30/30 VUs, 222 complete and 0 interrupted iterations
+collab_latency   [  68% ] 30/30 VUs  2m43.8s/4m00.0s
+
+running (2m45.0s), 30/30 VUs, 223 complete and 0 interrupted iterations
+collab_latency   [  69% ] 30/30 VUs  2m44.8s/4m00.0s
+
+running (2m46.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  69% ] 30/30 VUs  2m45.8s/4m00.0s
+
+running (2m47.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  70% ] 30/30 VUs  2m46.8s/4m00.0s
+
+running (2m48.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  70% ] 30/30 VUs  2m47.8s/4m00.0s
+
+running (2m49.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  70% ] 30/30 VUs  2m48.8s/4m00.0s
+
+running (2m50.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  71% ] 30/30 VUs  2m49.8s/4m00.0s
+
+running (2m51.0s), 30/30 VUs, 224 complete and 0 interrupted iterations
+collab_latency   [  71% ] 30/30 VUs  2m50.8s/4m00.0s
+
+running (2m52.0s), 28/30 VUs, 238 complete and 0 interrupted iterations
+collab_latency   [  72% ] 28/30 VUs  2m51.8s/4m00.0s
+
+running (2m53.0s), 28/30 VUs, 242 complete and 0 interrupted iterations
+collab_latency   [  72% ] 28/30 VUs  2m52.8s/4m00.0s
+time="2026-06-12T13:38:15Z" level=warning msg="Request Failed" error="Post \"http://localhost:30001/api/collab/ba05445b-ba54-4211-98ba-d903760345b0/state\": request timeout"
+
+running (2m54.0s), 28/30 VUs, 242 complete and 0 interrupted iterations
+collab_latency   [  72% ] 28/30 VUs  2m53.8s/4m00.0s
+
+running (2m55.0s), 28/30 VUs, 244 complete and 0 interrupted iterations
+collab_latency   [  73% ] 28/30 VUs  2m54.8s/4m00.0s
+
+running (2m56.0s), 28/30 VUs, 245 complete and 0 interrupted iterations
+collab_latency   [  73% ] 28/30 VUs  2m55.8s/4m00.0s
+
+running (2m57.0s), 27/30 VUs, 246 complete and 0 interrupted iterations
+collab_latency   [  74% ] 27/30 VUs  2m56.8s/4m00.0s
+
+running (2m58.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  74% ] 26/30 VUs  2m57.8s/4m00.0s
+
+running (2m59.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  75% ] 26/30 VUs  2m58.8s/4m00.0s
+
+running (3m00.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  75% ] 26/30 VUs  2m59.8s/4m00.0s
+
+running (3m01.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  75% ] 26/30 VUs  3m00.8s/4m00.0s
+
+running (3m02.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  76% ] 26/30 VUs  3m01.8s/4m00.0s
+
+running (3m03.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  76% ] 26/30 VUs  3m02.8s/4m00.0s
+
+running (3m04.0s), 26/30 VUs, 261 complete and 0 interrupted iterations
+collab_latency   [  77% ] 26/30 VUs  3m03.8s/4m00.0s
+
+running (3m05.0s), 25/30 VUs, 263 complete and 1 interrupted iterations
+collab_latency   [  77% ] 25/30 VUs  3m04.8s/4m00.0s
+
+running (3m06.0s), 25/30 VUs, 264 complete and 1 interrupted iterations
+collab_latency   [  77% ] 25/30 VUs  3m05.8s/4m00.0s
+
+running (3m07.0s), 24/30 VUs, 265 complete and 1 interrupted iterations
+collab_latency   [  78% ] 24/30 VUs  3m06.8s/4m00.0s
+
+running (3m08.0s), 24/30 VUs, 265 complete and 1 interrupted iterations
+collab_latency   [  78% ] 24/30 VUs  3m07.8s/4m00.0s
+
+running (3m09.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  79% ] 23/30 VUs  3m08.8s/4m00.0s
+
+running (3m10.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  79% ] 23/30 VUs  3m09.8s/4m00.0s
+
+running (3m11.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  80% ] 23/30 VUs  3m10.8s/4m00.0s
+
+running (3m12.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  80% ] 23/30 VUs  3m11.8s/4m00.0s
+
+running (3m13.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  80% ] 23/30 VUs  3m12.8s/4m00.0s
+
+running (3m14.0s), 23/30 VUs, 283 complete and 1 interrupted iterations
+collab_latency   [  81% ] 23/30 VUs  3m13.8s/4m00.0s
+
+running (3m15.0s), 23/30 VUs, 289 complete and 1 interrupted iterations
+collab_latency   [  81% ] 23/30 VUs  3m14.8s/4m00.0s
+
+running (3m16.0s), 23/30 VUs, 289 complete and 1 interrupted iterations
+collab_latency   [  82% ] 23/30 VUs  3m15.8s/4m00.0s
+
+running (3m17.0s), 22/30 VUs, 289 complete and 2 interrupted iterations
+collab_latency   [  82% ] 22/30 VUs  3m16.8s/4m00.0s
+
+running (3m18.0s), 22/30 VUs, 292 complete and 2 interrupted iterations
+collab_latency   [  82% ] 22/30 VUs  3m17.8s/4m00.0s
+
+running (3m19.0s), 22/30 VUs, 292 complete and 2 interrupted iterations
+collab_latency   [  83% ] 22/30 VUs  3m18.8s/4m00.0s
+
+running (3m20.0s), 22/30 VUs, 295 complete and 2 interrupted iterations
+collab_latency   [  83% ] 22/30 VUs  3m19.8s/4m00.0s
+
+running (3m21.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  84% ] 21/30 VUs  3m20.8s/4m00.0s
+
+running (3m22.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  84% ] 21/30 VUs  3m21.8s/4m00.0s
+
+running (3m23.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  85% ] 21/30 VUs  3m22.8s/4m00.0s
+
+running (3m24.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  85% ] 21/30 VUs  3m23.8s/4m00.0s
+
+running (3m25.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  85% ] 21/30 VUs  3m24.8s/4m00.0s
+
+running (3m26.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  86% ] 21/30 VUs  3m25.8s/4m00.0s
+
+running (3m27.0s), 21/30 VUs, 297 complete and 2 interrupted iterations
+collab_latency   [  86% ] 21/30 VUs  3m26.8s/4m00.0s
+
+running (3m28.0s), 20/30 VUs, 298 complete and 2 interrupted iterations
+collab_latency   [  87% ] 20/30 VUs  3m27.8s/4m00.0s
+
+running (3m29.0s), 20/30 VUs, 299 complete and 2 interrupted iterations
+collab_latency   [  87% ] 20/30 VUs  3m28.8s/4m00.0s
+
+running (3m30.0s), 20/30 VUs, 299 complete and 2 interrupted iterations
+collab_latency   [  87% ] 20/30 VUs  3m29.8s/4m00.0s
+
+running (3m31.0s), 18/30 VUs, 305 complete and 2 interrupted iterations
+collab_latency   [  88% ] 18/30 VUs  3m30.8s/4m00.0s
+
+running (3m32.0s), 17/30 VUs, 308 complete and 2 interrupted iterations
+collab_latency   [  88% ] 17/30 VUs  3m31.8s/4m00.0s
+
+running (3m33.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  89% ] 16/30 VUs  3m32.8s/4m00.0s
+
+running (3m34.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  89% ] 16/30 VUs  3m33.8s/4m00.0s
+
+running (3m35.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  90% ] 16/30 VUs  3m34.8s/4m00.0s
+
+running (3m36.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  90% ] 16/30 VUs  3m35.8s/4m00.0s
+
+running (3m37.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  90% ] 16/30 VUs  3m36.8s/4m00.0s
+
+running (3m38.0s), 16/30 VUs, 309 complete and 2 interrupted iterations
+collab_latency   [  91% ] 16/30 VUs  3m37.8s/4m00.0s
+
+running (3m39.0s), 16/30 VUs, 311 complete and 2 interrupted iterations
+collab_latency   [  91% ] 16/30 VUs  3m38.8s/4m00.0s
+
+running (3m40.0s), 16/30 VUs, 314 complete and 2 interrupted iterations
+collab_latency   [  92% ] 16/30 VUs  3m39.8s/4m00.0s
+
+running (3m41.0s), 16/30 VUs, 315 complete and 2 interrupted iterations
+collab_latency   [  92% ] 16/30 VUs  3m40.8s/4m00.0s
+
+running (3m42.0s), 16/30 VUs, 315 complete and 2 interrupted iterations
+collab_latency   [  92% ] 16/30 VUs  3m41.8s/4m00.0s
+
+running (3m43.0s), 16/30 VUs, 315 complete and 2 interrupted iterations
+collab_latency   [  93% ] 16/30 VUs  3m42.8s/4m00.0s
+
+running (3m44.0s), 16/30 VUs, 316 complete and 2 interrupted iterations
+collab_latency   [  93% ] 16/30 VUs  3m43.8s/4m00.0s
+
+running (3m45.0s), 13/30 VUs, 324 complete and 2 interrupted iterations
+collab_latency   [  94% ] 13/30 VUs  3m44.8s/4m00.0s
+
+running (3m46.0s), 13/30 VUs, 325 complete and 2 interrupted iterations
+collab_latency   [  94% ] 13/30 VUs  3m45.8s/4m00.0s
+
+running (3m47.0s), 13/30 VUs, 325 complete and 2 interrupted iterations
+collab_latency   [  95% ] 13/30 VUs  3m46.8s/4m00.0s
+
+running (3m48.0s), 13/30 VUs, 325 complete and 2 interrupted iterations
+collab_latency   [  95% ] 13/30 VUs  3m47.8s/4m00.0s
+
+running (3m49.0s), 13/30 VUs, 325 complete and 2 interrupted iterations
+collab_latency   [  95% ] 13/30 VUs  3m48.8s/4m00.0s
+
+running (3m50.0s), 11/30 VUs, 331 complete and 2 interrupted iterations
+collab_latency   [  96% ] 11/30 VUs  3m49.8s/4m00.0s
+
+running (3m51.0s), 11/30 VUs, 331 complete and 2 interrupted iterations
+collab_latency   [  96% ] 11/30 VUs  3m50.8s/4m00.0s
+
+running (3m52.0s), 11/30 VUs, 331 complete and 2 interrupted iterations
+collab_latency   [  97% ] 11/30 VUs  3m51.8s/4m00.0s
+
+running (3m53.0s), 11/30 VUs, 331 complete and 2 interrupted iterations
+collab_latency   [  97% ] 11/30 VUs  3m52.8s/4m00.0s
+
+running (3m54.0s), 11/30 VUs, 331 complete and 2 interrupted iterations
+collab_latency   [  97% ] 11/30 VUs  3m53.8s/4m00.0s
+
+running (3m55.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [  98% ] 10/30 VUs  3m54.8s/4m00.0s
+
+running (3m56.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [  98% ] 10/30 VUs  3m55.8s/4m00.0s
+
+running (3m57.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [  99% ] 10/30 VUs  3m56.8s/4m00.0s
+
+running (3m58.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [  99% ] 10/30 VUs  3m57.8s/4m00.0s
+
+running (3m59.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [ 100% ] 10/30 VUs  3m58.8s/4m00.0s
+
+running (4m00.0s), 10/30 VUs, 332 complete and 2 interrupted iterations
+collab_latency   [ 100% ] 10/30 VUs  3m59.8s/4m00.0s
+
+running (4m01.0s), 09/30 VUs, 332 complete and 3 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m02.0s), 09/30 VUs, 332 complete and 3 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m03.0s), 09/30 VUs, 332 complete and 3 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m04.0s), 09/30 VUs, 332 complete and 3 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m05.0s), 08/30 VUs, 332 complete and 4 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m06.0s), 05/30 VUs, 335 complete and 4 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m07.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m08.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m09.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m10.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m11.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m12.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m13.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m14.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m15.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m16.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m17.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m18.0s), 04/30 VUs, 335 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m19.0s), 03/30 VUs, 336 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m20.0s), 03/30 VUs, 336 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m21.0s), 03/30 VUs, 336 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m22.0s), 03/30 VUs, 336 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m23.0s), 03/30 VUs, 336 complete and 5 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m24.0s), 02/30 VUs, 336 complete and 6 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+running (4m25.0s), 01/30 VUs, 337 complete and 6 interrupted iterations
+collab_latency ↓ [ 100% ] 10/30 VUs  4m0s
+
+     █ collab_Advanced
+
+       ✓ Advanced guest sees host state
+
+     █ collab_DataExchange
+
+       ✓ DataExchange guest sees host state
+
+     █ collab_Analytics
+
+       ✓ Analytics guest sees host state
+
+     █ collab_MonteCarlo
+
+       ✓ MonteCarlo guest sees host state
+
+     █ collab_ClimateAnomaly
+
+       ✓ ClimateAnomaly guest sees host state
+
+     █ collab_Geospatial
+
+       ✓ Geospatial guest sees host state
+
+     █ collab_Calculator
+
+       ✓ Calculator guest sees host state
+
+     █ collab_MLTrainer
+
+       ✓ MLTrainer guest sees host state
+
+     checks..........................: 100.00% 334 out of 334
+     collab_host_post_ms.............: avg=5.73s    min=7ms      med=489ms    max=1m0s     p(90)=26.87s  p(95)=37.51s  
+     collab_propagation_ms...........: avg=1.12s    min=2ms      med=153ms    max=11.7s    p(90)=4.3s    p(95)=7.09s   
+     ✗ { app_name:Advanced }.........: avg=1.48s    min=2ms      med=175.5ms  max=10.83s   p(90)=6.15s   p(95)=7.04s   
+     ✗ { app_name:Analytics }........: avg=401.02ms min=2ms      med=116.5ms  max=6.18s    p(90)=854.5ms p(95)=1.49s   
+     ✗ { app_name:Calculator }.......: avg=1s       min=3ms      med=123ms    max=7.09s    p(90)=5.18s   p(95)=6.51s   
+     ✗ { app_name:ClimateAnomaly }...: avg=819.61ms min=2ms      med=95ms     max=7.19s    p(90)=1.87s   p(95)=5.3s    
+     ✗ { app_name:DataExchange }.....: avg=1.16s    min=2ms      med=198ms    max=11.66s   p(90)=2.85s   p(95)=7.17s   
+     ✗ { app_name:Geospatial }.......: avg=852.81ms min=3ms      med=112ms    max=7.18s    p(90)=3.06s   p(95)=6.11s   
+     ✓ { app_name:MLTrainer }........: avg=1.52s    min=4ms      med=647ms    max=11.7s    p(90)=3.1s    p(95)=7.74s   
+     ✗ { app_name:MonteCarlo }.......: avg=1.68s    min=3ms      med=217ms    max=11.66s   p(90)=7.03s   p(95)=9.02s   
+     collab_success..................: 334     1.256148/s
+     collab_timeout..................: 3       0.011283/s
+     data_received...................: 2.3 MB  8.6 kB/s
+     data_sent.......................: 662 kB  2.5 kB/s
+     group_duration..................: avg=11.63s   min=176.82ms med=6.67s    max=1m8s     p(90)=32.48s  p(95)=42.24s  
+     http_req_blocked................: avg=12.98µs  min=1.75µs   med=5.13µs   max=774.23µs p(90)=8.02µs  p(95)=9.41µs  
+     http_req_connecting.............: avg=5.61µs   min=0s       med=0s       max=672.3µs  p(90)=0s      p(95)=0s      
+     http_req_duration...............: avg=1.93s    min=1.85ms   med=555.03ms max=1m0s     p(90)=3.42s   p(95)=6.71s   
+       { expected_response:true }....: avg=1.85s    min=1.85ms   med=552.97ms max=59.42s   p(90)=3.4s    p(95)=6.66s   
+   ✓ http_req_failed.................: 0.14%   3 out of 2049
+     http_req_receiving..............: avg=280.83µs min=0s       med=110.12µs max=49.25ms  p(90)=188.3µs p(95)=233.59µs
+     http_req_sending................: avg=29.99µs  min=7.19µs   med=25.69µs  max=376.45µs p(90)=46.02µs p(95)=56.11µs 
+     http_req_tls_handshaking........: avg=0s       min=0s       med=0s       max=0s       p(90)=0s      p(95)=0s      
+     http_req_waiting................: avg=1.93s    min=1.8ms    med=554.93ms max=1m0s     p(90)=3.42s   p(95)=6.71s   
+     http_reqs.......................: 2049    7.70613/s
+     iteration_duration..............: avg=12.63s   min=1.17s    med=7.67s    max=1m9s     p(90)=33.48s  p(95)=43.24s  
+     iterations......................: 337     1.267431/s
+     vus.............................: 1       min=1          max=30
+     vus_max.........................: 30      min=30         max=30
+
+
+running (4m25.9s), 00/30 VUs, 337 complete and 7 interrupted iterations
+collab_latency ✓ [ 100% ] 00/30 VUs  4m0s
+time="2026-06-12T13:39:47Z" level=error msg="thresholds on metrics 'collab_propagation_ms{app_name:Advanced}, collab_propagation_ms{app_name:Analytics}, collab_propagation_ms{app_name:Calculator}, collab_propagation_ms{app_name:ClimateAnomaly}, collab_propagation_ms{app_name:DataExchange}, collab_propagation_ms{app_name:Geospatial}, collab_propagation_ms{app_name:MonteCarlo}' have been crossed"
