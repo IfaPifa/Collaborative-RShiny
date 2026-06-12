@@ -13,22 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  /* Run test files in order: basics → collaboration → apps (simple → heavy) */
-  testMatch: [
-    'example.spec.ts',
-    'handshake.spec.ts',
-    'collab-sync.spec.ts',
-    'test-cross-user-restore.spec.ts',
-    'test-calculator.spec.ts',
-    'test-visual-analytics.spec.ts',
-    'test-analytics-collab.spec.ts',
-    'test-data-exchange.spec.ts',
-    'test-climate-anomaly.spec.ts',
-    'test-geospatial-delta.spec.ts',
-    'test-montecarlo-async.spec.ts',
-    'test-ml-trainer-async.spec.ts',
-  ],
-  /* Run tests in files in parallel */
+  /* Files are prefixed A-L to run in order: basics → collaboration → apps (simple → heavy) */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
