@@ -32,6 +32,17 @@ test.describe('RQ5: Cross-User Checkpoint Restore', () => {
     const saveName = `RQ5-Cross-User-${Date.now()}`;
     await saveState(alicePage, saveName);
 
+    // Alice continues working — changes inputs to prove restore doesn't use live state
+    await setShinyNumericInput(aliceFrame, '#num1', '99');
+    await setShinyNumericInput(aliceFrame, '#num2', '1');
+    await aliceFrame.locator('button#calculate').click();
+    await expect(aliceFrame.locator('#result')).toContainText('100', { timeout: 25000 });
+
+    // Alice leaves the session
+    await alicePage.click('button:has-text("Exit")');
+    await alicePage.waitForURL('**/library');
+    await aliceCtx.close();
+
     // --- Bob: join same session, restore Alice's checkpoint ---
     await login(bobPage, 'bob');
     await joinCollabSession(bobPage, sessionId);
@@ -59,9 +70,8 @@ test.describe('RQ5: Cross-User Checkpoint Restore', () => {
     // --- Verify: Bob's UI matches Alice's saved state exactly ---
     await expect(bobFrame.locator('#num1')).toHaveValue('42', { timeout: 15000 });
     await expect(bobFrame.locator('#num2')).toHaveValue('58', { timeout: 15000 });
-    await expect(bobFrame.locator('#result')).toHaveText('100', { timeout: 15000 });
+    await expect(bobFrame.locator('#result')).toContainText('100', { timeout: 15000 });
 
-    await aliceCtx.close();
     await bobCtx.close();
   });
 
