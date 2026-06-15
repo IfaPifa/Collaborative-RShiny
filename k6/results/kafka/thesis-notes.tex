@@ -1323,6 +1323,123 @@ Climate Anomaly enrichment mechanism in Spring Boot entirely (since
 \texttt{state\_file()} handles file embedding natively in R).
 
 % ------------------------------------------------------------------
+\section{Validation: Single-Cell RNA-Seq with S3 Claim-Check}
+% ------------------------------------------------------------------
+
+To validate that the state-sharing approach scales beyond the benchmark
+applications (which have small state in the kilobyte range), we implemented the
+\textbf{Claim-Check enterprise integration pattern} in \texttt{statesnap} and
+applied it to a real scientific workload: a 337~MB Seurat single-cell RNA-seq
+object (PBMC~3k dataset, 2,700 cells).
+
+\subsection{The Scalability Problem}
+
+The eight benchmark applications share state inline in JSON messages. This works
+because their state is small (inputs, computed scalars, small dataframes). A
+single-cell analysis object is fundamentally different:
+
+\begin{itemize}[nosep]
+  \item A processed Seurat object routinely reaches hundreds of megabytes
+        (gene expression matrices, PCA embeddings, UMAP coordinates, cluster
+        assignments).
+  \item Kafka defaults to \textasciitilde 1~MB \texttt{max.message.bytes}.
+  \item Redis is in-memory; multi-hundred-MB blobs evict useful cache entries.
+  \item JSON + base64 encoding inflates size by \textasciitilde 37\%.
+\end{itemize}
+
+Inline transport cannot carry this payload. The shared-volume approach (as used
+by Climate Anomaly) is limited to a single Kubernetes node with
+\texttt{ReadWriteOnce} PVCs.
+
+\subsection{The Claim-Check Pattern}
+
+The fix keeps the message bus for coordination and moves the heavy bytes to
+object storage (S3-compatible). \texttt{statesnap} decides per blob: state below
+a threshold (256~KB) stays inline, unchanged; a larger \texttt{state\_rds()} or
+\texttt{state\_file()} blob is uploaded to S3 and replaced by a small
+self-describing reference in the JSON:
+
+\begin{verbatim}
+User A app --1. put object--> S3 / MinIO <--4. get object-- User B app
+     |                                                          ^
+     +------2. reference (KB)--> Kafka / Redis --3. reference---+
+\end{verbatim}
+
+The reference is JSON-safe and carries everything the receiver needs to fetch,
+verify, and deserialise the payload:
+
+\begin{verbatim}
+{
+  "type": "claim-check", "schema": 1, "store": "s3",
+  "bucket": "shinyswarm-state",
+  "key": "states/20260615T175954Z-c0398d36.rds",
+  "format": "rds", "compressed": true,
+  "sizeBytes": 287163623,
+  "etag": "4ff6116f10ccbd526a3e7802493c6b46"
+}
+\end{verbatim}
+
+On restore, \texttt{statesnap} fetches the object from S3, verifies
+\texttt{sizeBytes} and \texttt{etag} against the reference (rejecting partial or
+swapped objects), decompresses, and deserialises. The application code is
+identical to the inline path --- only the \texttt{s3} argument to
+\texttt{capture\_state()} and \texttt{restore\_state()} changes.
+
+\subsection{Results}
+
+\begin{center}
+\begin{tabular}{lrr}
+                          & \textbf{Inline (before)} & \textbf{Claim-check (after)} \\
+\hline
+Bus payload for one share & \textasciitilde 462~MB (base64 JSON) & \textbf{431 bytes} \\
+Object integrity on restore & n/a & size + ETag verified \\
+Restored object vs original & n/a & \textbf{byte-identical} \\
+\end{tabular}
+\end{center}
+
+A 337~MB Seurat object is shared via a 431-byte reference --- over
+1,000,000$\times$ smaller --- and User~B reconstructs the exact analysis (same
+clusters, same UMAP coordinates) with no recomputation.
+
+\subsection{Non-Determinism Control}
+
+The pipeline is deliberately non-deterministic: there is no \texttt{set.seed()}
+anywhere, and Seurat's built-in fixed seeds (\texttt{RunPCA}/\texttt{RunUMAP}
+\texttt{seed.use = 42}, \texttt{FindClusters} \texttt{random.seed = 0}) are
+replaced with per-run seeds drawn from OS entropy (\texttt{/dev/urandom}). A
+fresh re-run of the same pipeline diverges (measured UMAP coordinate difference
+of \textasciitilde 7--10). Yet the S3 restore is byte-identical to User~A's
+result.
+
+This proves that reproducibility is a property of state sharing, not of a shared
+seed. It is the same argument against input-only approaches (\texttt{shinyURL},
+Shiny bookmarking) made in the literature review, now demonstrated empirically
+with a real scientific workload.
+
+\subsection{Relationship to the Thesis}
+
+This validation is not part of the main REST vs Kafka vs Monolithic benchmark
+--- it addresses a different dimension (transport scalability, not architecture
+comparison). It belongs in the Discussion as evidence that the state-sharing
+approach generalises:
+
+\begin{enumerate}[nosep]
+  \item \textbf{RQ5 at scale.} The benchmark apps have small state. The
+        single-cell app proves the reproducibility mechanism works for real
+        scientific data at 337~MB.
+  \item \textbf{S3 future work implemented.} The thesis notes propose object
+        storage as an alternative to the shared-volume PVC. This branch is the
+        implementation of that proposal.
+  \item \textbf{NaaVRE connection.} Single-cell analysis is a common NaaVRE
+        workload. Demonstrating that ShinySwarm can share a Seurat object via S3
+        makes the NaaVRE integration argument concrete rather than hypothetical.
+  \item \textbf{Library generalisability.} The same \texttt{statesnap} API
+        handles both the 2~KB Calculator checkpoint and the 337~MB Seurat
+        object, with the transport decision (inline vs S3) made automatically
+        by a size threshold. No application code changes are needed.
+\end{enumerate}
+
+% ------------------------------------------------------------------
 \section{Future Work: Integration with NaaVRE}
 % ------------------------------------------------------------------
 
