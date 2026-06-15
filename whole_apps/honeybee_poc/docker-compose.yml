@@ -1,0 +1,47 @@
+# =============================================================================
+# Honeybee PoC -- two-process stack: BioDT frontend + Plumber backend
+# -----------------------------------------------------------------------------
+# Demonstrates frontend<->backend communication using statesnap JSON over HTTP.
+# The frontend is the REAL, UNFLATTENED BioDT honeybee app (Rhino/box) running
+# with R_CONFIG_ACTIVE=poc so its runsimulation module uses the "plumber"
+# executor instead of the NetLogo container.
+#
+#   docker compose up --build
+#   open http://localhost:7860  (choose the Honeybee / Beekeeper pDT)
+#
+# Backend is a simulated BEEHAVE; swap it for ghcr.io/biodt/beehave later
+# without touching the frontend.
+# =============================================================================
+
+services:
+  backend:
+    container_name: honeybee-poc-backend
+    platform: linux/amd64
+    build:
+      # repo root so the build can see both the backend code and statesnap/
+      context: ../..
+      dockerfile: whole_apps/honeybee_poc/backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  frontend:
+    container_name: honeybee-poc-frontend
+    platform: linux/amd64
+    build:
+      # repo root so the build can see both the app and statesnap/
+      context: ../..
+      dockerfile: whole_apps/honeybee_poc/frontend.Dockerfile
+    ports:
+      - "7860:7860"
+    depends_on:
+      - backend
+    environment:
+      - SHINY_LOG_LEVEL=debug
+      - R_CONFIG_ACTIVE=poc
+      - BASE_PATH=/app/data/shared
+      - DATA_PATH=/app/data
+      - TRANSL_FILE=/app/data/translations/translations.json
+      # frontend reaches the backend by service name on the compose network
+      - BEEHAVE_BACKEND_URL=http://backend:8000

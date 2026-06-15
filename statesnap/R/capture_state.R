@@ -22,9 +22,35 @@
 #' through `...` is treated as a `reactiveVal` and \emph{called}. To store a
 #' function as data, wrap it in [state_rds()].
 #'
+#' @section Modular (namespaced) apps:
+#' In a Shiny module the inputs are namespaced (e.g. `mod-num1`) but the module
+#' server only ever refers to them locally (`input$num1`). Pass `ns` -- a module
+#' id, a namespace function (`shiny::NS("mod")` or `session$ns`) -- to capture
+#' only that module's inputs and store them under their \emph{local} names. The
+#' resulting checkpoint is namespace-relative and can be restored into a module
+#' with a different id, so an unmodified modular app round-trips without a
+#' separate model layer. With `ns = NULL` (the default) all inputs are captured
+#' verbatim, preserving the original behaviour.
+#'
+#' @section Data frames:
+#' `jsonlite` serialises a data.frame row-oriented, which does not survive a
+#' `simplifyVector = FALSE` round-trip. `capture_state()` detects data.frames
+#' at any depth (in inputs or reactive content) and stores them column-oriented
+#' so [restore_state()] reconstructs them with column names, row count, atomic
+#' column types (character/integer/double/logical), intra-column `NA`s and
+#' character row names preserved. No caller action is needed. Boundaries:
+#' non-atomic column classes degrade to their JSON scalar form (a `factor`
+#' restores as character, a `Date`/`POSIXct` as character), and an empty (0-row)
+#' frame keeps its column names but reconstructs empty columns as `logical(0)`.
+#' Wrap a frame in [state_rds()] for a byte-exact, class-preserving round-trip.
+#'
 #' @param input The Shiny `input` object (or any list-like of input values).
 #' @param ... Named reactive values to capture, optionally wrapped with
 #'   [state_file()] or [state_rds()].
+#' @param ns Optional namespace selector for modular apps: a module id string,
+#'   a namespace function (`shiny::NS("mod")` / `session$ns`), or `NULL` (the
+#'   default) to capture every input verbatim. When supplied, only inputs in
+#'   that namespace are captured and they are stored under their local names.
 #' @param max_size Maximum size in bytes for any single embedded blob (file or
 #'   serialised object), measured before base64 encoding. Guards against
 #'   memory-exhausting payloads. Set `NULL` to disable. Defaults to 50 MB.
@@ -40,16 +66,30 @@
 #' \dontrun{
 #' json <- capture_state(input, result = result, model = state_rds(fit))
 #' }
-capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
+capture_state <- function(input, ..., ns = NULL,
+                          max_size = NULL, compress = TRUE) {
   if (is.null(max_size)) max_size <- .default_max_size
+  prefix <- .ns_prefix(ns)
   state <- list()
 
-  # 1. Capture all input values by name.
+  # 1. Capture input values by name. When a namespace is given, keep only that
+  #    module's inputs and store them under their local (de-namespaced) names so
+  #    the checkpoint is portable across module ids. Data frames are encoded
+  #    column-oriented so they survive the JSON round-trip.
   input_names <- names(input)
   if (is.null(input_names)) input_names <- character(0)
-  inputs <- lapply(input_names, function(name) input[[name]])
-  names(inputs) <- input_names
+  if (!is.null(prefix)) {
+    keep <- startsWith(input_names, prefix)
+    input_names <- input_names[keep]
+  }
+  inputs <- lapply(input_names, function(name) .encode_value(input[[name]]))
+  if (!is.null(prefix)) {
+    names(inputs) <- substring(input_names, nchar(prefix) + 1L)
+  } else {
+    names(inputs) <- input_names
+  }
   state$inputs <- inputs
+  if (!is.null(prefix)) state$ns <- prefix
 
   # 2. Capture registered reactive values, dispatching on type.
   extras <- list(...)
@@ -63,8 +103,11 @@ capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
   # digits = NA preserves full numeric precision, which is essential for exact
   # reproducibility of non-deterministic outputs (the whole point of full-state
   # capture vs input-only sharing).
+  # na = "null" emits JSON null for NA so restore can turn it back into NA
+  # (preserving numeric/logical column type); the default would stringify NA.
   json <- jsonlite::toJSON(
-    state, auto_unbox = TRUE, force = TRUE, null = "null", digits = NA
+    state, auto_unbox = TRUE, force = TRUE,
+    null = "null", na = "null", digits = NA
   )
   structure(as.character(json), class = "statesnap_state")
 }
@@ -94,7 +137,7 @@ capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
   if (.is_reactivevalues(rv)) {
     return(list(
       type = "reactiveValues",
-      content = .reactivevalues_to_list(rv)
+      content = .encode_value(.reactivevalues_to_list(rv))
     ))
   }
 
@@ -102,10 +145,10 @@ capture_state <- function(input, ..., max_size = NULL, compress = TRUE) {
     # reactiveVal or any zero-arg accessor.
     return(list(
       type = "reactiveVal",
-      content = rv()
+      content = .encode_value(rv())
     ))
   }
 
   # Plain value passed directly.
-  list(type = "value", content = rv)
+  list(type = "value", content = .encode_value(rv))
 }

@@ -20,11 +20,23 @@
 #' A `max_size` ceiling also bounds each decoded blob to prevent
 #' memory-exhaustion from a crafted checkpoint.
 #'
+#' @section Modular (namespaced) apps:
+#' A checkpoint captured with a namespace stores inputs under their local names.
+#' On restore those names are re-qualified before they are pushed back through
+#' the session. By default the namespace recorded at capture time is reused, so
+#' the state returns to the same module. Pass `ns` -- a module id or namespace
+#' function -- to target a \emph{different} module id (e.g. when the receiving
+#' user's module is named differently). A checkpoint captured without a
+#' namespace restores its input names verbatim.
+#'
 #' @param session The Shiny `session` object. May be `NULL` when restoring only
 #'   reactive values outside of a live session (e.g. in tests).
 #' @param state_json A JSON string produced by [capture_state()].
 #' @param ... Named reactive values to restore (the live `reactiveVal` /
 #'   `reactiveValues` objects, \emph{not} wrappers).
+#' @param ns Optional namespace selector overriding the one recorded at capture
+#'   time: a module id string, a namespace function (`shiny::NS("mod")` /
+#'   `session$ns`), or `NULL` (the default) to reuse the captured namespace.
 #' @param file_dir Directory to write restored [state_file()] contents into.
 #'   Defaults to a per-call temporary directory.
 #' @param allow_rds Whether to restore [state_rds()] payloads via
@@ -43,7 +55,7 @@
 #' restore_state(session, json, result = result)
 #' restore_state(session, json, model = fit, allow_rds = TRUE)  # trusted only
 #' }
-restore_state <- function(session, state_json, ...,
+restore_state <- function(session, state_json, ..., ns = NULL,
                           file_dir = tempdir(),
                           allow_rds = FALSE,
                           max_size = NULL) {
@@ -61,11 +73,18 @@ restore_state <- function(session, state_json, ...,
 
   compressed <- isTRUE(state$compressed)
 
-  # 1. Restore inputs (requires a live session).
+  # Choose the prefix to re-qualify input names with: an explicit ns overrides
+  # the one recorded at capture time, which in turn overrides "none".
+  prefix <- if (!is.null(ns)) .ns_prefix(ns) else state$ns
+
+  # 1. Restore inputs (requires a live session). Local names from a namespaced
+  #    checkpoint are re-qualified; data frames are rebuilt from their
+  #    column-oriented form.
   if (!is.null(session) && !is.null(state$inputs)) {
     for (name in names(state$inputs)) {
-      value <- state$inputs[[name]]
-      session$sendInputMessage(name, list(value = value))
+      value <- .decode_value(state$inputs[[name]])
+      target <- if (!is.null(prefix)) paste0(prefix, name) else name
+      session$sendInputMessage(target, list(value = value))
     }
   }
 
@@ -139,12 +158,13 @@ restore_state <- function(session, state_json, ...,
       }
     }
     for (key in names(saved$content)) {
-      rv[[key]] <- saved$content[[key]]
+      rv[[key]] <- .decode_value(saved$content[[key]])
     }
     return(invisible(rv))
   }
 
   # "reactiveVal" or "value": set via the setter if available.
-  if (is.function(rv)) rv(saved$content)
-  invisible(saved$content)
+  content <- .decode_value(saved$content)
+  if (is.function(rv)) rv(content)
+  invisible(content)
 }

@@ -64,7 +64,9 @@ the use case is split across several BioDT GitHub repositories:
     use cases as tabs/modules: honeybee, grassland, forest, disease outbreaks,
     crop wild relatives (cwr), cultural ecosystem services (ces), invasive alien
     species (ias), real-time bird monitoring (rtbm). The honeybee module is one
-    pDT among many. License: ``Other'' (check before reuse).
+    pDT among many. License: MIT (Copyright (c) 2023 BioDT) --- verified from the
+    repository's \texttt{LICENSE}/\texttt{LICENSE.md} when vendoring the app for
+    the PoC on 2026-06-15.
   \item \textbf{\texttt{BioDT/uc-pollinators}} --- \emph{not} a Shiny app. The
     honeybee simulation pipeline: R scripts in three steps (prepare habitat
     JSONs $\rightarrow$ build BEEHAVE input $\rightarrow$ run BEEHAVE), packaged
@@ -196,6 +198,43 @@ fragments merged, or (b)~\texttt{statesnap} gains namespace-aware capture (alrea
 listed as further work). This is the single most important technical dependency
 and should be stated as such.
 
+\textbf{Update (2026-06-15) --- caveat resolved.} The namespace dependency above
+has since been implemented in the \texttt{statesnap} library; both routes the
+caveat anticipated now work, and a third (column-oriented data frames) was added
+to support the honeybee lookup and parameter tables. See
+Section~\ref{sec:statesnap-update} for details. In short:
+\begin{itemize}[nosep]
+  \item \textbf{Route (a) confirmed for free.} Inside a \texttt{moduleServer},
+    Shiny scopes \texttt{input} to local names and auto-namespaces the module
+    session's \texttt{sendInputMessage()}, so an unmodified module round-trips
+    with a plain \texttt{capture\_state(input, \dots)} /
+    \texttt{restore\_state(session, json, \dots)} --- no merging required. This
+    is now covered by a real-Shiny integration test.
+  \item \textbf{Route (b) implemented.} \texttt{capture\_state()} and
+    \texttt{restore\_state()} gained an \texttt{ns} argument (a module id, a
+    namespace function such as \texttt{shiny::NS()} or \texttt{session\$ns}, or
+    \texttt{NULL}). From a parent/root session it slices one module's
+    fully-qualified inputs (\texttt{calc-num1}) out, stores them under their
+    local names (\texttt{num1}), and re-qualifies them on restore --- so a
+    checkpoint can even be replayed into a differently-named module instance.
+    \texttt{ns = NULL} preserves the original verbatim behaviour, so the change
+    is backward-compatible.
+  \item \textbf{Data-frame fidelity.} The honeybee module's editable lookup and
+    parameter tables are data frames. \texttt{jsonlite} serialises a data frame
+    row-oriented, which does not survive the lossless
+    \texttt{simplifyVector = FALSE} parse \texttt{restore\_state()} uses (columns
+    return \texttt{NULL}). The library now detects data frames at any depth and
+    stores them column-oriented, rebuilding them with column names, atomic
+    column types (character/integer/double/logical), intra-column \texttt{NA}s
+    and character row names preserved. (Non-atomic column classes such as
+    \texttt{factor} or \texttt{Date} degrade to their JSON scalar form --- the
+    documented serialisation boundary --- so a frame needing exact class fidelity
+    is wrapped in \texttt{state\_rds()} instead.)
+\end{itemize}
+With this in place, the honeybee \texttt{coordinates}, \texttt{parameters},
+\texttt{lookup} and \texttt{experiment\_list} reactives capture and restore
+cleanly under the deeply modular Rhino UI.
+
 \subsection{4. Framework reconciliation --- Rhino vs plain Shiny (medium)}
 
 The ShinySwarm benchmark apps are plain Shiny; \texttt{biodt-shiny} is Rhino with
@@ -226,8 +265,11 @@ be a copy-paste of the benchmark harness. Options:
   \item \textbf{Data dependencies.} The module needs habitat map tiles, a lookup
     table, and (for weather) Copernicus CDS / HDA credentials. These must be
     provisioned to the compute service rather than the UI.
-  \item \textbf{Licensing.} \texttt{uc-pollinators} is MIT; \texttt{biodt-shiny}
-    is ``Other'' --- confirm terms before redistributing modified code.
+  \item \textbf{Licensing.} Both \texttt{uc-pollinators} and \texttt{biodt-shiny}
+    are MIT-licensed (the latter verified on vendoring; an earlier draft of this
+    note recorded it as ``Other''). Modified code may be redistributed under MIT
+    provided the copyright notice is retained --- which the vendored PoC tree does
+    (see \texttt{whole\_apps/honeybee\_poc/biodt-shiny/VENDORED.md}).
 \end{itemize}
 
 % --------------------------------------------------------------------------
@@ -245,7 +287,7 @@ Drive existing BEEHAVE container via service & Low & Contract already CSV/CSV \\
 REST (Plumber+Redis) wrapper & Low--Med & Reuse existing launch code \\
 Kafka async wrapper & Medium & Best fit for 2--4 min jobs \\
 Shared state + real-time sync & Medium & Core ShinySwarm contribution \\
-\texttt{statesnap} reproducible checkpoints & Low--Med & \emph{Needs module-namespace support} \\
+\texttt{statesnap} reproducible checkpoints & Low--Med & \emph{Module-namespace support: done} \\
 Rhino vs plain-Shiny reconciliation & Medium & Build/i18n/test coupling \\
 Auth (ShinyProxy $\to$ JWT/OIDC) & Medium & Cross-system identity \\
 \bottomrule
@@ -258,12 +300,128 @@ is feasible and would strengthen the thesis by validating the architecture on a
 real, non-deterministic scientific application rather than synthetic apps. The
 compute is already a container, so the proposal's hardest assumed task is
 effectively pre-solved; the substantive work is the collaboration and shared-state
-layer that ShinySwarm exists to provide. The two genuine prerequisites are
-(i)~\texttt{statesnap} module-namespace support, needed for reproducible state
-capture in the deeply modular Rhino UI, and (ii)~a decision between extracting the
-honeybee module versus integrating ShinySwarm in place. Neither is a blocker;
-both are scoped, known pieces of work --- which is precisely why the
-re-engineering was a reasonable item to defer to future work rather than abandon.
+layer that ShinySwarm exists to provide. Of the two genuine prerequisites
+originally identified, (i)~\texttt{statesnap} module-namespace support --- needed
+for reproducible state capture in the deeply modular Rhino UI --- \textbf{has now
+been implemented} (Section~\ref{sec:statesnap-update}), leaving only (ii)~a
+decision between extracting the honeybee module versus integrating ShinySwarm in
+place. Neither was ever a blocker; both are scoped, known pieces of work --- which
+is precisely why the re-engineering was a reasonable item to defer to future work
+rather than abandon, and the now-completed namespace work removes the most
+important technical dependency.
+
+% --------------------------------------------------------------------------
+\section{Addendum (2026-06-15): \texttt{statesnap} namespace and data-frame support}
+\label{sec:statesnap-update}
+% --------------------------------------------------------------------------
+
+Following the feasibility analysis above, the two library-level gaps it flagged
+as the principal technical dependencies for the honeybee use case were
+implemented directly in \texttt{statesnap}. This section records what changed and
+why, so the feasibility argument can be cited as \emph{realised} rather than
+merely \emph{scoped}.
+
+\subsection{The two problems, restated}
+
+\begin{enumerate}[nosep]
+  \item \textbf{Module namespaces.} A Shiny module mounted as \texttt{"calc"}
+    exposes its inputs to the outside world as \texttt{calc-num1},
+    \texttt{calc-num2}, \dots. The original \texttt{capture\_state()} read
+    \texttt{names(input)} and pushed values back verbatim, with no notion of a
+    namespace --- so a checkpoint taken from a parent session could not be
+    cleanly scoped to, or restored into, a single module. The Rhino-based
+    honeybee UI is built entirely from nested modules, making this the gating
+    issue for reproducible capture.
+  \item \textbf{Data frames through JSON.} The honeybee lookup table (habitat
+    $\to$ forage) and the parameter/simulation tables are R data frames.
+    \texttt{jsonlite::toJSON()} serialises a data frame \emph{row-oriented} (an
+    array of per-row objects). \texttt{restore\_state()} deliberately parses with
+    \texttt{simplifyVector = FALSE} (so the library never silently reshapes a
+    user's data), and under that lossless parse a row-oriented data frame does
+    \emph{not} reconstruct: columns come back \texttt{NULL}. A capture that
+    silently dropped the lookup table's columns would be worse than no capture at
+    all.
+\end{enumerate}
+
+\subsection{What was implemented}
+
+\paragraph{Namespace-aware capture/restore.} Both functions gained an optional
+\texttt{ns} parameter:
+\begin{verbatim}
+capture_state(input, ..., ns = NULL, max_size = NULL, compress = TRUE)
+restore_state(session, state_json, ..., ns = NULL, file_dir = tempdir(),
+              allow_rds = FALSE, max_size = NULL)
+\end{verbatim}
+\texttt{ns} accepts a module id string (\texttt{"calc"}), a namespace function
+(\texttt{shiny::NS("calc")} or a live \texttt{session\$ns}), or \texttt{NULL}.
+The design separates two distinct realities the feasibility caveat had bundled
+together:
+\begin{itemize}[nosep]
+  \item \textbf{Inside a module, no \texttt{ns} is needed.} Shiny already scopes
+    a module's \texttt{input} to local names and auto-namespaces that module
+    session's \texttt{sendInputMessage()}. So route~(a) from the original caveat
+    --- ``invoke capture/restore inside each module's server'' --- works with a
+    plain, unmodified \texttt{capture\_state(input, \dots)} call. This is now
+    pinned by a real-Shiny \texttt{testServer()} integration test.
+  \item \textbf{From the parent/root session, \texttt{ns} slices and
+    re-qualifies.} On \emph{capture}, \texttt{ns} filters \texttt{names(input)}
+    to that module's prefix and stores the inputs under their \emph{local} names,
+    producing a namespace-relative (portable) checkpoint. On \emph{restore}, the
+    local names are re-qualified with the namespace recorded at capture time, or
+    with an overriding \texttt{ns} --- so a checkpoint authored against module
+    \texttt{calc} can be replayed into module \texttt{calc2}. Capture
+    \emph{strips} the prefix and restore \emph{adds} it, which makes the two
+    operations symmetric and removes any double-prefixing footgun.
+\end{itemize}
+With \texttt{ns = NULL} the behaviour is byte-for-byte the original one, so the
+change is fully backward-compatible with the eight benchmark apps and the
+existing test suite.
+
+\paragraph{Column-oriented data frames.} \texttt{capture\_state()} now walks
+every captured value recursively (in both \texttt{input} entries and registered
+reactive content) and, wherever it finds a data frame at any depth, stores it in
+a tagged, column-oriented form (column vectors plus row count and any character
+row names). \texttt{restore\_state()} reverses this, rebuilding the data frame
+with its \emph{atomic} column types (character/integer/double/logical),
+intra-column \texttt{NA}s (serialised as JSON \texttt{null} via
+\texttt{na = "null"} and decoded back to \texttt{NA} so column length and type
+survive), and non-default row names preserved. Non-atomic column classes
+(\texttt{factor}, \texttt{Date}, \texttt{POSIXct}) degrade to their JSON scalar
+form --- the inherent boundary of a schema-less text format --- and a 0-row frame
+preserves its column names while reconstructing empty columns as
+\texttt{logical(0)}; callers needing exact class fidelity wrap the frame in
+\texttt{state\_rds()}. Non-data-frame state is untouched, so the fix is
+transparent to existing callers and needs no API change.
+
+\subsection{Why this matters for the honeybee use case specifically}
+
+The honeybee module's shareable state is exactly the combination these two
+changes target: namespaced module inputs (coordinates, parameters) plus
+data-frame tables (the editable lookup, the parameter/simulation grids). The
+addendum's PoC captures the composed model --- \texttt{parameters} and
+\texttt{simulation} data frames together --- and asserts that, e.g.,
+\texttt{N\_INITIAL\_BEES} survives the round-trip rather than reverting to a
+default. Before the column-oriented fix this silently failed; after it, the
+captured checkpoint reproduces the colleague's exact run inputs, which --- given
+BEEHAVE's non-determinism --- is the whole point of capturing computed state
+rather than re-deriving it.
+
+\subsection{Verification}
+
+The changes ship with dedicated unit tests (\texttt{test-namespace.R},
+\texttt{test-dataframe.R}) and real-Shiny integration tests
+(\texttt{test-integration-module.R}) covering: namespace filtering and local-name
+storage; restore re-qualification and module re-targeting; the
+\texttt{ns = NULL} backward-compatibility path; data-frame round-trips for atomic
+column types, \texttt{NA}s, row names, single-row, 0-row, nested, factor and
+\texttt{Date} frames, malformed-checkpoint rejection, the scalar-\texttt{NA}
+boundary, and the specific BioDT \texttt{parameters}/\texttt{simulation} model
+shape. The full suite passes
+(142 tests, 0 failures, 0 skips with \texttt{shiny} installed), and the package
+installs cleanly. The library README and the \texttt{capture\_state} /
+\texttt{restore\_state} manual pages were updated to document both capabilities,
+and the previously listed ``Shiny modules \dots not yet supported'' limitation
+was retired.
 
 % --------------------------------------------------------------------------
 \section{Source provenance}

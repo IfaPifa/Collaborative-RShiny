@@ -4,13 +4,18 @@
 \alias{capture_state}
 \title{Capture the full state of a Shiny session to JSON}
 \usage{
-capture_state(input, ..., max_size = NULL, compress = TRUE)
+capture_state(input, ..., ns = NULL, max_size = NULL, compress = TRUE)
 }
 \arguments{
 \item{input}{The Shiny `input` object (or any list-like of input values).}
 
 \item{...}{Named reactive values to capture, optionally wrapped with
 [state_file()] or [state_rds()].}
+
+\item{ns}{Optional namespace selector for modular apps: a module id string,
+a namespace function (`shiny::NS("mod")` / `session$ns`), or `NULL` (the
+default) to capture every input verbatim. When supplied, only inputs in
+that namespace are captured and they are stored under their local names.}
 
 \item{max_size}{Maximum size in bytes for any single embedded blob (file or
 serialised object), measured before base64 encoding. Guards against
@@ -47,6 +52,32 @@ Note: a `reactiveVal` is itself a function, so any plain function passed
 through `...` is treated as a `reactiveVal` and \emph{called}. To store a
 function as data, wrap it in [state_rds()].
 }
+\section{Modular (namespaced) apps}{
+
+In a Shiny module the inputs are namespaced (e.g. `mod-num1`) but the module
+server only ever refers to them locally (`input$num1`). Pass `ns` -- a module
+id, a namespace function (`shiny::NS("mod")` or `session$ns`) -- to capture
+only that module's inputs and store them under their \emph{local} names. The
+resulting checkpoint is namespace-relative and can be restored into a module
+with a different id, so an unmodified modular app round-trips without a
+separate model layer. With `ns = NULL` (the default) all inputs are captured
+verbatim, preserving the original behaviour.
+}
+
+\section{Data frames}{
+
+`jsonlite` serialises a data.frame row-oriented, which does not survive a
+`simplifyVector = FALSE` round-trip. `capture_state()` detects data.frames
+at any depth (in inputs or reactive content) and stores them column-oriented
+so [restore_state()] reconstructs them with column names, row count, atomic
+column types (character/integer/double/logical), intra-column `NA`s and
+character row names preserved. No caller action is needed. Boundaries:
+non-atomic column classes degrade to their JSON scalar form (a `factor`
+restores as character, a `Date`/`POSIXct` as character), and an empty (0-row)
+frame keeps its column names but reconstructs empty columns as `logical(0)`.
+Wrap a frame in [state_rds()] for a byte-exact, class-preserving round-trip.
+}
+
 \examples{
 \dontrun{
 json <- capture_state(input, result = result, model = state_rds(fit))

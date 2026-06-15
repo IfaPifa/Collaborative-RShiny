@@ -376,6 +376,17 @@ because they bound what a JSON-based checkpoint can and cannot promise.
     deliberate trade --- predictable, lossless-in-value parsing in exchange for a
     type-coercion step on the consumer side --- and it is documented so that users
     are not surprised by a list where they expected a vector.
+
+    \emph{Update:} the one container type that previously failed outright rather
+    than merely changing shape --- the \texttt{data.frame} --- is now handled
+    natively (Section~\ref{sec:module-support}). \texttt{jsonlite} serialises a
+    data frame row-oriented, which does not reconstruct under the lossless
+    \texttt{simplifyVector = FALSE} parse (columns returned \texttt{NULL}); the
+    library now stores data frames column-oriented and rebuilds them with
+    atomic column types, \texttt{NA}s and character row names preserved
+    (non-atomic classes such as \texttt{factor}/\texttt{Date} degrade to their
+    JSON scalar form, the documented boundary). Plain atomic
+    vectors inside a list are still returned as lists per the trade above.
 \end{itemize}
 
 These are not defects so much as the inherent boundary of a text-based,
@@ -445,6 +456,19 @@ numeric vectors. An integration test runs the save/restore cycle against Shiny's
 actual reactive engine using \texttt{shiny::testServer()}, confirming the library
 works with real \texttt{reactiveVal} and \texttt{reactiveValues} objects rather
 than test doubles.
+
+The namespace and data-frame support added later
+(Section~\ref{sec:module-support}) is covered by its own tests: unit tests for
+namespace filtering, local-name storage, restore re-qualification, module
+re-targeting and the \texttt{ns = NULL} backward-compatibility path; data-frame
+round-trip tests for atomic column types, \texttt{NA}s, character row names,
+single-row, 0-row, nested, factor and \texttt{Date} frames, malformed-checkpoint
+rejection, the scalar-\texttt{NA} boundary, and the specific BioDT
+\texttt{parameters}/\texttt{simulation} model shape; and real-Shiny
+\texttt{testServer()} integration tests confirming that an unmodified module
+round-trips and that a parent-captured slice restores re-qualified. With these
+additions the suite stands at 142 tests passing, with no failures or skips when
+\texttt{shiny} is installed.
 
 The package passes \texttt{R~CMD~check} with a clean result (no errors, warnings,
 or notes), the standard correctness bar for an R package.
@@ -567,18 +591,20 @@ design rather than to the library:
     \texttt{sendInputMessage()}; the \texttt{state\_file()} wrapper embeds the
     uploaded content as a workaround.
   \item \textbf{Shiny modules} use namespaced input identifiers (for example,
-    \texttt{panel1-threshold}). Because \texttt{capture\_state()} reads
-    \texttt{names(input)} at the top level and \texttt{restore\_state()} pushes
-    values back through the parent \texttt{session}, the library does not model
-    the namespace hierarchy that modules introduce, and restoring across module
-    session boundaries is not yet supported. Supporting it would require either
-    namespace-aware capture (recording each value's namespace path) or recursive
-    capture and restore that is invoked from within each module's own
-    \texttt{session}, and merging the resulting fragments. This was deliberately
-    left out of scope for the prototype: the applications studied in this thesis
-    are flat (non-modular), so module support would address a case that does not
-    arise in the evaluation. It is documented here so that a future user who
-    adopts the library in a modular application is aware of the boundary.
+    \texttt{panel1-threshold}). The original prototype read \texttt{names(input)}
+    at the top level and pushed values back through the parent \texttt{session},
+    so it did not model the namespace hierarchy that modules introduce, and
+    restoring across module session boundaries was not supported. This was
+    initially left out of scope, since the eight applications studied in the
+    benchmark are flat (non-modular). \emph{This limitation has since been
+    resolved} (see Section~\ref{sec:module-support}): \texttt{capture\_state()}
+    and \texttt{restore\_state()} now take an optional \texttt{ns} argument that
+    slices a single module's inputs out by namespace, stores them under their
+    local names, and re-qualifies them on restore; and capture/restore invoked
+    \emph{inside} a module's own server works unchanged because Shiny already
+    scopes the module \texttt{input} and namespaces its \texttt{sendInputMessage()}.
+    The benchmark results in Section~\ref{sec:performance} still characterise the
+    flat case, as that is what the studied applications use.
   \item \textbf{Explicit registration} of reactive values is required, because R
     provides no API to enumerate them.
   \item \textbf{\texttt{reactiveValues} keys cannot be deleted} in Shiny; on
@@ -586,12 +612,77 @@ design rather than to the library:
     their values do not leak, rather than being removed entirely.
 \end{itemize}
 
-Natural extensions include support for Shiny modules through recursive
-capture/restore across session hierarchies (Section~\ref{sec:performance}
-benchmarks the flat case only), extending the micro-benchmarks to the specific
-state profiles of each studied application, and publication on CRAN to make the
+Natural extensions include extending the micro-benchmarks to the specific state
+profiles of each studied application, and publication on CRAN to make the
 reproducibility contribution available to the wider R~Shiny community without any
-microservice infrastructure.
+microservice infrastructure. (Support for Shiny modules, previously the headline
+item of future work here, has since been implemented ---
+Section~\ref{sec:module-support} --- and is therefore no longer listed as
+outstanding.)
+
+\subsection{Module-namespace and data-frame support (implemented)}
+\label{sec:module-support}
+% --------------------------------------------------------------------------
+
+Two of the limitations above --- Shiny module namespaces and the failure of data
+frames to survive the JSON round-trip --- were the principal blockers identified
+for applying \texttt{statesnap} to a real, deeply modular scientific application
+(the BioDT honeybee use case). Both have since been implemented directly in the
+library; this subsection records the design so the limitations above can be read
+as resolved rather than merely acknowledged.
+
+\paragraph{Namespace-aware capture and restore.} \texttt{capture\_state()} and
+\texttt{restore\_state()} gained an optional \texttt{ns} parameter accepting a
+module id string, a namespace function (\texttt{shiny::NS("mod")} or a live
+\texttt{session\$ns}), or \texttt{NULL}. The implementation deliberately
+distinguishes two situations that the original limitation had conflated:
+\begin{itemize}[nosep]
+  \item \textbf{Inside a module, no \texttt{ns} is needed.} Shiny already scopes
+    a module's \texttt{input} object to local names (\texttt{input\$threshold},
+    not \texttt{panel1-threshold}) and automatically namespaces that module
+    session's \texttt{sendInputMessage()}. A plain
+    \texttt{capture\_state(input, \dots)} / \texttt{restore\_state(session, json,
+    \dots)} therefore round-trips an unmodified module --- the ``invoke from
+    within each module's own session'' route, now confirmed by a real-Shiny
+    integration test.
+  \item \textbf{From a parent or root session, \texttt{ns} slices and
+    re-qualifies.} There, input names are fully qualified. On capture,
+    \texttt{ns} filters to that module's prefix and stores the inputs under their
+    \emph{local} names, yielding a namespace-relative, portable checkpoint. On
+    restore, the local names are re-qualified with the namespace recorded at
+    capture time (or an overriding \texttt{ns}), so a checkpoint authored against
+    one module id can even be replayed into a differently-named instance. Capture
+    strips the prefix and restore adds it, keeping the two operations symmetric.
+\end{itemize}
+With \texttt{ns = NULL} (the default) behaviour is identical to the original, so
+the change is backward-compatible with the flat benchmark applications and the
+pre-existing test suite.
+
+\paragraph{Column-oriented data frames.} \texttt{jsonlite::toJSON()} serialises a
+data frame row-oriented (an array of per-row objects), which does not reconstruct
+under the lossless \texttt{simplifyVector = FALSE} parse that
+\texttt{restore\_state()} uses to avoid silent reshaping --- columns return
+\texttt{NULL}. \texttt{capture\_state()} now walks each captured value
+recursively and stores any data frame (in inputs or in reactive content, at any
+nesting depth) in a tagged, column-oriented representation;
+\texttt{restore\_state()} rebuilds it with its atomic column types
+(character/integer/double/logical), intra-column \texttt{NA}s (carried as JSON
+\texttt{null} so column length and type are not corrupted) and non-default row
+names preserved. Non-atomic column classes (\texttt{factor}, \texttt{Date},
+\texttt{POSIXct}) degrade to their JSON scalar form, and a 0-row frame keeps its
+column names while reconstructing empty columns as \texttt{logical(0)} --- both
+the inherent boundary of a schema-less text format, with \texttt{state\_rds()}
+available when exact class fidelity is required. The restore path also validates
+the tagged structure and rejects a malformed data frame from an untrusted
+checkpoint, consistent with the other defences in
+Section~\ref{sec:testing}. Non-data-frame state is untouched. This matters
+because the honeybee module's shareable state includes editable lookup and
+parameter \emph{tables}; without the fix a captured checkpoint silently dropped
+their columns.
+
+Both capabilities are documented in the library README and the
+\texttt{capture\_state}/\texttt{restore\_state} manual pages, and are exercised by
+the dedicated tests noted in Section~\ref{sec:testing}.
 
 \subsection{Integration with NaaVRE}
 % --------------------------------------------------------------------------

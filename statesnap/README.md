@@ -43,13 +43,15 @@ capture/restore live `reactiveValues`).
 ## The two functions
 
 ```r
-capture_state(input, ..., max_size = NULL, compress = TRUE)
-restore_state(session, state_json, ..., file_dir = tempdir(),
+capture_state(input, ..., ns = NULL, max_size = NULL, compress = TRUE)
+restore_state(session, state_json, ..., ns = NULL, file_dir = tempdir(),
               allow_rds = FALSE, max_size = NULL)
 ```
 
 Reactive values cannot be discovered automatically in R, so you register the
 ones you want to capture by name through `...`.
+
+`ns` is for modular apps — see [Modular (namespaced) apps](#modular-namespaced-apps).
 
 ## Quick start
 
@@ -103,6 +105,77 @@ restore_state(session, json,
               csv_file = csv_path, model = model_rv,
               allow_rds = TRUE)   # required to unserialize objects (see Security)
 ```
+
+## Modular (namespaced) apps
+
+Shiny modules namespace their input IDs: a module mounted as `"calc"` has inputs
+named `calc-num1`, `calc-num2`, and so on. `statesnap` handles this two ways.
+
+**Inside a module, nothing special is needed.** Shiny scopes the module's
+`input` to local names (`input$num1`) and auto-namespaces the module session's
+`sendInputMessage()`, so a plain `capture_state(input, ...)` /
+`restore_state(session, json, ...)` round-trips an unmodified module:
+
+```r
+calc_server <- function(id) moduleServer(id, function(input, output, session) {
+  total <- reactiveVal(0)
+  observeEvent(input$calculate, total(input$num1 + input$num2))
+  observeEvent(input$save_btn,    writeLines(capture_state(input, total = total), f))
+  observeEvent(input$restore_btn, restore_state(session, readLines(f), total = total))
+})
+```
+
+**From a parent or root session**, input names are fully qualified. Pass `ns` to
+slice one module's state out and store it under its *local* names, producing a
+namespace-relative checkpoint:
+
+```r
+# capture only the 'calc' module's inputs, stored as num1/num2 (not calc-num1)
+json <- capture_state(input, ns = "calc")          # or ns = session$ns / shiny::NS("calc")
+
+restore_state(session, json)                        # back into 'calc'
+restore_state(session, json, ns = "calc2")          # re-target a different module id
+```
+
+On restore the local names are re-qualified with the captured namespace (or an
+overriding `ns`), so a checkpoint authored against one module id can be replayed
+into another. With `ns = NULL` (the default) every input is captured verbatim —
+the original behaviour is unchanged.
+
+## Data frames
+
+A data frame survives the JSON round-trip transparently. `jsonlite` serialises a
+data frame row-oriented, which does **not** reconstruct under the lossless
+`simplifyVector = FALSE` parse that `restore_state()` uses (columns come back
+`NULL`). `statesnap` detects data frames at any depth — in inputs or in reactive
+content — and stores them column-oriented, rebuilding them on restore with their
+column names, row count, **atomic** column types (character / integer / double /
+logical), intra-column `NA`s and character row names preserved:
+
+```r
+shared <- reactiveVal(data.frame(id = 1:3, name = c("a", "b", "c"),
+                                 stringsAsFactors = FALSE))
+json   <- capture_state(input, table = shared)
+# ... later ...
+restore_state(session, json, table = shared)
+identical(shared(), data.frame(id = 1:3, name = c("a","b","c"),
+                               stringsAsFactors = FALSE))  # TRUE
+```
+
+No caller action is required; non-data-frame values are unaffected.
+
+**Boundaries.** Like the rest of the library, this preserves *values* but not the
+full R type system around them (see [Fidelity caveats](#fidelity-caveats)):
+
+- **Non-atomic column classes degrade to their JSON scalar form.** A `factor`
+  column restores as `character` (its labels), and a `Date`/`POSIXct` column
+  restores as `character` (its printed form). The data is intact but the class
+  is not; reapply it on the consumer side (`as.factor()`, `as.Date()`) if needed,
+  or wrap the whole frame in `state_rds()` for a byte-exact, class-preserving
+  round-trip.
+- **A 0-row data frame** round-trips its column names and shape, but empty
+  columns are reconstructed as `logical(0)` — an empty atomic vector carries no
+  type through JSON.
 
 ## Transport is your choice
 
@@ -163,9 +236,17 @@ consequences are worth knowing:
   list of numbers — the values are intact, but the container type is not.
   Recover the atomic vector with `as.numeric(unlist(x))`.
 
+- **`NA` is serialised as JSON `null`.** Checkpoints emit `NA` as `null`
+  (`toJSON(..., na = "null")`) so that `NA`s inside a data-frame column survive
+  the round-trip with the column's length and type intact. A consequence is that
+  a **scalar** `NA` value (e.g. a top-level input, or an `NA` element inside a
+  plain captured list) round-trips as `NULL` rather than `NA`, because outside a
+  data-frame column there is no type context to restore it to. Data-frame `NA`s
+  are restored as `NA`; non-data-frame `NA`s come back as `NULL`.
+
 These are the inherent boundary of JSON serialisation, documented so a value
-arriving as a list (or a double differing in its last digits) is expected
-behaviour, not a bug.
+arriving as a list (or as `NULL`, or as a double differing in its last digits) is
+expected behaviour, not a bug.
 
 ## Examples
 

@@ -1,0 +1,170 @@
+% ==========================================================================
+%  Honeybee Integration - Build Session Transcript (thesis appendix)
+%  Human-readable summary transcript of the working session in which an AI
+%  agent integrated the BioDT honeybee app into ShinySwarm. Same style as
+%  docs/shinyswarm-build-session.txt. Records conversation flow, decisions,
+%  and outcomes -- not a byte-exact chat log. Reconstructed from the session
+%  of 2026-06-12. \input or \include this as an appendix.
+% ==========================================================================
+
+\section{Appendix: Honeybee Integration Build Session}
+\label{app:honeybee-session}
+
+\textbf{Project:} Collaborative-RShiny (ShinySwarm), Master's thesis, UvA.\\
+\textbf{Author:} Iva Gunjaca \quad \textbf{Agent:} Ona \quad \textbf{Date:} 2026-06-12.\\
+\textbf{Topic:} Re-engineering the BioDT honeybee (Beekeeper pDT) use case into
+the ShinySwarm REST and Kafka architectures, with a simulated compute backend.
+
+This is a human-readable summary of the working session: the request flow, the
+decisions taken, and the outcomes. The artifacts it produced live under
+\texttt{Thesis-Project-Final-RESTAPI/shiny\_services/honeybee/},
+\texttt{Thesis-Project-Final-Kafka/shiny\_services/honeybee/}, the two Spring
+\texttt{DataInitializer.java} files, \texttt{CollaborationController.java}, the
+\texttt{docker-compose.yml} / \texttt{nginx.conf} of both stacks, and
+\texttt{docs/thesis/ai\_integration\_experiment.tex}.
+
+% --------------------------------------------------------------------------
+\subsection*{1. Request: assess and perform the integration}
+% --------------------------------------------------------------------------
+
+User asked the agent to read the thesis docs and notes and judge whether the
+``BioDT beehive app'' could be integrated into ShinySwarm, noting that backend
+values could be simulated in this environment. The agent read
+\texttt{README.md}, the existing \texttt{biodt\_feasibility.tex}, the
+architecture summary, and the \texttt{statesnap} sources, then inspected the
+two architectures and the eight benchmark apps. It reported that the integration
+was feasible and that the map and Monte~Carlo apps between them already covered
+the honeybee interaction model (Leaflet location picking + stochastic
+population simulation).
+
+The user then set the scope: \emph{full proof of concept}, \emph{both}
+architectures. A later clarification established the framing -- the experiment of
+interest is ``how well can AI integrate an existing app,'' with this conversation
+itself as the reference -- and that the write-ups should stay as lightweight
+notes, not a polished chapter.
+
+% --------------------------------------------------------------------------
+\subsection*{2. Grounding in the host pattern}
+% --------------------------------------------------------------------------
+
+Before writing code the agent read two existing apps in full --
+\texttt{shiny\_services/map/} and \texttt{shiny\_services/monte\_carlo/} (front
+and back) -- plus \texttt{CollaborationController.java}. It extracted the
+repeated ShinySwarm shape: front/back split; \texttt{identity()} parsed from the
+URL query string; VIEWER/EDITOR role gating; a POST-then-poll relay (REST) or
+Producer/Consumer (Kafka); and \texttt{appName}-based routing in the relay.
+
+% --------------------------------------------------------------------------
+\subsection*{3. Acquiring the real upstream source}
+% --------------------------------------------------------------------------
+
+Rather than reconstruct a lookalike UI from the feasibility notes, the agent
+cloned \texttt{github.com/BioDT/biodt-shiny} and read the actual honeybee module
+(\texttt{app/view/honeybee/*}, \texttt{app/logic/honeybee/*}). This corrected a
+first-draft backend that had \emph{invented} parameter names: the real module
+uses \texttt{N\_INITIAL\_BEES}, \texttt{N\_INITIAL\_MITES\_HEALTHY},
+\texttt{N\_INITIAL\_MITES\_INFECTED}, \texttt{HoneyHarvesting},
+\texttt{VarroaTreatment}, \texttt{DroneBroodRemoval}, plus a
+year/\texttt{DaysLimit} window and an editable habitat lookup table.
+
+% --------------------------------------------------------------------------
+\subsection*{4. Pinning the I/O contract}
+% --------------------------------------------------------------------------
+
+Inputs were traced to \texttt{beekeeper\_param.R} and
+\texttt{beekeeper\_runsimulation.R}; outputs to
+\texttt{honeybee\_beekeeper\_plot.R}, whose result table uses the exact columns
+\texttt{date}, \texttt{weather}, \texttt{TotalIHbees + TotalForagers}, and
+\texttt{(honeyEnergyStore / ( ENERGY\_HONEY\_per\_g * 1000 ))}. The simulated
+backend was written to consume those inputs and emit those columns verbatim.
+
+% --------------------------------------------------------------------------
+\subsection*{5. Implementation (both architectures)}
+% --------------------------------------------------------------------------
+
+\begin{itemize}
+  \item \textbf{REST:} \texttt{shiny\_back\_beehave.r} (Plumber, simulated
+    BEEHAVE) and \texttt{shiny\_front\_beehave.r} (BioDT UI flattened from Rhino
+    \texttt{box} modules to plain Shiny, wired to the relay with 500\,ms polling).
+  \item \textbf{Kafka:} the same UI as a Producer/Consumer app, and a consumer
+    worker that runs the same model and produces results to the \texttt{output}
+    topic -- the better fit for BEEHAVE's long-running jobs.
+  \item \textbf{Collaboration:} apiary coordinates, lookup-table edits, and run
+    results shared across users; VIEWER/EDITOR gating reused from the benchmark
+    apps.
+  \item \textbf{statesnap:} reproducible checkpoints capturing the
+    \emph{computed} (non-deterministic) result, so a restore reproduces the exact
+    trajectory that input-only bookmarking cannot.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\subsection*{6. Wiring and invariants}
+% --------------------------------------------------------------------------
+
+The new app was registered as App~\#9 in both \texttt{DataInitializer.java}
+files -- appended, not reordered, because IDs~1--8 are used by the k6 benchmarks.
+REST routing added \texttt{"Honeybee" -> http://shiny-back-beehave:8000/state}
+to \texttt{APP\_ROUTES}; Kafka routing is by \texttt{appName} in the message.
+Service entries, an nginx server block, and proxy ports were added to both
+stacks (REST \texttt{:8089}, Kafka \texttt{:11088}). An attribution/provenance
+header was added to each new file.
+
+% --------------------------------------------------------------------------
+\subsection*{7. Verification}
+% --------------------------------------------------------------------------
+
+R~4.3.3 was installed. All four R artifacts and the \texttt{statesnap} sources
+\texttt{parse()} cleanly. The simulation function was executed: it returns a
+$366\times4$ table for a 365-day run with BioDT's column names, and is
+genuinely non-deterministic (peak colony size $18{,}995$ vs $19{,}323$ across two
+seeds) -- the property that makes the \texttt{statesnap} reproducibility argument
+meaningful. The full Docker stack was \emph{not} brought up; the
+Java/compose/nginx wiring is verified by inspection, not by a live end-to-end
+run.
+
+% --------------------------------------------------------------------------
+\subsection*{8. Attribution disclaimer added}
+% --------------------------------------------------------------------------
+
+At the user's request, an attribution/disclaimer was added to all honeybee
+artifacts, the experiment notes, and the commit message: the honeybee
+application originates with the \textbf{LTER LIFE} project and is used here with
+their permission for this thesis; all credit for the original application and its
+scientific model belongs to the LTER LIFE / BioDT authors.
+
+% --------------------------------------------------------------------------
+\subsection*{9. Code review (independent pass)}
+% --------------------------------------------------------------------------
+
+A review pass found, most importantly, a \textbf{behavioural bug the builder
+introduced}: both backends only handled the \texttt{RUN\_SIMULATION} command and
+silently dropped the \texttt{COORDS} and \texttt{LOOKUP} state-sharing messages,
+so two of the three advertised collaboration features did not propagate
+end-to-end (and the REST variant could overwrite a stored result in Redis). The
+reference \texttt{map} app avoids this by echoing inbound events back with a
+timestamp. The review also flagged \texttt{allow\_rds = TRUE} as unsafe for the
+cross-user restore scenario, the \texttt{Map.of} ten-pair ceiling, and a
+possible missing \texttt{leaflet.extras}/\texttt{DT} dependency in the worker
+image. These were recorded as findings; the bug fix was left pending at the
+user's discretion. Notably, the defect surfaced only under review -- evidence
+both for the architecture's regularity (the agent reproduced the contract and
+patterns in one session) and for the limits of unreviewed AI integration.
+
+% --------------------------------------------------------------------------
+\subsection*{10. Final state of deliverables}
+% --------------------------------------------------------------------------
+
+\begin{itemize}
+  \item \texttt{Thesis-Project-Final-RESTAPI/shiny\_services/honeybee/shiny\_\{front,back\}\_beehave.r}
+  \item \texttt{Thesis-Project-Final-Kafka/shiny\_services/honeybee/shiny\_\{front,back\}\_beehave.r}
+  \item \texttt{CollaborationController.java} (REST route), both
+    \texttt{DataInitializer.java} (App~\#9)
+  \item \texttt{docker-compose.yml} + \texttt{nginx.conf} (both stacks)
+  \item \texttt{docs/thesis/ai\_integration\_experiment.tex} (experiment notes)
+  \item \texttt{docs/thesis/ai\_integration\_prompt.md} (reusable prompt)
+\end{itemize}
+
+\noindent\textbf{Verification:} 4/4 R files parse; simulation runs and is
+non-deterministic with BioDT's output schema; full stack not run end-to-end.\\
+\textbf{Git:} committed on branch \texttt{honeybee-integration} and pushed;
+nothing merged.

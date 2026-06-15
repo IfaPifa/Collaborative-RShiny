@@ -8,6 +8,7 @@ restore_state(
   session,
   state_json,
   ...,
+  ns = NULL,
   file_dir = tempdir(),
   allow_rds = FALSE,
   max_size = NULL
@@ -21,6 +22,10 @@ reactive values outside of a live session (e.g. in tests).}
 
 \item{...}{Named reactive values to restore (the live `reactiveVal` /
 `reactiveValues` objects, \emph{not} wrappers).}
+
+\item{ns}{Optional namespace selector overriding the one recorded at capture
+time: a module id string, a namespace function (`shiny::NS("mod")` /
+`session$ns`), or `NULL` (the default) to reuse the captured namespace.}
 
 \item{file_dir}{Directory to write restored [state_file()] contents into.
 Defaults to a per-call temporary directory.}
@@ -57,6 +62,17 @@ authored by a different user. This function defends against two attacks:
 }
 A `max_size` ceiling also bounds each decoded blob to prevent
 memory-exhaustion from a crafted checkpoint.
+}
+
+\section{Modular (namespaced) apps}{
+
+A checkpoint captured with a namespace stores inputs under their local names.
+On restore those names are re-qualified before they are pushed back through
+the session. By default the namespace recorded at capture time is reused, so
+the state returns to the same module. Pass `ns` -- a module id or namespace
+function -- to target a \emph{different} module id (e.g. when the receiving
+user's module is named differently). A checkpoint captured without a
+namespace restores its input names verbatim.
 }
 
 \examples{

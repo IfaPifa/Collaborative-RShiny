@@ -1,0 +1,261 @@
+% ==========================================================================
+%  NOTE: Working notes for the thesis, not the final chapter. Documents the
+%  proof of concept in whole_apps/honeybee_poc/: applying statesnap to the REAL,
+%  unflattened BioDT honeybee app, with a Plumber backend, communicating via
+%  statesnap JSON over HTTP. Verify claims against the committed code before
+%  citing. Session of 2026-06-12.
+% ==========================================================================
+
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,
+        columns=fullflexible,keepspaces=true}
+
+\title{\textbf{Applying \texttt{statesnap} to a Modular Scientific Shiny App\\
+without Flattening It}\\[0.4em]
+\large Proof of concept: BioDT Honeybee frontend $\leftrightarrow$ Plumber backend
+over \texttt{statesnap} JSON}
+\author{Iva Gunjaca \\ Master of Software Engineering, University of Amsterdam}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Attribution}
+The honeybee (Beekeeper pDT) application is from the \textbf{LTER LIFE} project
+(BioDT, \texttt{github.com/BioDT/biodt-shiny}) and is used here with their
+permission for this thesis. All credit for the original application and its
+scientific model belongs to the LTER LIFE / BioDT authors. The compute backend
+in this PoC is a \emph{simulated} stand-in for \texttt{ghcr.io/biodt/beehave},
+not the real NetLogo model.
+
+% --------------------------------------------------------------------------
+\section{The problem this PoC solves}
+% --------------------------------------------------------------------------
+
+The feasibility note (\texttt{biodt\_feasibility.tex}) identified a blocking gap:
+\texttt{statesnap}'s \texttt{capture\_state()} reads \texttt{names(input)} at the
+top level of a Shiny session, so it cannot see widgets that live inside Shiny
+\textbf{module namespaces} (\texttt{ns("x")}). The earlier honeybee integration
+(\texttt{ai\_integration\_experiment.tex}) sidestepped this by \emph{flattening}
+the app into a single plain-Shiny file. That works for a benchmark but throws
+away exactly what makes the real BioDT app interesting: it is a deeply modular
+Rhino/\texttt{box} application.
+
+\textbf{This PoC keeps the real app modular and adapts \texttt{statesnap} to it.}
+The question it answers: \emph{can state be captured and restored on a
+namespaced, modular scientific app without rewriting the app?}
+
+% --------------------------------------------------------------------------
+\section{Key idea: capture the MODEL, not the inputs}
+% --------------------------------------------------------------------------
+
+The insight is that the BioDT honeybee app already separates \emph{model} from
+\emph{widgets}. Its parent module (\texttt{honeybee\_beekeeper.R}) composes the
+child modules into a small set of \textbf{namespace-free reactive model
+fragments}, which the children \emph{return} from their servers:
+
+\begin{itemize}[nosep]
+  \item \texttt{coordinates()} \quad from \texttt{beekeeper\_map}
+  \item \texttt{parameters()} \quad from \texttt{beekeeper\_param}
+        (a list of two data frames: \texttt{parameters}, \texttt{simulation})
+  \item \texttt{lookup()} \quad from \texttt{beekeeper\_lookup}
+  \item \texttt{experiment\_list()} \quad results, from \texttt{beekeeper\_runsimulation}
+\end{itemize}
+
+Each child owns its \texttt{ns()} internally and hands back a plain value. So
+instead of asking \texttt{statesnap} to introspect namespaced inputs, we capture
+the \textbf{composed model}:
+
+\begin{lstlisting}[language=R]
+# input = list()  -> capture_state never reads names(input),
+# so module namespaces are irrelevant. The model is the single
+# registered, JSON-serialisable value.
+json <- capture_state(input = list(), model = model)
+\end{lstlisting}
+
+This is the whole trick: by passing \texttt{input = list()} and registering the
+domain model as a named value, \texttt{statesnap} operates at the
+\textbf{model layer}. No flattening, no change to how the child modules use
+namespaces, no change to \texttt{statesnap} itself.
+
+% --------------------------------------------------------------------------
+\section{Architecture: statesnap as both checkpoint and wire format}
+% --------------------------------------------------------------------------
+
+The same \texttt{statesnap} JSON serves two purposes at once:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Transport.} The frontend POSTs the model checkpoint to a Plumber
+    backend over HTTP; the backend returns the result as a checkpoint. No
+    Spring, no Kafka, no Redis -- two R processes exchanging \texttt{statesnap}
+    JSON.
+  \item \textbf{Reproducibility.} The same JSON, saved to a file, reopens a run
+    later -- including the \emph{computed, non-deterministic} result.
+\end{enumerate}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}lcl@{}}
+\toprule
+\textbf{Frontend (real BioDT app)} & & \textbf{Backend (Plumber)} \\
+\midrule
+child modules return model fragments & & \\
+$\downarrow$ \texttt{build\_model()} & & \\
+$\downarrow$ \texttt{capture\_state(input=list(), model)} & & \\
+\texttt{POST /run} (JSON) & $\longrightarrow$ & \texttt{restore\_state(model=...)} \\
+ & & $\downarrow$ \texttt{run\_beehave\_sim()} (simulated) \\
+\texttt{result\_from\_json()} & $\longleftarrow$ & \texttt{capture\_state(result=...)} \\
+$\downarrow$ write BioDT result CSV & & \\
+unchanged \texttt{beekeeper\_plot} renders & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% --------------------------------------------------------------------------
+\section{What was changed in the real app (minimal footprint)}
+% --------------------------------------------------------------------------
+
+Only \textbf{five} files of the upstream app are touched -- two new, three
+patched. Every other module (map, param, lookup, plot) runs unchanged.
+
+\begin{table}[h]\centering\footnotesize
+\begin{tabular}{@{}llp{6.2cm}@{}}
+\toprule
+\textbf{File} & \textbf{Change} & \textbf{Purpose} \\
+\midrule
+\texttt{logic/honeybee/statesnap\_adapter.R} & new &
+  model$\leftrightarrow$JSON$\leftrightarrow$HTTP helpers; the namespace-proof
+  capture/restore. \\
+\texttt{view/honeybee/beekeeper\_checkpoint.R} & new &
+  save/restore-run UI card at the model level. \\
+\texttt{view/honeybee/beekeeper\_runsimulation.R} & patched &
+  adds a \texttt{"plumber"} executor branch alongside docker/k8s. \\
+\texttt{view/honeybee/honeybee\_beekeeper.R} & patched &
+  wires the checkpoint module into the parent. \\
+\texttt{config.yml} & patched &
+  adds a \texttt{poc} profile (\texttt{executor: plumber}). \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The new executor branch composes the model from the existing reactives and ships
+it -- it does not reach into any module's internals:
+
+\begin{lstlisting}[language=R]
+} else if (config$get("executor") == "plumber") {
+  model <- build_model(coordinates(), parameters(), lookup())
+  reply <- run_on_backend(model, base_url = config$get("backend_url"))
+  result_to_biodt_csv(reply$result, run_dir)  # unchanged plot reads this
+}
+\end{lstlisting}
+
+% --------------------------------------------------------------------------
+\section{A real bug found during verification (worth reporting)}
+% --------------------------------------------------------------------------
+
+The first roundtrip ``worked'' but silently used \emph{default} parameters: the
+restored model had empty fields. Cause: \texttt{jsonlite} serialises a
+\texttt{data.frame} \textbf{row-oriented}, so after \texttt{restore} the frames
+came back as lists of row-objects and column access (\texttt{model\$coordinates\$lat})
+returned \texttt{NULL}. The simulation then fell back to defaults -- a dangerous
+\emph{silent} failure, not a crash.
+
+\textbf{Fix} (in \texttt{build\_model}): coerce each data frame to a
+\textbf{column-oriented} list with \texttt{as.list()} before capture, so columns
+round-trip as named vectors. After the fix, the model survives intact
+(\texttt{lat}=52.37, \texttt{N\_INITIAL\_BEES}=12000, lookup nectar preserved)
+and the simulation reacts to the actual inputs.
+
+\noindent\emph{Thesis relevance:} this is a concrete, citable instance of the
+serialisation subtleties that arise when state crosses a process boundary -- and
+a reminder that ``it ran'' is not ``it was correct.'' It surfaced only because
+verification checked the \emph{restored values}, not just that a run completed.
+
+\noindent\textbf{Update (2026-06-15): fix promoted into the library.} The
+\texttt{as.list()} coercion described here was an \emph{application-level}
+workaround inside \texttt{build\_model}. Because the same row-oriented hazard
+affects \emph{any} use of \texttt{statesnap} that round-trips a data frame, the
+fix has since been moved into the library itself: \texttt{capture\_state()} now
+detects data frames at any depth and stores them column-oriented, and
+\texttt{restore\_state()} rebuilds them with atomic column types, \texttt{NA}s and
+character row names preserved (non-atomic classes such as \texttt{factor} or
+\texttt{Date} degrade to their JSON scalar form --- the documented boundary). The PoC's manual coercion is consequently no longer
+required --- a plain \texttt{capture\_state()} on the model would now preserve the
+tables --- though it remains harmless. See the \texttt{statesnap} library write-up
+(``Module-namespace and data-frame support'') for the general implementation.
+
+% --------------------------------------------------------------------------
+\section{Verification}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item All six R artifacts \texttt{parse()} cleanly (R 4.3.3).
+  \item \texttt{statesnap} installed; full model$\to$JSON$\to$restore$\to$simulate
+    $\to$result-JSON$\to$extract roundtrip executed end-to-end (without HTTP).
+  \item The captured model JSON contains \emph{no} namespaced inputs
+    (\texttt{"inputs":\{\}}) -- confirming model-layer capture.
+  \item Restored result carries BioDT's exact plot columns
+    (\texttt{date}, \texttt{weather}, \texttt{TotalIHbees + TotalForagers},
+    \texttt{(honeyEnergyStore / ( ENERGY\_HONEY\_per\_g * 1000 ))}).
+  \item Output is non-deterministic across seeds -- the property that makes
+    capturing the \emph{computed} result (not inputs) necessary for
+    reproducibility.
+  \item \textbf{Not verified:} the full app was not launched under Docker in this
+    environment (the BioDT base image and raster data are heavy); the Shiny UI
+    integration is verified by parse + the model-contract roundtrip, and is
+    intended to be run dockerised on the author's laptop via the provided
+    \texttt{docker-compose.yml}.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Why this matters for the thesis argument}
+% --------------------------------------------------------------------------
+
+\begin{itemize}[nosep]
+  \item It closes the namespace gap the feasibility note flagged, \emph{without}
+    flattening and \emph{without} modifying \texttt{statesnap} -- the seam is the
+    app's own model/view separation. (The library has since \emph{also} gained
+    native namespace and data-frame support, so this gap is now closed at two
+    levels: the model-layer pattern shown here, and a direct namespaced capture
+    --- see the updates later in this document.)
+  \item It shows \texttt{statesnap} JSON doubling as a transport between a Shiny
+    frontend and a compute backend, i.e. a lightweight alternative to the
+    Spring/Kafka relay for the single-app case.
+  \item The five-file, mostly-additive footprint is evidence that a
+    well-structured modular pDT can gain reproducible, shareable state cheaply.
+  \item The serialisation bug is an honest, instructive negative result about
+    crossing process boundaries with R objects.
+\end{itemize}
+
+\paragraph{Generalisation.} The model-layer technique requires only that a
+modular app exposes its model as return values from module servers (as BioDT
+does). At the time of writing the PoC, an app that buried its state in namespaced
+inputs with \emph{no} model layer would have needed either a namespace-aware
+\texttt{capture\_state} or a small refactor to expose a model.
+
+\noindent\textbf{Update (2026-06-15):} that namespace-aware path now exists.
+\texttt{capture\_state()} / \texttt{restore\_state()} take an optional \texttt{ns}
+argument that slices a single module's inputs out by namespace (storing them
+under local names and re-qualifying on restore), and capture/restore invoked
+inside a module's own server works unmodified because Shiny scopes the module
+\texttt{input}. So the model-layer approach shown here and a direct namespaced
+capture are now \emph{two supported options} rather than the model layer being the
+only one. The model-layer route remains attractive when an app already exposes a
+clean model, because it keeps the checkpoint independent of widget identity.
+
+\paragraph{Next steps.} Run the stack under Docker end-to-end and screenshot the
+save/restore of a non-deterministic run; and swap the simulated backend for the
+real \texttt{ghcr.io/biodt/beehave} container behind the same \texttt{statesnap}
+contract. (The previously-listed ``extend \texttt{capture\_state} with namespace
+awareness'' item is now done --- see the update above.)
+
+\end{document}
