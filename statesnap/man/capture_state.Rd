@@ -4,7 +4,14 @@
 \alias{capture_state}
 \title{Capture the full state of a Shiny session to JSON}
 \usage{
-capture_state(input, ..., max_size = NULL, compress = TRUE)
+capture_state(
+  input,
+  ...,
+  max_size = NULL,
+  compress = TRUE,
+  s3 = NULL,
+  threshold = .default_s3_threshold
+)
 }
 \arguments{
 \item{input}{The Shiny `input` object (or any list-like of input values).}
@@ -18,6 +25,19 @@ memory-exhausting payloads. Set `NULL` to disable. Defaults to 50 MB.}
 
 \item{compress}{Whether to gzip-compress file and object payloads before
 base64 encoding. Offsets base64's ~33 percent inflation. Defaults to `TRUE`.}
+
+\item{s3}{An optional [s3_config()] describing an S3-compatible object store.
+When supplied, any [state_file()] or [state_rds()] blob whose compressed
+size reaches `threshold` is uploaded to the store and represented in the
+JSON by a small claim-check reference instead of an inline base64 payload.
+This is the claim-check pattern: it keeps large objects (e.g. single-cell
+datasets of hundreds of megabytes) off the message bus, which can only carry
+the kilobyte-sized reference. Defaults to `NULL` (everything inline,
+unchanged behaviour).}
+
+\item{threshold}{Size in bytes at or above which a blob is offloaded to `s3`
+rather than embedded inline. Ignored when `s3` is `NULL`. Defaults to
+256 KB.}
 }
 \value{
 A JSON string (length-1 character vector) of class
@@ -50,8 +70,14 @@ function as data, wrap it in [state_rds()].
 \examples{
 \dontrun{
 json <- capture_state(input, result = result, model = state_rds(fit))
+
+# Offload large objects to MinIO/S3, keep only a reference on the bus:
+s3 <- s3_config(bucket = "shinyswarm-state",
+                endpoint = "http://127.0.0.1:9000",
+                access_key = "minio", secret_key = "minio123")
+json <- capture_state(input, seurat = state_rds(obj), s3 = s3)
 }
 }
 \seealso{
-[restore_state()]
+[restore_state()], [s3_config()]
 }

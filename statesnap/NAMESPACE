@@ -2,6 +2,7 @@
 
 export(capture_state)
 export(restore_state)
+export(s3_config)
 export(state_file)
 export(state_rds)
 importFrom(base64enc,base64decode)

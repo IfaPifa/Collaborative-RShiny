@@ -10,7 +10,8 @@ restore_state(
   ...,
   file_dir = tempdir(),
   allow_rds = FALSE,
-  max_size = NULL
+  max_size = NULL,
+  s3 = NULL
 )
 }
 \arguments{
@@ -32,6 +33,12 @@ data can execute arbitrary code. Set `TRUE` only for trusted checkpoints.}
 \item{max_size}{Maximum size in bytes for any single decoded blob. Guards
 against memory-exhausting payloads. Set `NULL` to disable. Defaults to
 50 MB.}
+
+\item{s3}{An optional [s3_config()] used to redeem claim-check references
+produced when [capture_state()] offloaded a large blob to object storage.
+Required if (and only if) the checkpoint contains claim-check references;
+defaults to `NULL`. On fetch the object's size and ETag are verified against
+the reference to detect partial or swapped objects.}
 }
 \value{
 Invisibly, the parsed state list.
@@ -63,8 +70,14 @@ memory-exhaustion from a crafted checkpoint.
 \dontrun{
 restore_state(session, json, result = result)
 restore_state(session, json, model = fit, allow_rds = TRUE)  # trusted only
+
+# Redeem claim-check references from MinIO/S3:
+s3 <- s3_config(bucket = "shinyswarm-state",
+                endpoint = "http://127.0.0.1:9000",
+                access_key = "minio", secret_key = "minio123")
+restore_state(session, json, seurat = obj_rv, s3 = s3, allow_rds = TRUE)
 }
 }
 \seealso{
-[capture_state()]
+[capture_state()], [s3_config()]
 }

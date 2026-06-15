@@ -115,6 +115,39 @@ writeLines(json, "checkpoint.json")                         # file
 DBI::dbExecute(con, "INSERT INTO states(data) VALUES(?)", list(json))  # database
 ```
 
+## Large state: the S3 claim-check
+
+Inline transport embeds every blob in the JSON (base64), which is fine for
+inputs and small results but not for objects that run to hundreds of megabytes
+(e.g. a single-cell Seurat/AnnData object): Kafka caps messages near 1 MB and
+Redis is in-memory. For these, `statesnap` implements the **claim-check**
+pattern — the heavy payload is written to an S3-compatible object store and the
+JSON carries only a small reference. The bus transports the reference; the object
+travels A → store → B.
+
+```r
+s3 <- s3_config(
+  bucket     = "shinyswarm-state",
+  endpoint   = "http://127.0.0.1:9000",   # MinIO locally; AWS S3 in prod
+  access_key = "minio", secret_key = "minio123"
+)
+
+# capture: blobs >= threshold (default 256 KB) are offloaded; the rest stay inline
+json <- capture_state(input, seurat = state_rds(obj), s3 = s3)
+nchar(json)   # kilobytes, not the hundreds of MB of `obj`
+
+# restore: redeem the reference and fetch the object back from the store
+restore_state(session, json, seurat = obj_rv, s3 = s3, allow_rds = TRUE)
+```
+
+Only `endpoint` (and credentials) change between MinIO and AWS S3 — the
+application code is identical. The reference records `sizeBytes` and `etag`, which
+are verified on fetch so a partial or swapped object is rejected rather than
+silently deserialised. Offloaded blobs are exempt from the inline `max_size`
+ceiling (they are referenced, not embedded), so the store can carry payloads far
+larger than 50 MB. Requires the `paws.storage` package. A worked single-cell
+example lives in `whole_apps/single_cell/`.
+
 ## Security
 
 A checkpoint is **untrusted input** — in a cross-user restore, it was authored

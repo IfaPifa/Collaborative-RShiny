@@ -1,9 +1,26 @@
 # Internal helpers. Not exported.
 
+# Null-coalescing operator: return `a` unless it is NULL, else `b`.
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
 # Default ceiling for any single embedded blob (file or serialised object),
 # measured on the decoded bytes. 50 MB is generous for checkpoints while still
 # bounding a malicious or runaway payload.
 .default_max_size <- 50L * 1024L * 1024L
+
+# Default size at or above which a blob is offloaded to an S3 store (claim-check)
+# instead of embedded inline. 256 KB comfortably keeps Shiny inputs and small
+# results on the inline path while routing dataset- or model-sized blobs (and any
+# single-cell object) to object storage. Only consulted when an s3_config is
+# supplied to capture_state().
+.default_s3_threshold <- 256L * 1024L
+
+# Decide whether a (already compressed) blob should be offloaded to S3. Offload
+# only when a store is configured and the blob reaches the threshold; otherwise
+# the inline base64 path is used, preserving prior behaviour.
+.should_offload <- function(raw, s3, threshold) {
+  !is.null(s3) && .is_s3_config(s3) && length(raw) >= threshold
+}
 
 # Compress a raw vector to offset the ~33 percent base64 inflation.
 #

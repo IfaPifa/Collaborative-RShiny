@@ -1,0 +1,4 @@
+# Single-cell datasets and computed objects are downloaded/derived, not tracked.
+data/
+*.rds
+*.h5ad

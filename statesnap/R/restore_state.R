@@ -33,8 +33,13 @@
 #' @param max_size Maximum size in bytes for any single decoded blob. Guards
 #'   against memory-exhausting payloads. Set `NULL` to disable. Defaults to
 #'   50 MB.
+#' @param s3 An optional [s3_config()] used to redeem claim-check references
+#'   produced when [capture_state()] offloaded a large blob to object storage.
+#'   Required if (and only if) the checkpoint contains claim-check references;
+#'   defaults to `NULL`. On fetch the object's size and ETag are verified against
+#'   the reference to detect partial or swapped objects.
 #' @return Invisibly, the parsed state list.
-#' @seealso [capture_state()]
+#' @seealso [capture_state()], [s3_config()]
 #' @importFrom jsonlite fromJSON
 #' @importFrom base64enc base64decode
 #' @export
@@ -42,12 +47,23 @@
 #' \dontrun{
 #' restore_state(session, json, result = result)
 #' restore_state(session, json, model = fit, allow_rds = TRUE)  # trusted only
+#'
+#' # Redeem claim-check references from MinIO/S3:
+#' s3 <- s3_config(bucket = "shinyswarm-state",
+#'                 endpoint = "http://127.0.0.1:9000",
+#'                 access_key = "minio", secret_key = "minio123")
+#' restore_state(session, json, seurat = obj_rv, s3 = s3, allow_rds = TRUE)
 #' }
 restore_state <- function(session, state_json, ...,
                           file_dir = tempdir(),
                           allow_rds = FALSE,
-                          max_size = NULL) {
+                          max_size = NULL,
+                          s3 = NULL) {
   if (is.null(max_size)) max_size <- .default_max_size
+  if (!is.null(s3) && !.is_s3_config(s3)) {
+    stop("restore_state(): 's3' must be an s3_config() object or NULL",
+         call. = FALSE)
+  }
 
   state <- tryCatch(
     jsonlite::fromJSON(state_json, simplifyVector = FALSE),
@@ -76,7 +92,7 @@ restore_state <- function(session, state_json, ...,
       if (!name %in% names(extras)) next
       .restore_one(extras[[name]], state$reactives[[name]],
                    file_dir = file_dir, compressed = compressed,
-                   allow_rds = allow_rds, max_size = max_size)
+                   allow_rds = allow_rds, max_size = max_size, s3 = s3)
     }
   }
 
@@ -84,8 +100,58 @@ restore_state <- function(session, state_json, ...,
 }
 
 # Restore a single value into its live reactive, reversing .capture_one().
-.restore_one <- function(rv, saved, file_dir, compressed, allow_rds, max_size) {
+.restore_one <- function(rv, saved, file_dir, compressed, allow_rds, max_size,
+                         s3 = NULL) {
   type <- saved$type
+
+  # Claim-check: the heavy bytes live in an object store, not in this JSON.
+  # Fetch (and integrity-check) them, then hand off to the inline restore path
+  # by reconstructing the equivalent in-memory blob. The bus only ever carried
+  # this small reference.
+  if (identical(type, "claim-check")) {
+    if (is.null(s3)) {
+      stop(
+        "restore_state(): checkpoint contains a claim-check reference but no ",
+        "s3_config was supplied. Pass s3 = s3_config(...) to redeem it.",
+        call. = FALSE
+      )
+    }
+    # .s3_get verifies the fetched bytes against the reference's recorded size
+    # and ETag, so a claim-check blob is already integrity-checked. The inline
+    # max_size ceiling (default 50 MB) does not apply to a referenced object --
+    # offload exists precisely to carry payloads larger than that. We still cap
+    # decompression to guard against a bomb, but at a generous multiple of the
+    # verified compressed size rather than the inline ceiling.
+    raw <- .s3_get(s3, saved)
+    blob_compressed <- isTRUE(saved$compressed)
+    if (blob_compressed) {
+      decomp_ceiling <- if (is.null(max_size)) NULL else {
+        max(max_size, as.numeric(saved$sizeBytes %||% 0) * 1000)
+      }
+      raw <- .gunzip_raw(raw, max_size = decomp_ceiling)
+    }
+
+    if (identical(saved$blobType, "file")) {
+      safe_name <- .safe_filename(saved$filename)
+      if (!dir.exists(file_dir)) dir.create(file_dir, recursive = TRUE)
+      path <- file.path(file_dir, safe_name)
+      writeBin(raw, path)
+      if (is.function(rv)) rv(path)
+      return(invisible(path))
+    }
+
+    # rds blob
+    if (!isTRUE(allow_rds)) {
+      stop(
+        "restore_state(): refusing to unserialize a claim-check rds payload. ",
+        "Set allow_rds = TRUE only for trusted checkpoints.",
+        call. = FALSE
+      )
+    }
+    obj <- unserialize(raw)
+    if (is.function(rv)) rv(obj)
+    return(invisible(obj))
+  }
 
   if (identical(type, "file")) {
     raw <- .b64_decode_raw(saved$content)
