@@ -1,0 +1,4 @@
+^\.dockerignore$
+^Dockerfile$
+^.*\.Rcheck$
+^.*\.tar\.gz$
