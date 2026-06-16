@@ -1,7 +1,14 @@
-# Dockerised test runner for the statesnap package.
+# Dockerised runner for the statesnap package: runs the tests by default, and
+# can also serve the client/server Monte Carlo example app.
 #
-# Build:  docker build -t statesnap-tests statesnap
-# Run:    docker run --rm statesnap-tests
+# Build (from the statesnap/ directory):
+#   docker build -t statesnap-tests .
+#
+# Run the test suite (default):
+#   docker run --rm statesnap-tests
+#
+# Serve the Monte Carlo app, then open http://127.0.0.1:8100 :
+#   docker run --rm -p 8100:8100 statesnap-tests app
 #
 # The rocker/r-ver image ships R plus the Posit binary package repo, so the
 # R dependencies install as prebuilt binaries (fast, no compilation, no apt key
@@ -27,5 +34,11 @@ RUN install2.r --error --skipinstalled \
 WORKDIR /pkg
 COPY . /pkg
 
-# Default: load the package from source and run the full test suite.
-CMD ["Rscript", "-e", "pkgload::load_all('.'); testthat::test_dir('tests/testthat', stop_on_failure = TRUE)"]
+RUN chmod +x docker-entrypoint.sh
+
+# The app listens here; published with `-p 8100:8100` when serving.
+EXPOSE 8100
+
+# Default to running the tests; pass `app` to serve the example instead.
+ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["test"]
