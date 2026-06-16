@@ -10,6 +10,10 @@
 # Serve the Monte Carlo app, then open http://127.0.0.1:8100 :
 #   docker run --rm -p 8100:8100 statesnap-tests app
 #
+# File hand-off demo (two windows for a video): producer saves a checkpoint to
+# a file, consumer loads it. Open http://127.0.0.1:8100 and :8200 :
+#   docker run --rm -p 8100:8100 -p 8200:8200 statesnap-tests handoff
+#
 # The rocker/r-ver image ships R plus the Posit binary package repo, so the
 # R dependencies install as prebuilt binaries (fast, no compilation, no apt key
 # juggling on the host).
@@ -34,10 +38,13 @@ RUN install2.r --error --skipinstalled \
 WORKDIR /pkg
 COPY . /pkg
 
+# Install the package itself so the demo apps (which library(statesnap)) work.
+RUN R CMD INSTALL --no-multiarch --with-keep.source .
+
 RUN chmod +x docker-entrypoint.sh
 
-# The app listens here; published with `-p 8100:8100` when serving.
-EXPOSE 8100
+# Ports: 8100 (app / producer), 8200 (consumer in the hand-off demo).
+EXPOSE 8100 8200
 
 # Default to running the tests; pass `app` to serve the example instead.
 ENTRYPOINT ["./docker-entrypoint.sh"]
