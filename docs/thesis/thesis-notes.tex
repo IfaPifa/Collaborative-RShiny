@@ -378,6 +378,45 @@ The test confirms that the architecture does not add disproportionate
 overhead to compute-intensive workloads---a valid finding, not a
 testing gap.
 
+\subsection{Load-Generator Timeout Calibration}
+
+A subtle measurement artifact threatens the validity of the per-app
+threshold scheme: the load generator's own request timeout. k6 applies
+a default HTTP timeout of 60\,s to every request. For most apps this is
+irrelevant, but it directly conflicts with the compute-intensive apps
+the threshold design is built to accommodate.
+
+MLTrainer's single-user baseline POST is approximately 14.2\,s, and the
+queuing model predicts a worst-case latency of roughly
+$P \times \text{baseline}$ under load---on the order of hundreds of
+seconds at 100 virtual users. With the 60\,s default, k6 aborts every
+such request at 60\,s and records it as a timeout failure. The recorded
+\texttt{max} collapses to exactly \texttt{1m0s}, and the per-app
+threshold (e.g., MLTrainer throughput at 711.95\,s) is never evaluated
+against real data. Worse, the test reports \emph{pass}, because the
+artificially capped 60\,s value is trivially below the 712\,s threshold.
+
+This inverts the intent of the methodology. A ``pass'' under a truncated
+timeout means \emph{the load generator gave up}, not \emph{the
+architecture kept up}. The per-app thresholds can only separate
+computation latency from architecture latency if the load generator
+waits longer than the largest threshold it is evaluating.
+
+The fix sets the k6 request timeout above the largest configured
+threshold. The slow-path helpers (\texttt{postState}, \texttt{getState},
+\texttt{saveSessionState}, \texttt{restoreState}) use a configurable
+\texttt{REQUEST\_TIMEOUT} (default 900\,s, overridable per run via
+\texttt{-e REQUEST\_TIMEOUT=...}). A generous timeout is harmless to
+fast apps---Calculator still returns in milliseconds; the timeout only
+governs \emph{when k6 abandons a request}, not how long the backend
+takes. Lightweight operations (login, list endpoints) retain the
+default, as they are never expected to approach it.
+
+This is a load-generator configuration concern, not an architectural
+limitation, but documenting it is essential: without the adjustment, the
+compute-intensive apps' results are an artifact of the measurement tool
+rather than a property of the system under test.
+
 \subsection{References}
 
 \begin{itemize}

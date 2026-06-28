@@ -20,6 +20,22 @@ export const BASE_URL = __ENV.BASE_URL || 'http://localhost:4201';
 export const API      = `${BASE_URL}/api`;
 
 // ---------------------------------------------------------------------------
+// Request timeout for slow-path calls (state relay + DB ops).
+//
+// k6's DEFAULT HTTP timeout is 60s. That is too low for compute-intensive
+// apps: MLTrainer's single-user baseline POST is ~14s (RandomForest), and the
+// per-app methodology expects worst-case ~P x baseline under load (hundreds of
+// seconds at 100 VUs). With the 60s default, k6 aborts these requests at 60s
+// and records a timeout — so the per-app thresholds (e.g. MLTrainer 712s) never
+// see real values, and a "PASS" just means k6 gave up early.
+//
+// We set the timeout ABOVE the largest configured threshold (711.95s) so the
+// threshold logic evaluates true latency, not a k6 cutoff. Override per-run
+// with: k6 run -e REQUEST_TIMEOUT=600s ...
+// ---------------------------------------------------------------------------
+export const REQUEST_TIMEOUT = __ENV.REQUEST_TIMEOUT || '900s';
+
+// ---------------------------------------------------------------------------
 // Seeded users (from DataInitializer). All share password "password".
 // 20 users — enough to avoid per-user caching artifacts at 100 VUs.
 // ---------------------------------------------------------------------------
@@ -281,7 +297,11 @@ export function postState(token, sessionId, payload, extraTags) {
   return http.post(
     `${API}/collab/${sessionId}/state`,
     JSON.stringify(payload),
-    { headers: authHeaders(token), tags: Object.assign({ operation: 'post_state' }, extraTags || {}) },
+    {
+      headers: authHeaders(token),
+      timeout: REQUEST_TIMEOUT,
+      tags: Object.assign({ operation: 'post_state' }, extraTags || {}),
+    },
   );
 }
 
@@ -289,6 +309,7 @@ export function postState(token, sessionId, payload, extraTags) {
 export function getState(token, sessionId, extraTags) {
   return http.get(`${API}/collab/${sessionId}/state`, {
     headers: authHeaders(token),
+    timeout: REQUEST_TIMEOUT,
     tags: Object.assign({ operation: 'get_state' }, extraTags || {}),
   });
 }
@@ -298,7 +319,11 @@ export function saveSessionState(token, sessionId, name) {
   return http.post(
     `${API}/collab/${sessionId}/save`,
     JSON.stringify({ name }),
-    { headers: authHeaders(token), tags: { operation: 'save_session_state' } },
+    {
+      headers: authHeaders(token),
+      timeout: REQUEST_TIMEOUT,
+      tags: { operation: 'save_session_state' },
+    },
   );
 }
 
@@ -325,6 +350,7 @@ export function restoreState(token, stateId, sessionId) {
   const qs = sessionId ? `?sessionId=${sessionId}` : '';
   return http.post(`${API}/states/${stateId}/restore${qs}`, null, {
     headers: authHeaders(token),
+    timeout: REQUEST_TIMEOUT,
     tags: { operation: 'restore_state' },
   });
 }
