@@ -77,6 +77,7 @@ run_suite() {
     for test in "${TESTS[@]}"; do
       TEST_FILE="${SCRIPT_DIR}/${test}.js"
       SUMMARY_FILE="${RUN_DIR}/${test}-summary.json"
+      RAW_FILE="${RUN_DIR}/${test}.json"
       LOG_FILE="${RUN_DIR}/${test}.log"
 
       if [[ ! -f "${TEST_FILE}" ]]; then
@@ -86,14 +87,23 @@ run_suite() {
 
       echo -n "  [${run}/${RUNS}] ${test} ... "
 
-      # Run k6, capture both summary JSON and full log
+      # Run k6, capture:
+      #   --summary-export : aggregated metrics (avg/med/p90/p95), tags flattened
+      #   --out json=      : raw time-series WITH tags (app_name) for per-app plots
+      #   LOG_FILE         : full console output with per-app check results
       k6 run \
         -e "BASE_URL=${BASE_URL}" \
         --summary-export="${SUMMARY_FILE}" \
+        --out "json=${RAW_FILE}" \
         "${TEST_FILE}" \
         > "${LOG_FILE}" 2>&1 \
         && echo "DONE" \
         || echo "DONE (with errors — check ${LOG_FILE})"
+
+      # Compress the raw time-series (can be large for throughput tests)
+      if [[ -f "${RAW_FILE}" ]]; then
+        gzip -f "${RAW_FILE}"
+      fi
 
       # Cooldown between tests to let the system stabilize
       if [[ "${test}" != "${TESTS[-1]}" ]]; then

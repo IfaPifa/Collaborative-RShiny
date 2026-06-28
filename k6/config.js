@@ -11,6 +11,7 @@
  */
 
 import http from 'k6/http';
+import exec from 'k6/execution';
 
 // ---------------------------------------------------------------------------
 // URLs
@@ -227,6 +228,25 @@ export function authHeaders(token) {
 /** Pick a user deterministically from VU number. */
 export function userForVU(vu) {
   return USERS[vu % USERS.length];
+}
+
+/**
+ * Bucket the CURRENT number of active VUs into a load level, so metrics can
+ * be sliced "at N concurrent users". Reads exec.instance.vusActive at call
+ * time. Buckets are width-5 ("01-05", "06-10", ...) for fine granularity
+ * around the ~20-user breakdown point. Zero-padded so they sort correctly.
+ *
+ * Usage:
+ *   import { loadBucket } from './config.js';
+ *   const tags = { app_name: appName, vu_bucket: loadBucket() };
+ */
+export function loadBucket(width = 5) {
+  // active VUs at this instant (1-based load level)
+  const active = (exec && exec.instance && exec.instance.vusActive) || 1;
+  const hi = Math.ceil(active / width) * width;
+  const lo = hi - width + 1;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(lo)}-${pad(hi)}`;
 }
 
 /** Pick an app deterministically from VU + iteration. */

@@ -17,18 +17,22 @@
  *   - ws_connect:  Ramp 1→50 concurrent WebSocket connections
  *   - ws_fanout:   10 users per session, measure broadcast latency
  *
- * Custom metrics:
+ * Custom metrics (tagged with app_name and vu_bucket):
  *   ws_connect_ms       — time to establish WebSocket + STOMP handshake
  *   ws_join_roundtrip_ms — time from sending JOIN to receiving broadcast
  *   ws_connections       — total successful connections
  *   ws_messages_received — total STOMP messages received
  *   ws_errors            — connection or protocol errors
+ *
+ * vu_bucket tags each point with the active concurrent-connection level
+ * (5-VU buckets), so connect/join latency can be compared at each load step.
+ * The ramp uses stepped plateaus so each bucket holds steady before measuring.
  */
 
 import { check, sleep } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import ws from 'k6/ws';
-import { USERS, login, createSession, joinSession, healthCheck, APPS } from './config.js';
+import { USERS, login, createSession, joinSession, healthCheck, APPS, loadBucket } from './config.js';
 
 const wsConnectTime   = new Trend('ws_connect_ms', true);
 const wsJoinRoundtrip = new Trend('ws_join_roundtrip_ms', true);
@@ -41,12 +45,16 @@ export const options = {
     ws_presence: {
       executor: 'ramping-vus',
       startVUs: 1,
+      // Stepped plateaus so vu_bucket-tagged metrics are stable at each level.
+      // Fine 5-VU steps through the breakdown zone, coarser above.
       stages: [
-        { duration: '20s', target: 10 },
-        { duration: '30s', target: 25 },
-        { duration: '30s', target: 50 },
-        { duration: '20s', target: 25 },
-        { duration: '20s', target: 1 },
+        { duration: '10s', target: 5  }, { duration: '30s', target: 5  },
+        { duration: '10s', target: 10 }, { duration: '30s', target: 10 },
+        { duration: '10s', target: 15 }, { duration: '30s', target: 15 },
+        { duration: '10s', target: 20 }, { duration: '30s', target: 20 },
+        { duration: '10s', target: 25 }, { duration: '30s', target: 25 },
+        { duration: '10s', target: 50 }, { duration: '30s', target: 50 },
+        { duration: '10s', target: 1  },
       ],
     },
   },
@@ -123,7 +131,7 @@ export default function (data) {
   const username = typeof user === 'string' ? user : user.username || user;
 
   const wsUrl = buildWsUrl(baseUrl);
-  const tags = { app_name: session.appName };
+  const tags = { app_name: session.appName, vu_bucket: loadBucket() };
 
   const connectStart = Date.now();
   let connected = false;
