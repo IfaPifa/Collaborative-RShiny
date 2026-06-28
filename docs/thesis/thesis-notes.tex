@@ -320,6 +320,42 @@ using \texttt{paste0("processed\_", body\$file)} instead of \texttt{sub()}.
 This ensures the input file is never overwritten regardless of its naming
 convention.
 
+\subsection{Build Fragility: Unpinned terra vs.\ System GDAL}
+
+The Shiny service Docker images install their R dependencies from CRAN at
+build time without version pinning. This makes the build non-reproducible:
+an image that builds today can fail tomorrow if CRAN publishes an
+incompatible package version, even with no change to the project's own
+code.
+
+This occurred with the geospatial stack. The \texttt{leaflet} package
+depends on \texttt{raster}, which depends on \texttt{terra}, which
+compiles against the system GDAL library. The base image ships GDAL
+3.4.1, but a newer \texttt{terra} released to CRAN expects the GDAL
+$\geq$3.5 multidimensional-array API. Compilation fails with:
+
+\begin{lstlisting}
+gdal_multidimensional.cpp:1090: error: no matching function for call to
+  'GDALMDArray::AsClassicDataset(...)'  (3 arguments provided, 2 expected)
+ERROR: compilation failed for package 'terra'
+=> installation failed: 'terra', 'raster', 'leaflet'
+=> FATAL: Leaflet failed to install!
+\end{lstlisting}
+
+\noindent The failure is purely a build-environment version mismatch, not
+a defect in the application code, and it surfaces only because the
+dependency is unpinned. Two robust remedies exist: (i) pin
+\texttt{terra} to a version compatible with the image's GDAL (e.g.\ via
+\texttt{remotes::install\_version()}), or (ii) upgrade the base image so
+the system GDAL satisfies the newer \texttt{terra}'s API. Pinning is the
+more reproducible choice because it decouples the build from whatever
+CRAN happens to publish.
+
+This is relevant to the thesis's reproducibility claims: the benchmark
+results were produced from a known-good image, and re-running the study
+requires either the pinned dependencies or the recorded image digest,
+not merely the Dockerfile.
+
 \subsection{What the Baseline Separates}
 
 The per-app threshold design separates two distinct latency components:
