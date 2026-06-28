@@ -27,18 +27,25 @@ BASE_URL="${3:-http://localhost:30001}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RESULTS_DIR="${SCRIPT_DIR}/results/${ARCH}"
 
-TESTS=(
-  "00-baseline"
-  "01-state-relay-latency"
-  "02-collaboration-latency"
-  "03-save-restore-latency"
-  "04-throughput"
-  "05-data-loss"
-  "06-cross-contamination"
-  "07-session-lifecycle"
-  "08-multi-user-collab"
-  "09-websocket-presence"
-)
+# Default = full suite. Override with a space-separated TESTS env var to run a
+# subset, e.g. for a quick smoke test:
+#   TESTS="01-state-relay-latency 04-throughput" ./k6/run-suite.sh rest 1 http://localhost:30001
+if [[ -n "${TESTS:-}" ]]; then
+  read -r -a TESTS <<< "${TESTS}"
+else
+  TESTS=(
+    "00-baseline"
+    "01-state-relay-latency"
+    "02-collaboration-latency"
+    "03-save-restore-latency"
+    "04-throughput"
+    "05-data-loss"
+    "06-cross-contamination"
+    "07-session-lifecycle"
+    "08-multi-user-collab"
+    "09-websocket-presence"
+  )
+fi
 
 # --- Sleep prevention wrapper ---
 INHIBIT_CMD=""
