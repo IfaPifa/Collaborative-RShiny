@@ -6,11 +6,14 @@
 #     results/<arch>/run-<N>/<test>-summary.json   (aggregated, tags flattened)
 #     results/<arch>/run-<N>/<test>.json.gz        (raw time-series, WITH tags)
 #
-#  Produces two plot-ready CSVs in results/<arch>/:
-#     summary-long.csv   — one row per (run, test, metric, stat)
-#                          columns: run,test,metric,avg,med,min,max,p90,p95
-#     per-app-long.csv   — one row per (run, test, metric, app_name)
-#                          columns: run,test,metric,app_name,count,avg,med,p95
+#  Produces three plot-ready CSVs in results/<arch>/:
+#     summary-long.csv    — one row per (run, test, metric, stat)
+#                           columns: run,test,metric,avg,med,min,max,p90,p95
+#     per-app-long.csv    — one row per (run, test, metric, app_name)
+#                           columns: run,test,metric,app_name,count,avg,med,p95
+#     per-bucket-long.csv — one row per (run, test, metric, vu_bucket[, app_name])
+#                           columns: run,test,metric,vu_bucket,app_name,count,avg,med,p95
+#                           (for tests 04/09 that tag the concurrent-user level)
 #
 #  Both are "long/tidy" format — drop straight into pandas, ggplot, or Excel
 #  pivot tables. Plot mean±std across the 5 runs, or facet by app_name.
@@ -32,9 +35,11 @@ command -v jq >/dev/null || { echo "ERROR: jq is required"; exit 1; }
 
 SUMMARY_CSV="${DIR}/summary-long.csv"
 PERAPP_CSV="${DIR}/per-app-long.csv"
+PERBUCKET_CSV="${DIR}/per-bucket-long.csv"
 
 echo "run,test,metric,avg,med,min,max,p90,p95" > "$SUMMARY_CSV"
 echo "run,test,metric,app_name,count,avg,med,p95" > "$PERAPP_CSV"
+echo "run,test,metric,vu_bucket,app_name,count,avg,med,p95" > "$PERBUCKET_CSV"
 
 # ---- 1. Aggregated summary (overall, across all apps) --------------------
 for SUMMARY in "$DIR"/run-*/*-summary.json; do
@@ -82,18 +87,63 @@ for RAW in "$DIR"/run-*/*.json.gz; do
   ' >> "$PERAPP_CSV" 2>/dev/null || echo "  [warn] no tagged points in $TEST run $RUN"
 done
 
+# ---- 3. Per-VU-bucket breakdown (load-level, optionally per app) ----------
+# Only tests that set vu_bucket (04 throughput, 09 websocket) contribute rows.
+# Grouped by (metric, vu_bucket, app_name) so you can plot latency vs load,
+# faceted by app — e.g. spot the ~20-user breakdown per backend.
+for RAW in "$DIR"/run-*/*.json.gz; do
+  [[ -e "$RAW" ]] || continue
+  RUN=$(basename "$(dirname "$RAW")" | sed 's/run-//')
+  TEST=$(basename "$RAW" .json.gz)
+
+  gzip -dc "$RAW" | jq -rn --arg run "$RUN" --arg test "$TEST" '
+    [ inputs
+      | select(.type=="Point" and (.data.tags.vu_bucket // "") != "")
+      | { metric: .metric,
+          bucket: .data.tags.vu_bucket,
+          app:    (.data.tags.app_name // "ALL"),
+          v:      .data.value } ]
+    | group_by(.metric + "\u0000" + .bucket + "\u0000" + .app)[]
+    | ( [ .[].v ] | sort ) as $vals
+    | ($vals | length) as $n
+    | {
+        metric: .[0].metric,
+        bucket: .[0].bucket,
+        app:    .[0].app,
+        count:  $n,
+        avg:    ( ($vals | add) / $n ),
+        med:    ( $vals[ (($n-1)/2) | floor ] ),
+        p95:    ( $vals[ (($n-1)*0.95) | floor ] )
+      }
+    | [ $run, $test, .metric, .bucket, .app, .count, .avg, .med, .p95 ]
+    | @csv
+  ' >> "$PERBUCKET_CSV" 2>/dev/null || true
+done
+
 echo ""
 echo "=============================================="
 echo "  Extraction complete for: ${ARCH}"
-echo "  Overall : ${SUMMARY_CSV}"
-echo "            ($(($(wc -l < "$SUMMARY_CSV") - 1)) rows)"
-echo "  Per-app : ${PERAPP_CSV}"
-echo "            ($(($(wc -l < "$PERAPP_CSV") - 1)) rows)"
+echo "  Overall    : ${SUMMARY_CSV}"
+echo "               ($(($(wc -l < "$SUMMARY_CSV") - 1)) rows)"
+echo "  Per-app    : ${PERAPP_CSV}"
+echo "               ($(($(wc -l < "$PERAPP_CSV") - 1)) rows)"
+echo "  Per-bucket : ${PERBUCKET_CSV}"
+echo "               ($(($(wc -l < "$PERBUCKET_CSV") - 1)) rows)"
 echo "=============================================="
 echo ""
 echo "Plot examples:"
-echo "  # Python: relay p95 per app, averaged over 5 runs"
 echo "  import pandas as pd"
+echo ""
+echo "  # (a) relay p95 per app, averaged over runs"
 echo "  df = pd.read_csv('${PERAPP_CSV}')"
 echo "  r = df[(df.test=='01-state-relay-latency') & (df.metric=='relay_total_ms')]"
 echo "  r.groupby('app_name').p95.agg(['mean','std']).plot.bar(y='mean', yerr='std')"
+echo ""
+echo "  # (b) latency vs concurrent users (the breakdown curve)"
+echo "  b = pd.read_csv('${PERBUCKET_CSV}')"
+echo "  t = b[(b.test=='04-throughput') & (b.metric=='throughput_response_ms') & (b.app_name=='ALL')]"
+echo "  t.groupby('vu_bucket').p95.mean().plot(marker='o')  # x sorts naturally"
+echo ""
+echo "  # (c) 'X times slower' — divide two buckets"
+echo "  piv = t.groupby('vu_bucket').p95.mean()"
+echo "  print('20-user p95 / 5-user p95 =', piv['16-20'] / piv['01-05'])"
