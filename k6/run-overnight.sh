@@ -42,7 +42,18 @@ run_arch() {
 
   log "===== ${arch^^}: run suite (${RUNS} runs) ====="
   ./k6/run-suite.sh "$arch" "$RUNS" "$url" >>"$LOG" 2>&1 \
-    || log "${arch}: suite reported errors (thresholds may have failed — this is expected; continuing)"
+    || log "${arch}: suite exited non-zero (threshold failures are expected; verifying output below)"
+
+  # Verify the suite actually produced summary files. A threshold failure is
+  # fine, but ZERO summaries means the suite died early (e.g. k6 missing,
+  # deploy not ready) and the run is invalid — do not report success.
+  local n_summaries
+  n_summaries=$(find "k6/results/${arch}" -name '*-summary.json' 2>/dev/null | wc -l)
+  if [[ "$n_summaries" -eq 0 ]]; then
+    log "${arch}: NO results produced — suite failed to run. See ${LOG}."
+    return 1
+  fi
+  log "${arch}: produced ${n_summaries} summary file(s)"
 
   log "===== ${arch^^}: extract CSVs ====="
   ./k6/extract-results.sh "$arch" >>"$LOG" 2>&1 || { log "${arch}: extract failed"; return 1; }
