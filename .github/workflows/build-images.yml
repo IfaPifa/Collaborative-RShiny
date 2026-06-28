@@ -35,9 +35,11 @@ jobs:
           - context: Thesis-Project-Final-RESTAPI/shiny_services
             image: rest-shiny-services
 
-          # Monolithic architecture
-          - context: whole_apps
-            image: monolithic-shiny
+          # Monolithic architecture (whole_apps) is intentionally NOT built
+          # here — it rarely changes and slows every push. Build it manually
+          # when needed, e.g.:
+          #   docker build -t ghcr.io/<owner>/collaborative-rshiny/monolithic-shiny:latest whole_apps
+          #   docker push  ghcr.io/<owner>/collaborative-rshiny/monolithic-shiny:latest
 
     steps:
       - uses: actions/checkout@v4
