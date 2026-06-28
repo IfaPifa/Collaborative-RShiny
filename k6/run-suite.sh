@@ -134,14 +134,29 @@ run_suite() {
   echo "=============================================="
 }
 
-# Run with sleep prevention if available
+# Verify k6 exists before doing anything else (clear error instead of a
+# cryptic instant failure under set -e).
+if ! command -v k6 &>/dev/null; then
+  echo "[FATAL] k6 not found in PATH. Install k6 before running the suite." >&2
+  exit 127
+fi
+
+# systemd-inhibit needs a D-Bus / login session, which is often absent over
+# SSH. If it can't actually run, it would fail instantly and (under set -e)
+# abort the whole suite in 0 seconds. Probe it first and fall back to direct
+# execution rather than killing the run.
+if [[ -n "${INHIBIT_CMD}" ]]; then
+  if ! ${INHIBIT_CMD} true &>/dev/null; then
+    echo "[WARN] '${INHIBIT_CMD%% *}' is present but not usable here (no session/D-Bus?)."
+    echo "       Falling back to direct execution. On a server this is fine —"
+    echo "       use tmux so the run survives disconnects."
+    INHIBIT_CMD=""
+  fi
+fi
+
 if [[ -n "${INHIBIT_CMD}" ]]; then
   echo "[INFO] Sleep prevention active: ${INHIBIT_CMD}"
   ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' TESTS=(${TESTS[*]}); run_suite"
 else
-  echo "[WARN] No sleep prevention found. Disable sleep manually!"
-  echo "  macOS: System Settings → Energy → Prevent sleep"
-  echo "  Linux: systemctl mask sleep.target suspend.target"
-  echo ""
   run_suite
 fi
