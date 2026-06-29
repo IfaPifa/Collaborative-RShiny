@@ -13,15 +13,19 @@
 #
 #  Results saved to: k6/results/<architecture>/run-<N>/<test>-summary.json
 #
-#  REST poll-interval sweep (test 01 only):
-#    Test 01 reads POLL_MS to set its client-side poll interval. REST has no
-#    server push, so latency partly reflects poll frequency. Sweep it to get
-#    the latency/load trade-off curve instead of one arbitrary point:
-#      for ms in 100 250 500 1000; do
-#        POLL_MS=$ms TESTS="01-state-relay-latency" \
-#          ./k6/run-suite.sh rest 5 http://localhost:30001
-#      done
-#    Metrics are tagged poll_ms=<value> so runs stay distinguishable.
+#  REST poll-interval sweep (baked into the big run):
+#    REST has no server push, so test 01's relay latency partly reflects how
+#    often the client polls. Set POLL_SWEEP=1 to run the state-relay test once
+#    per interval as part of the suite (REST architectures only; skipped for
+#    kafka/monolithic). Every other test still runs once.
+#      POLL_SWEEP=1 ./k6/run-suite.sh rest 5 http://localhost:30001
+#    Override the intervals with POLL_SWEEP_MS (default "100 250 500 1000").
+#    Each interval's output is suffixed (01-state-relay-latency-poll500-*)
+#    and metrics carry a poll_ms tag.
+#
+#    To run just the sweep without the rest of the suite:
+#      POLL_SWEEP=1 TESTS="01-state-relay-latency" \
+#        ./k6/run-suite.sh rest 5 http://localhost:30001
 #
 #  Laptop sleep prevention:
 #    macOS:  caffeinate -dims is used automatically
@@ -79,6 +83,23 @@ RESET_BETWEEN="${RESET_BETWEEN:-1}"
 RESET_METHOD="${RESET_METHOD:-flush}"   # flush (fast) | restart (thorough)
 RESET_SCRIPT="${SCRIPT_DIR}/reset-state.sh"
 
+# --- REST poll-interval sweep --------------------------------------------
+# REST has no server push, so test 01's relay latency partly reflects how
+# often the client polls. With POLL_SWEEP=1, the state-relay test runs once
+# per interval in POLL_SWEEP_MS (every other test runs once at the default).
+# Each interval's output is suffixed (e.g. 01-state-relay-latency-poll500)
+# and metrics carry a poll_ms tag. Sweep applies to REST-like architectures
+# only; it is skipped for kafka (push, no polling tax) and monolithic.
+POLL_SWEEP="${POLL_SWEEP:-0}"
+POLL_SWEEP_MS="${POLL_SWEEP_MS:-100 250 500 1000}"
+RELAY_TEST="01-state-relay-latency"
+
+# Architectures the sweep is meaningful for (substring match on ARCH so
+# "rest", "rest-remote", "rest-local" all qualify).
+sweep_applies() {
+  [[ "${POLL_SWEEP}" == "1" && "${ARCH}" == rest* ]]
+}
+
 # --- Main loop ---
 run_suite() {
   echo "=============================================="
@@ -88,6 +109,7 @@ run_suite() {
   echo "  Results dir  : ${RESULTS_DIR}"
   echo "  Cooldown     : ${COOLDOWN}s between tests"
   echo "  State reset  : $( [[ "${RESET_BETWEEN}" == "1" ]] && echo "enabled (after every test, method=${RESET_METHOD})" || echo "DISABLED" )"
+  echo "  Poll sweep   : $( sweep_applies && echo "ON — ${RELAY_TEST} over [${POLL_SWEEP_MS}] ms" || echo "off" )"
   echo "  Sleep inhibit: ${INHIBIT_CMD:-none (disable sleep manually!)}"
   echo "=============================================="
   echo ""
@@ -101,18 +123,38 @@ run_suite() {
     echo "  Output: ${RUN_DIR}"
     echo ""
 
+    # Build this run's job list. Each job is "test_file|label|poll_ms".
+    # label names the output files; poll_ms (may be empty) is passed to k6.
+    # With the sweep on (REST only), the relay test expands into one job per
+    # interval; everything else is a single job with no poll_ms override.
+    JOBS=()
     for test in "${TESTS[@]}"; do
+      if [[ "${test}" == "${RELAY_TEST}" ]] && sweep_applies; then
+        for ms in ${POLL_SWEEP_MS}; do
+          JOBS+=("${test}|${test}-poll${ms}|${ms}")
+        done
+      else
+        JOBS+=("${test}|${test}|")
+      fi
+    done
+
+    for job in "${JOBS[@]}"; do
+      IFS='|' read -r test label job_poll <<< "${job}"
       TEST_FILE="${SCRIPT_DIR}/${test}.js"
-      SUMMARY_FILE="${RUN_DIR}/${test}-summary.json"
-      RAW_FILE="${RUN_DIR}/${test}.json"
-      LOG_FILE="${RUN_DIR}/${test}.log"
+      SUMMARY_FILE="${RUN_DIR}/${label}-summary.json"
+      RAW_FILE="${RUN_DIR}/${label}.json"
+      LOG_FILE="${RUN_DIR}/${label}.log"
 
       if [[ ! -f "${TEST_FILE}" ]]; then
         echo "  [SKIP] ${test}.js not found"
         continue
       fi
 
-      echo -n "  [${run}/${RUNS}] ${test} ... "
+      # Per-job poll interval: the sweep value if set, else any inherited
+      # POLL_MS, else unset (test uses its own default).
+      EFF_POLL="${job_poll:-${POLL_MS:-}}"
+
+      echo -n "  [${run}/${RUNS}] ${label} ... "
 
       # Run k6, capture:
       #   --summary-export : aggregated metrics (avg/med/p90/p95), tags flattened
@@ -120,7 +162,7 @@ run_suite() {
       #   LOG_FILE         : full console output with per-app check results
       k6 run \
         -e "BASE_URL=${BASE_URL}" \
-        ${POLL_MS:+-e "POLL_MS=${POLL_MS}"} \
+        ${EFF_POLL:+-e "POLL_MS=${EFF_POLL}"} \
         --summary-export="${SUMMARY_FILE}" \
         --out "json=${RAW_FILE}" \
         "${TEST_FILE}" \
@@ -133,16 +175,16 @@ run_suite() {
         gzip -f "${RAW_FILE}"
       fi
 
-      # Reset runtime state so the NEXT test starts clean. Runs after every
-      # test (including throughput, the main contaminator). This also covers
-      # the gap between runs since it runs after the last test of each run.
+      # Reset runtime state so the NEXT job starts clean. Runs after every
+      # job (including throughput, the main contaminator). This also covers
+      # the gap between runs since it runs after the last job of each run.
       if [[ "${RESET_BETWEEN}" == "1" && -x "${RESET_SCRIPT}" ]]; then
         RESET_METHOD="${RESET_METHOD}" "${RESET_SCRIPT}" "${ARCH}" \
           || echo "    [reset] non-fatal error — continuing."
       fi
 
-      # Cooldown between tests to let the system stabilize
-      if [[ "${test}" != "${TESTS[-1]}" ]]; then
+      # Cooldown between jobs to let the system stabilize
+      if [[ "${job}" != "${JOBS[-1]}" ]]; then
         echo "         cooling down ${COOLDOWN}s ..."
         sleep "${COOLDOWN}"
       fi
@@ -185,7 +227,7 @@ fi
 
 if [[ -n "${INHIBIT_CMD}" ]]; then
   echo "[INFO] Sleep prevention active: ${INHIBIT_CMD}"
-  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' RESET_BETWEEN='${RESET_BETWEEN}' RESET_METHOD='${RESET_METHOD}' RESET_SCRIPT='${RESET_SCRIPT}' POLL_MS='${POLL_MS:-}' TESTS=(${TESTS[*]}); run_suite"
+  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); $(declare -f sweep_applies); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' RESET_BETWEEN='${RESET_BETWEEN}' RESET_METHOD='${RESET_METHOD}' RESET_SCRIPT='${RESET_SCRIPT}' POLL_MS='${POLL_MS:-}' POLL_SWEEP='${POLL_SWEEP}' POLL_SWEEP_MS='${POLL_SWEEP_MS}' RELAY_TEST='${RELAY_TEST}' TESTS=(${TESTS[*]}); run_suite"
 else
   run_suite
 fi

@@ -49,12 +49,23 @@ Test 01 reads `POLL_MS` (default 250). The poll deadline stays fixed at 10s
 regardless of interval, so a tighter interval polls more often within the same
 window rather than timing out sooner. Metrics are tagged `poll_ms=<value>`.
 
+The sweep is baked into the suite via `POLL_SWEEP=1`. When set, the state-relay
+test runs once per interval as part of the normal run; every other test runs
+once. It applies to REST architectures only (`rest*`) and is skipped for kafka
+and monolithic. Each interval's output is suffixed
+(`01-state-relay-latency-poll500-summary.json`, etc.).
+
 ```bash
-# Run ONLY test 01 across four poll intervals, 5 runs each (REST only).
-for ms in 100 250 500 1000; do
-  POLL_MS=$ms TESTS="01-state-relay-latency" \
-    ./k6/run-suite.sh rest 5 http://localhost:30001
-done
+# Big REST run WITH the poll sweep folded in (5 runs, all tests + 4 intervals).
+POLL_SWEEP=1 ./k6/run-suite.sh rest 5 http://localhost:30001
+
+# Custom intervals:
+POLL_SWEEP=1 POLL_SWEEP_MS="50 100 250 500 1000" \
+  ./k6/run-suite.sh rest 5 http://localhost:30001
+
+# Just the sweep, nothing else:
+POLL_SWEEP=1 TESTS="01-state-relay-latency" \
+  ./k6/run-suite.sh rest 5 http://localhost:30001
 ```
 
 In analysis, group `relay_total_ms` / `relay_poll_ms` by the `poll_ms` tag and
