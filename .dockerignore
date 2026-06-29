@@ -1,0 +1,19 @@
+# Root-level build context is used by the REST/Kafka shiny base image so it can
+# COPY the local statesnap package. Exclude everything heavy/irrelevant to keep
+# the build context small — the base image only needs ./statesnap.
+.git
+**/node_modules
+k6/results
+analysis
+docs
+Proof-of-Concept
+whole_apps
+**/*.log
+**/.DS_Store
+**/__pycache__
+**/.pytest_cache
+**/target
+**/dist
+**/.angular
+**/playwright-report
+**/test-results

@@ -30,7 +30,9 @@ RUN R CMD javareconf
 ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/2026-06-16"
 
 # Install R packages
-RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr', 'promises', 'future'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
+# (leaflet.extras, DT and base64enc are required by the BioDT Honeybee app and
+#  the statesnap package it loads.)
+RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'leaflet.extras', 'DT', 'base64enc', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr', 'promises', 'future'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
 
 
 # Bulletproof Checks
@@ -42,5 +44,14 @@ RUN R -e "if (!requireNamespace('plumber', quietly = TRUE)) stop('FATAL: plumber
 # Bulletproof Checks
 RUN R -e "if (!requireNamespace('promises', quietly = TRUE)) stop('FATAL: promises failed to install!')"
 RUN R -e "if (!requireNamespace('future', quietly = TRUE)) stop('FATAL: future failed to install!')"
+RUN R -e "if (!requireNamespace('leaflet.extras', quietly = TRUE)) stop('FATAL: leaflet.extras failed to install!')"
+RUN R -e "if (!requireNamespace('DT', quietly = TRUE)) stop('FATAL: DT failed to install!')"
+
+# Install the local statesnap package (used by the BioDT Honeybee app for
+# reproducible checkpoint capture/restore). Build context is the repo root so
+# the package source at ./statesnap is available to COPY.
+COPY statesnap /tmp/statesnap
+RUN R CMD INSTALL --no-multiarch --with-keep.source /tmp/statesnap \
+    && R -e "if (!requireNamespace('statesnap', quietly = TRUE)) stop('FATAL: statesnap failed to install!')"
 
 EXPOSE 3838

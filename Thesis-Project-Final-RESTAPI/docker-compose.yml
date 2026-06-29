@@ -6,8 +6,10 @@
 
 x-shiny-base: &shiny-base
   build:
-    context: ./shiny_services
-    dockerfile: Dockerfile
+    # Context is the repo root so the Dockerfile can COPY the local statesnap
+    # package (lives at <repo>/statesnap, outside shiny_services).
+    context: ../
+    dockerfile: Thesis-Project-Final-RESTAPI/shiny_services/Dockerfile
   image: shinyswarm/r-worker:latest
   restart: unless-stopped
   networks:
