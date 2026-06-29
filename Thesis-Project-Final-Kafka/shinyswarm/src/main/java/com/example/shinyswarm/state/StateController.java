@@ -176,7 +176,7 @@ public class StateController {
             // If this is a Climate Anomaly checkpoint with embedded data,
             // write the dataset back to the shared volume so the Shiny app
             // can read it from disk (preserving the shared-volume pattern).
-            restoreClimateFile(payload);
+            StateRestoreSupport.restoreClimateFile(payload);
 
             payload.put("sender", "System Restore");
             // Use seconds (not millis) to match R's as.numeric(Sys.time())
@@ -254,50 +254,4 @@ public class StateController {
         }
     }
 
-    /**
-     * On restore: if the checkpoint contains an embedded "dataset", write it
-     * back to the shared volume as the referenced CSV file, then remove
-     * "dataset" from the payload so the Kafka message matches what Shiny expects.
-     */
-    @SuppressWarnings("unchecked")
-    private void restoreClimateFile(Map<String, Object> payload) {
-        try {
-            String action = (String) payload.get("action");
-            String file = (String) payload.get("file");
-            Object dataset = payload.get("dataset");
-
-            if (!"CLIMATE_READY".equals(action) || file == null || dataset == null) {
-                return;
-            }
-
-            List<Map<String, Object>> rows = (List<Map<String, Object>>) dataset;
-            if (rows.isEmpty()) return;
-
-            // Reconstruct CSV: header from first row's keys, then values
-            StringBuilder csv = new StringBuilder();
-            List<String> headers = new ArrayList<>(rows.get(0).keySet());
-            csv.append(String.join(",", headers)).append("\n");
-
-            for (Map<String, Object> row : rows) {
-                List<String> values = new ArrayList<>();
-                for (String h : headers) {
-                    Object v = row.get(h);
-                    String val = v != null ? v.toString() : "";
-                    // Quote values that contain commas
-                    if (val.contains(",")) val = "\"" + val + "\"";
-                    values.add(val);
-                }
-                csv.append(String.join(",", values)).append("\n");
-            }
-
-            Path csvPath = Paths.get("/app/shared_data", file);
-            Files.writeString(csvPath, csv.toString());
-
-            // Remove dataset from payload — Shiny reads from disk, not from JSON
-            payload.remove("dataset");
-
-        } catch (Exception e) {
-            System.err.println("Climate file restore failed: " + e.getMessage());
-        }
-    }
 }

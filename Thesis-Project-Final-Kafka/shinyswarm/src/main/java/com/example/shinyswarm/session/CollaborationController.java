@@ -2,6 +2,7 @@ package com.example.shinyswarm.session;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -27,6 +28,7 @@ import com.example.shinyswarm.notification.NotificationRepository;
 import com.example.shinyswarm.state.SavedState;
 import com.example.shinyswarm.state.SavedStateRepository;
 import com.example.shinyswarm.state.SessionStateMonitor;
+import com.example.shinyswarm.state.StateRestoreSupport;
 import com.example.shinyswarm.user.User;
 import com.example.shinyswarm.user.UserRepository;
 
@@ -234,9 +236,11 @@ public class CollaborationController {
     // 5. Replay (Auto-load)
     @PostMapping("/{sessionId}/replay")
     public ResponseEntity<?> replayState(@PathVariable String sessionId) {
+        // cachedState is the latest RESULT from the output topic; replay it
+        // straight back to output (it has no command for a backend to act on).
         String cachedState = stateMonitor.getLatestState(sessionId);
         if (cachedState != null) {
-            kafkaTemplate.send(resolveInputTopic(sessionId, cachedState), sessionId, cachedState);
+            kafkaTemplate.send(KafkaTopics.OUTPUT, sessionId, cachedState);
             return ResponseEntity.ok("State replayed");
         }
         return ResponseEntity.ok("No live state to replay");
@@ -265,8 +269,29 @@ public class CollaborationController {
             return ResponseEntity.status(403).body("You do not have access to this checkpoint");
         }
 
-        kafkaTemplate.send(resolveInputTopic(sessionId, state.getStateData()), sessionId, state.getStateData());
-        return ResponseEntity.ok("State restored");
+        // A saved checkpoint is a RESULT captured from the output topic; it has
+        // no command field, so the R backends would skip it if sent to input.
+        // Publish it straight to output so all session participants render it,
+        // mirroring the solo restore path in StateController.
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
+
+            // Climate checkpoints embed the dataset; write it back to the shared
+            // volume so the Shiny app reads it from disk as usual.
+            StateRestoreSupport.restoreClimateFile(payload);
+
+            payload.put("sender", "System Restore");
+            // Seconds (not millis) to match R's as.numeric(Sys.time()).
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
+
+            String kafkaPayload = objectMapper.writeValueAsString(payload);
+            kafkaTemplate.send(KafkaTopics.OUTPUT, sessionId, kafkaPayload);
+            return ResponseEntity.ok("State restored");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to parse state data");
+        }
     }
 
     // 7. Invite User
