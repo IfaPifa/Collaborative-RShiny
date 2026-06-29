@@ -1,0 +1,228 @@
+{
+    "metrics": {
+        "http_req_duration": {
+            "min": 3.791509,
+            "med": 5.617734,
+            "max": 144.111731,
+            "p(90)": 68.119388,
+            "p(95)": 106.11555949999999,
+            "avg": 23.87893981818182
+        },
+        "http_req_connecting": {
+            "avg": 0.03428090909090909,
+            "min": 0,
+            "med": 0,
+            "max": 0.37709,
+            "p(90)": 0,
+            "p(95)": 0.188545
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "ws_join_roundtrip_ms": {
+            "med": 8,
+            "max": 14,
+            "p(90)": 10,
+            "p(95)": 11,
+            "avg": 7.722323049001815,
+            "min": 3,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "ws_messages_received": {
+            "rate": 21.622915358969763,
+            "count": 5609
+        },
+        "http_req_waiting": {
+            "p(90)": 67.778341,
+            "p(95)": 105.787838,
+            "avg": 23.69755436363636,
+            "min": 3.664317,
+            "med": 5.511222,
+            "max": 143.797335
+        },
+        "http_reqs": {
+            "count": 11,
+            "rate": 0.042405432153444
+        },
+        "ws_connecting": {
+            "avg": 2.0192577604355724,
+            "min": 1.09601,
+            "med": 1.987288,
+            "max": 8.263099,
+            "p(90)": 2.402857,
+            "p(95)": 2.5342965
+        },
+        "ws_connections": {
+            "count": 551,
+            "rate": 2.1241266469588767
+        },
+        "iterations": {
+            "count": 551,
+            "rate": 2.1241266469588767
+        },
+        "ws_msgs_sent": {
+            "rate": 10.620633234794383,
+            "count": 2755
+        },
+        "http_req_blocked": {
+            "med": 0.005479,
+            "max": 0.780702,
+            "p(90)": 0.007321,
+            "p(95)": 0.3940115,
+            "avg": 0.07577490909090909,
+            "min": 0.002554
+        },
+        "ws_connect_ms": {
+            "min": 1,
+            "med": 3,
+            "max": 11,
+            "p(90)": 4,
+            "p(95)": 4,
+            "avg": 3.098003629764065,
+            "thresholds": {
+                "p(95)<5000": false
+            }
+        },
+        "data_sent": {
+            "rate": 1896.4480266877492,
+            "count": 491940
+        },
+        "ws_msgs_received": {
+            "count": 6711,
+            "rate": 25.871168652887516
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 11,
+            "value": 0
+        },
+        "ws_session_duration": {
+            "p(95)": 8505.077562499999,
+            "avg": 8504.001403250453,
+            "min": 8502.111818,
+            "med": 8503.945944,
+            "max": 8510.911809,
+            "p(90)": 8504.793066
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 144.111731,
+            "p(90)": 68.119388,
+            "p(95)": 106.11555949999999,
+            "avg": 23.87893981818182,
+            "min": 3.791509,
+            "med": 5.617734
+        },
+        "data_received": {
+            "count": 1888343,
+            "rate": 7279.636451720991
+        },
+        "checks": {
+            "passes": 1102,
+            "fails": 0,
+            "value": 1
+        },
+        "iteration_duration": {
+            "p(90)": 9505.801109,
+            "p(95)": 9506.1088895,
+            "avg": 9504.930074544462,
+            "min": 9502.754697,
+            "med": 9504.860886,
+            "max": 9514.580609
+        },
+        "http_req_sending": {
+            "avg": 0.039094727272727274,
+            "min": 0.01321,
+            "med": 0.032249,
+            "max": 0.141004,
+            "p(90)": 0.043276,
+            "p(95)": 0.09214
+        },
+        "ws_sessions": {
+            "count": 551,
+            "rate": 2.1241266469588767
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 50
+        },
+        "http_req_receiving": {
+            "min": 0.089957,
+            "med": 0.117678,
+            "max": 0.277901,
+            "p(90)": 0.200043,
+            "p(95)": 0.23897200000000002,
+            "avg": 0.1422907272727273
+        }
+    },
+    "setup_data": {
+        "sessions": [
+            {
+                "appName": "Calculator",
+                "sessionId": "44b36f2d-a3bd-40da-92b0-afc3f350c651"
+            },
+            {
+                "appName": "Analytics",
+                "sessionId": "1cbc4e17-1959-4282-8d3f-7fc132641cbb"
+            },
+            {
+                "appName": "Advanced",
+                "sessionId": "fcfa5b05-fab9-4ec8-af46-a286ad19cdc5"
+            },
+            {
+                "appName": "DataExchange",
+                "sessionId": "bbb7dd9c-5ae6-4d89-bfd3-71800c8be5db"
+            },
+            {
+                "appName": "MonteCarlo",
+                "sessionId": "8b674a2f-ae02-46bc-8a98-f323cbcaa109"
+            },
+            {
+                "appName": "Geospatial",
+                "sessionId": "abb9ed33-7bd8-47e4-bdf7-c83c8c21e004"
+            },
+            {
+                "appName": "ClimateAnomaly",
+                "sessionId": "400d252f-31b5-4e5a-a71d-b64b089cefaa"
+            },
+            {
+                "appName": "MLTrainer",
+                "sessionId": "f80109d1-c856-4dc6-8015-d9a759d226ed"
+            }
+        ]
+    },
+    "root_group": {
+        "checks": {
+            "WebSocket connected": {
+                "name": "WebSocket connected",
+                "path": "::WebSocket connected",
+                "id": "3224ab6204f13fde193cdaa3d1d1c30e",
+                "passes": 551,
+                "fails": 0
+            },
+            "JOIN roundtrip received": {
+                "passes": 551,
+                "fails": 0,
+                "name": "JOIN roundtrip received",
+                "path": "::JOIN roundtrip received",
+                "id": "104205380794711919f7ea0a03684824"
+            }
+        },
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {}
+    }
+}
