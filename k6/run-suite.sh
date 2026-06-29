@@ -13,6 +13,16 @@
 #
 #  Results saved to: k6/results/<architecture>/run-<N>/<test>-summary.json
 #
+#  REST poll-interval sweep (test 01 only):
+#    Test 01 reads POLL_MS to set its client-side poll interval. REST has no
+#    server push, so latency partly reflects poll frequency. Sweep it to get
+#    the latency/load trade-off curve instead of one arbitrary point:
+#      for ms in 100 250 500 1000; do
+#        POLL_MS=$ms TESTS="01-state-relay-latency" \
+#          ./k6/run-suite.sh rest 5 http://localhost:30001
+#      done
+#    Metrics are tagged poll_ms=<value> so runs stay distinguishable.
+#
 #  Laptop sleep prevention:
 #    macOS:  caffeinate -dims is used automatically
 #    Linux:  systemd-inhibit is used automatically
@@ -110,6 +120,7 @@ run_suite() {
       #   LOG_FILE         : full console output with per-app check results
       k6 run \
         -e "BASE_URL=${BASE_URL}" \
+        ${POLL_MS:+-e "POLL_MS=${POLL_MS}"} \
         --summary-export="${SUMMARY_FILE}" \
         --out "json=${RAW_FILE}" \
         "${TEST_FILE}" \
@@ -174,7 +185,7 @@ fi
 
 if [[ -n "${INHIBIT_CMD}" ]]; then
   echo "[INFO] Sleep prevention active: ${INHIBIT_CMD}"
-  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' RESET_BETWEEN='${RESET_BETWEEN}' RESET_METHOD='${RESET_METHOD}' RESET_SCRIPT='${RESET_SCRIPT}' TESTS=(${TESTS[*]}); run_suite"
+  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' RESET_BETWEEN='${RESET_BETWEEN}' RESET_METHOD='${RESET_METHOD}' RESET_SCRIPT='${RESET_SCRIPT}' POLL_MS='${POLL_MS:-}' TESTS=(${TESTS[*]}); run_suite"
 else
   run_suite
 fi
