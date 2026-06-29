@@ -1,0 +1,5 @@
+^\.dockerignore$
+^Dockerfile$
+^docker-entrypoint\.sh$
+^.*\.Rcheck$
+^.*\.tar\.gz$

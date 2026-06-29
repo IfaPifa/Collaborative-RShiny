@@ -2,7 +2,7 @@ library(jsonlite)
 library(kafka)
 
 broker <- "kafka:9092"
-topic_input <- "input"
+topic_input <- "input.geospatial"
 topic_output <- "output"
 
 print("Geospatial Editor Backend Starting (Kafka DELTA mode)...")

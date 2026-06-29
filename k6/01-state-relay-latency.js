@@ -23,7 +23,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, login, userForVU, createSession, postState, getState, healthCheck,
-  perAppThresholds,
+  perAppThresholds, loadBucket,
 } from './config.js';
 
 const relayPostMs  = new Trend('relay_post_ms', true);
@@ -31,6 +31,17 @@ const relayPollMs  = new Trend('relay_poll_ms', true);
 const relayTotalMs = new Trend('relay_total_ms', true);
 const relaySuccess = new Counter('relay_success');
 const relayFailure = new Counter('relay_failure');
+
+// Client-side poll interval (ms). REST has no server push, so the observed
+// relay latency partly reflects how often we poll. Sweep this across runs
+// (e.g. POLL_MS=100/250/500/1000) to produce the latency/load trade-off curve
+// rather than a single arbitrary point. Default 250 preserves prior behaviour.
+const POLL_MS = Number(__ENV.POLL_MS || 250);
+// Keep the total poll deadline constant regardless of interval so a tighter
+// interval polls more often within the same window instead of timing out
+// sooner. Prior budget was 40 iters * 250ms = 10s.
+const POLL_BUDGET_MS = Number(__ENV.POLL_BUDGET_MS || 10000);
+const POLL_MAX_ITERS = Math.max(1, Math.ceil(POLL_BUDGET_MS / POLL_MS));
 
 export const options = {
   scenarios: {
@@ -65,7 +76,8 @@ export default function () {
   if (!token) { relayFailure.add(1); return; }
 
   for (const app of APPS) {
-    const tags = { app_name: app.appName };
+    // Tag with poll_ms so a sweep's runs stay distinguishable in the results.
+    const tags = { app_name: app.appName, vu_bucket: loadBucket(), poll_ms: String(POLL_MS) };
 
     group(`relay_${app.appName}`, function () {
       const session = createSession(
@@ -95,13 +107,13 @@ export default function () {
       // Poll GET until marker appears
       let found = false;
       const pollStart = Date.now();
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < POLL_MAX_ITERS; i++) {
         const getRes = getState(token, session.id, tags);
         if (getRes.status === 200 && getRes.body && getRes.body.includes(marker)) {
           found = true;
           break;
         }
-        sleep(0.25);
+        sleep(POLL_MS / 1000);
       }
       const pollElapsed = Date.now() - pollStart;
       const totalElapsed = Date.now() - t0;

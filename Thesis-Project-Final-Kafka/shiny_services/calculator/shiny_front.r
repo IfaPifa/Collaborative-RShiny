@@ -197,7 +197,7 @@ server <- function(input, output, session) {
     )
     
     key_to_use <- routingKey()
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = key_to_use)
+    state$producer$produce("input.calculator", toJSON(payload, auto_unbox = TRUE), key = key_to_use)
     state$log <- paste("Sent update to topic 'input' with key:", key_to_use)
   })
   

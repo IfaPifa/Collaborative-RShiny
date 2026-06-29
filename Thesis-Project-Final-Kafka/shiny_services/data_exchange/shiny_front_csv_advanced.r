@@ -135,7 +135,7 @@ server <- function(input, output, session) {
       role = state$permission
     )
     
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.climateanomaly", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
   poll_trigger <- reactivePoll(POLL_INTERVAL_MS, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))

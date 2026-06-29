@@ -118,7 +118,7 @@ server <- function(input, output, session) {
     req(state$connected, !is.null(state$producer), input$file_upload)
     df <- read.csv(input$file_upload$datapath, stringsAsFactors = FALSE)
     payload <- list(appName = "DataExchange", dataset = df, sender = identity()$userId, role = state$permission)
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.dataexchange", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
   poll_trigger <- reactivePoll(POLL_INTERVAL_MS, session, checkFunc = function() as.numeric(Sys.time()), valueFunc = function() as.numeric(Sys.time()))

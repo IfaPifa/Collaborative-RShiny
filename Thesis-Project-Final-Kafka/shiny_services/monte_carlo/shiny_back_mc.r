@@ -2,7 +2,7 @@ library(jsonlite)
 library(kafka)
 
 broker <- "kafka:9092"
-topic_input <- "input"
+topic_input <- "input.montecarlo"
 topic_output <- "output"
 
 print("Monte Carlo Backend Starting...")
@@ -88,6 +88,12 @@ repeat {
       sample_2 = samples[, 2],
       sample_3 = samples[, 3],
       extinction_prob = sum(all_paths[years + 1, ] < 1) / n_paths,
+      # Echo inputs so a saved checkpoint can restore the control widgets.
+      n0 = n0,
+      growth_rate = r,
+      env_var = env_var,
+      paths = n_paths,
+      proj_years = years,
       status = "success",
       timestamp = as.numeric(Sys.time())
     )

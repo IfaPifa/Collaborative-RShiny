@@ -1,0 +1,8 @@
+# Keep the build context small and reproducible.
+*.Rcheck
+*.tar.gz
+.Rhistory
+.RData
+.Rproj.user
+Dockerfile
+.dockerignore

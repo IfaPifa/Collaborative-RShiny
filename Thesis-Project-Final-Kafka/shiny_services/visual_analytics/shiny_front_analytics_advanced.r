@@ -146,7 +146,7 @@ server <- function(input, output, session) {
       role = state$permission,
       appName = "Advanced"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.advanced", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
 
   # --- RECEIVE UPDATES ---

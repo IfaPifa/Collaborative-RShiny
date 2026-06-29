@@ -29,7 +29,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, USERS, login, createSession, joinSession,
-  postState, getState, healthCheck, perAppThresholds,
+  postState, getState, healthCheck, perAppThresholds, loadBucket,
 } from './config.js';
 
 const collabPropagation = new Trend('collab_propagation_ms', true);
@@ -70,7 +70,7 @@ export default function () {
 
   // Rotate through apps per iteration
   const app = APPS[(__VU + __ITER) % APPS.length];
-  const tags = { app_name: app.appName };
+  const tags = { app_name: app.appName, vu_bucket: loadBucket() };
 
   group(`collab_${app.appName}`, function () {
     // 1. Login as host

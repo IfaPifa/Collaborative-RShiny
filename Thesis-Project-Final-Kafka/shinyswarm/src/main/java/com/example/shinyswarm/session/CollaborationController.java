@@ -2,10 +2,15 @@ package com.example.shinyswarm.session;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.example.shinyswarm.config.KafkaTopics;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +28,7 @@ import com.example.shinyswarm.notification.NotificationRepository;
 import com.example.shinyswarm.state.SavedState;
 import com.example.shinyswarm.state.SavedStateRepository;
 import com.example.shinyswarm.state.SessionStateMonitor;
+import com.example.shinyswarm.state.StateRestoreSupport;
 import com.example.shinyswarm.user.User;
 import com.example.shinyswarm.user.UserRepository;
 
@@ -46,6 +52,7 @@ public class CollaborationController {
     private final NotificationRepository notificationRepository;
     private final EmailService emailService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
     
 
     public CollaborationController(CollaborationSessionRepository sessionRepository,
@@ -56,7 +63,8 @@ public class CollaborationController {
                                    KafkaTemplate<String, String> kafkaTemplate,
                                    NotificationRepository notificationRepository,
                                    EmailService emailService,
-                                   SimpMessagingTemplate messagingTemplate) {
+                                   SimpMessagingTemplate messagingTemplate,
+                                   ObjectMapper objectMapper) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
@@ -66,6 +74,42 @@ public class CollaborationController {
         this.notificationRepository = notificationRepository;
         this.emailService = emailService;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Resolve the per-app Kafka input topic for a session.
+     *
+     * Prefers the appName carried in the state JSON (normal POST path). Falls
+     * back to the session's appId (authoritative; used for restore/replay where
+     * the saved JSON may not contain appName). Last resort is the shared
+     * "input" fallback topic.
+     */
+    private String resolveInputTopic(String sessionId, String rawJson) {
+        // 1. Try appName from the JSON body.
+        if (rawJson != null) {
+            try {
+                JsonNode node = objectMapper.readTree(rawJson);
+                JsonNode appNameNode = node.get("appName");
+                if (appNameNode != null && !appNameNode.isNull()) {
+                    String topic = KafkaTopics.forAppName(appNameNode.asText());
+                    if (topic != null) return topic;
+                }
+            } catch (Exception ignored) {
+                // fall through to session lookup
+            }
+        }
+        // 2. Authoritative: look up the app via the session.
+        if (sessionId != null) {
+            String topic = sessionRepository.findById(sessionId)
+                    .map(s -> s.getShinyApp() != null
+                            ? KafkaTopics.forAppId(s.getShinyApp().getId())
+                            : null)
+                    .orElse(null);
+            if (topic != null) return topic;
+        }
+        // 3. Fallback shared topic (should not happen in practice).
+        return KafkaTopics.INPUT_FALLBACK;
     }
 
     // ==========================================
@@ -109,8 +153,9 @@ public class CollaborationController {
                 });
             }
 
-            // Send to Kafka input topic — R consumer will process and write to output
-            kafkaTemplate.send("input", sessionId, rawJson);
+            // Send to the per-app Kafka input topic — the matching R consumer
+            // processes it and writes the result to the shared output topic.
+            kafkaTemplate.send(resolveInputTopic(sessionId, rawJson), sessionId, rawJson);
             return ResponseEntity.ok("{\"status\":\"accepted\"}");
 
         } catch (Exception e) {
@@ -183,6 +228,10 @@ public class CollaborationController {
             return ResponseEntity.badRequest().body("No data available to save.");
         }
 
+        // Climate checkpoints embed the dataset so they survive the shared
+        // CSV file being overwritten by later uploads (mirrors solo save).
+        currentState = StateRestoreSupport.enrichClimateCheckpoint(objectMapper, currentState);
+
         SavedState savedState = new SavedState(request.name(), currentState, user, session.getShinyApp(), sessionId);
         savedStateRepository.save(savedState);
         return ResponseEntity.ok("Session state saved successfully");
@@ -191,9 +240,11 @@ public class CollaborationController {
     // 5. Replay (Auto-load)
     @PostMapping("/{sessionId}/replay")
     public ResponseEntity<?> replayState(@PathVariable String sessionId) {
+        // cachedState is the latest RESULT from the output topic; replay it
+        // straight back to output (it has no command for a backend to act on).
         String cachedState = stateMonitor.getLatestState(sessionId);
         if (cachedState != null) {
-            kafkaTemplate.send("input", sessionId, cachedState);
+            kafkaTemplate.send(KafkaTopics.OUTPUT, sessionId, cachedState);
             return ResponseEntity.ok("State replayed");
         }
         return ResponseEntity.ok("No live state to replay");
@@ -222,8 +273,29 @@ public class CollaborationController {
             return ResponseEntity.status(403).body("You do not have access to this checkpoint");
         }
 
-        kafkaTemplate.send("input", sessionId, state.getStateData());
-        return ResponseEntity.ok("State restored");
+        // A saved checkpoint is a RESULT captured from the output topic; it has
+        // no command field, so the R backends would skip it if sent to input.
+        // Publish it straight to output so all session participants render it,
+        // mirroring the solo restore path in StateController.
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> payload = objectMapper.readValue(state.getStateData(), Map.class);
+
+            // Climate checkpoints embed the dataset; write it back to the shared
+            // volume so the Shiny app reads it from disk as usual.
+            StateRestoreSupport.restoreClimateFile(payload);
+
+            payload.put("sender", "System Restore");
+            // Seconds (not millis) to match R's as.numeric(Sys.time()).
+            payload.put("timestamp", System.currentTimeMillis() / 1000.0);
+
+            String kafkaPayload = objectMapper.writeValueAsString(payload);
+            kafkaTemplate.send(KafkaTopics.OUTPUT, sessionId, kafkaPayload);
+            return ResponseEntity.ok("State restored");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to parse state data");
+        }
     }
 
     // 7. Invite User

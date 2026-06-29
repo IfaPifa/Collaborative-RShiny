@@ -26,7 +26,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, USERS, login, createSession, joinSession,
-  postState, getState, healthCheck, perAppThresholds,
+  postState, getState, healthCheck, perAppThresholds, loadBucket,
 } from './config.js';
 
 const multiPropAll   = new Trend('multi_propagation_all_ms', true);
@@ -60,7 +60,7 @@ export function setup() {
 export default function () {
   const groupSize = GROUP_SIZES[__VU % GROUP_SIZES.length];
   const app = APPS[__ITER % APPS.length];
-  const tags = { app_name: app.appName, group_size: String(groupSize) };
+  const tags = { app_name: app.appName, group_size: String(groupSize), vu_bucket: loadBucket() };
 
   group(`multi_${groupSize}users_${app.appName}`, function () {
     // 1. Login as host

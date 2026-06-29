@@ -147,7 +147,7 @@ server <- function(input, output, session) {
       role = state$permission,
       appName = "MLTrainer"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.mltrainer", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
 
   # --- RECEIVE UPDATES ---

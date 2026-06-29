@@ -136,7 +136,7 @@ server <- function(input, output, session) {
       role = state$permission
     )
     
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.geospatial", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
   # --- RECEIVE DELTAS (CONSUMER) ---

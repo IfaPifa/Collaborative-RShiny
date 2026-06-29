@@ -3,7 +3,7 @@ library(kafka)
 library(dplyr)
 
 broker <- "kafka:9092"
-topic_input <- "input"
+topic_input <- "input.analytics"
 topic_output <- "output"
 
 print("Visual Analytics Backend Starting...")

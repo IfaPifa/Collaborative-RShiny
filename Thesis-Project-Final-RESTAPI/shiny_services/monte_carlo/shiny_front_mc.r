@@ -125,6 +125,13 @@ server <- function(input, output, session) {
         if (!is.null(data$type) && data$type == "RESULT") {
           state$results <- data
           state$last_timestamp <- data$timestamp
+          # Restore the control widgets from the echoed inputs so a loaded
+          # checkpoint reflects the parameters it was saved with.
+          if (!is.null(data$n0)) updateNumericInput(session, "n0", value = data$n0)
+          if (!is.null(data$growth_rate)) updateSliderInput(session, "growth_rate", value = data$growth_rate)
+          if (!is.null(data$env_var)) updateSliderInput(session, "env_var", value = data$env_var)
+          if (!is.null(data$paths)) updateNumericInput(session, "paths", value = data$paths)
+          if (!is.null(data$proj_years)) updateNumericInput(session, "years", value = data$proj_years)
         }
         state$status <- "COMPLETE"
         state$progress <- 100
@@ -162,6 +169,13 @@ server <- function(input, output, session) {
               state$results <- data
               state$status <- "COMPLETE"
               state$progress <- 100
+              # Restore the control widgets from the echoed inputs so a loaded
+              # checkpoint reflects the parameters it was saved with.
+              if (!is.null(data$n0)) updateNumericInput(session, "n0", value = data$n0)
+              if (!is.null(data$growth_rate)) updateSliderInput(session, "growth_rate", value = data$growth_rate)
+              if (!is.null(data$env_var)) updateSliderInput(session, "env_var", value = data$env_var)
+              if (!is.null(data$paths)) updateNumericInput(session, "paths", value = data$paths)
+              if (!is.null(data$proj_years)) updateNumericInput(session, "years", value = data$proj_years)
               enable("run_sim")
             }
           }

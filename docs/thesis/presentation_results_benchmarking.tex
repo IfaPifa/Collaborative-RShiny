@@ -1,0 +1,629 @@
+\documentclass[aspectratio=169]{beamer}
+
+% ==========================================================================
+%  presentation_results_benchmarking.tex
+%
+%  Results / benchmarking half of the ShinySwarm deck. Companion to
+%  presentation_intro_and_rqs.tex (same theme + colours).
+%
+%  Each results slide maps to one figure produced by analysis/make-plots.R:
+%    fig01_relay_per_app        -> Slide: state relay latency
+%    fig02_throughput_vs_load   -> Slide: latency vs concurrent users
+%    fig03_throughput_per_app   -> Slide: throughput latency per app
+%    fig04_save_restore         -> Slide: save / restore latency
+%    fig05_overview_grid        -> Slide: latency overview across benchmarks
+%    fig06_reliability          -> Slide: data loss / error / isolation
+%    fig07_slowdown_factor      -> Slide: slowdown factor under load
+%
+%  Figures live in analysis/plots/. Until the real benchmark CSVs are
+%  collected, each \includegraphics is wrapped so the deck still compiles
+%  with a labelled placeholder instead of a missing-file error.
+%
+%  Build:
+%    cd docs/thesis && pdflatex presentation_results_benchmarking.tex
+%
+%  Regenerate figures first (real or mock):
+%    Rscript analysis/make-plots.R k6/results analysis/plots rest kafka
+% ==========================================================================
+
+% --- THEME (identical to the intro deck) -----------------------------------
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\setbeamercolor{frametitle}{bg=structure.fg!15!bg}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, fit, calc}
+\usepackage{hyperref}
+\usepackage{fontawesome5}
+
+% --- figure directory + safe-include helper --------------------------------
+% Resolves whether built from docs/thesis/ or from the repo root.
+\graphicspath{{../../analysis/plots/}{analysis/plots/}{./}}
+
+% \safefig{<basename>}{<width>}  -- include the figure if present, else a
+% labelled placeholder box so the slide never breaks the build.
+\newcommand{\safefig}[2]{%
+  \IfFileExists{../../analysis/plots/#1.png}%
+    {\includegraphics[width=#2]{#1.png}}%
+    {\IfFileExists{analysis/plots/#1.png}%
+      {\includegraphics[width=#2]{#1.png}}%
+      {\fbox{\parbox[c][3.2cm][c]{#2}{\centering\footnotesize\ttfamily
+        \detokenize{#1}.png\\[0.4em]\normalfont\itshape
+        figure not yet generated\\\scriptsize
+        run \texttt{make-plots.R} once benchmark CSVs exist}}}}%
+}
+
+\title{\textbf{ShinySwarm} --- Benchmarking Results}
+\subtitle{Latency, Throughput, Reliability:\\Monolithic vs.\ REST vs.\ Kafka}
+\author{Iva Gunjaca}
+\institute{Master of Software Engineering\\University of Amsterdam\\[0.5em]
+\small Supervisor: Dr Zhiming Zhao\\
+MultiScale Networked Systems Group, Informatics Institute}
+\date{Results Presentation --- 2026}
+
+\begin{document}
+
+% ============================================================
+% SLIDE 1: TITLE
+% ============================================================
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ============================================================
+% SLIDE 2: ROADMAP
+% ============================================================
+\begin{frame}{From Research Question to Evidence}
+
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+
+\textbf{Recap --- RQ4:}
+\begin{quote}
+\small\itshape
+How do the three architectures (monolithic, REST, Kafka) compare on
+\textbf{latency}, \textbf{throughput}, \textbf{data loss}, and
+\textbf{cross-contamination}?
+\end{quote}
+
+\vspace{0.5em}
+\textbf{This half of the talk answers RQ4 with measured data.}
+
+\vspace{0.5em}
+\textbf{What you will see:}
+\begin{itemize}
+    \item One headline figure per sub-question
+    \item Per-application breakdowns (8 apps, light $\rightarrow$ heavy)
+    \item Where each architecture wins, and where it breaks
+\end{itemize}
+
+\end{column}
+\begin{column}{0.46\textwidth}
+
+\begin{block}{Slide Map (figure $\rightarrow$ question)}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Figure} & \textbf{Answers} \\
+\midrule
+fig01 relay        & latency (per app) \\
+fig02 vs.\ load    & where it saturates \\
+fig03 throughput   & latency under load \\
+fig04 save/restore & checkpoint cost \\
+fig05 overview     & headline summary \\
+fig06 reliability  & loss \& leakage \\
+fig07 slowdown     & degradation rate \\
+\bottomrule
+\end{tabular}
+\end{block}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 3: METHODOLOGY
+% ============================================================
+\begin{frame}{How the Numbers Were Produced}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+
+\textbf{Load generation: k6}
+\begin{itemize}
+    \item 10 benchmark scripts (\texttt{00-baseline} $\rightarrow$ \texttt{09-websocket})
+    \item Per-app, baseline-calibrated thresholds (\texttt{k6/config.js})
+    \item \textbf{5 repeated runs} per architecture for statistical validity
+    \item Stepped concurrent-user load (1 $\rightarrow$ 100 VUs)
+\end{itemize}
+
+\vspace{0.4em}
+\textbf{Deployment: Kubernetes (Rancher)}
+\begin{itemize}
+    \item Each architecture deployed in isolation
+    \item Server-side and remote (laptop) load generators
+\end{itemize}
+
+\vspace{0.4em}
+\textbf{Extraction \& plotting}
+\begin{itemize}
+    \item \texttt{k6/extract-results.sh} $\rightarrow$ 3 tidy CSVs
+    \item \texttt{analysis/make-plots.R} $\rightarrow$ 7 figures (PNG + PDF)
+\end{itemize}
+
+\end{column}
+\begin{column}{0.44\textwidth}
+
+\begin{block}{Tidy CSV schema}
+\scriptsize
+\texttt{summary-long.csv}\\
+\quad run, test, metric, avg, med, min, max, p90, p95\\[0.4em]
+\texttt{per-app-long.csv}\\
+\quad run, test, metric, app\_name, count, avg, med, p95\\[0.4em]
+\texttt{per-bucket-long.csv}\\
+\quad \dots, vu\_bucket, app\_name, count, avg, med, p95
+\end{block}
+
+\begin{alertblock}{Headline statistic}
+\small
+We report \textbf{p95 latency} (95th percentile), not the mean ---
+it reflects the experience of the slowest 1-in-20 interactions, which
+is what users actually notice.
+\end{alertblock}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 4: TEST SUITE (8 APPS BY WEIGHT)
+% ============================================================
+\begin{frame}{The Test Suite: 8 Apps, Light to Heavy}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Application} & \textbf{Computational stress} & \textbf{Why it is in the suite} \\
+\midrule
+Calculator      & baseline (trivial compute) & isolates pure network/relay cost \\
+Analytics       & medium data filtering       & typical interactive dashboard \\
+Geospatial      & delta-based map sync        & partial-state update path \\
+DataExchange    & CSV file relay              & payload-size sensitivity \\
+Advanced        & Plotly interactive          & rich-output serialisation \\
+ClimateAnomaly  & large CSV + raster          & big-payload stress \\
+MonteCarlo      & heavy simulation            & CPU-bound backend \\
+MLTrainer       & long-running training       & worst-case compute time \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.6em}
+\begin{center}
+\small
+Apps are ordered by computational weight throughout the figures, so the
+\textbf{left side isolates architecture overhead} and the
+\textbf{right side exposes backend saturation}.
+\end{center}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 5: fig05 OVERVIEW (headline first)
+% ============================================================
+\begin{frame}{Headline: Latency Overview Across All Benchmarks}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig05_overview_grid}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{What it shows}
+\begin{itemize}
+    \item One headline p95 per benchmark test
+    \item REST vs.\ Kafka side by side
+    \item Mean of per-run p95 (5 runs)
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Read it as:} the single-slide answer to ``which architecture is
+faster, overall?''
+
+\vspace{0.5em}
+\begin{block}{Talking point}
+\small
+Lower bars = lower latency. Look for tests where the two architectures
+\textit{diverge} --- those are where the design choice actually matters.
+\end{block}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 6: fig01 STATE RELAY LATENCY PER APP
+% ============================================================
+\begin{frame}{Latency (1/3): State Relay, Per Application}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig01_relay_per_app}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{Metric}
+\begin{itemize}
+    \item Round-trip: POST $\rightarrow$ backend $\rightarrow$ GET
+    \item p95, error bars = SD across runs
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why it matters}\\
+This is the \textbf{core collaboration path} --- one user's change
+reaching another. It is the operation users perform most.
+
+\vspace{0.5em}
+\begin{exampleblock}{Expected story}
+\small
+On the \textbf{Calculator} (trivial compute) the bar is almost pure
+\textit{architecture overhead}: REST polling vs.\ Kafka push shows here
+with no compute noise.
+\end{exampleblock}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 7: fig02 LATENCY VS CONCURRENT USERS
+% ============================================================
+\begin{frame}{Latency (2/3): Where Does It Break Under Load?}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig02_throughput_vs_load}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{Metric}
+\begin{itemize}
+    \item p95 latency vs.\ concurrent users (VUs)
+    \item Stepped load on the throughput test
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{The ``knee''}\\
+The point where the curve bends upward marks where the
+\textbf{R backend saturates} --- requests start queuing.
+
+\vspace{0.5em}
+\begin{block}{Talking point}
+\small
+A \textbf{later, gentler knee} = better scalability. This is where the
+central Spring Boot relay (REST) is expected to bottleneck before
+Kafka's partitioned consumers do.
+\end{block}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 8: fig03 THROUGHPUT LATENCY PER APP
+% ============================================================
+\begin{frame}{Latency (3/3): Latency Under Load, Per Application}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig03_throughput_per_app}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{Metric}
+\begin{itemize}
+    \item p95 latency at 100-VU load, per app
+    \item REST vs.\ Kafka
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Separating two effects}
+\begin{itemize}
+    \item \textbf{MLTrainer / MonteCarlo}: compute-bound --- latency is
+          mostly R, similar across architectures
+    \item \textbf{Lighter apps}: latency reflects \textbf{backend
+          queuing} --- the architecture difference dominates
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 9: fig07 SLOWDOWN FACTOR
+% ============================================================
+\begin{frame}{Throughput: How Gracefully Does Each App Degrade?}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig07_slowdown_factor}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{Metric}
+\begin{itemize}
+    \item p95 normalised to each app's lightest load ($=1\times$)
+    \item Higher = degrades more under concurrency
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Why normalise?}\\
+It removes the absolute-speed advantage and asks a fairer question:
+\textbf{``how much worse does this app get as users pile on?''}
+
+\vspace{0.5em}
+\begin{alertblock}{The money quote}
+\small
+``At 100 users, app \textit{X} is \textbf{N$\times$ slower} under REST
+but only \textbf{M$\times$ slower} under Kafka.''
+\end{alertblock}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 10: fig04 SAVE / RESTORE
+% ============================================================
+\begin{frame}{Persistence: Save \& Restore Checkpoint Cost}
+
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{center}
+\safefig{fig04_save_restore}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.36\textwidth}
+\textbf{Metric}
+\begin{itemize}
+    \item Median latency of the PostgreSQL snapshot cycle
+    \item Per application
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Architecture-independent}\\
+Both REST and Kafka share the \textbf{same DB persistence path}, so this
+isolates the cost of the \textit{state-sharing feature itself} (RQ2),
+not the sync transport.
+
+\vspace{0.5em}
+\begin{block}{Talking point}
+\small
+Cost scales with \textbf{payload size}: ClimateAnomaly (large raster)
+and DataExchange (CSV) sit at the top; Calculator at the bottom.
+\end{block}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 11: fig06 RELIABILITY
+% ============================================================
+\begin{frame}{Reliability: Data Loss, Errors, and Isolation}
+
+\begin{columns}[T]
+\begin{column}{0.58\textwidth}
+\begin{center}
+\safefig{fig06_reliability}{\linewidth}
+\end{center}
+\end{column}
+\begin{column}{0.40\textwidth}
+\textbf{Three failure modes, one figure}
+\begin{itemize}
+    \item \textbf{Data loss} --- did every update arrive?
+    \item \textbf{Error rate} --- failed requests under load
+    \item \textbf{Cross-contamination} --- did Session A's
+          state leak into Session B?
+\end{itemize}
+
+\vspace{0.5em}
+\begin{alertblock}{The bar that must be zero}
+\small
+Cross-contamination is a \textbf{correctness}, not a performance,
+property. Anything above zero is a defect --- speed cannot buy it back.
+\end{alertblock}
+
+\vspace{0.4em}
+\small\textit{Lower is better; 0 is ideal across all three.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 12: MONOLITHIC BASELINE CAVEAT
+% ============================================================
+\begin{frame}{A Note on the Monolithic Baseline}
+
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+
+\textbf{Monolithic Shiny is measured differently --- on purpose.}
+
+\vspace{0.5em}
+It has \textbf{no REST/Kafka collaboration API}; state moves over
+Shiny's internal WebSocket. So k6 cannot trigger its computations the
+same way.
+
+\vspace{0.5em}
+\textbf{What we still measure with k6:}
+\begin{itemize}
+    \item HTTP page-load time
+    \item WebSocket connection establishment
+    \item Max concurrent connections before refusal
+\end{itemize}
+
+\end{column}
+\begin{column}{0.46\textwidth}
+
+\begin{block}{Computation baseline}
+\small
+Pure R compute time is captured separately via
+\texttt{system.time()} instrumentation inside each monolithic app, then
+parsed from container logs.
+\end{block}
+
+\vspace{0.5em}
+\begin{exampleblock}{Why this is fair}
+\small
+The monolith is the \textbf{floor} for latency (no network) but the
+\textbf{ceiling} for collaboration (it has none). It frames the cost
+that REST and Kafka pay \textit{to gain multi-user collaboration}.
+\end{exampleblock}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 13: SYNTHESIS / VERDICT
+% ============================================================
+\begin{frame}{Synthesis: Which Architecture Wins?}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Dimension} & \textbf{Monolithic} & \textbf{REST + Redis} & \textbf{Kafka} \\
+\midrule
+Single-user latency      & best (no network) & --- & --- \\
+Relay latency (light app)& n/a               & --- & --- \\
+Latency under load       & n/a               & --- & --- \\
+Scalability (knee)       & connection-limited& --- & --- \\
+Reliability / isolation  & single-session    & --- & --- \\
+Operational complexity   & lowest            & medium & highest \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.6em}
+\begin{center}
+\footnotesize\itshape
+Dashes are filled from the measured figures once the 5-run benchmarks
+complete. The narrative arc: monolith sets the floor; REST buys
+collaboration at modest cost but bottlenecks at the central relay;
+Kafka pays higher operational complexity for better behaviour under
+concurrency.
+\end{center}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 14: THREATS TO VALIDITY
+% ============================================================
+\begin{frame}{Threats to Validity}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Internal}
+\begin{itemize}
+    \item Shared cluster $\rightarrow$ noisy-neighbour effects;
+          mitigated by isolated deployments + 5 repeats
+    \item R--Kafka integration maturity may understate Kafka's ceiling
+    \item Polling interval (500\,ms) is a tunable that shapes REST latency
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{External / construct}
+\begin{itemize}
+    \item 8 apps approximate, but do not exhaust, scientific Shiny usage
+    \item Synthetic k6 load $\neq$ real human interaction cadence
+    \item p95 chosen as the user-facing statistic; tail beyond p95 not
+          the focus
+    \item Remote vs.\ server load generators bound network variance
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 15: CONCLUSION
+% ============================================================
+\begin{frame}{Conclusion \& Next Steps}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+
+\textbf{Contribution}
+\begin{itemize}
+    \item First documented \textbf{collaborative, containerised} R Shiny
+          system with two interchangeable sync architectures
+    \item A \textbf{reproducible benchmark harness}: k6 + tidy CSVs +
+          scripted R figures, runnable end-to-end
+\end{itemize}
+
+\vspace{0.5em}
+\textbf{Findings (to finalise from data)}
+\begin{itemize}
+    \item Latency, throughput, reliability quantified per app
+    \item Clear REST-vs-Kafka trade-off surface for practitioners
+\end{itemize}
+
+\end{column}
+\begin{column}{0.44\textwidth}
+
+\begin{block}{Remaining work}
+\small
+\begin{enumerate}
+    \item Complete Kafka 5-run suite (server + remote)
+    \item Re-run REST 5$\times$ for statistical validity
+    \item Monolithic load + \texttt{system.time()} baseline
+    \item Regenerate figures, fill synthesis table
+\end{enumerate}
+\end{block}
+
+\vspace{0.5em}
+\begin{exampleblock}{Future work}
+\small
+BioDT Honeybee re-engineering; NaaVRE integration; richer concurrency
+models beyond write--write.
+\end{exampleblock}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+% ============================================================
+% SLIDE 16: THANK YOU
+% ============================================================
+\begin{frame}{}
+\begin{center}
+{\Large\textbf{Thank you}}\\[1em]
+{\large Questions?}\\[2em]
+\small
+Iva Gunjaca --- \texttt{ShinySwarm}\\
+Master of Software Engineering, University of Amsterdam\\[0.5em]
+\footnotesize
+Reproduce the figures:\\
+\texttt{Rscript analysis/make-plots.R k6/results analysis/plots rest kafka}
+\end{center}
+\end{frame}
+
+\end{document}

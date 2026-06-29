@@ -37,6 +37,43 @@
 
 ---
 
+## Phase 1.5: REST Poll-Interval Sweep (test 01)
+
+REST has no server push, so the relay latency measured in test 01 partly
+reflects how often the client polls. Reporting a single poll interval bakes
+that arbitrary choice into the headline number. Sweep it to produce the
+latency/load trade-off curve — a stronger result and the core REST-vs-Kafka
+story (REST lets you choose a point on the curve; Kafka pushes).
+
+Test 01 reads `POLL_MS` (default 250). The poll deadline stays fixed at 10s
+regardless of interval, so a tighter interval polls more often within the same
+window rather than timing out sooner. Metrics are tagged `poll_ms=<value>`.
+
+The sweep is baked into the suite via `POLL_SWEEP=1`. When set, the state-relay
+test runs once per interval as part of the normal run; every other test runs
+once. It applies to REST architectures only (`rest*`) and is skipped for kafka
+and monolithic. Each interval's output is suffixed
+(`01-state-relay-latency-poll500-summary.json`, etc.).
+
+```bash
+# Big REST run WITH the poll sweep folded in (5 runs, all tests + 4 intervals).
+POLL_SWEEP=1 ./k6/run-suite.sh rest 5 http://localhost:30001
+
+# Custom intervals:
+POLL_SWEEP=1 POLL_SWEEP_MS="50 100 250 500 1000" \
+  ./k6/run-suite.sh rest 5 http://localhost:30001
+
+# Just the sweep, nothing else:
+POLL_SWEEP=1 TESTS="01-state-relay-latency" \
+  ./k6/run-suite.sh rest 5 http://localhost:30001
+```
+
+In analysis, group `relay_total_ms` / `relay_poll_ms` by the `poll_ms` tag and
+plot latency vs. interval (and vs. resulting GET request-rate). Kafka needs no
+sweep — it has a single push latency point with no polling tax.
+
+---
+
 ## Phase 2: REST Benchmarks (Re-run 5×)
 
 Your current REST results are from a single run. Re-run 5× for statistical validity.

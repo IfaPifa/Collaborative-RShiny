@@ -56,8 +56,12 @@ echo "=== Deploying REST architecture ==="
 kubectl apply -f k8s/rest-deployment.yaml
 
 echo "=== Copying test CSV to shared volume ==="
-echo "Waiting for a csv-advanced pod to be ready..."
-kubectl wait --for=condition=ready pod -l app=shiny-back-csv-advanced --timeout=120s
+echo "Waiting for csv-advanced deployment to roll out..."
+# Wait for the rollout first: 'kubectl wait pod' errors immediately if the pod
+# hasn't been created yet (race right after apply). rollout status blocks until
+# the pod exists and is available.
+kubectl rollout status deploy/shiny-back-csv-advanced --timeout=300s
+kubectl wait --for=condition=ready pod -l app=shiny-back-csv-advanced --timeout=300s
 CSV_POD=$(kubectl get pod -l app=shiny-back-csv-advanced -o jsonpath='{.items[0].metadata.name}')
 kubectl cp k6/bench-climate-data.csv "$CSV_POD":/app/shared_data/bench-climate-data.csv
 
