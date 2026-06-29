@@ -228,6 +228,10 @@ public class CollaborationController {
             return ResponseEntity.badRequest().body("No data available to save.");
         }
 
+        // Climate checkpoints embed the dataset so they survive the shared
+        // CSV file being overwritten by later uploads (mirrors solo save).
+        currentState = StateRestoreSupport.enrichClimateCheckpoint(objectMapper, currentState);
+
         SavedState savedState = new SavedState(request.name(), currentState, user, session.getShinyApp(), sessionId);
         savedStateRepository.save(savedState);
         return ResponseEntity.ok("Session state saved successfully");

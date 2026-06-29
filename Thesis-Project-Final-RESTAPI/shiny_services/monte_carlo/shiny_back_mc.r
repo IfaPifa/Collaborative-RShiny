@@ -54,7 +54,14 @@ function(req) {
     sample_3 = samples[, 3],
     extinction_prob = sum(all_paths[years + 1, ] < 1) / n_paths,
     status = "success",
-    timestamp = as.numeric(Sys.time())
+    timestamp = as.numeric(Sys.time()),
+    # Echo the inputs so a loaded checkpoint can restore the control widgets
+    # to the parameters the simulation was run with.
+    n0 = n0,
+    growth_rate = r,
+    env_var = env_var,
+    paths = n_paths,
+    proj_years = years
   )
   if (!is.null(body[["_marker"]])) res[["_marker"]] <- body[["_marker"]]
   return(res)

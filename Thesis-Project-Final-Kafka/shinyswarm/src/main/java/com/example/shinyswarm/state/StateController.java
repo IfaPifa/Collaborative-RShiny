@@ -1,13 +1,11 @@
 package com.example.shinyswarm.state;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,7 +88,7 @@ public class StateController {
             // Enrich Climate Anomaly checkpoints: embed the processed CSV inline
             // so the checkpoint is self-contained (the file on the shared volume
             // gets overwritten by subsequent uploads).
-            stateData = enrichClimateCheckpoint(stateData);
+            stateData = StateRestoreSupport.enrichClimateCheckpoint(objectMapper, stateData);
 
             // Store sessionId so other participants can see and restore this checkpoint.
             // Solo-mode keys are not real session UUIDs — exclude them.
@@ -207,51 +205,5 @@ public class StateController {
      * This makes the checkpoint self-contained — the file on disk gets
      * overwritten by subsequent uploads, but the checkpoint keeps its data.
      */
-    @SuppressWarnings("unchecked")
-    private String enrichClimateCheckpoint(String stateData) {
-        try {
-            Map<String, Object> payload = objectMapper.readValue(stateData, Map.class);
-            String action = (String) payload.get("action");
-            String file = (String) payload.get("file");
-
-            if (!"CLIMATE_READY".equals(action) || file == null || file.isEmpty()) {
-                return stateData;
-            }
-
-            Path csvPath = Paths.get("/app/shared_data", file);
-            if (!Files.exists(csvPath)) {
-                return stateData;
-            }
-
-            // Parse CSV into list-of-maps (matching R's fromJSON(toJSON(df)) format)
-            List<Map<String, String>> rows = new ArrayList<>();
-            try (BufferedReader reader = new BufferedReader(new FileReader(csvPath.toFile()))) {
-                String headerLine = reader.readLine();
-                if (headerLine == null) return stateData;
-
-                String[] headers = headerLine.split(",");
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] values = line.split(",", -1);
-                    Map<String, String> row = new LinkedHashMap<>();
-                    for (int i = 0; i < headers.length && i < values.length; i++) {
-                        // Strip surrounding quotes if present
-                        String h = headers[i].replaceAll("^\"|\"$", "");
-                        String v = values[i].replaceAll("^\"|\"$", "");
-                        row.put(h, v);
-                    }
-                    rows.add(row);
-                }
-            }
-
-            payload.put("dataset", rows);
-            return objectMapper.writeValueAsString(payload);
-
-        } catch (Exception e) {
-            // If enrichment fails, save the original state — don't block the save
-            System.err.println("Climate checkpoint enrichment failed: " + e.getMessage());
-            return stateData;
-        }
-    }
 
 }
