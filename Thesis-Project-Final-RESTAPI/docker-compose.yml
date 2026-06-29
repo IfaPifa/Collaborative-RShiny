@@ -83,14 +83,17 @@ services:
       - shiny-front-map
       - shiny-front-ml
     ports:
-      - "8080:80"
-      - "8081:81"
-      - "8082:82"
-      - "8083:83"
-      - "8084:84"
-      - "8086:85"
-      - "8087:87"
-      - "8088:88"
+      # Published ports match the NodePorts DataInitializer registers (:3008x)
+      # so the Angular app-list links (http://localhost:3008x) work in local
+      # compose. host:container -> container is the internal nginx listen port.
+      - "30080:80"   # Calculator
+      - "30081:81"   # Visual Analytics
+      - "30082:82"   # Data Exchange
+      - "30083:83"   # Monte Carlo
+      - "30084:84"   # Geospatial
+      - "30085:85"   # Climate Anomaly
+      - "30086:87"   # Advanced Visual Analytics
+      - "30087:88"   # Habitat Suitability AI
     volumes:
       - ./shiny_services/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
