@@ -60,6 +60,15 @@ fi
 # --- Cooldown between tests (seconds) ---
 COOLDOWN=30
 
+# --- State reset between tests -------------------------------------------
+# Flush Redis / PostgreSQL / Kafka backlog between tests so each test (and
+# therefore each run) starts from a clean, comparable state. Without this the
+# throughput test's leftover backlog makes successive runs progressively
+# slower and the 5 runs cannot be averaged. Set RESET_BETWEEN=0 to disable.
+RESET_BETWEEN="${RESET_BETWEEN:-1}"
+RESET_METHOD="${RESET_METHOD:-flush}"   # flush (fast) | restart (thorough)
+RESET_SCRIPT="${SCRIPT_DIR}/reset-state.sh"
+
 # --- Main loop ---
 run_suite() {
   echo "=============================================="
@@ -68,6 +77,7 @@ run_suite() {
   echo "  Runs         : ${RUNS}"
   echo "  Results dir  : ${RESULTS_DIR}"
   echo "  Cooldown     : ${COOLDOWN}s between tests"
+  echo "  State reset  : $( [[ "${RESET_BETWEEN}" == "1" ]] && echo "enabled (after every test, method=${RESET_METHOD})" || echo "DISABLED" )"
   echo "  Sleep inhibit: ${INHIBIT_CMD:-none (disable sleep manually!)}"
   echo "=============================================="
   echo ""
@@ -110,6 +120,14 @@ run_suite() {
       # Compress the raw time-series (can be large for throughput tests)
       if [[ -f "${RAW_FILE}" ]]; then
         gzip -f "${RAW_FILE}"
+      fi
+
+      # Reset runtime state so the NEXT test starts clean. Runs after every
+      # test (including throughput, the main contaminator). This also covers
+      # the gap between runs since it runs after the last test of each run.
+      if [[ "${RESET_BETWEEN}" == "1" && -x "${RESET_SCRIPT}" ]]; then
+        RESET_METHOD="${RESET_METHOD}" "${RESET_SCRIPT}" "${ARCH}" \
+          || echo "    [reset] non-fatal error — continuing."
       fi
 
       # Cooldown between tests to let the system stabilize
@@ -156,7 +174,7 @@ fi
 
 if [[ -n "${INHIBIT_CMD}" ]]; then
   echo "[INFO] Sleep prevention active: ${INHIBIT_CMD}"
-  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' TESTS=(${TESTS[*]}); run_suite"
+  ${INHIBIT_CMD} bash -c "$(declare -f run_suite); ARCH='${ARCH}' RUNS='${RUNS}' BASE_URL='${BASE_URL}' SCRIPT_DIR='${SCRIPT_DIR}' RESULTS_DIR='${RESULTS_DIR}' COOLDOWN='${COOLDOWN}' RESET_BETWEEN='${RESET_BETWEEN}' RESET_METHOD='${RESET_METHOD}' RESET_SCRIPT='${RESET_SCRIPT}' TESTS=(${TESTS[*]}); run_suite"
 else
   run_suite
 fi

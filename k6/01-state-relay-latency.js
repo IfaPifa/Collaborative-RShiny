@@ -23,7 +23,7 @@ import { check, sleep, group } from 'k6';
 import { Trend, Counter } from 'k6/metrics';
 import {
   APPS, login, userForVU, createSession, postState, getState, healthCheck,
-  perAppThresholds,
+  perAppThresholds, loadBucket,
 } from './config.js';
 
 const relayPostMs  = new Trend('relay_post_ms', true);
@@ -65,7 +65,7 @@ export default function () {
   if (!token) { relayFailure.add(1); return; }
 
   for (const app of APPS) {
-    const tags = { app_name: app.appName };
+    const tags = { app_name: app.appName, vu_bucket: loadBucket() };
 
     group(`relay_${app.appName}`, function () {
       const session = createSession(

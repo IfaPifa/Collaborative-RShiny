@@ -25,7 +25,7 @@ import {
   APPS, login, userForVU, healthCheck,
   createSession, postState, getState,
   saveSessionState, getMySavedStates, restoreState,
-  perAppThresholds,
+  perAppThresholds, loadBucket,
 } from './config.js';
 
 const saveToDbMs      = new Trend('save_to_db_ms', true);
@@ -68,7 +68,7 @@ export default function () {
   if (!token) { saveRestoreFail.add(1); return; }
 
   for (const app of APPS) {
-    const tags = { app_name: app.appName };
+    const tags = { app_name: app.appName, vu_bucket: loadBucket() };
 
     group(`save_restore_${app.appName}`, function () {
       // 1. Create session and populate state with a unique marker

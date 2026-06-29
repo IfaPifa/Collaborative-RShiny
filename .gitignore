@@ -1,0 +1,15 @@
+# Local agent instructions — session-only, never commit
+AGENTS.md
+
+# Local experiment notes — session-only, never commit
+EXPERIMENT-VALIDITY-TODO.md
+
+# LaTeX build artifacts (report dirs only — avoid clashing with k6 *.log)
+*.aux
+*.nav
+*.snm
+*.toc
+k6/results/**/*-report.log
+k6/results/**/*-report.out
+docs/thesis/*.log
+docs/thesis/*.out
