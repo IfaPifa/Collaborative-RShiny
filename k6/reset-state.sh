@@ -96,15 +96,30 @@ truncate_pg() {
 # Clear the Kafka input/output backlog by deleting records up to the current
 # end offset. Topics remain; Spring auto-recreates them if missing.
 flush_kafka_records() {
-  for topic in input output; do
+  # Enumerate every input topic (per-app: input.calculator, input.montecarlo,
+  # ... plus the legacy "input" fallback) and the shared output topic. The
+  # per-app topic split means a static "input output" list would leave each
+  # app's backlog uncleared and contaminate successive throughput runs.
+  local topics
+  topics=$(exec_in kafka bash -c \
+    "kafka-topics.sh --bootstrap-server localhost:9092 --list \
+      | grep -E '^(input|output)'" 2>/dev/null | tr -d '\r')
+
+  if [[ -z "${topics}" ]]; then
+    echo "    [reset]   kafka: no input/output topics found (skipping)"
+    return
+  fi
+
+  for topic in ${topics}; do
     exec_in kafka bash -c \
       "kafka-delete-records.sh --bootstrap-server localhost:9092 \
         --offset-json-file <(kafka-run-class.sh kafka.tools.GetOffsetShell \
           --broker-list localhost:9092 --topic ${topic} \
         | awk -F: '{printf \"{\\\"partitions\\\":[{\\\"topic\\\":\\\"${topic}\\\",\\\"partition\\\":%s,\\\"offset\\\":%s}],\\\"version\\\":1}\", \$2, \$3}')" \
-      >/dev/null
+      >/dev/null 2>&1 \
+      || echo "    [reset]   kafka: warning — could not flush ${topic}"
   done
-  echo "    [reset]   kafka: input/output backlog cleared"
+  echo "    [reset]   kafka: backlog cleared for topics: $(echo ${topics} | tr '\n' ' ')"
 }
 
 echo "    [reset] resetting runtime state (arch=${ARCH:-unknown}, method=${RESET_METHOD}) ..."
