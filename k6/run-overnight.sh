@@ -13,10 +13,18 @@
 #     ./k6/run-overnight.sh
 #
 #  Override runs:  RUNS=3 ./k6/run-overnight.sh
+#
+#  REST poll sweep is ON by default: the state-relay test runs once per
+#  interval (100/250/500/1000 ms) for REST so you get the latency/load curve.
+#  Kafka is unaffected (push, no polling). Disable with POLL_SWEEP=0.
 # ==========================================================================
 set -uo pipefail
 
 RUNS="${RUNS:-5}"
+# Fold the REST poll-interval sweep into the run by default. run-suite.sh's
+# sweep_applies guard restricts it to rest* archs, so exporting it globally is
+# safe — Kafka ignores it.
+export POLL_SWEEP="${POLL_SWEEP:-1}"
 REST_URL="http://localhost:30001"
 KAFKA_URL="http://localhost:30002"
 TS="$(date +%Y%m%d-%H%M%S)"
