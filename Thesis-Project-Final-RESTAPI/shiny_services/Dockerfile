@@ -22,7 +22,12 @@ RUN apt-get -y update && apt-get install -y \
 RUN R CMD javareconf
 
 # Set CRAN repository to Posit Public Package Manager (Ubuntu Jammy Binaries)
-ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/latest"
+# Pin to a dated Posit PPM snapshot for reproducible builds. "latest" is not
+# reproducible: a newer terra (pulled transitively by leaflet -> raster) began
+# requiring the GDAL >=3.5 multidimensional API, which the base image's GDAL
+# 3.4.1 (Jammy) does not provide, breaking the build. This snapshot predates
+# that release and matches the known-good benchmark image.
+ENV R_REPOS="https://packagemanager.posit.co/cran/__linux__/jammy/2026-06-16"
 
 # Install R packages
 RUN R -e "install.packages(c('Rcpp', 'jsonlite', 'rJava', 'rkafkajars', 'remotes', 'shinyjs', 'ggplot2', 'dplyr', 'leaflet', 'arrow', 'duckdb', 'bslib', 'plotly', 'shinyWidgets', 'randomForest', 'plumber', 'httr', 'promises', 'future'), repos=Sys.getenv('R_REPOS'), Ncpus=4)"
