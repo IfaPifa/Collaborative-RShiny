@@ -1,0 +1,364 @@
+{
+    "metrics": {
+        "iterations": {
+            "count": 571,
+            "rate": 2.368864431744865
+        },
+        "http_req_receiving": {
+            "avg": 0.7879337678229394,
+            "min": 0.011267,
+            "med": 0.08264550000000001,
+            "max": 118.167489,
+            "p(90)": 0.1877673,
+            "p(95)": 0.35834164999999985
+        },
+        "iteration_duration": {
+            "avg": 7535.847144674247,
+            "min": 1437.416774,
+            "med": 4518.537995,
+            "max": 32441.504266,
+            "p(90)": 17846.740541,
+            "p(95)": 20521.8844265
+        },
+        "checks": {
+            "passes": 424,
+            "fails": 147,
+            "value": 0.7425569176882661
+        },
+        "group_duration": {
+            "avg": 6535.074541957966,
+            "min": 436.636582,
+            "med": 3517.084023,
+            "max": 31441.019562,
+            "p(90)": 16846.368978,
+            "p(95)": 19521.219681000002
+        },
+        "http_req_sending": {
+            "avg": 0.03077376282187698,
+            "min": 0.005428,
+            "med": 0.0266505,
+            "max": 4.243934,
+            "p(90)": 0.043686300000000004,
+            "p(95)": 0.0547745
+        },
+        "vus_max": {
+            "value": 30,
+            "min": 30,
+            "max": 30
+        },
+        "collab_propagation_ms{app_name:Calculator}": {
+            "avg": 258.6811594202899,
+            "min": 6,
+            "med": 263,
+            "max": 1084,
+            "p(90)": 399.20000000000005,
+            "p(95)": 491.39999999999986,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "collab_propagation_ms": {
+            "p(95)": 15550.5,
+            "avg": 3788.9632224168126,
+            "min": 6,
+            "med": 299,
+            "max": 28868,
+            "p(90)": 14040
+        },
+        "http_req_duration": {
+            "avg": 233.719338554161,
+            "min": 1.292957,
+            "med": 53.544471,
+            "max": 4495.061962,
+            "p(90)": 800.4714146,
+            "p(95)": 1284.6418819999997
+        },
+        "collab_timeout": {
+            "count": 147,
+            "rate": 0.6098477608870317
+        },
+        "data_received": {
+            "count": 5859263,
+            "rate": 24307.880414953965
+        },
+        "collab_host_post_ms": {
+            "avg": 158.59369527145358,
+            "min": 2,
+            "med": 92,
+            "max": 2899,
+            "p(90)": 406,
+            "p(95)": 700
+        },
+        "http_req_duration{expected_response:true}": {
+            "med": 53.544471,
+            "max": 4495.061962,
+            "p(90)": 800.4714146,
+            "p(95)": 1284.6418819999997,
+            "avg": 233.719338554161,
+            "min": 1.292957
+        },
+        "collab_propagation_ms{app_name:Analytics}": {
+            "avg": 13854.95652173913,
+            "min": 10353,
+            "med": 13434,
+            "max": 27237,
+            "p(90)": 16942,
+            "p(95)": 17642.6,
+            "thresholds": {
+                "p(95)<830": true
+            }
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 9398,
+            "thresholds": {
+                "rate<0.2": false
+            },
+            "value": 0
+        },
+        "http_req_blocked": {
+            "p(90)": 0.009444,
+            "p(95)": 0.011317,
+            "avg": 0.009090825281974881,
+            "min": 0.001152,
+            "med": 0.006404999999999999,
+            "max": 1.374801
+        },
+        "http_req_tls_handshaking": {
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0
+        },
+        "http_req_connecting": {
+            "avg": 0.001157101723771015,
+            "min": 0,
+            "med": 0,
+            "max": 0.987135,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "data_sent": {
+            "count": 3017924,
+            "rate": 12520.232611749894
+        },
+        "collab_propagation_ms{app_name:Geospatial}": {
+            "avg": 271.9189189189189,
+            "min": 18,
+            "med": 260.5,
+            "max": 919,
+            "p(90)": 480.1000000000003,
+            "p(95)": 591.3999999999997,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "collab_propagation_ms{app_name:ClimateAnomaly}": {
+            "avg": 309.3421052631579,
+            "min": 17,
+            "med": 282.5,
+            "max": 880,
+            "p(90)": 600.5,
+            "p(95)": 689.25,
+            "thresholds": {
+                "p(95)<1050": false
+            }
+        },
+        "http_reqs": {
+            "count": 9398,
+            "rate": 38.98877045453282
+        },
+        "http_req_waiting": {
+            "min": 1.248901,
+            "med": 53.366842,
+            "max": 4494.927238,
+            "p(90)": 799.6895275000008,
+            "p(95)": 1281.6708207499998,
+            "avg": 232.90063102351482
+        },
+        "vus": {
+            "min": 1,
+            "max": 30,
+            "value": 2
+        },
+        "collab_success": {
+            "count": 424,
+            "rate": 1.7590166708578332
+        },
+        "collab_propagation_ms{app_name:DataExchange}": {
+            "p(95)": 607.1999999999989,
+            "avg": 274.8840579710145,
+            "min": 11,
+            "med": 286,
+            "max": 880,
+            "p(90)": 404.2,
+            "thresholds": {
+                "p(95)<870": false
+            }
+        },
+        "collab_propagation_ms{app_name:MonteCarlo}": {
+            "avg": 296.0281690140845,
+            "min": 63,
+            "med": 284,
+            "max": 896,
+            "p(90)": 498,
+            "p(95)": 701.5,
+            "thresholds": {
+                "p(95)<1170": false
+            }
+        },
+        "collab_propagation_ms{app_name:Advanced}": {
+            "min": 65,
+            "med": 258,
+            "max": 1103,
+            "p(90)": 398.6,
+            "p(95)": 404.4,
+            "avg": 259.4923076923077,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "collab_propagation_ms{app_name:MLTrainer}": {
+            "avg": 13963.75641025641,
+            "min": 10200,
+            "med": 12701,
+            "max": 28868,
+            "p(90)": 19613,
+            "p(95)": 22964.7,
+            "thresholds": {
+                "p(95)<143000": false
+            }
+        }
+    },
+    "setup_data": {},
+    "root_group": {
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                "collab_MonteCarlo": {
+                    "name": "collab_MonteCarlo",
+                    "path": "::collab_MonteCarlo",
+                    "id": "dc5f85ddf26236cb165eae8841eedd61",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo guest sees host state": {
+                                "id": "6c1bf7f182b119bce5b152e392730bb5",
+                                "passes": 71,
+                                "fails": 0,
+                                "name": "MonteCarlo guest sees host state",
+                                "path": "::collab_MonteCarlo::MonteCarlo guest sees host state"
+                            }
+                        }
+                },
+                "collab_Geospatial": {
+                    "name": "collab_Geospatial",
+                    "path": "::collab_Geospatial",
+                    "id": "79960f4de25c5693f560e6339b3939c6",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial guest sees host state": {
+                                "name": "Geospatial guest sees host state",
+                                "path": "::collab_Geospatial::Geospatial guest sees host state",
+                                "id": "2027e987c8045b400247e9e9a1b988f0",
+                                "passes": 74,
+                                "fails": 0
+                            }
+                        }
+                },
+                "collab_ClimateAnomaly": {
+                    "name": "collab_ClimateAnomaly",
+                    "path": "::collab_ClimateAnomaly",
+                    "id": "fc7e37430d735851bc0f13a9647cbfa3",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly guest sees host state": {
+                                "path": "::collab_ClimateAnomaly::ClimateAnomaly guest sees host state",
+                                "id": "dcdcdb9e2840b4d77f4fbfad120ad451",
+                                "passes": 76,
+                                "fails": 0,
+                                "name": "ClimateAnomaly guest sees host state"
+                            }
+                        }
+                },
+                "collab_Advanced": {
+                    "id": "58e66d8297a4047bacf511e10b4cc846",
+                    "groups": {},
+                    "checks": {
+                            "Advanced guest sees host state": {
+                                "path": "::collab_Advanced::Advanced guest sees host state",
+                                "id": "35f9169cd2322014f972be8cb79e336a",
+                                "passes": 65,
+                                "fails": 0,
+                                "name": "Advanced guest sees host state"
+                            }
+                        },
+                    "name": "collab_Advanced",
+                    "path": "::collab_Advanced"
+                },
+                "collab_MLTrainer": {
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer guest sees host state": {
+                                "name": "MLTrainer guest sees host state",
+                                "path": "::collab_MLTrainer::MLTrainer guest sees host state",
+                                "id": "06486ab2ff6889bf41951a916d2417b6",
+                                "passes": 0,
+                                "fails": 78
+                            }
+                        },
+                    "name": "collab_MLTrainer",
+                    "path": "::collab_MLTrainer",
+                    "id": "0ef3912ab0176ed1765c2dbf8fd52070"
+                },
+                "collab_DataExchange": {
+                    "name": "collab_DataExchange",
+                    "path": "::collab_DataExchange",
+                    "id": "cbcfefe84004feb5a4f8a4ec9c58741d",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange guest sees host state": {
+                                "name": "DataExchange guest sees host state",
+                                "path": "::collab_DataExchange::DataExchange guest sees host state",
+                                "id": "53d855c07d3d87d5259440da359fbca7",
+                                "passes": 69,
+                                "fails": 0
+                            }
+                        }
+                },
+                "collab_Calculator": {
+                    "path": "::collab_Calculator",
+                    "id": "ee355973b0d9587cf77d06741a60879d",
+                    "groups": {},
+                    "checks": {
+                            "Calculator guest sees host state": {
+                                "id": "c3c53b9228979f8452e839a77b12af0c",
+                                "passes": 69,
+                                "fails": 0,
+                                "name": "Calculator guest sees host state",
+                                "path": "::collab_Calculator::Calculator guest sees host state"
+                            }
+                        },
+                    "name": "collab_Calculator"
+                },
+                "collab_Analytics": {
+                    "name": "collab_Analytics",
+                    "path": "::collab_Analytics",
+                    "id": "3a6c5085af7eb35173be98a695d04538",
+                    "groups": {},
+                    "checks": {
+                            "Analytics guest sees host state": {
+                                "name": "Analytics guest sees host state",
+                                "path": "::collab_Analytics::Analytics guest sees host state",
+                                "id": "d4a77998339be07cae1d20d76edff7cd",
+                                "passes": 0,
+                                "fails": 69
+                            }
+                        }
+                }
+            },
+            "checks": {}
+        }
+}

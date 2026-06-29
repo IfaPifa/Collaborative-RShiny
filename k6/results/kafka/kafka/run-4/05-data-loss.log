@@ -1,0 +1,432 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /root/Collaborative-RShiny/k6/05-data-loss.js
+        output: json (/root/Collaborative-RShiny/k6/results/kafka/run-4/05-data-loss.json)
+
+     scenarios: (100.00%) 1 scenario, 15 max VUs, 10m30s max duration (incl. graceful stop):
+              * data_loss: 1 iterations for each of 15 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+
+running (00m01.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m00.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m02.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m01.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m03.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m02.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m04.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m03.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m05.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m04.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m06.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m05.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m07.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m06.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m08.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m07.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m09.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m08.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m10.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m09.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m11.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m10.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m12.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m11.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m13.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m12.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m14.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m13.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m15.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m14.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m16.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m15.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m17.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m16.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m18.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m17.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m19.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m18.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:45Z" level=info msg="VU14 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m20.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m19.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:46Z" level=info msg="VU6 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU1 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU5 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU2 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU7 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m21.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m20.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:47Z" level=info msg="VU9 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU15 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU4 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU11 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU8 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU13 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU12 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU10 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:47Z" level=info msg="VU3 Calculator: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m22.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m21.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m23.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m22.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m24.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m23.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m25.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m24.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m26.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m25.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m27.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m26.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m28.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m27.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:54Z" level=info msg="VU14 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (00m29.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m28.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m30.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m29.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:56Z" level=info msg="VU6 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (00m31.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m30.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:43:57Z" level=info msg="VU1 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU2 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU5 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU7 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU9 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU15 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU10 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU8 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU4 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU3 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU12 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU13 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:43:57Z" level=info msg="VU11 Analytics: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (00m32.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m31.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m33.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m32.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m34.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m33.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:00Z" level=info msg="VU14 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m35.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m34.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:01Z" level=info msg="VU6 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m36.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m35.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m37.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m36.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m38.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m37.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:04Z" level=info msg="VU1 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m39.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m38.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:05Z" level=info msg="VU2 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:05Z" level=info msg="VU5 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:05Z" level=info msg="VU15 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:05Z" level=info msg="VU9 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:05Z" level=info msg="VU7 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU13 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m40.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m39.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:06Z" level=info msg="VU10 Advanced: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU3 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU8 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU4 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU11 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU12 Advanced: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:06Z" level=info msg="VU14 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m41.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m40.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:07Z" level=info msg="VU6 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m42.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m41.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m43.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m42.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:09Z" level=info msg="VU1 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m44.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m43.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:10Z" level=info msg="VU2 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:10Z" level=info msg="VU5 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m45.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m44.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m46.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m45.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:12Z" level=info msg="VU15 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:13Z" level=info msg="VU9 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:13Z" level=info msg="VU7 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m47.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m46.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:13Z" level=info msg="VU13 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:13Z" level=info msg="VU3 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:13Z" level=info msg="VU10 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:13Z" level=info msg="VU8 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:14Z" level=info msg="VU11 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:14Z" level=info msg="VU4 DataExchange: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m48.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m47.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:14Z" level=info msg="VU12 DataExchange: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:14Z" level=info msg="VU14 MonteCarlo: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:14Z" level=info msg="VU6 MonteCarlo: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (00m49.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m48.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:15Z" level=info msg="VU1 MonteCarlo: accepted=27 found=27 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:16Z" level=info msg="VU2 MonteCarlo: accepted=28 found=28 lost=0 (0.0%)" source=console
+
+running (00m50.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m49.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:16Z" level=info msg="VU5 MonteCarlo: accepted=23 found=23 lost=0 (0.0%)" source=console
+
+running (00m51.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m50.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m52.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m51.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:18Z" level=info msg="VU15 MonteCarlo: accepted=27 found=27 lost=0 (0.0%)" source=console
+
+running (00m53.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m52.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m54.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m53.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:20Z" level=info msg="VU9 MonteCarlo: accepted=23 found=23 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:20Z" level=info msg="VU7 MonteCarlo: accepted=21 found=21 lost=0 (0.0%)" source=console
+
+running (00m55.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m54.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:21Z" level=info msg="VU13 MonteCarlo: accepted=20 found=20 lost=0 (0.0%)" source=console
+
+running (00m56.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m55.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:22Z" level=info msg="VU10 MonteCarlo: accepted=26 found=26 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU14 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU3 MonteCarlo: accepted=26 found=26 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU4 MonteCarlo: accepted=27 found=27 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU6 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU11 MonteCarlo: accepted=27 found=27 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU8 MonteCarlo: accepted=27 found=27 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU12 MonteCarlo: accepted=26 found=26 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:22Z" level=info msg="VU1 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m57.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m56.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:23Z" level=info msg="VU2 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:23Z" level=info msg="VU5 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:24Z" level=info msg="VU15 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (00m58.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m57.6s/10m0s  00/15 iters, 1 per VU
+
+running (00m59.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m58.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:25Z" level=info msg="VU9 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (01m00.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  00m59.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:26Z" level=info msg="VU7 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:26Z" level=info msg="VU13 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (01m01.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m00.6s/10m0s  00/15 iters, 1 per VU
+
+running (01m02.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m01.6s/10m0s  00/15 iters, 1 per VU
+
+running (01m03.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m02.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:29Z" level=info msg="VU10 Geospatial: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (01m04.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m03.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:30Z" level=info msg="VU14 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:30Z" level=info msg="VU6 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:30Z" level=info msg="VU3 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:30Z" level=info msg="VU4 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU11 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (01m05.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m04.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:31Z" level=info msg="VU2 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU1 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU12 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU5 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU8 Geospatial: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU15 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU9 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:31Z" level=info msg="VU7 ClimateAnomaly: accepted=28 found=28 lost=0 (0.0%)" source=console
+
+running (01m06.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m05.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:32Z" level=info msg="VU13 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (01m07.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m06.6s/10m0s  00/15 iters, 1 per VU
+
+running (01m08.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m07.6s/10m0s  00/15 iters, 1 per VU
+
+running (01m09.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m08.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:35Z" level=info msg="VU10 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+
+running (01m10.0s), 15/15 VUs, 0 complete and 0 interrupted iterations
+data_loss   [   0% ] 15 VUs  01m09.6s/10m0s  00/15 iters, 1 per VU
+time="2026-06-29T05:44:36Z" level=info msg="VU14 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (01m11.0s), 14/15 VUs, 1 complete and 0 interrupted iterations
+data_loss   [   7% ] 15 VUs  01m10.6s/10m0s  01/15 iters, 1 per VU
+
+running (01m12.0s), 14/15 VUs, 1 complete and 0 interrupted iterations
+data_loss   [   7% ] 15 VUs  01m11.6s/10m0s  01/15 iters, 1 per VU
+
+running (01m13.0s), 14/15 VUs, 1 complete and 0 interrupted iterations
+data_loss   [   7% ] 15 VUs  01m12.6s/10m0s  01/15 iters, 1 per VU
+time="2026-06-29T05:44:39Z" level=info msg="VU6 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:39Z" level=info msg="VU3 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:39Z" level=info msg="VU4 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+
+running (01m14.0s), 13/15 VUs, 2 complete and 0 interrupted iterations
+data_loss   [  13% ] 15 VUs  01m13.6s/10m0s  02/15 iters, 1 per VU
+time="2026-06-29T05:44:40Z" level=info msg="VU2 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU1 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU11 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU15 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU7 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU5 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU8 ClimateAnomaly: accepted=29 found=29 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU9 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU12 ClimateAnomaly: accepted=30 found=30 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:40Z" level=info msg="VU13 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (01m15.0s), 06/15 VUs, 9 complete and 0 interrupted iterations
+data_loss   [  60% ] 15 VUs  01m14.6s/10m0s  09/15 iters, 1 per VU
+time="2026-06-29T05:44:41Z" level=info msg="VU10 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (01m16.0s), 05/15 VUs, 10 complete and 0 interrupted iterations
+data_loss   [  67% ] 15 VUs  01m15.6s/10m0s  10/15 iters, 1 per VU
+
+running (01m17.0s), 05/15 VUs, 10 complete and 0 interrupted iterations
+data_loss   [  67% ] 15 VUs  01m16.6s/10m0s  10/15 iters, 1 per VU
+
+running (01m18.0s), 05/15 VUs, 10 complete and 0 interrupted iterations
+data_loss   [  67% ] 15 VUs  01m17.6s/10m0s  10/15 iters, 1 per VU
+
+running (01m19.0s), 05/15 VUs, 10 complete and 0 interrupted iterations
+data_loss   [  67% ] 15 VUs  01m18.6s/10m0s  10/15 iters, 1 per VU
+time="2026-06-29T05:44:45Z" level=info msg="VU3 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:45Z" level=info msg="VU4 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+running (01m20.0s), 03/15 VUs, 12 complete and 0 interrupted iterations
+data_loss   [  80% ] 15 VUs  01m19.6s/10m0s  12/15 iters, 1 per VU
+time="2026-06-29T05:44:46Z" level=info msg="VU11 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:46Z" level=info msg="VU8 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+time="2026-06-29T05:44:46Z" level=info msg="VU12 MLTrainer: accepted=0 found=0 lost=0 (0.0%)" source=console
+
+     █ dataloss_Calculator
+
+       ✓ Calculator zero data loss
+
+     █ dataloss_Analytics
+
+       ✓ Analytics zero data loss
+
+     █ dataloss_Advanced
+
+       ✓ Advanced zero data loss
+
+     █ dataloss_DataExchange
+
+       ✓ DataExchange zero data loss
+
+     █ dataloss_MonteCarlo
+
+       ✓ MonteCarlo zero data loss
+
+     █ dataloss_Geospatial
+
+       ✓ Geospatial zero data loss
+
+     █ dataloss_ClimateAnomaly
+
+       ✓ ClimateAnomaly zero data loss
+
+     █ dataloss_MLTrainer
+
+       ✓ MLTrainer zero data loss
+
+     checks.........................: 100.00% 120 out of 120
+     data_received..................: 15 MB   180 kB/s
+     data_sent......................: 3.3 MB  41 kB/s
+   ✓ dataloss_pct...................: avg=0s       min=0s      med=0s      max=0s       p(90)=0s       p(95)=0s      
+     dataloss_received..............: 2604    32.305736/s
+     dataloss_sent..................: 2604    32.305736/s
+     group_duration.................: avg=9.32s    min=5.33s   med=8.35s   max=20.72s   p(90)=18.81s   p(95)=19.61s  
+     http_req_blocked...............: avg=5.9µs    min=741ns   med=3.85µs  max=1.5ms    p(90)=6.74µs   p(95)=7.9µs   
+     http_req_connecting............: avg=686ns    min=0s      med=0s      max=871.56µs p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=71.6ms   min=2.6ms   med=33.39ms max=2.19s    p(90)=175.42ms p(95)=214.46ms
+       { expected_response:true }...: avg=73.23ms  min=2.6ms   med=30.6ms  max=2.19s    p(90)=179.61ms p(95)=278.55ms
+     http_req_failed................: 13.35%  996 out of 7457
+     http_req_receiving.............: avg=119.72µs min=12.97µs med=66.76µs max=36.58ms  p(90)=136.12µs p(95)=217.92µs
+     http_req_sending...............: avg=27.67µs  min=4.44µs  med=17.1µs  max=8.23ms   p(90)=36.11µs  p(95)=48.52µs 
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s      max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=71.45ms  min=2.56ms  med=33.31ms max=2.19s    p(90)=175.26ms p(95)=214.35ms
+     http_reqs......................: 7457    92.513009/s
+     iteration_duration.............: avg=1m15s    min=1m10s   med=1m14s   max=1m20s    p(90)=1m20s    p(95)=1m20s   
+     iterations.....................: 15      0.186093/s
+     vus............................: 3       min=3           max=15
+     vus_max........................: 15      min=15          max=15
+
+
+running (01m20.6s), 00/15 VUs, 15 complete and 0 interrupted iterations
+data_loss ✓ [ 100% ] 15 VUs  01m20.2s/10m0s  15/15 iters, 1 per VU

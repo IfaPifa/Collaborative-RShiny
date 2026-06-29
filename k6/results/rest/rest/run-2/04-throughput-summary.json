@@ -1,0 +1,357 @@
+{
+    "metrics": {
+        "throughput_response_ms{app_name:MLTrainer}": {
+            "p(95)": 51594.767571749995,
+            "avg": 10490.83600295213,
+            "min": 1.992437,
+            "med": 1239.460083,
+            "max": 116425.340245,
+            "p(90)": 31091.652854499996,
+            "thresholds": {
+                "p(95)<711950": false
+            }
+        },
+        "http_req_connecting": {
+            "min": 0,
+            "med": 0,
+            "max": 0.538515,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.007153589326096785
+        },
+        "throughput_response_ms{app_name:Calculator}": {
+            "max": 31252.61254,
+            "p(90)": 14733.352093,
+            "p(95)": 17256.675216,
+            "avg": 3448.204010574124,
+            "min": 1.648856,
+            "med": 597.163354,
+            "thresholds": {
+                "p(95)<600": true
+            }
+        },
+        "vus_max": {
+            "value": 100,
+            "min": 100,
+            "max": 100
+        },
+        "group_duration": {
+            "p(90)": 63212.815775200004,
+            "p(95)": 74406.82448809998,
+            "avg": 21301.81565427102,
+            "min": 790.731937,
+            "med": 6831.12398,
+            "max": 166870.95961
+        },
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "throughput_response_ms{app_name:Geospatial}": {
+            "avg": 2988.8485936873467,
+            "min": 1.719673,
+            "med": 492.972165,
+            "max": 36412.692004,
+            "p(90)": 11216.185156,
+            "p(95)": 16865.87492399999,
+            "thresholds": {
+                "p(95)<550": true
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 13664.240085900004,
+            "p(95)": 18191.7811478,
+            "avg": 3682.214202673451,
+            "min": 1.648856,
+            "med": 627.0648795,
+            "max": 116425.340245
+        },
+        "data_received": {
+            "count": 229757542,
+            "rate": 510470.6279925871
+        },
+        "vus": {
+            "value": 1,
+            "min": 0,
+            "max": 100
+        },
+        "throughput_response_ms{app_name:ClimateAnomaly}": {
+            "med": 577.157497,
+            "max": 28779.781613,
+            "p(90)": 11180.645839600007,
+            "p(95)": 17230.325777,
+            "avg": 2943.009305931989,
+            "min": 2.172699,
+            "thresholds": {
+                "p(95)<1450": true
+            }
+        },
+        "throughput_ops": {
+            "count": 3111,
+            "rate": 6.911956447048596
+        },
+        "checks": {
+            "passes": 583,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_sending": {
+            "avg": 0.030152240388964285,
+            "min": 0.006509,
+            "med": 0.0258295,
+            "max": 0.301886,
+            "p(90)": 0.04972000000000001,
+            "p(95)": 0.06388999999999997
+        },
+        "iteration_duration": {
+            "avg": 21610.52646252931,
+            "min": 1291.973672,
+            "med": 7307.5715425,
+            "max": 167372.091398,
+            "p(90)": 63710.1801278,
+            "p(95)": 74557.30582594998
+        },
+        "throughput_errors": {
+            "fails": 3111,
+            "passes": 0,
+            "thresholds": {
+                "rate<0.3": false
+            },
+            "value": 0
+        },
+        "throughput_response_ms{app_name:MonteCarlo}": {
+            "avg": 3120.000554299253,
+            "min": 1.987178,
+            "med": 555.279735,
+            "max": 29360.979082,
+            "p(90)": 11514.093694,
+            "p(95)": 17346.145569,
+            "thresholds": {
+                "p(95)<2550": true
+            }
+        },
+        "http_req_blocked": {
+            "p(95)": 0.011496049999999997,
+            "avg": 0.015578322252374448,
+            "min": 0.001593,
+            "med": 0.005599,
+            "max": 1.662257,
+            "p(90)": 0.0091739
+        },
+        "throughput_response_ms{app_name:Analytics}": {
+            "med": 581.567293,
+            "max": 26850.886212,
+            "p(90)": 13359.758944,
+            "p(95)": 16379.300282,
+            "avg": 3220.3870464041984,
+            "min": 2.025317,
+            "thresholds": {
+                "p(95)<650": true
+            }
+        },
+        "iterations": {
+            "count": 580,
+            "rate": 1.2886321887779446
+        },
+        "http_req_duration": {
+            "p(90)": 13664.240085900004,
+            "p(95)": 18191.7811478,
+            "avg": 3682.214202673451,
+            "min": 1.648856,
+            "med": 627.0648795,
+            "max": 116425.340245
+        },
+        "throughput_response_ms{app_name:DataExchange}": {
+            "avg": 3122.879498454082,
+            "min": 1.685231,
+            "med": 670.5435985,
+            "max": 26774.727412,
+            "p(90)": 11201.5917906,
+            "p(95)": 16348.915279749996,
+            "thresholds": {
+                "p(95)<550": true
+            }
+        },
+        "http_req_waiting": {
+            "p(95)": 18191.690048449997,
+            "avg": 3681.40110838037,
+            "min": 1.591679,
+            "med": 626.9560335,
+            "max": 116425.178149,
+            "p(90)": 13664.056884800004
+        },
+        "http_req_receiving": {
+            "avg": 0.7829420526910921,
+            "min": 0.017416,
+            "med": 0.10681750000000001,
+            "max": 77.524978,
+            "p(90)": 2.6421544000000012,
+            "p(95)": 5.375249199999999
+        },
+        "http_reqs": {
+            "count": 4422,
+            "rate": 9.824709549613916
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 4422,
+            "value": 0
+        },
+        "throughput_response_ms": {
+            "p(90)": 15177.31421,
+            "p(95)": 18616.9876195,
+            "avg": 4027.3069192340076,
+            "min": 1.648856,
+            "med": 647.79575,
+            "max": 116425.340245
+        },
+        "throughput_response_ms{app_name:Advanced}": {
+            "avg": 3153.7863401153845,
+            "min": 1.845254,
+            "med": 603.685954,
+            "max": 31280.749346,
+            "p(90)": 11686.919126400002,
+            "p(95)": 17360.776930199994,
+            "thresholds": {
+                "p(95)<500": true
+            }
+        },
+        "data_sent": {
+            "count": 1442388,
+            "rate": 3204.6682853569687
+        }
+    },
+    "setup_data": {},
+    "root_group": {
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                "throughput_Analytics": {
+                    "name": "throughput_Analytics",
+                    "path": "::throughput_Analytics",
+                    "id": "3ff673b47d2f7e4d3bdf6195409f951c",
+                    "groups": {},
+                    "checks": {
+                            "Analytics full workflow ok": {
+                                "name": "Analytics full workflow ok",
+                                "path": "::throughput_Analytics::Analytics full workflow ok",
+                                "id": "72a8542d437539ce2547ea8ca66363d4",
+                                "passes": 70,
+                                "fails": 0
+                            }
+                        }
+                },
+                "throughput_Advanced": {
+                    "name": "throughput_Advanced",
+                    "path": "::throughput_Advanced",
+                    "id": "31eef5a61c8a0f42cd5672e169ee06c8",
+                    "groups": {},
+                    "checks": {
+                            "Advanced full workflow ok": {
+                                "fails": 0,
+                                "name": "Advanced full workflow ok",
+                                "path": "::throughput_Advanced::Advanced full workflow ok",
+                                "id": "64237a28342c8406527d5ddcb9a257d7",
+                                "passes": 71
+                            }
+                        }
+                },
+                "throughput_DataExchange": {
+                    "groups": {},
+                    "checks": {
+                            "DataExchange full workflow ok": {
+                                "fails": 0,
+                                "name": "DataExchange full workflow ok",
+                                "path": "::throughput_DataExchange::DataExchange full workflow ok",
+                                "id": "5f599826aa28df19ef571e9c081bcf68",
+                                "passes": 74
+                            }
+                        },
+                    "name": "throughput_DataExchange",
+                    "path": "::throughput_DataExchange",
+                    "id": "8032107da15699666da5995ab7df0ed2"
+                },
+                "throughput_MonteCarlo": {
+                    "name": "throughput_MonteCarlo",
+                    "path": "::throughput_MonteCarlo",
+                    "id": "f04e2f1a3fca26bd9007ad9af2d2023b",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo full workflow ok": {
+                                "passes": 75,
+                                "fails": 0,
+                                "name": "MonteCarlo full workflow ok",
+                                "path": "::throughput_MonteCarlo::MonteCarlo full workflow ok",
+                                "id": "98975e1507675a4cbb79e56d0d2b5cf5"
+                            }
+                        }
+                },
+                "throughput_Calculator": {
+                    "groups": {},
+                    "checks": {
+                            "Calculator full workflow ok": {
+                                "name": "Calculator full workflow ok",
+                                "path": "::throughput_Calculator::Calculator full workflow ok",
+                                "id": "fdd40cca60301cde279c9621adbce53e",
+                                "passes": 71,
+                                "fails": 0
+                            }
+                        },
+                    "name": "throughput_Calculator",
+                    "path": "::throughput_Calculator",
+                    "id": "e541ed0bdd8a90190c9e76650b7d39f7"
+                },
+                "throughput_Geospatial": {
+                    "path": "::throughput_Geospatial",
+                    "id": "63c685fc46d2e9b6626a8e44c9a4df05",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial full workflow ok": {
+                                "fails": 0,
+                                "name": "Geospatial full workflow ok",
+                                "path": "::throughput_Geospatial::Geospatial full workflow ok",
+                                "id": "f50927de0fbee407f161249e5c26d695",
+                                "passes": 76
+                            }
+                        },
+                    "name": "throughput_Geospatial"
+                },
+                "throughput_ClimateAnomaly": {
+                    "name": "throughput_ClimateAnomaly",
+                    "path": "::throughput_ClimateAnomaly",
+                    "id": "69780d842b3fe11219390d164f89a746",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly full workflow ok": {
+                                "path": "::throughput_ClimateAnomaly::ClimateAnomaly full workflow ok",
+                                "id": "7156d9c0183721a3bb8d61954c143114",
+                                "passes": 75,
+                                "fails": 0,
+                                "name": "ClimateAnomaly full workflow ok"
+                            }
+                        }
+                },
+                "throughput_MLTrainer": {
+                    "name": "throughput_MLTrainer",
+                    "path": "::throughput_MLTrainer",
+                    "id": "c16e12dceaec68cd30e78a0746a2c9e3",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer full workflow ok": {
+                                "path": "::throughput_MLTrainer::MLTrainer full workflow ok",
+                                "id": "5f9aa8cf4b5b212a2dddf7dd557fa38d",
+                                "passes": 71,
+                                "fails": 0,
+                                "name": "MLTrainer full workflow ok"
+                            }
+                        }
+                }
+            },
+            "checks": {},
+            "name": ""
+        }
+}
