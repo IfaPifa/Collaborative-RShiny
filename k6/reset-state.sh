@@ -17,9 +17,13 @@
 #  breaks. Only benchmark-generated tables are truncated.
 #
 #  Two methods (set RESET_METHOD):
-#    flush   (default) — fast in-place data wipe:
-#                        Redis FLUSHALL + Postgres TRUNCATE + Kafka delete-records.
-#                        ~seconds. R workers keep their in-memory state.
+#    flush   (default) — fast in-place data wipe. Postgres TRUNCATE plus the
+#                        arch's live store: Redis FLUSHALL (REST) or Kafka
+#                        delete-records (Kafka). ~seconds. R workers keep
+#                        their in-memory state.
+#
+#  Note: REST uses Redis (no Kafka); Kafka uses Kafka topics (no Redis). The
+#  script touches only the store that exists for the given architecture.
 #    restart           — thorough: rollout-restart Redis, Kafka and the shiny
 #                        workers (all have NO persistent volume, so they come
 #                        back empty), then TRUNCATE Postgres (it DOES have a
@@ -105,18 +109,25 @@ flush_kafka_records() {
 
 echo "    [reset] resetting runtime state (arch=${ARCH:-unknown}, method=${RESET_METHOD}) ..."
 
+# Architecture-specific stores:
+#   REST  uses Redis for live state (no Kafka).
+#   Kafka uses Kafka topics for live state (no Redis).
+# Both use PostgreSQL for checkpoints.
+IS_KAFKA=false
+[[ "${ARCH}" == *kafka* ]] && IS_KAFKA=true
+
 if [[ "${RESET_METHOD}" == "restart" ]]; then
   # ---- Thorough method: rollout-restart ephemeral pods, truncate Postgres --
-  # Redis, Kafka and the shiny workers have NO volumes, so a restart brings
-  # them back empty (clean Redis, empty Kafka logs, fresh R processes).
-  echo "    [reset]   rollout restart: redis"
-  kubectl rollout restart deploy/redis >/dev/null 2>&1 || \
-    echo "    [reset]   (redis restart failed — continuing)" >&2
-
-  if [[ "${ARCH}" == *kafka* ]]; then
+  # Redis / Kafka and the shiny workers have NO volumes, so a restart brings
+  # them back empty (clean store, fresh R processes).
+  if [[ "${IS_KAFKA}" == true ]]; then
     echo "    [reset]   rollout restart: kafka"
     kubectl rollout restart deploy/kafka >/dev/null 2>&1 || \
       echo "    [reset]   (kafka restart failed — continuing)" >&2
+  else
+    echo "    [reset]   rollout restart: redis"
+    kubectl rollout restart deploy/redis >/dev/null 2>&1 || \
+      echo "    [reset]   (redis restart failed — continuing)" >&2
   fi
 
   echo "    [reset]   rollout restart: shiny workers (${#SHINY_DEPLOYS[@]} deployments)"
@@ -126,9 +137,11 @@ if [[ "${RESET_METHOD}" == "restart" ]]; then
 
   # Wait for everything to come back Ready before proceeding.
   echo "    [reset]   waiting for pods to become Ready ..."
-  kubectl rollout status deploy/redis --timeout=180s >/dev/null 2>&1 || true
-  [[ "${ARCH}" == *kafka* ]] && \
+  if [[ "${IS_KAFKA}" == true ]]; then
     kubectl rollout status deploy/kafka --timeout=180s >/dev/null 2>&1 || true
+  else
+    kubectl rollout status deploy/redis --timeout=180s >/dev/null 2>&1 || true
+  fi
   for d in "${SHINY_DEPLOYS[@]}"; do
     kubectl rollout status "deploy/${d}" --timeout=180s >/dev/null 2>&1 || true
   done
@@ -141,10 +154,13 @@ if [[ "${RESET_METHOD}" == "restart" ]]; then
 
 else
   # ---- Fast method: in-place data flush -----------------------------------
-  exec_in redis redis-cli FLUSHALL >/dev/null
-  echo "    [reset]   redis: FLUSHALL done"
+  if [[ "${IS_KAFKA}" == true ]]; then
+    flush_kafka_records
+  else
+    exec_in redis redis-cli FLUSHALL >/dev/null
+    echo "    [reset]   redis: FLUSHALL done"
+  fi
   truncate_pg
-  [[ "${ARCH}" == *kafka* ]] && flush_kafka_records
   sleep 3
 fi
 
