@@ -561,6 +561,7 @@ kind: Deployment
 metadata:
   name: shiny-back
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back }
   template:
@@ -587,6 +588,7 @@ kind: Deployment
 metadata:
   name: shiny-back-analytics
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-analytics }
   template:
@@ -613,6 +615,7 @@ kind: Deployment
 metadata:
   name: shiny-back-csv
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-csv }
   template:
@@ -639,6 +642,7 @@ kind: Deployment
 metadata:
   name: shiny-back-csv-advanced
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-csv-advanced }
   template:
@@ -668,6 +672,7 @@ kind: Deployment
 metadata:
   name: shiny-back-mc
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-mc }
   template:
@@ -694,6 +699,7 @@ kind: Deployment
 metadata:
   name: shiny-back-map
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-map }
   template:
@@ -720,6 +726,7 @@ kind: Deployment
 metadata:
   name: shiny-back-analytics-advanced
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-analytics-advanced }
   template:
@@ -746,6 +753,7 @@ kind: Deployment
 metadata:
   name: shiny-back-ml
 spec:
+  replicas: 3
   selector:
     matchLabels: { app: shiny-back-ml }
   template:

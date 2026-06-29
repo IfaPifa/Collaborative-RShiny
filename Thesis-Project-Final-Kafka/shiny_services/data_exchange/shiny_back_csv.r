@@ -5,7 +5,7 @@ broker <- "kafka:9092"
 print("Data Exchange Backend Starting...")
 
 consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = "backend_csv", "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
-consumer$subscribe("input")
+consumer$subscribe("input.dataexchange")
 producer <- Producer$new(list("bootstrap.servers" = broker))
 
 repeat {

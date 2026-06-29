@@ -110,7 +110,7 @@ server <- function(input, output, session) {
       sender = identity()$userId,
       role = state$permission
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.analytics", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
   
   # --- RECEIVE UPDATES ---

@@ -2,7 +2,7 @@ library(jsonlite)
 library(kafka)
 
 broker <- "kafka:9092"
-topic_input <- "input"
+topic_input <- "input.montecarlo"
 topic_output <- "output"
 
 print("Monte Carlo Backend Starting...")

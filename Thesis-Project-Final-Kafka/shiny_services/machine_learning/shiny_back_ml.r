@@ -3,7 +3,7 @@ library(kafka)
 library(randomForest)
 
 broker <- "kafka:9092"
-topic_input <- "input"
+topic_input <- "input.mltrainer"
 topic_output <- "output"
 
 print("ML Trainer Backend Starting...")

@@ -7,7 +7,7 @@ shared_dir <- "/app/shared_data"
 print("LTER-LIFE Anomaly Backend Starting...")
 
 consumer <- Consumer$new(list("bootstrap.servers" = broker, "group.id" = "backend_csv_advanced", "auto.offset.reset" = "latest", "enable.auto.commit" = "true"))
-consumer$subscribe("input")
+consumer$subscribe("input.climateanomaly")
 producer <- Producer$new(list("bootstrap.servers" = broker))
 
 repeat {

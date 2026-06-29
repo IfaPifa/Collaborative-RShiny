@@ -4,6 +4,7 @@
 % ==========================================================================
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
 \usepackage{booktabs,tabularx}
 \usepackage{hyperref}
 \usepackage[T1]{fontenc}
@@ -1606,5 +1607,107 @@ foundation for option~1:
 The migration effort from Angular to JupyterLab is a frontend change,
 not an architectural one. The Shiny services, Spring Boot backend, and
 state synchronization layer remain unchanged.
+
+\section{Kafka Topic Design: From Shared Bus to Per-App Topics}
+\label{sec:kafka-topic-redesign}
+
+\subsection{The Original Single-Topic Design and Its Limitations}
+
+The first iteration of the Kafka architecture routed all state-change
+messages through a single \texttt{input} topic with one partition.
+Every backend worker---one per Shiny app type (Calculator, Monte Carlo,
+Geospatial, etc.)---subscribed to this shared topic under its own
+consumer group, then filtered incoming messages by an \texttt{appName}
+field in the JSON payload, discarding any message not addressed to it.
+
+This design has three properties that undermine a fair architectural
+comparison against the REST baseline:
+
+\begin{itemize}
+  \item \textbf{Broadcast fan-out.} Because each backend type used a
+        distinct consumer group, every message published to
+        \texttt{input} was delivered to and deserialized by \emph{all}
+        eight backend types. With $N$ app types, each message incurred
+        $N$ reads, of which $N{-}1$ were immediately discarded. The work
+        of JSON parsing and filtering scaled with the number of app
+        types rather than the volume of useful traffic.
+  \item \textbf{No horizontal scalability.} A single-partition topic can
+        be consumed by at most one active consumer per group. Adding
+        replicas of a backend would leave all but one replica idle, since
+        Kafka assigns a partition to exactly one consumer within a group.
+        The Kafka backends therefore ran as single instances, while the
+        REST backends ran with \texttt{replicas: 3}.
+  \item \textbf{Asymmetric benchmark.} Comparing a single-instance,
+        single-partition Kafka pipeline against a three-replica,
+        load-balanced REST pipeline measures the deployment topology as
+        much as the messaging paradigm, confounding the result.
+\end{itemize}
+
+\subsection{Per-App Topics with Partition-Based Parallelism}
+
+The redesign replaces the shared \texttt{input} topic with one topic per
+app type (\texttt{input.calculator}, \texttt{input.montecarlo},
+\texttt{input.geospatial}, and so on). Each backend subscribes only to
+its own topic, eliminating the broadcast fan-out: a message is read
+exactly once, by the backend that will process it.
+
+Each per-app topic is created with three partitions, and each backend
+deployment is scaled to \texttt{replicas: 3}. Within a single consumer
+group, Kafka assigns one partition to each of the three replicas, so all
+three process messages in parallel. The partition count is the ceiling
+on useful parallelism (a fourth replica would find no free partition to
+own); three partitions to three replicas gives full utilization while
+mirroring the REST architecture's \texttt{replicas: 3} exactly. The two
+architectures now differ only in the messaging paradigm, not in
+deployment scale.
+
+\subsection{Routing Without Library-Level Partition Control}
+
+The R Kafka binding (\texttt{INWTlab/r-kafka}, a wrapper over
+\texttt{librdkafka}) exposes neither an explicit producer
+\texttt{partition} argument nor a consumer \texttt{assign()} call; it
+offers only key-based production and group \texttt{subscribe()}. Explicit
+per-app partition assignment was therefore not possible at the library
+level. Per-app \emph{topics} achieve the same routing outcome using only
+\texttt{subscribe()}, which the binding fully supports, and let Kafka's
+consumer-group protocol handle partition distribution across replicas.
+
+On the producer side, the Spring Boot backend---through which the
+benchmark drives all traffic---resolves the destination topic in two
+ways. For the normal state-relay path it reads the \texttt{appName} field
+from the request body. For the restore and replay paths, where a saved
+checkpoint may not carry \texttt{appName}, it falls back to an
+authoritative lookup of the session's associated app
+(\texttt{session.getShinyApp().getId()}), which Spring already persists.
+This mapping is centralized in a single \texttt{KafkaTopics} class so the
+\texttt{appName}/\texttt{appId}\,$\rightarrow$\,topic correspondence has
+one source of truth. The Shiny frontends, which publish directly to
+Kafka for real (non-benchmark) users, were updated to produce to their
+respective per-app topics.
+
+The shared \texttt{output} topic is retained unchanged. It is keyed by
+\texttt{sessionId} and carries both per-session results and
+system-level role-update messages, consumed by the Spring
+\texttt{SessionStateMonitor} and by each frontend filtering on its own
+key; splitting it would add complexity without a scalability benefit,
+since results are already partitioned naturally by session key.
+
+\subsection{A Note on the Polling-Based Result Path}
+
+The Shiny frontends retrieve results by polling
+(\texttt{reactivePoll} at a 150\,ms interval, configurable via the
+\texttt{POLL\_INTERVAL\_MS} environment variable) rather than receiving
+a server push. This is a deliberate constraint rather than an
+oversight: a push-based delivery (e.g.\ STOMP-over-WebSocket) would
+couple the Shiny apps to the Spring framework, breaking the property
+that the Kafka data path is framework-independent, and would shift
+additional work onto the Spring backend, which the REST results already
+identify as the throughput bottleneck. The 150\,ms poll interval should
+therefore be read as a fixed latency floor on the end-to-end
+measurements: reported round-trip latencies include up to one poll
+interval of delay that is attributable to the polling cadence rather
+than to either messaging architecture, and this term is identical for
+both the REST and Kafka pipelines, so it does not bias the comparison
+between them.
 
 \end{document}

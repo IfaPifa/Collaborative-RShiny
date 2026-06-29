@@ -2,7 +2,7 @@ library(jsonlite)
 library(kafka)
 
 # --- CONFIGURATION ---
-topic_input <- "input"
+topic_input <- "input.calculator"
 topic_output <- "output"
 broker <- "kafka:9092"
 

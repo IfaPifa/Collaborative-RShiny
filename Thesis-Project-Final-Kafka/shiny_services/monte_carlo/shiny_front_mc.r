@@ -147,7 +147,7 @@ server <- function(input, output, session) {
       role = state$permission,
       appName = "MonteCarlo"
     )
-    state$producer$produce("input", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+    state$producer$produce("input.montecarlo", toJSON(payload, auto_unbox = TRUE), key = routingKey())
   })
 
   # --- RECEIVE UPDATES ---

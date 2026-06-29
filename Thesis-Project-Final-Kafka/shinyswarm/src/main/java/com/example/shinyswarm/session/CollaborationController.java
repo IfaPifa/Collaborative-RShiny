@@ -7,6 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.example.shinyswarm.config.KafkaTopics;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +50,7 @@ public class CollaborationController {
     private final NotificationRepository notificationRepository;
     private final EmailService emailService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
     
 
     public CollaborationController(CollaborationSessionRepository sessionRepository,
@@ -56,7 +61,8 @@ public class CollaborationController {
                                    KafkaTemplate<String, String> kafkaTemplate,
                                    NotificationRepository notificationRepository,
                                    EmailService emailService,
-                                   SimpMessagingTemplate messagingTemplate) {
+                                   SimpMessagingTemplate messagingTemplate,
+                                   ObjectMapper objectMapper) {
         this.sessionRepository = sessionRepository;
         this.userRepository = userRepository;
         this.shinyAppRepository = shinyAppRepository;
@@ -66,6 +72,42 @@ public class CollaborationController {
         this.notificationRepository = notificationRepository;
         this.emailService = emailService;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
+    }
+
+    /**
+     * Resolve the per-app Kafka input topic for a session.
+     *
+     * Prefers the appName carried in the state JSON (normal POST path). Falls
+     * back to the session's appId (authoritative; used for restore/replay where
+     * the saved JSON may not contain appName). Last resort is the shared
+     * "input" fallback topic.
+     */
+    private String resolveInputTopic(String sessionId, String rawJson) {
+        // 1. Try appName from the JSON body.
+        if (rawJson != null) {
+            try {
+                JsonNode node = objectMapper.readTree(rawJson);
+                JsonNode appNameNode = node.get("appName");
+                if (appNameNode != null && !appNameNode.isNull()) {
+                    String topic = KafkaTopics.forAppName(appNameNode.asText());
+                    if (topic != null) return topic;
+                }
+            } catch (Exception ignored) {
+                // fall through to session lookup
+            }
+        }
+        // 2. Authoritative: look up the app via the session.
+        if (sessionId != null) {
+            String topic = sessionRepository.findById(sessionId)
+                    .map(s -> s.getShinyApp() != null
+                            ? KafkaTopics.forAppId(s.getShinyApp().getId())
+                            : null)
+                    .orElse(null);
+            if (topic != null) return topic;
+        }
+        // 3. Fallback shared topic (should not happen in practice).
+        return KafkaTopics.INPUT_FALLBACK;
     }
 
     // ==========================================
@@ -109,8 +151,9 @@ public class CollaborationController {
                 });
             }
 
-            // Send to Kafka input topic — R consumer will process and write to output
-            kafkaTemplate.send("input", sessionId, rawJson);
+            // Send to the per-app Kafka input topic — the matching R consumer
+            // processes it and writes the result to the shared output topic.
+            kafkaTemplate.send(resolveInputTopic(sessionId, rawJson), sessionId, rawJson);
             return ResponseEntity.ok("{\"status\":\"accepted\"}");
 
         } catch (Exception e) {
@@ -193,7 +236,7 @@ public class CollaborationController {
     public ResponseEntity<?> replayState(@PathVariable String sessionId) {
         String cachedState = stateMonitor.getLatestState(sessionId);
         if (cachedState != null) {
-            kafkaTemplate.send("input", sessionId, cachedState);
+            kafkaTemplate.send(resolveInputTopic(sessionId, cachedState), sessionId, cachedState);
             return ResponseEntity.ok("State replayed");
         }
         return ResponseEntity.ok("No live state to replay");
@@ -222,7 +265,7 @@ public class CollaborationController {
             return ResponseEntity.status(403).body("You do not have access to this checkpoint");
         }
 
-        kafkaTemplate.send("input", sessionId, state.getStateData());
+        kafkaTemplate.send(resolveInputTopic(sessionId, state.getStateData()), sessionId, state.getStateData());
         return ResponseEntity.ok("State restored");
     }
 
