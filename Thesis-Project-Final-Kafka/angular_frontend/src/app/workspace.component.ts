@@ -389,18 +389,45 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
       if (msg.type === 'LEAVE') return users.filter(u => u !== msg.username);
       return users;
     });
+
+    // On JOIN, refetch the session so the participant list (and each member's
+    // permission) is fresh. Otherwise the role checkbox reads a stale
+    // `participants` entry and renders the wrong state until the first toggle.
+    if (msg.type === 'JOIN') {
+      this.collabService.joinSession(msg.sessionId).subscribe(session => {
+        this.collabService.activeSession.set(session);
+      });
+    }
   }
 
   togglePermission(username: string, event: Event) {
-    const isChecked = (event.target as HTMLInputElement).checked;
+    const input = event.target as HTMLInputElement;
+    const isChecked = input.checked;
     const newRole: SessionPermission = isChecked ? 'EDITOR' : 'VIEWER';
     const session = this.collabService.activeSession();
-    
+
     if (!session) return;
-    
+
     this.collabService.updatePermission(session.id, username, newRole).subscribe({
-      next: () => console.log(`Changed ${username} to ${newRole}`),
-      error: () => alert("Failed to change permission")
+      next: () => {
+        // Sync local state so the checkbox reflects the new role immediately.
+        // Without this the [checked] binding re-reads the stale signal and the
+        // checkbox snaps back, forcing a double-toggle.
+        this.collabService.activeSession.update(s => {
+          if (!s) return s;
+          return {
+            ...s,
+            participants: s.participants.map(p =>
+              p.user.username === username ? { ...p, permission: newRole } : p
+            )
+          };
+        });
+      },
+      error: () => {
+        // Revert the checkbox to match the unchanged server state.
+        input.checked = !isChecked;
+        alert("Failed to change permission");
+      }
     });
   }
 

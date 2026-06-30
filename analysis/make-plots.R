@@ -74,20 +74,45 @@ fig("fig01", {
   d <- per_app_df %>%
     filter(test == "01-state-relay-latency", metric == "relay_total_ms")
   if (nrow(d) == 0) stop("no relay_total_ms per-app data")
-  a <- agg_runs(d, c("arch", "app_name"), "p95") %>%
+  a <- agg_runs(d, c("arch", "app_name"), "p95")
+
+  # MLTrainer (intrinsic R compute) and Kafka Analytics (propagation defect)
+  # are ~1000x the others and crush the bar scale. Split each to its own PNG.
+  outliers <- c("MLTrainer", "Analytics")
+
+  light <- a %>% filter(!app_name %in% outliers) %>%
     mutate(app_name = order_apps(app_name))
-  p <- ggplot(a, aes(app_name, mean, fill = arch)) +
+  p <- ggplot(light, aes(app_name, mean, fill = arch)) +
     geom_col(position = position_dodge(0.8), width = 0.72) +
     geom_errorbar(aes(ymin = pmax(mean - sd, 0), ymax = mean + sd),
                   position = position_dodge(0.8), width = 0.25, colour = "grey30") +
     arch_scale() +
     scale_y_continuous(labels = ms_label) +
-    labs(title = "State relay latency by application (p95)",
-         subtitle = "Round-trip POST -> backend -> GET. Lower is better. Error bars = SD across runs.",
+    labs(title = "State relay latency by application (p95) - light apps",
+         subtitle = "Round-trip POST -> backend -> GET. MLTrainer + Analytics excluded (separate figures). Error bars = SD across runs.",
          x = NULL, y = "p95 latency") +
     theme_thesis() +
     theme(axis.text.x = element_text(angle = 30, hjust = 1))
   save_plot(p, OUT_DIR, "fig01_relay_per_app")
+
+  one_app <- function(name, slug, sub) {
+    hd <- a %>% filter(app_name == name)
+    if (nrow(hd) == 0) return(invisible())
+    ph <- ggplot(hd, aes(app_name, mean, fill = arch)) +
+      geom_col(position = position_dodge(0.8), width = 0.5) +
+      geom_errorbar(aes(ymin = pmax(mean - sd, 0), ymax = mean + sd),
+                    position = position_dodge(0.8), width = 0.2, colour = "grey30") +
+      arch_scale() +
+      scale_y_continuous(labels = ms_label) +
+      labs(title = sprintf("State relay latency - %s (p95)", name),
+           subtitle = sub, x = NULL, y = "p95 latency") +
+      theme_thesis()
+    save_plot(ph, OUT_DIR, slug)
+  }
+  one_app("MLTrainer", "fig01_relay_per_app_mltrainer",
+          "Intrinsic R compute dominates round-trip. Error bars = SD across runs.")
+  one_app("Analytics", "fig01_relay_per_app_analytics",
+          "Kafka propagation defect inflates round-trip. Error bars = SD across runs.")
 })
 
 # ==========================================================================

@@ -16,6 +16,21 @@ sensor_icons <- awesomeIconList(
   "Audio Recorder" = makeAwesomeIcon(icon = "microphone", markerColor = "green", library = "fa")
 )
 
+# Resolve icons for a vector of sensor types, defaulting unknown types to the
+# first icon so unexpected values (e.g. benchmark payloads) never crash render.
+icons_for <- function(types) {
+  known <- names(sensor_icons)
+  safe <- ifelse(types %in% known, types, known[1])
+  sensor_icons[safe]
+}
+
+# Empty authoritative pin table — the full shared map state.
+empty_pins <- function() {
+  data.frame(lat = numeric(0), lng = numeric(0),
+             sensor_type = character(0), sender = character(0),
+             stringsAsFactors = FALSE)
+}
+
 # --- UI DEFINITION ---
 ui <- page_sidebar(
   useShinyjs(),
@@ -69,9 +84,24 @@ server <- function(input, output, session) {
   })
   
   state <- reactiveValues(
-    connected = FALSE, consumer = NULL, producer = NULL, 
-    permission = "EDITOR", last_sender = NULL
+    connected = FALSE, consumer = NULL, producer = NULL,
+    permission = "EDITOR", last_sender = NULL,
+    pins = empty_pins()   # authoritative full map state (whole-state model)
   )
+
+  # Redraw the whole map from the authoritative pin table: clear then add all.
+  # This is the statesnap-style semantics — render the full state, never append
+  # blindly — so restore and late-join show exactly the saved set of pins.
+  redraw_pins <- function(pins) {
+    proxy <- leafletProxy("map") %>% clearMarkers()
+    if (nrow(pins) > 0) {
+      proxy %>% addAwesomeMarkers(
+        lng = pins$lng, lat = pins$lat,
+        icon = icons_for(pins$sensor_type),
+        popup = paste("Type:", pins$sensor_type, "<br>Deployed by:", pins$sender)
+      )
+    }
+  }
 
   # --- DYNAMIC ROLE UPDATES ---
   observeEvent(input$role_update, {
@@ -119,24 +149,35 @@ server <- function(input, output, session) {
   })
 
   # --- SEND CLICK (PRODUCER) ---
+  # Whole-state model: append the new pin to the authoritative list locally, then
+  # send the ENTIRE pin set. The backend echoes the full set so every client
+  # (and save/restore) sees the complete map, not a one-off delta.
   observeEvent(input$map_click, {
     req(state$connected)
     if (is.null(state$producer) || state$permission == "VIEWER") return()
-    
+
     click <- input$map_click
     id <- identity()
-    
+
+    new_pins <- rbind(state$pins, data.frame(
+      lat = click$lat, lng = click$lng,
+      sensor_type = input$sensor_type, sender = id$userId,
+      stringsAsFactors = FALSE
+    ))
+    state$pins <- new_pins
+    redraw_pins(new_pins)  # optimistic local render
+
     payload <- list(
       appName = "Geospatial",
-      type = "NEW_SENSOR",
-      lat = click$lat,
-      lng = click$lng,
-      sensor_type = input$sensor_type,
+      type = "STATE",
+      pins = new_pins,            # full map state
       sender = id$userId,
       role = state$permission
     )
-    
-    state$producer$produce("input.geospatial", toJSON(payload, auto_unbox = TRUE), key = routingKey())
+
+    state$producer$produce("input.geospatial",
+                           toJSON(payload, auto_unbox = TRUE, dataframe = "rows"),
+                           key = routingKey())
   })
   
   # --- RECEIVE DELTAS (CONSUMER) ---
@@ -157,15 +198,19 @@ server <- function(input, output, session) {
         data <- fromJSON(msg$value)
         if (!is.null(data$appName) && data$appName != "Geospatial") return()
 
-        if (!is.null(data$type) && data$type == "DELTA") {
-          state$last_sender <- data$sender
-          
-          leafletProxy("map") %>% 
-            addAwesomeMarkers(
-              lng = data$lng, lat = data$lat, 
-              icon = sensor_icons[[data$sensor_type]],
-              popup = paste("Type:", data$sensor_type, "<br>Deployed by:", data$sender)
-            )
+        # Whole-state message: replace the authoritative pin set and redraw.
+        # Restore/late-join arrive here too, so the map always reflects the
+        # full saved state rather than accumulating stale pins.
+        if (!is.null(data$type) && data$type == "STATE") {
+          if (!is.null(data$sender)) state$last_sender <- data$sender
+          pins <- data$pins
+          if (is.null(pins) || length(pins) == 0) {
+            pins <- empty_pins()
+          } else {
+            pins <- as.data.frame(pins, stringsAsFactors = FALSE)
+          }
+          state$pins <- pins
+          redraw_pins(pins)
         }
       }
     }

@@ -53,7 +53,14 @@ repeat {
     min_hp <- as.numeric(payload$min_hp)
     cyl_filter <- as.numeric(payload$cyl)
     sender <- if (!is.null(payload$sender)) payload$sender else "unknown"
-    
+
+    # Guard against malformed/partial messages: a missing min_hp or cyl yields
+    # numeric(0), and dplyr::filter() errors on a zero-length predicate, which
+    # would otherwise stall the consumer (no output produced -> client timeout).
+    # Fall back to permissive defaults so the backend always emits a result.
+    if (length(min_hp) == 0 || is.na(min_hp[1])) min_hp <- 0
+    if (length(cyl_filter) == 0) cyl_filter <- c(4, 6, 8)
+
     filtered_df <- df %>% filter(hp >= min_hp, cyl %in% cyl_filter)
     
     response_payload <- list(

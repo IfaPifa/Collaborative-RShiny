@@ -72,12 +72,13 @@ export const APPS = [
     id: 2,
     name: 'Visual Analytics',
     appName: 'Analytics',
+    // Backend (shiny_back_analytics.r) filters mtcars on min_hp (slider 50-300)
+    // and cyl (subset of c(4,6,8)) — these are the fields the real Shiny
+    // frontend sends. Vary min_hp by VU so each request filters differently.
     payload: (vu, iter) => ({
       appName: 'Analytics',
-      dataset: 'iris',
-      x_var: 'Sepal.Length',
-      y_var: 'Sepal.Width',
-      color_var: 'Species',
+      min_hp: 50 + (vu % 150),
+      cyl: [4, 6, 8],
       sender: `user_${vu}`,
       timestamp: Date.now() / 1000,
     }),
@@ -99,10 +100,16 @@ export const APPS = [
     id: 4,
     name: 'Data Exchange',
     appName: 'DataExchange',
+    // Backend (shiny_back_csv.r) does `as.data.frame(payload$dataset)` then
+    // cleans character columns (toupper/trim/strip). The real frontend sends
+    // an uploaded CSV as a data frame, which toJSON renders as an array of
+    // row objects. Send a small such table so the backend does real work.
     payload: (vu, iter) => ({
       appName: 'DataExchange',
-      text: `benchmark_row_${vu}_${iter}`,
-      operation: 'toupper',
+      dataset: [
+        { id: vu, region: `region_${vu}`, note: ` raw value ${iter}! ` },
+        { id: vu + 1, region: `region_${vu + 1}`, note: ` second_${iter}# ` },
+      ],
       sender: `user_${vu}`,
       timestamp: Date.now() / 1000,
     }),
@@ -126,12 +133,18 @@ export const APPS = [
     id: 6,
     name: 'Geospatial Editor',
     appName: 'Geospatial',
+    // Whole-state model: the app sends its full pin set (type "STATE"), and the
+    // backend echoes it back. Send a small pin list so the benchmark exercises
+    // the real serialize-whole-state path the app now uses.
     payload: (vu, iter) => ({
       appName: 'Geospatial',
-      type: 'NEW_SENSOR',
-      lat: 48.137 + vu * 0.001,
-      lng: 11.576 + iter * 0.001,
-      sensor_type: 'temperature',
+      type: 'STATE',
+      pins: [
+        { lat: 48.137 + vu * 0.001, lng: 11.576 + iter * 0.001,
+          sensor_type: 'Camera Trap', sender: `user_${vu}` },
+        { lat: 47.559 + vu * 0.001, lng: 7.588 + iter * 0.001,
+          sensor_type: 'Soil Moisture', sender: `user_${vu}` },
+      ],
       sender: `user_${vu}`,
       timestamp: Date.now() / 1000,
     }),

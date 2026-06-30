@@ -82,9 +82,11 @@ server <- function(input, output, session) {
 
   observe({
     if (permission_state() == "VIEWER") {
-      disable("run_sim"); disable("n0")
+      disable("run_sim"); disable("n0"); disable("growth_rate")
+      disable("env_var"); disable("paths"); disable("years")
     } else {
-      enable("run_sim"); enable("n0")
+      enable("run_sim"); enable("n0"); enable("growth_rate")
+      enable("env_var"); enable("paths"); enable("years")
     }
   })
 

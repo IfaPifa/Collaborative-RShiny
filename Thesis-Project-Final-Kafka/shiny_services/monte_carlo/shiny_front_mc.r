@@ -80,18 +80,22 @@ server <- function(input, output, session) {
     state$permission <- input$role_update
     if (input$role_update %in% c("EDITOR", "OWNER")) {
       state$producer <- Producer$new(list("bootstrap.servers" = "kafka:9092"))
-      enable("run_sim"); enable("n0")
+      enable("run_sim"); enable("n0"); enable("growth_rate")
+      enable("env_var"); enable("paths"); enable("years")
     } else {
       state$producer <- NULL
-      disable("run_sim"); disable("n0")
+      disable("run_sim"); disable("n0"); disable("growth_rate")
+      disable("env_var"); disable("paths"); disable("years")
     }
   })
 
   observe({
     if (state$permission == "VIEWER") {
-      disable("run_sim"); disable("n0")
+      disable("run_sim"); disable("n0"); disable("growth_rate")
+      disable("env_var"); disable("paths"); disable("years")
     } else {
-      enable("run_sim"); enable("n0")
+      enable("run_sim"); enable("n0"); enable("growth_rate")
+      enable("env_var"); enable("paths"); enable("years")
     }
   })
 

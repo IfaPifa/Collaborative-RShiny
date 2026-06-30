@@ -14,13 +14,16 @@ function(req) {
   sender <- if (!is.null(body$sender)) body$sender else "unknown"
   action_type <- if (!is.null(body$type)) body$type else "UNKNOWN"
 
-  if (action_type == "NEW_SENSOR") {
-    # Validate and relay the sensor placement
+  # Whole-state model: the frontend sends the full pin set; the backend is a
+  # stateless relay that echoes the complete state, so Redis (and save/restore)
+  # always holds the entire map rather than a single delta.
+  if (action_type %in% c("STATE", "NEW_SENSOR")) {
+    pins <- body$pins
+    if (is.null(pins)) pins <- list()
     res <- list(
-      type = "DELTA",
-      lat = as.numeric(body$lat),
-      lng = as.numeric(body$lng),
-      sensor_type = body$sensor_type,
+      appName = "Geospatial",
+      type = "STATE",
+      pins = pins,
       sender = sender,
       status = "success",
       timestamp = as.numeric(Sys.time())

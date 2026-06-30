@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{amsmath}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 \usepackage{hyperref}
@@ -41,7 +42,7 @@ Both the REST API and Kafka architectures share the same high-level structure. T
   \item \textbf{Presentation Layer} --- An \textbf{Angular 19} single-page application that serves as the collaboration portal. It provides login, an app library, a workspace for launching Shiny apps (embedded via iframes), a collaboration hub for managing sessions, and a saved states view for checkpoints.
   \item \textbf{Orchestration Layer} --- A \textbf{Spring Boot 3} Java backend that handles authentication (JWT), session management (CRUD for CollaborationSession entities), role-based access control (OWNER/EDITOR/VIEWER), real-time presence (WebSocket via STOMP), email notifications, and state persistence (save/restore checkpoints to PostgreSQL).
   \item \textbf{Computation Layer} --- \textbf{R Shiny microservices}, each decomposed into a \textbf{frontend} (Shiny UI + reactive polling) and a \textbf{backend} (computation engine). There are 8 app pairs, totalling 16 R containers.
-  \item \textbf{Infrastructure Layer} --- \textbf{Nginx} reverse proxy (port-based routing to each Shiny frontend), \textbf{PostgreSQL} (users, sessions, apps, saved states), and either \textbf{Redis} (REST) or \textbf{Kafka + Zookeeper} (event-driven) for live state relay.
+  \item \textbf{Infrastructure Layer} --- \textbf{Nginx} reverse proxy (port-based routing to each Shiny frontend), \textbf{PostgreSQL} (users, sessions, apps, saved states), and either \textbf{Redis} (REST) or \textbf{Apache Kafka} in KRaft mode (event-driven; no separate Zookeeper) for live state relay.
 \end{enumerate}
 
 \textbf{Key shared design decisions:}
@@ -50,7 +51,7 @@ Both the REST API and Kafka architectures share the same high-level structure. T
   \item All R containers are built from a single shared Docker image (\texttt{rocker/shiny:4.4.0} with pre-installed packages) using a YAML anchor (\texttt{x-shiny-base}) to avoid image duplication.
   \item The Angular portal embeds Shiny frontends via \textbf{iframes}. Communication between Angular and the iframe uses \texttt{window.postMessage} for role updates and state injection.
   \item State payloads are \textbf{JSON objects} containing both inputs and outputs (e.g., \texttt{\{num1, num2, result, sender, timestamp\}}).
-  \item Polling interval is \textbf{500ms} in both architectures (via \texttt{reactivePoll} in R).
+  \item The receive path is poll-based in both architectures (via \texttt{reactivePoll} in R), but the intervals differ: REST polls Spring Boot/Redis every \textbf{500ms}, while the Kafka frontend polls its local consumer every \textbf{150ms} by default (configurable via \texttt{POLL\_INTERVAL\_MS}), with a short \texttt{consume()} timeout. The Kafka interval is tighter because a local consumer poll is far cheaper than an HTTP round-trip.
   \item Session routing uses \textbf{UUID-based keys} --- solo mode uses the username as key, collaborative mode uses the session UUID.
 \end{itemize}
 
@@ -165,7 +166,7 @@ Nginx uses \textbf{port-based routing} to map external ports to internal Shiny f
 
 \subsection{Overview}
 
-In the Kafka architecture, R backends run as \textbf{standalone Kafka consumers} (long-running \texttt{Rscript} processes). They read from an \texttt{input} topic, perform computation, and write results to an \texttt{output} topic. There is no HTTP communication between R services.
+In the Kafka architecture, R backends run as \textbf{standalone Kafka consumers} (long-running \texttt{Rscript} processes). Each backend reads from its own \textbf{per-app input topic}, performs computation, and writes results to a single \textbf{shared output topic}. There is no HTTP communication between R services.
 
 Spring Boot's role changes: it is \textbf{no longer the data relay}. It only manages sessions, authentication, and state persistence. The data flows directly between R services through Kafka topics, with the \textbf{session UUID} (or username) as the Kafka message key.
 
@@ -182,34 +183,49 @@ Angular Frontend & Angular 19, standalone & Portal UI, iframe embedding \\
 Spring Boot Backend & Java 21, Spring Boot 3 & Session management, auth, save/restore \\
 R Shiny Frontends (x8) & R 4.4.0, Shiny, kafka pkg & UI, Kafka producer + consumer \\
 R Backends (x8) & R 4.4.0, kafka pkg & Kafka consumer + producer (computation) \\
-Apache Kafka & Confluent 7.5.0 & Message broker (input/output topics) \\
-Zookeeper & Confluent 7.5.0 & Kafka cluster coordination \\
+Apache Kafka & apache/kafka 3.7.0 (KRaft) & Message broker (per-app input + output topics) \\
 PostgreSQL & PostgreSQL 15 & Users, sessions, apps, saved states \\
 Nginx & Nginx 1.25 Alpine & Reverse proxy, port-based routing \\
 \bottomrule
 \end{tabular}
-\caption{Kafka architecture components (~18 containers + Kafka + Zookeeper)}
+\caption{Kafka architecture components. The benchmarked Kubernetes deployment runs \texttt{apache/kafka:3.7.0} in \textbf{KRaft mode}, so there is no separate Zookeeper container; Kafka acts as its own controller quorum.}
 \end{table}
 
 \subsection{Kafka Topics and Message Keys}
 
-Two topics are used:
+The topic layout is \textbf{asymmetric}: input is split per application, output is shared.
 
 \begin{itemize}[nosep]
-  \item \textbf{\texttt{input}} --- carries user input from Shiny frontends to R backends. Message key = session UUID (or username in solo mode). Value = JSON payload with inputs.
-  \item \textbf{\texttt{output}} --- carries computed results from R backends back to Shiny frontends. Same key. Value = JSON payload with inputs + outputs.
+  \item \textbf{Per-app input topics} --- one topic per application type (\texttt{input.calculator}, \texttt{input.analytics}, \texttt{input.advanced}, \texttt{input.dataexchange}, \texttt{input.montecarlo}, \texttt{input.geospatial}, \texttt{input.climateanomaly}, \texttt{input.mltrainer}). Each carries user input from Shiny frontends to the matching R backend. Message key = session UUID (or username in solo mode). Value = JSON payload with inputs. A single fallback \texttt{input} topic exists for messages whose app cannot be resolved.
+  \item \textbf{\texttt{output}} --- one shared topic carrying computed results from all R backends back to the Shiny frontends, plus system control messages (e.g.\ role/permission updates). Key = session UUID. Value = JSON payload with inputs + outputs.
 \end{itemize}
 
-The \textbf{message key} is the routing mechanism. In solo mode, the key is the username. In collaborative mode, the key is the session UUID. All consumers filter messages by key to ensure they only process messages for their session.
+Each input topic has \textbf{3 partitions}, and each backend is deployed with \textbf{3 replicas}, so one partition maps to one replica and an application's traffic is processed in parallel. This deliberately mirrors the REST architecture's \texttt{replicas: 3} for a fair comparison. The \textbf{message key} (session UUID, or username in solo mode) determines the partition and is used by output consumers to filter the messages belonging to their session.
+
+\paragraph{Why input is split but output is shared.} The two directions have opposite consumer patterns, so they call for opposite designs.
+
+\begin{itemize}[nosep]
+  \item \textbf{Input is split per app} because each backend type only wants its own traffic. The earlier single-topic design forced every backend to consume every message and discard the ones addressed to other apps --- an $N$-way fan-out on one partition that capped throughput and blocked horizontal scaling. Per-app topics let each backend subscribe to exactly its own stream, and the 3-partition/3-replica layout gives genuine parallelism within an app.
+  \item \textbf{Output is shared} because its consumers are inherently cross-cutting. The shared topic is read both by every session frontend (filtering on its own session key) \emph{and} by a single Spring Boot \texttt{SessionStateMonitor} listener that caches the latest state for save/restore. Splitting output per app would force that monitor to subscribe to eight topics for no isolation benefit. Output is also routed by a different dimension --- \textbf{session}, not app --- and a session already implies one app, so a per-app split would be redundant: the session-UUID key already provides the per-session isolation that matters. Finally, output carries \textbf{system control messages} (role changes are published to \texttt{output} as \texttt{SYSTEM} events) that are not app-specific; a shared topic is the natural carrier for them.
+\end{itemize}
+
+In short: input is split to remove wasteful fan-out on the high-volume compute path, while output stays shared because its consumers (the state monitor and session-control messages) are cross-cutting and session-UUID keying already enforces isolation. The trade-off is that the shared output topic is a potential contention point, mitigated by its 3 partitions and session-keyed distribution.
+
+\paragraph{Consumer groups.} Backends and frontends use \emph{different} consumer-group strategies, which reflects their roles:
+
+\begin{itemize}[nosep]
+  \item \textbf{Backends} use a \textbf{fixed group per app} (e.g.\ \texttt{backend\_calc\_service\_v2}). The three replicas of an app share this group, so Kafka load-balances the three partitions across them --- each message is processed by exactly one replica. This is what makes the per-app parallelism a throughput gain rather than triplicated work.
+  \item \textbf{Frontends} use a \textbf{unique group per browser session} (\texttt{front\_<token>}) on the shared \texttt{output} topic, so every frontend independently receives all output and filters by its own session key. Uniqueness here ensures each participant sees the session's updates rather than competing for them.
+\end{itemize}
 
 \subsection{Data Flow --- Solo Mode}
 
 \begin{enumerate}[nosep]
   \item User changes an input in the \textbf{R Shiny frontend}.
-  \item The frontend creates a Kafka \texttt{Producer} and sends a message to the \texttt{input} topic with key = username and value = JSON payload (e.g., \texttt{\{num1: 10, num2: 25\}}).
-  \item The \textbf{R backend} runs a continuous \texttt{while(TRUE)} loop with a Kafka \texttt{Consumer} listening on the \texttt{input} topic.
-  \item The backend receives the message, performs the computation (e.g., \texttt{10 + 25 = 35}), and produces a new message to the \texttt{output} topic with the same key and value = \texttt{\{num1: 10, num2: 25, result: 35\}}.
-  \item The Shiny frontend's \texttt{reactivePoll} (every 500ms) runs a Kafka \texttt{Consumer} that reads from the \texttt{output} topic, filtering by key.
+  \item The frontend creates a Kafka \texttt{Producer} and sends a message to the app's input topic (e.g.\ \texttt{input.calculator}) with key = username and value = JSON payload (e.g., \texttt{\{num1: 10, num2: 25\}}).
+  \item The \textbf{R backend} runs a continuous \texttt{while(TRUE)} loop with a Kafka \texttt{Consumer} subscribed to its own per-app input topic.
+  \item The backend receives the message, performs the computation (e.g., \texttt{10 + 25 = 35}), and produces a new message to the shared \texttt{output} topic with the same key and value = \texttt{\{num1: 10, num2: 25, result: 35\}}.
+  \item The Shiny frontend's \texttt{reactivePoll} runs a Kafka \texttt{Consumer} that reads from the \texttt{output} topic, filtering by key.
   \item The frontend receives the JSON and updates the UI reactively.
 \end{enumerate}
 
@@ -218,8 +234,8 @@ The \textbf{message key} is the routing mechanism. In solo mode, the key is the 
 \begin{enumerate}[nosep]
   \item Session creation and invitation work identically to the REST architecture (Spring Boot + PostgreSQL + email).
   \item All participants' Shiny frontends use the \textbf{session UUID} as the Kafka message key.
-  \item When any EDITOR changes an input, their frontend produces to the \texttt{input} topic with key = session UUID.
-  \item The R backend consumes from \texttt{input}, computes, and produces to \texttt{output} with the same key.
+  \item When any EDITOR changes an input, their frontend produces to the app's input topic (e.g.\ \texttt{input.calculator}) with key = session UUID.
+  \item The R backend consumes from its per-app input topic, computes, and produces to the shared \texttt{output} topic with the same key.
   \item \textbf{All participants'} frontends consume from \texttt{output} with the same key and receive the update simultaneously.
   \item VIEWER locking works the same way as REST --- Angular sends \texttt{postMessage} to the iframe with the role, and \texttt{shinyjs} disables inputs.
 \end{enumerate}
@@ -238,8 +254,8 @@ public void listen(ConsumerRecord<String, String> record) {
 This allows Spring Boot to:
 \begin{itemize}[nosep]
   \item \textbf{Save state:} When the user clicks ``Save,'' Spring Boot reads the latest state from the \texttt{ConcurrentHashMap} (not from Kafka directly) and persists it to PostgreSQL.
-  \item \textbf{Restore state:} When the user clicks ``Load,'' Spring Boot reads the saved JSON from PostgreSQL and \textbf{produces it to the \texttt{input} topic} via \texttt{KafkaTemplate.send("input", sessionId, json)}. The R backend picks it up and re-broadcasts to \texttt{output}, updating all frontends.
-  \item \textbf{Replay state:} When a new user joins a session, Spring Boot can replay the latest cached state to the \texttt{input} topic so the new user immediately sees the current state.
+  \item \textbf{Restore state:} When the user clicks ``Load,'' Spring Boot reads the saved JSON from PostgreSQL and \textbf{produces it to the session's per-app input topic}, resolved via \texttt{resolveInputTopic(sessionId, json)} (by \texttt{appName} from the JSON, or by the session's \texttt{appId} when the JSON omits it). The R backend picks it up and re-broadcasts to \texttt{output}, updating all frontends.
+  \item \textbf{Replay state:} When a new user joins, Spring Boot replays the latest cached state \textbf{directly to the \texttt{output} topic} (not input), because a cached result carries no command for a backend to act on --- it only needs to be re-rendered by the joining frontend.
 \end{itemize}
 
 \subsection{R Backend Consumer Loop}
@@ -247,21 +263,23 @@ This allows Spring Boot to:
 Each R backend runs a continuous consumer loop (simplified):
 
 \begin{verbatim}
-consumer <- kafka::Consumer$new(broker, "input", group_id = unique_id)
-producer <- kafka::Producer$new(broker)
+# Per-app input topic and a fixed, shared group id for this app's replicas
+consumer <- Consumer$new(list(..., "group.id" = "backend_calc_service_v2"))
+consumer$subscribe("input.calculator")
+producer <- Producer$new(broker)
 
 while (TRUE) {
-  msgs <- consumer$consume(timeout = 1000)
+  msgs <- consumer$consume(100)  # short timeout, tight loop
   for (m in msgs) {
     data <- fromJSON(m$value)
     result <- compute(data)  # e.g., data$num1 + data$num2
     payload <- toJSON(list(num1=data$num1, num2=data$num2, result=result))
-    producer$produce(topic="output", key=m$key, value=payload)
+    producer$produce(topic = "output", key = m$key, value = payload)
   }
 }
 \end{verbatim}
 
-Each backend uses a \textbf{unique consumer group ID} (generated with \texttt{paste0("r-back-", uuid::UUIDgenerate())}) to ensure every backend instance receives every message, not just one instance in a shared group.
+Each app's backend uses a \textbf{fixed consumer group} shared by its three replicas (e.g.\ \texttt{backend\_calc\_service\_v2}). Kafka therefore distributes the topic's three partitions across the three replicas, so each message is processed by exactly one replica --- the source of the per-app parallelism. (This is the opposite of the frontends, which use a unique group per browser session so every participant receives all output independently.)
 
 % === SECTION 4: COMPARISON ===
 \section{Side-by-Side Comparison}
@@ -279,11 +297,13 @@ State relay & Spring Boot forwards to Plumber, stores in Redis & R services comm
 State store (live) & Redis (\texttt{session\_state:\{key\}}) & ConcurrentHashMap in SessionStateMonitor \\
 State store (persist) & PostgreSQL (SavedState entity) & PostgreSQL (SavedState entity) \\
 Spring Boot role & Active relay (routes every state update) & Passive listener (only save/restore/replay) \\
-Polling mechanism & \texttt{httr::GET} to Spring Boot/Redis & \texttt{kafka::Consumer\$consume()} on output topic \\
-Polling interval & 500ms (\texttt{reactivePoll}) & 500ms (\texttt{reactivePoll}) \\
-Restore mechanism & Write JSON to Redis & Produce JSON to \texttt{input} topic \\
-Infrastructure & Redis (lightweight) & Kafka + Zookeeper (heavier) \\
-Container count & ~20 & ~20 (but Kafka/ZK add 2 more) \\
+Topic / channel layout & Single Redis keyspace & Per-app input topics + shared output topic \\
+Receive mechanism & \texttt{httr::GET} to Spring Boot/Redis & \texttt{kafka::Consumer\$consume()} on output topic \\
+Poll interval (default) & 500ms (\texttt{reactivePoll}) & 150ms front poll, 50--100ms consume \\
+Restore mechanism & Write JSON to Redis & Produce JSON to the per-app input topic \\
+Parallelism unit & Plumber replicas (3) & 3 partitions $\times$ 3 replicas per app \\
+Infrastructure & Redis (lightweight) & Kafka 3.7.0 KRaft (no Zookeeper) \\
+Container count & ~20 & ~20 (Kafka adds 1, no separate ZK) \\
 R package maturity & Plumber (mature, CRAN) & kafka (new, 2024, INWT/R Consortium) \\
 Debugging & Standard HTTP tools (curl, Postman) & Kafka CLI tools, less familiar \\
 Event replay & Not built-in (must save to Redis/PG) & Natural (Kafka retains messages) \\
@@ -340,7 +360,7 @@ The monolithic baseline serves as the \textbf{performance floor} for latency (no
 
 \textbf{Layer 4 (bottom) --- Infrastructure:}
 \begin{itemize}[nosep]
-  \item Nginx (port-based routing), PostgreSQL, and either Redis or Kafka+Zookeeper
+  \item Nginx (port-based routing), PostgreSQL, and either Redis or Apache Kafka (KRaft mode)
 \end{itemize}
 
 \textbf{Visual:} Colour each layer differently. Draw arrows showing the iframe embedding (Layer 1 $\rightarrow$ Layer 3) and the state relay (Layer 3 $\leftrightarrow$ Layer 4 $\leftrightarrow$ Layer 2). Label the ``state relay'' arrow with ``This is where REST and Kafka differ.''
@@ -385,17 +405,18 @@ The monolithic baseline serves as the \textbf{performance floor} for latency (no
 \textbf{Flow:}
 \begin{enumerate}[nosep]
   \item \textbf{R Shiny Frontend} (user changes input)
-  \item $\xrightarrow{\text{produce}}$ \textbf{Kafka ``input'' topic} (key = sessionId)
-  \item $\xrightarrow{\text{consume}}$ \textbf{R Backend} (computation)
-  \item $\xrightarrow{\text{produce}}$ \textbf{Kafka ``output'' topic} (same key)
-  \item $\xleftarrow{\text{consume (500ms poll)}}$ \textbf{All Shiny Frontends}
+  \item $\xrightarrow{\text{produce}}$ \textbf{Per-app input topic} (e.g.\ \texttt{input.calculator}, key = sessionId)
+  \item $\xrightarrow{\text{consume}}$ \textbf{R Backend} (computation; 3 replicas share one group)
+  \item $\xrightarrow{\text{produce}}$ \textbf{Shared ``output'' topic} (same key)
+  \item $\xleftarrow{\text{consume (poll)}}$ \textbf{All Shiny Frontends}
 \end{enumerate}
 
 \textbf{Side box:} Spring Boot with a dashed arrow from the ``output'' topic labelled ``@KafkaListener (SessionStateMonitor) --- caches latest state for save/restore only.''
 
 \textbf{Key labels:}
 \begin{itemize}[nosep]
-  \item On the Kafka box: ``Message key = session UUID (routing mechanism)''
+  \item On the input topics: ``One topic per app --- backends read only their own traffic''
+  \item On the output topic: ``Shared, keyed by session UUID; also carries SYSTEM control messages''
   \item On the Spring Boot side box: ``NOT in the data path --- only listens for save/restore''
   \item On the R Backend: ``Standalone Rscript, continuous while(TRUE) consumer loop''
 \end{itemize}
@@ -403,8 +424,8 @@ The monolithic baseline serves as the \textbf{performance floor} for latency (no
 \textbf{Below the diagram, 3 bullet points:}
 \begin{itemize}[nosep]
   \item R services communicate directly via Kafka --- Spring Boot is not in the data path
-  \item Each backend uses a unique consumer group ID to receive all messages
-  \item Restore: Spring Boot produces saved JSON to ``input'' topic $\rightarrow$ R backend reprocesses $\rightarrow$ all frontends update
+  \item Input split per app (parallel scaling); output shared (cross-cutting consumers)
+  \item Restore: Spring Boot produces saved JSON to the per-app input topic $\rightarrow$ R backend reprocesses $\rightarrow$ all frontends update
 \end{itemize}
 \end{slidebox}
 
@@ -424,9 +445,9 @@ R backend & Plumber HTTP API & Kafka consumer (Rscript) \\
 Communication & Synchronous (HTTP) & Asynchronous (pub/sub) \\
 Spring Boot role & Active relay & Passive listener \\
 State store & Redis & Kafka topics + HashMap \\
+Topics & Single keyspace & Per-app input + shared output \\
 Decoupling & Tight & Loose \\
-Infrastructure & Lighter (Redis) & Heavier (Kafka + ZK) \\
-Debugging & curl, Postman & Kafka CLI \\
+Infrastructure & Lighter (Redis) & Heavier (Kafka, KRaft) \\
 Event replay & Manual (save to DB) & Built-in (topic retention) \\
 \bottomrule
 \end{tabular}

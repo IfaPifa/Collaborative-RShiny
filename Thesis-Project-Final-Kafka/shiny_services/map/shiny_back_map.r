@@ -5,7 +5,7 @@ broker <- "kafka:9092"
 topic_input <- "input.geospatial"
 topic_output <- "output"
 
-print("Geospatial Editor Backend Starting (Kafka DELTA mode)...")
+print("Geospatial Editor Backend Starting (Kafka whole-state mode)...")
 print("⏳ Giving Kafka 15 seconds to fully boot and create topic partitions...")
 Sys.sleep(15)
 
@@ -58,19 +58,23 @@ repeat {
 
     if (is.null(payload$appName) || payload$appName != "Geospatial") next
 
-    if (!is.null(payload$type) && payload$type %in% c("NEW_SENSOR", "DELTA")) {
+    # Whole-state model: the frontend (or Spring on restore) sends the full pin
+    # set; the backend is a stateless relay that echoes the complete state to
+    # output, exactly like the other apps. This makes getLatestState() capture
+    # the entire map, so save/restore and late-join work uniformly.
+    if (!is.null(payload$type) && payload$type %in% c("STATE", "NEW_SENSOR", "DELTA")) {
+      pins <- payload$pins
+      if (is.null(pins)) pins <- list()  # tolerate empty / malformed
       response_payload <- list(
         appName = "Geospatial",
-        type = "DELTA",
-        lat = as.numeric(payload$lat),
-        lng = as.numeric(payload$lng),
-        sensor_type = payload$sensor_type,
-        sender = payload$sender, 
+        type = "STATE",
+        pins = pins,
+        sender = payload$sender,
         status = "success",
         timestamp = as.numeric(Sys.time())
       )
       if (!is.null(payload[["_marker"]])) response_payload[["_marker"]] <- payload[["_marker"]]
-      json_response <- toJSON(response_payload, auto_unbox = TRUE)
+      json_response <- toJSON(response_payload, auto_unbox = TRUE, dataframe = "rows")
       producer$produce(topic_output, json_response, key = incoming_key)
     }
   }, error = function(e) { 

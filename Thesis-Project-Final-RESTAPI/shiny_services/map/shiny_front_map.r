@@ -16,6 +16,21 @@ sensor_icons <- awesomeIconList(
   "Audio Recorder" = makeAwesomeIcon(icon = "microphone", markerColor = "green", library = "fa")
 )
 
+# Resolve icons for a vector of sensor types, defaulting unknown types to the
+# first icon so unexpected values (e.g. benchmark payloads) never crash render.
+icons_for <- function(types) {
+  known <- names(sensor_icons)
+  safe <- ifelse(types %in% known, types, known[1])
+  sensor_icons[safe]
+}
+
+# Empty authoritative pin table — the full shared map state.
+empty_pins <- function() {
+  data.frame(lat = numeric(0), lng = numeric(0),
+             sensor_type = character(0), sender = character(0),
+             stringsAsFactors = FALSE)
+}
+
 ui <- page_sidebar(
   useShinyjs(),
   theme = bs_theme(version = 5, preset = "sandstone"), 
@@ -70,8 +85,38 @@ server <- function(input, output, session) {
     )
   })
   
-  state <- reactiveValues(last_timestamp = 0, last_sender = NULL)
-  
+  state <- reactiveValues(last_timestamp = 0, last_sender = NULL,
+                          pins = empty_pins())  # authoritative full map state
+
+  # Redraw the whole map from the authoritative pin table: clear then add all.
+  # statesnap-style semantics — render the full state so restore and late-join
+  # show exactly the saved set of pins instead of accumulating stale ones.
+  redraw_pins <- function(pins) {
+    proxy <- leafletProxy("map") %>% clearMarkers()
+    if (nrow(pins) > 0) {
+      proxy %>% addAwesomeMarkers(
+        lng = pins$lng, lat = pins$lat,
+        icon = icons_for(pins$sensor_type),
+        popup = paste("Type:", pins$sensor_type, "<br>Deployed by:", pins$sender)
+      )
+    }
+  }
+
+  apply_state <- function(data) {
+    if (is.null(data$type) || data$type != "STATE") return(invisible())
+    if (is.null(data$timestamp) || data$timestamp <= state$last_timestamp) return(invisible())
+    state$last_timestamp <- data$timestamp
+    if (!is.null(data$sender)) state$last_sender <- data$sender
+    pins <- data$pins
+    if (is.null(pins) || length(pins) == 0) {
+      pins <- empty_pins()
+    } else {
+      pins <- as.data.frame(pins, stringsAsFactors = FALSE)
+    }
+    state$pins <- pins
+    redraw_pins(pins)
+  }
+
   observe({
     if (permission_state() == "VIEWER") {
       disable("sensor_type")
@@ -96,44 +141,33 @@ server <- function(input, output, session) {
     
     click <- input$map_click
     id <- identity()
-    
+
+    # Whole-state model: append locally, then POST the ENTIRE pin set so the
+    # backend echoes the full map and save/restore captures everything.
+    new_pins <- rbind(state$pins, data.frame(
+      lat = click$lat, lng = click$lng,
+      sensor_type = input$sensor_type, sender = id$userId,
+      stringsAsFactors = FALSE
+    ))
+    state$pins <- new_pins
+    state$last_timestamp <- as.numeric(Sys.time())
+    redraw_pins(new_pins)  # optimistic local render
+
     payload <- list(
-      type = "NEW_SENSOR",
-      lat = click$lat,
-      lng = click$lng,
-      sensor_type = input$sensor_type,
-      sender = id$userId,
-      appName = "Geospatial"
+      appName = "Geospatial",
+      type = "STATE",
+      pins = new_pins,
+      sender = id$userId
     )
-    
+
     post_url <- paste0(spring_api_base, "/", id$sessionId, "/state")
-    
+
     future_promise({
-      httr::POST(url = post_url, body = toJSON(payload, auto_unbox = TRUE), encode = "raw", httr::content_type_json(), httr::timeout(10))
+      httr::POST(url = post_url,
+                 body = toJSON(payload, auto_unbox = TRUE, dataframe = "rows"),
+                 encode = "raw", httr::content_type_json(), httr::timeout(10))
     }) %...>% (function(res) {
-      if (httr::status_code(res) == 200) {
-        print("✅ Deployment signal sent.")
-        
-        # Update UI immediately from the response
-        raw_text <- httr::content(res, "text", encoding = "UTF-8")
-        if (nchar(raw_text) > 2) {
-          data <- fromJSON(raw_text)
-          
-          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
-            state$last_timestamp <- data$timestamp
-            state$last_sender <- data$sender
-            
-            if (!is.null(data$type) && data$type == "DELTA") {
-              leafletProxy("map") %>% 
-                addAwesomeMarkers(
-                  lng = data$lng, lat = data$lat, 
-                  icon = sensor_icons[[data$sensor_type]],
-                  popup = paste("Type:", data$sensor_type, "<br>Deployed by:", data$sender)
-                )
-            }
-          }
-        }
-      } else {
+      if (httr::status_code(res) != 200) {
         print(paste("❌ Deployment failed with status:", httr::status_code(res)))
       }
     })
@@ -152,21 +186,7 @@ server <- function(input, output, session) {
       if (httr::status_code(res) == 200) {
         raw_text <- httr::content(res, "text", encoding = "UTF-8")
         if (nchar(raw_text) > 2) {
-          data <- fromJSON(raw_text)
-          
-          if (!is.null(data$timestamp) && data$timestamp > state$last_timestamp) {
-            state$last_timestamp <- data$timestamp
-            state$last_sender <- data$sender
-            
-            if (!is.null(data$type) && data$type == "DELTA") {
-              leafletProxy("map") %>% 
-                addAwesomeMarkers(
-                  lng = data$lng, lat = data$lat, 
-                  icon = sensor_icons[[data$sensor_type]],
-                  popup = paste("Type:", data$sensor_type, "<br>Deployed by:", data$sender)
-                )
-            }
-          }
+          apply_state(fromJSON(raw_text))
         }
       }
     }, error = function(e) {
