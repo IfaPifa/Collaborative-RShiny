@@ -1,0 +1,772 @@
+{
+    "metrics": {
+        "multi_propagation_all_ms": {
+            "min": 77,
+            "med": 293,
+            "max": 16748,
+            "p(90)": 15904.7,
+            "p(95)": 16557.949999999997,
+            "avg": 4231
+        },
+        "http_req_duration": {
+            "avg": 15.798592989791418,
+            "min": 1.313898,
+            "med": 3.093523,
+            "max": 700.565011,
+            "p(90)": 8.313420799999992,
+            "p(95)": 92.02447040000001
+        },
+        "multi_success": {
+            "count": 18,
+            "rate": 0.3180418989396315
+        },
+        "http_req_receiving": {
+            "med": 0.071208,
+            "max": 37.513921,
+            "p(90)": 0.1279518,
+            "p(95)": 0.17414960000000002,
+            "avg": 0.11240663115845545,
+            "min": 0.014762
+        },
+        "vus_max": {
+            "value": 3,
+            "min": 3,
+            "max": 3
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iterations": {
+            "rate": 0.42405586525284195,
+            "count": 24
+        },
+        "http_req_sending": {
+            "p(90)": 0.036531799999999996,
+            "p(95)": 0.044072800000000016,
+            "avg": 0.021126505992010637,
+            "min": 0.003685,
+            "med": 0.015032,
+            "max": 1.884733
+        },
+        "vus": {
+            "min": 1,
+            "max": 3,
+            "value": 1
+        },
+        "group_duration": {
+            "med": 1900.162851,
+            "max": 17788.39477,
+            "p(90)": 17246.723857499997,
+            "p(95)": 17698.3379592,
+            "avg": 5434.050452166666,
+            "min": 599.307184
+        },
+        "multi_propagation_all_ms{app_name:MLTrainer}": {
+            "p(95)": 16665.5,
+            "avg": 16172.333333333334,
+            "min": 15846,
+            "med": 15923,
+            "max": 16748,
+            "p(90)": 16583,
+            "thresholds": {
+                "p(95)<143000": false
+            }
+        },
+        "multi_propagation_all_ms{app_name:MonteCarlo}": {
+            "min": 262,
+            "med": 294,
+            "max": 342,
+            "p(90)": 332.4,
+            "p(95)": 337.2,
+            "avg": 299.3333333333333,
+            "thresholds": {
+                "p(95)<1170": false
+            }
+        },
+        "multi_timeout": {
+            "rate": 0.10601396631321049,
+            "count": 6
+        },
+        "data_received": {
+            "count": 1416978,
+            "rate": 25036.57632642673
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 2253,
+            "thresholds": {
+                "rate<0.3": false
+            },
+            "value": 0
+        },
+        "multi_propagation_all_ms{app_name:Analytics}": {
+            "med": 15862,
+            "max": 16670,
+            "p(90)": 16508.4,
+            "p(95)": 16589.2,
+            "avg": 15994.333333333334,
+            "min": 15451,
+            "thresholds": {
+                "p(95)<830": true
+            }
+        },
+        "http_req_blocked": {
+            "avg": 0.006183130936529072,
+            "min": 0.001282,
+            "med": 0.004177,
+            "max": 0.899612,
+            "p(90)": 0.0079928,
+            "p(95)": 0.009250400000000004
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 700.565011,
+            "p(90)": 8.313420799999992,
+            "p(95)": 92.02447040000001,
+            "avg": 15.798592989791418,
+            "min": 1.313898,
+            "med": 3.093523
+        },
+        "multi_propagation_all_ms{app_name:Geospatial}": {
+            "p(90)": 284.4,
+            "p(95)": 285.7,
+            "avg": 274.3333333333333,
+            "min": 262,
+            "med": 274,
+            "max": 287,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "multi_propagation_all_ms{app_name:Advanced}": {
+            "p(90)": 275.4,
+            "p(95)": 277.2,
+            "avg": 205.66666666666666,
+            "min": 77,
+            "med": 261,
+            "max": 279,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "multi_propagation_all_ms{app_name:Calculator}": {
+            "min": 289,
+            "med": 292,
+            "max": 297,
+            "p(90)": 296,
+            "p(95)": 296.5,
+            "avg": 292.6666666666667,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "data_sent": {
+            "count": 712218,
+            "rate": 12584.175843277024
+        },
+        "multi_propagation_all_ms{app_name:ClimateAnomaly}": {
+            "max": 294,
+            "p(90)": 289.8,
+            "p(95)": 291.9,
+            "avg": 277,
+            "min": 264,
+            "med": 273,
+            "thresholds": {
+                "p(95)<1050": false
+            }
+        },
+        "http_reqs": {
+            "count": 2253,
+            "rate": 39.808244350610536
+        },
+        "multi_propagation_first_ms": {
+            "min": 10,
+            "med": 164,
+            "max": 287,
+            "p(90)": 268.6,
+            "p(95)": 272.54999999999995,
+            "avg": 148.11111111111111
+        },
+        "multi_propagation_all_ms{app_name:DataExchange}": {
+            "avg": 332.3333333333333,
+            "min": 263,
+            "med": 354,
+            "max": 380,
+            "p(90)": 374.8,
+            "p(95)": 377.4,
+            "thresholds": {
+                "p(95)<870": false
+            }
+        },
+        "iteration_duration": {
+            "p(90)": 18247.612500699997,
+            "p(95)": 18698.681345599998,
+            "avg": 6434.894764500001,
+            "min": 1600.552515,
+            "med": 2900.954967,
+            "max": 18789.499129
+        },
+        "http_req_waiting": {
+            "avg": 15.665059852640919,
+            "min": 1.262862,
+            "med": 3.002135,
+            "max": 700.01632,
+            "p(90)": 8.20249419999999,
+            "p(95)": 91.88011740000002
+        },
+        "checks": {
+            "fails": 12,
+            "passes": 36,
+            "value": 0.75
+        },
+        "http_req_connecting": {
+            "p(95)": 0,
+            "avg": 0.0005049178872614292,
+            "min": 0,
+            "med": 0,
+            "max": 0.33664,
+            "p(90)": 0
+        }
+    },
+    "setup_data": {},
+    "root_group": {
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                "multi_3users_Calculator": {
+                    "name": "multi_3users_Calculator",
+                    "path": "::multi_3users_Calculator",
+                    "id": "7d093ed4f5a0871e56e316d7850bdc6e",
+                    "groups": {},
+                    "checks": {
+                            "Calculator all 3 guests see update": {
+                                "name": "Calculator all 3 guests see update",
+                                "path": "::multi_3users_Calculator::Calculator all 3 guests see update",
+                                "id": "c1e7c1374f2ffd11e93ff7e912357190",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Calculator at least one guest sees update": {
+                                "name": "Calculator at least one guest sees update",
+                                "path": "::multi_3users_Calculator::Calculator at least one guest sees update",
+                                "id": "195cc655452542bed3be4ed2d24b01fb",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_5users_Calculator": {
+                    "name": "multi_5users_Calculator",
+                    "path": "::multi_5users_Calculator",
+                    "id": "9c1298f7a402af512b781d35c2e2f17e",
+                    "groups": {},
+                    "checks": {
+                            "Calculator all 5 guests see update": {
+                                "name": "Calculator all 5 guests see update",
+                                "path": "::multi_5users_Calculator::Calculator all 5 guests see update",
+                                "id": "da96829683af6148bdc4e84d70365556",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Calculator at least one guest sees update": {
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "Calculator at least one guest sees update",
+                                "path": "::multi_5users_Calculator::Calculator at least one guest sees update",
+                                "id": "ebe5e7d6558e4f630029de94a6840247"
+                            }
+                        }
+                },
+                "multi_10users_Calculator": {
+                    "path": "::multi_10users_Calculator",
+                    "id": "892ef46dfe53d3438784bc04fb0ff1c2",
+                    "groups": {},
+                    "checks": {
+                            "Calculator all 10 guests see update": {
+                                "name": "Calculator all 10 guests see update",
+                                "path": "::multi_10users_Calculator::Calculator all 10 guests see update",
+                                "id": "878870715e7ea21b7bfb3693177fbbc4",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Calculator at least one guest sees update": {
+                                "name": "Calculator at least one guest sees update",
+                                "path": "::multi_10users_Calculator::Calculator at least one guest sees update",
+                                "id": "51b27d7acd9b7a93fbfdf80262a583d1",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        },
+                    "name": "multi_10users_Calculator"
+                },
+                "multi_3users_Analytics": {
+                    "name": "multi_3users_Analytics",
+                    "path": "::multi_3users_Analytics",
+                    "id": "28cb2275ab4ad9d8796a7093d10a4ad1",
+                    "groups": {},
+                    "checks": {
+                            "Analytics all 3 guests see update": {
+                                "fails": 1,
+                                "name": "Analytics all 3 guests see update",
+                                "path": "::multi_3users_Analytics::Analytics all 3 guests see update",
+                                "id": "afe67d551ab707d433399a42929d43f0",
+                                "passes": 0
+                            },
+                            "Analytics at least one guest sees update": {
+                                "name": "Analytics at least one guest sees update",
+                                "path": "::multi_3users_Analytics::Analytics at least one guest sees update",
+                                "id": "92ae2f2f94671dbceac01c58a2d3743d",
+                                "passes": 0,
+                                "fails": 1
+                            }
+                        }
+                },
+                "multi_5users_Analytics": {
+                    "path": "::multi_5users_Analytics",
+                    "id": "563a6a95bafc6667bd6e9ba6ccc8e4a2",
+                    "groups": {},
+                    "checks": {
+                            "Analytics all 5 guests see update": {
+                                "id": "f5b3e0db144b082862eae9bd6daa280d",
+                                "passes": 0,
+                                "fails": 1,
+                                "name": "Analytics all 5 guests see update",
+                                "path": "::multi_5users_Analytics::Analytics all 5 guests see update"
+                            },
+                            "Analytics at least one guest sees update": {
+                                "name": "Analytics at least one guest sees update",
+                                "path": "::multi_5users_Analytics::Analytics at least one guest sees update",
+                                "id": "7809027361d01a9a130bf803ab157ffe",
+                                "passes": 0,
+                                "fails": 1
+                            }
+                        },
+                    "name": "multi_5users_Analytics"
+                },
+                "multi_3users_Advanced": {
+                    "id": "6dc8498602b62254535ae39a9cbb1cc9",
+                    "groups": {},
+                    "checks": {
+                            "Advanced all 3 guests see update": {
+                                "path": "::multi_3users_Advanced::Advanced all 3 guests see update",
+                                "id": "7b27d4dd630c4c20cd9fd16519841793",
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "Advanced all 3 guests see update"
+                            },
+                            "Advanced at least one guest sees update": {
+                                "name": "Advanced at least one guest sees update",
+                                "path": "::multi_3users_Advanced::Advanced at least one guest sees update",
+                                "id": "37bcebfccc5eb7570e5040c3f1f6e125",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        },
+                    "name": "multi_3users_Advanced",
+                    "path": "::multi_3users_Advanced"
+                },
+                "multi_5users_Advanced": {
+                    "path": "::multi_5users_Advanced",
+                    "id": "fbc4ee59c8fbb71eb66e5b11ca192976",
+                    "groups": {},
+                    "checks": {
+                            "Advanced all 5 guests see update": {
+                                "name": "Advanced all 5 guests see update",
+                                "path": "::multi_5users_Advanced::Advanced all 5 guests see update",
+                                "id": "92f941c5cd50ece5e42ff01518c5585f",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Advanced at least one guest sees update": {
+                                "name": "Advanced at least one guest sees update",
+                                "path": "::multi_5users_Advanced::Advanced at least one guest sees update",
+                                "id": "225245ab4124a3bf5b6b759bd3da9783",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        },
+                    "name": "multi_5users_Advanced"
+                },
+                "multi_10users_Analytics": {
+                    "name": "multi_10users_Analytics",
+                    "path": "::multi_10users_Analytics",
+                    "id": "1bc93f1b3eb2bc1d60b20f21f5f15b1f",
+                    "groups": {},
+                    "checks": {
+                            "Analytics all 10 guests see update": {
+                                "fails": 1,
+                                "name": "Analytics all 10 guests see update",
+                                "path": "::multi_10users_Analytics::Analytics all 10 guests see update",
+                                "id": "c1fbc84a1358d71f810ec0e42d0ff2fc",
+                                "passes": 0
+                            },
+                            "Analytics at least one guest sees update": {
+                                "passes": 0,
+                                "fails": 1,
+                                "name": "Analytics at least one guest sees update",
+                                "path": "::multi_10users_Analytics::Analytics at least one guest sees update",
+                                "id": "5ef3e46db5e4569412154b0c549ebf16"
+                            }
+                        }
+                },
+                "multi_3users_DataExchange": {
+                    "name": "multi_3users_DataExchange",
+                    "path": "::multi_3users_DataExchange",
+                    "id": "32a6945ecfb3bafb1c4d451f50bb5cb4",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange all 3 guests see update": {
+                                "name": "DataExchange all 3 guests see update",
+                                "path": "::multi_3users_DataExchange::DataExchange all 3 guests see update",
+                                "id": "abaa65674f31c36e5a8a46e5f557fac5",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "DataExchange at least one guest sees update": {
+                                "name": "DataExchange at least one guest sees update",
+                                "path": "::multi_3users_DataExchange::DataExchange at least one guest sees update",
+                                "id": "b5e3624bced85332a76924b51d29ef1b",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_5users_DataExchange": {
+                    "name": "multi_5users_DataExchange",
+                    "path": "::multi_5users_DataExchange",
+                    "id": "1853f75b18a7283e29e7b445aa916700",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange all 5 guests see update": {
+                                "name": "DataExchange all 5 guests see update",
+                                "path": "::multi_5users_DataExchange::DataExchange all 5 guests see update",
+                                "id": "56ec0218631ad9369d3466eaff052840",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "DataExchange at least one guest sees update": {
+                                "name": "DataExchange at least one guest sees update",
+                                "path": "::multi_5users_DataExchange::DataExchange at least one guest sees update",
+                                "id": "c56076cae679d6e6af572b8043e5d773",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_3users_MonteCarlo": {
+                    "name": "multi_3users_MonteCarlo",
+                    "path": "::multi_3users_MonteCarlo",
+                    "id": "c2d2b5e7d51a2d1d74a18a4daf91ab66",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo all 3 guests see update": {
+                                "name": "MonteCarlo all 3 guests see update",
+                                "path": "::multi_3users_MonteCarlo::MonteCarlo all 3 guests see update",
+                                "id": "9cc346549c072927fdf1ab09bcb5caba",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "MonteCarlo at least one guest sees update": {
+                                "name": "MonteCarlo at least one guest sees update",
+                                "path": "::multi_3users_MonteCarlo::MonteCarlo at least one guest sees update",
+                                "id": "43c539582c5c09633e436f4d07fc72e7",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_10users_Advanced": {
+                    "name": "multi_10users_Advanced",
+                    "path": "::multi_10users_Advanced",
+                    "id": "6b262892e38296ed7467cb4cce92deb3",
+                    "groups": {},
+                    "checks": {
+                            "Advanced all 10 guests see update": {
+                                "name": "Advanced all 10 guests see update",
+                                "path": "::multi_10users_Advanced::Advanced all 10 guests see update",
+                                "id": "70a6cccb29283a005859918e8319410a",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Advanced at least one guest sees update": {
+                                "name": "Advanced at least one guest sees update",
+                                "path": "::multi_10users_Advanced::Advanced at least one guest sees update",
+                                "id": "65e863a24a7d1ac5241c7e87c4ad1375",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_5users_MonteCarlo": {
+                    "name": "multi_5users_MonteCarlo",
+                    "path": "::multi_5users_MonteCarlo",
+                    "id": "839b7c90f974a3424a66c042a27fa72b",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo all 5 guests see update": {
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "MonteCarlo all 5 guests see update",
+                                "path": "::multi_5users_MonteCarlo::MonteCarlo all 5 guests see update",
+                                "id": "f227f01f2348c06a5a97af985753aa6f"
+                            },
+                            "MonteCarlo at least one guest sees update": {
+                                "name": "MonteCarlo at least one guest sees update",
+                                "path": "::multi_5users_MonteCarlo::MonteCarlo at least one guest sees update",
+                                "id": "6351dc66f919b59d59ca345599413047",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_3users_Geospatial": {
+                    "name": "multi_3users_Geospatial",
+                    "path": "::multi_3users_Geospatial",
+                    "id": "f2c33ba0b142a1ee8c06971a4a2c4c05",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial all 3 guests see update": {
+                                "name": "Geospatial all 3 guests see update",
+                                "path": "::multi_3users_Geospatial::Geospatial all 3 guests see update",
+                                "id": "d08d25d01fbaf0faa2f667e81d20227f",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Geospatial at least one guest sees update": {
+                                "name": "Geospatial at least one guest sees update",
+                                "path": "::multi_3users_Geospatial::Geospatial at least one guest sees update",
+                                "id": "daca350332dc17988ae6be752ed81b5e",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_10users_DataExchange": {
+                    "name": "multi_10users_DataExchange",
+                    "path": "::multi_10users_DataExchange",
+                    "id": "a238c0998abd5838f551c4b70218d5af",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange all 10 guests see update": {
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "DataExchange all 10 guests see update",
+                                "path": "::multi_10users_DataExchange::DataExchange all 10 guests see update",
+                                "id": "e3e1017bd6803256c619d8ea3f538117"
+                            },
+                            "DataExchange at least one guest sees update": {
+                                "name": "DataExchange at least one guest sees update",
+                                "path": "::multi_10users_DataExchange::DataExchange at least one guest sees update",
+                                "id": "b7da9f5b37a81082d4b13a202d9c4556",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_3users_ClimateAnomaly": {
+                    "path": "::multi_3users_ClimateAnomaly",
+                    "id": "7b8c3ad851b875c03f050023c057d1f6",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly all 3 guests see update": {
+                                "name": "ClimateAnomaly all 3 guests see update",
+                                "path": "::multi_3users_ClimateAnomaly::ClimateAnomaly all 3 guests see update",
+                                "id": "014dec96320c372484d1b1d5ab5cd3b7",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "ClimateAnomaly at least one guest sees update": {
+                                "name": "ClimateAnomaly at least one guest sees update",
+                                "path": "::multi_3users_ClimateAnomaly::ClimateAnomaly at least one guest sees update",
+                                "id": "d40cd961ee816e9a063bceaa48b5d7ec",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        },
+                    "name": "multi_3users_ClimateAnomaly"
+                },
+                "multi_5users_Geospatial": {
+                    "id": "0a528c236b3c586f6d523799286a5b31",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial all 5 guests see update": {
+                                "name": "Geospatial all 5 guests see update",
+                                "path": "::multi_5users_Geospatial::Geospatial all 5 guests see update",
+                                "id": "8ad212029772b94d88eca901a142d9bd",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Geospatial at least one guest sees update": {
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "Geospatial at least one guest sees update",
+                                "path": "::multi_5users_Geospatial::Geospatial at least one guest sees update",
+                                "id": "18f9f3c67b8dc15c7160a08909f87d8d"
+                            }
+                        },
+                    "name": "multi_5users_Geospatial",
+                    "path": "::multi_5users_Geospatial"
+                },
+                "multi_10users_MonteCarlo": {
+                    "name": "multi_10users_MonteCarlo",
+                    "path": "::multi_10users_MonteCarlo",
+                    "id": "683269d56818627abe56f89487ba1d4a",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo all 10 guests see update": {
+                                "name": "MonteCarlo all 10 guests see update",
+                                "path": "::multi_10users_MonteCarlo::MonteCarlo all 10 guests see update",
+                                "id": "69437acae5eabc2228a66cc72fbaa068",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "MonteCarlo at least one guest sees update": {
+                                "path": "::multi_10users_MonteCarlo::MonteCarlo at least one guest sees update",
+                                "id": "bb94ee2b7868caa912384a84c15c5ba2",
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "MonteCarlo at least one guest sees update"
+                            }
+                        }
+                },
+                "multi_5users_ClimateAnomaly": {
+                    "name": "multi_5users_ClimateAnomaly",
+                    "path": "::multi_5users_ClimateAnomaly",
+                    "id": "c068831f2205831a00edf60b1e1fff4c",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly all 5 guests see update": {
+                                "name": "ClimateAnomaly all 5 guests see update",
+                                "path": "::multi_5users_ClimateAnomaly::ClimateAnomaly all 5 guests see update",
+                                "id": "c6cbf849d89bb9827ba4d4c7e66f8fd0",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "ClimateAnomaly at least one guest sees update": {
+                                "fails": 0,
+                                "name": "ClimateAnomaly at least one guest sees update",
+                                "path": "::multi_5users_ClimateAnomaly::ClimateAnomaly at least one guest sees update",
+                                "id": "35a642b0c356af7cc62d8ea4b3549b22",
+                                "passes": 1
+                            }
+                        }
+                },
+                "multi_10users_Geospatial": {
+                    "name": "multi_10users_Geospatial",
+                    "path": "::multi_10users_Geospatial",
+                    "id": "54e3c7322f39bf7c6033b8a30b18e732",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial all 10 guests see update": {
+                                "name": "Geospatial all 10 guests see update",
+                                "path": "::multi_10users_Geospatial::Geospatial all 10 guests see update",
+                                "id": "521891340a955fc2643706733386e4de",
+                                "passes": 1,
+                                "fails": 0
+                            },
+                            "Geospatial at least one guest sees update": {
+                                "name": "Geospatial at least one guest sees update",
+                                "path": "::multi_10users_Geospatial::Geospatial at least one guest sees update",
+                                "id": "2cc711ede5d0c234d1c1776da9de0b67",
+                                "passes": 1,
+                                "fails": 0
+                            }
+                        }
+                },
+                "multi_10users_ClimateAnomaly": {
+                    "name": "multi_10users_ClimateAnomaly",
+                    "path": "::multi_10users_ClimateAnomaly",
+                    "id": "da99f6ea5a3fdb35ceb0011586bd3d9c",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly all 10 guests see update": {
+                                "id": "e496e2a572ca1711d1be5f702acb90d5",
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "ClimateAnomaly all 10 guests see update",
+                                "path": "::multi_10users_ClimateAnomaly::ClimateAnomaly all 10 guests see update"
+                            },
+                            "ClimateAnomaly at least one guest sees update": {
+                                "id": "daf0e5e746b3f2da329696fbba28df1e",
+                                "passes": 1,
+                                "fails": 0,
+                                "name": "ClimateAnomaly at least one guest sees update",
+                                "path": "::multi_10users_ClimateAnomaly::ClimateAnomaly at least one guest sees update"
+                            }
+                        }
+                },
+                "multi_3users_MLTrainer": {
+                    "name": "multi_3users_MLTrainer",
+                    "path": "::multi_3users_MLTrainer",
+                    "id": "6c66de27fb1103f698f96ef9ebd8ea7e",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer all 3 guests see update": {
+                                "id": "467edeca4cb497b8742353da4bcc9e75",
+                                "passes": 0,
+                                "fails": 1,
+                                "name": "MLTrainer all 3 guests see update",
+                                "path": "::multi_3users_MLTrainer::MLTrainer all 3 guests see update"
+                            },
+                            "MLTrainer at least one guest sees update": {
+                                "name": "MLTrainer at least one guest sees update",
+                                "path": "::multi_3users_MLTrainer::MLTrainer at least one guest sees update",
+                                "id": "346cf71a55e8008545ea1de319edf412",
+                                "passes": 0,
+                                "fails": 1
+                            }
+                        }
+                },
+                "multi_5users_MLTrainer": {
+                    "name": "multi_5users_MLTrainer",
+                    "path": "::multi_5users_MLTrainer",
+                    "id": "b1243f1fd160887a28b4a941e84c45ae",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer all 5 guests see update": {
+                                "id": "2f42d7a451ec5ded1b16bee1d4084980",
+                                "passes": 0,
+                                "fails": 1,
+                                "name": "MLTrainer all 5 guests see update",
+                                "path": "::multi_5users_MLTrainer::MLTrainer all 5 guests see update"
+                            },
+                            "MLTrainer at least one guest sees update": {
+                                "name": "MLTrainer at least one guest sees update",
+                                "path": "::multi_5users_MLTrainer::MLTrainer at least one guest sees update",
+                                "id": "c8dc3e4e5ceff4296d0f7bfe6107a4cf",
+                                "passes": 0,
+                                "fails": 1
+                            }
+                        }
+                },
+                "multi_10users_MLTrainer": {
+                    "name": "multi_10users_MLTrainer",
+                    "path": "::multi_10users_MLTrainer",
+                    "id": "813aba9e2b53e8eaf442fd96ae91d40f",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer all 10 guests see update": {
+                                "name": "MLTrainer all 10 guests see update",
+                                "path": "::multi_10users_MLTrainer::MLTrainer all 10 guests see update",
+                                "id": "62c7cf605a0637f2b31c81e22e24a541",
+                                "passes": 0,
+                                "fails": 1
+                            },
+                            "MLTrainer at least one guest sees update": {
+                                "name": "MLTrainer at least one guest sees update",
+                                "path": "::multi_10users_MLTrainer::MLTrainer at least one guest sees update",
+                                "id": "450b7a17e8766b83668ff7a0dea9546e",
+                                "passes": 0,
+                                "fails": 1
+                            }
+                        }
+                }
+            },
+            "checks": {}
+        }
+}

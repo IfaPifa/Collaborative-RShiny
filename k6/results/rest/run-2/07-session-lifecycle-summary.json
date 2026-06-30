@@ -1,0 +1,357 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "lifecycle_Analytics": {
+                "path": "::lifecycle_Analytics",
+                "id": "aa2d49cef65239905dea52fdf387772c",
+                "groups": {},
+                "checks": {
+                        "Analytics lifecycle complete": {
+                            "id": "d84941affc01c69b039d276a9ecb377b",
+                            "passes": 30,
+                            "fails": 0,
+                            "name": "Analytics lifecycle complete",
+                            "path": "::lifecycle_Analytics::Analytics lifecycle complete"
+                        }
+                    },
+                "name": "lifecycle_Analytics"
+            },
+            "lifecycle_Advanced": {
+                "name": "lifecycle_Advanced",
+                "path": "::lifecycle_Advanced",
+                "id": "f333beeca5550e99727a7a3c46e312a9",
+                "groups": {},
+                "checks": {
+                        "Advanced lifecycle complete": {
+                            "path": "::lifecycle_Advanced::Advanced lifecycle complete",
+                            "id": "519e5c19ae9eb2814ce4042d2a5d9a02",
+                            "passes": 31,
+                            "fails": 0,
+                            "name": "Advanced lifecycle complete"
+                        }
+                    }
+            },
+            "lifecycle_DataExchange": {
+                "checks": {
+                    "DataExchange lifecycle complete": {
+                        "path": "::lifecycle_DataExchange::DataExchange lifecycle complete",
+                        "id": "2ff6233482d569c5e707ded5aa15e96e",
+                        "passes": 33,
+                        "fails": 0,
+                        "name": "DataExchange lifecycle complete"
+                    }
+                },
+                "name": "lifecycle_DataExchange",
+                "path": "::lifecycle_DataExchange",
+                "id": "c5a22f376b0932307cce4e82a0911849",
+                "groups": {}
+            },
+            "lifecycle_MonteCarlo": {
+                "checks": {
+                    "MonteCarlo lifecycle complete": {
+                        "id": "a30dbecd95e7d44703accea518dc586a",
+                        "passes": 32,
+                        "fails": 0,
+                        "name": "MonteCarlo lifecycle complete",
+                        "path": "::lifecycle_MonteCarlo::MonteCarlo lifecycle complete"
+                    }
+                },
+                "name": "lifecycle_MonteCarlo",
+                "path": "::lifecycle_MonteCarlo",
+                "id": "3e76de859a367dde6395ed48f105d767",
+                "groups": {}
+            },
+            "lifecycle_Geospatial": {
+                "name": "lifecycle_Geospatial",
+                "path": "::lifecycle_Geospatial",
+                "id": "223c63f88b36785743b66f7e21d6448b",
+                "groups": {},
+                "checks": {
+                        "Geospatial lifecycle complete": {
+                            "name": "Geospatial lifecycle complete",
+                            "path": "::lifecycle_Geospatial::Geospatial lifecycle complete",
+                            "id": "e7c95077ecc8a45dbada2c51e236546c",
+                            "passes": 33,
+                            "fails": 0
+                        }
+                    }
+            },
+            "lifecycle_ClimateAnomaly": {
+                "name": "lifecycle_ClimateAnomaly",
+                "path": "::lifecycle_ClimateAnomaly",
+                "id": "df6c85e11c884c47e5197678b885e9c8",
+                "groups": {},
+                "checks": {
+                        "ClimateAnomaly lifecycle complete": {
+                            "fails": 0,
+                            "name": "ClimateAnomaly lifecycle complete",
+                            "path": "::lifecycle_ClimateAnomaly::ClimateAnomaly lifecycle complete",
+                            "id": "58dd474e3a2bf2bb7c0622afe333dc98",
+                            "passes": 34
+                        }
+                    }
+            },
+            "lifecycle_Calculator": {
+                "checks": {
+                    "Calculator lifecycle complete": {
+                        "passes": 28,
+                        "fails": 0,
+                        "name": "Calculator lifecycle complete",
+                        "path": "::lifecycle_Calculator::Calculator lifecycle complete",
+                        "id": "d01a20b3d997ac33b94196f1df2d7ede"
+                    }
+                },
+                "name": "lifecycle_Calculator",
+                "path": "::lifecycle_Calculator",
+                "id": "1aebeac53f8742b3b63e7fd9064653cf",
+                "groups": {}
+            },
+            "lifecycle_MLTrainer": {
+                "path": "::lifecycle_MLTrainer",
+                "id": "8a6b2e93e748225ae8d467e5cc41406f",
+                "groups": {},
+                "checks": {
+                        "MLTrainer lifecycle complete": {
+                            "name": "MLTrainer lifecycle complete",
+                            "path": "::lifecycle_MLTrainer::MLTrainer lifecycle complete",
+                            "id": "bc385bba7c6d42b3f0d8cb98ee81d40f",
+                            "passes": 24,
+                            "fails": 0
+                        }
+                    },
+                "name": "lifecycle_MLTrainer"
+            }
+        },
+        "checks": {},
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "lifecycle_ops": {
+            "count": 2793,
+            "rate": 10.339916033985498
+        },
+        "lifecycle_op_ms{app_name:Geospatial}": {
+            "p(95)": 7182.312095650001,
+            "avg": 1431.1637618842103,
+            "min": 2.423631,
+            "med": 531.8162185,
+            "max": 14095.900345,
+            "p(90)": 4458.1135108000035,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "http_req_connecting": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.004729316280469457,
+            "min": 0,
+            "med": 0,
+            "max": 0.428039
+        },
+        "http_req_tls_handshaking": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0
+        },
+        "http_req_waiting": {
+            "p(95)": 9699.978479799913,
+            "avg": 2058.39817242612,
+            "min": 2.120771,
+            "med": 653.002309,
+            "max": 87980.019886,
+            "p(90)": 5976.1116966000045
+        },
+        "checks": {
+            "passes": 245,
+            "fails": 0,
+            "value": 1
+        },
+        "iteration_duration": {
+            "p(95)": 62735.94296779997,
+            "avg": 26059.644910938758,
+            "min": 1858.932585,
+            "med": 17901.573444,
+            "max": 165801.136627,
+            "p(90)": 51934.180782999996
+        },
+        "iterations": {
+            "count": 245,
+            "rate": 0.9070101784197805
+        },
+        "lifecycle_op_ms{app_name:DataExchange}": {
+            "avg": 1795.316903110193,
+            "min": 2.184357,
+            "med": 639,
+            "max": 13896,
+            "p(90)": 6578.0394012000015,
+            "p(95)": 9011.451644199995,
+            "thresholds": {
+                "p(95)<870": true
+            }
+        },
+        "lifecycle_op_ms{app_name:Calculator}": {
+            "avg": 1813.280842525316,
+            "min": 2.885539,
+            "med": 819.5963955,
+            "max": 14149,
+            "p(90)": 6267.6720375,
+            "p(95)": 7523.713940000001,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "lifecycle_op_ms{app_name:MonteCarlo}": {
+            "avg": 1508.6599155880679,
+            "min": 2.748661,
+            "med": 584.276858,
+            "max": 14555,
+            "p(90)": 5425.940157400004,
+            "p(95)": 7115.2284854,
+            "thresholds": {
+                "p(95)<1170": true
+            }
+        },
+        "http_req_duration": {
+            "max": 87980.170906,
+            "p(90)": 5976.204353600004,
+            "p(95)": 9700.089103099914,
+            "avg": 2058.5932433514886,
+            "min": 2.184357,
+            "med": 653.545662
+        },
+        "data_sent": {
+            "count": 1130045,
+            "rate": 4183.519661519922
+        },
+        "http_req_receiving": {
+            "p(95)": 0.2841197999999995,
+            "avg": 0.16297077700872697,
+            "min": 0.024957,
+            "med": 0.103938,
+            "max": 40.350894,
+            "p(90)": 0.2108834
+        },
+        "vus": {
+            "value": 2,
+            "min": 1,
+            "max": 50
+        },
+        "http_req_blocked": {
+            "min": 0.001643,
+            "med": 0.005408,
+            "max": 0.628181,
+            "p(90)": 0.008801200000000002,
+            "p(95)": 0.010854099999999993,
+            "avg": 0.01224885585314474
+        },
+        "http_req_sending": {
+            "min": 0.0067,
+            "med": 0.0257,
+            "max": 4.073008,
+            "p(90)": 0.047382000000000014,
+            "p(95)": 0.05941699999999995,
+            "avg": 0.032100148359915655
+        },
+        "lifecycle_op_ms{app_name:Advanced}": {
+            "avg": 1634.0730034068777,
+            "min": 3.261638,
+            "med": 756,
+            "max": 14110.107585,
+            "p(90)": 5720.89354,
+            "p(95)": 7309.162026999998,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "lifecycle_op_ms{app_name:MLTrainer}": {
+            "min": 2.795563,
+            "med": 990.6306705,
+            "max": 87980.170906,
+            "p(90)": 23913.295399200004,
+            "p(95)": 35044.59647039989,
+            "avg": 6719.218793957794,
+            "thresholds": {
+                "p(95)<143000": false
+            }
+        },
+        "http_reqs": {
+            "count": 3323,
+            "rate": 12.302019685260941
+        },
+        "group_duration": {
+            "avg": 25558.914124465304,
+            "min": 1358.370203,
+            "med": 17401.10188,
+            "max": 165300.012235,
+            "p(90)": 51433.3322868,
+            "p(95)": 62235.621579399965
+        },
+        "lifecycle_op_ms": {
+            "min": 2.184357,
+            "med": 673.376137,
+            "max": 87980.170906,
+            "p(90)": 6358.938805000001,
+            "p(95)": 11150.959002800002,
+            "avg": 2200.5354990182555
+        },
+        "lifecycle_errors": {
+            "passes": 0,
+            "fails": 2265,
+            "thresholds": {
+                "rate<0.25": false
+            },
+            "value": 0
+        },
+        "lifecycle_op_ms{app_name:Analytics}": {
+            "med": 738.867661,
+            "max": 14469.964368,
+            "p(90)": 6423.4055401,
+            "p(95)": 10529.470146099959,
+            "avg": 1924.3144140145341,
+            "min": 2.413654,
+            "thresholds": {
+                "p(95)<830": true
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 5976.204353600004,
+            "p(95)": 9700.089103099914,
+            "avg": 2058.5932433514886,
+            "min": 2.184357,
+            "med": 653.545662,
+            "max": 87980.170906
+        },
+        "lifecycle_op_ms{app_name:ClimateAnomaly}": {
+            "min": 2.752116,
+            "med": 484,
+            "max": 13611.751184,
+            "p(90)": 3731,
+            "p(95)": 7365.494521,
+            "avg": 1429.746251283465,
+            "thresholds": {
+                "p(95)<1050": true
+            }
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 3323,
+            "value": 0
+        },
+        "data_received": {
+            "count": 8938726,
+            "rate": 33091.89985349196
+        }
+    },
+    "setup_data": {}
+}

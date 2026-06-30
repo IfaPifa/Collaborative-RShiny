@@ -1,0 +1,374 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /root/Collaborative-RShiny/k6/01-state-relay-latency.js
+        output: json (/root/Collaborative-RShiny/k6/results/rest/run-5/01-state-relay-latency-poll100.json)
+
+     scenarios: (100.00%) 1 scenario, 20 max VUs, 4m30s max duration (incl. graceful stop):
+              * relay_latency: Up to 20 looping VUs for 4m0s over 5 stages (gracefulRampDown: 30s, gracefulStop: 30s)
+
+time="2026-06-29T20:33:33Z" level=info msg="Health check passed. 8 apps registered." source=console
+
+running (0m01.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   0% ] 01/20 VUs  0m00.9s/4m00.0s
+
+running (0m02.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   1% ] 01/20 VUs  0m01.9s/4m00.0s
+
+running (0m03.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   1% ] 01/20 VUs  0m02.9s/4m00.0s
+
+running (0m04.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   2% ] 01/20 VUs  0m03.9s/4m00.0s
+
+running (0m05.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   2% ] 01/20 VUs  0m04.9s/4m00.0s
+
+running (0m06.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   2% ] 01/20 VUs  0m05.9s/4m00.0s
+
+running (0m07.0s), 01/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   3% ] 01/20 VUs  0m06.9s/4m00.0s
+
+running (0m08.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   3% ] 02/20 VUs  0m07.9s/4m00.0s
+
+running (0m09.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   4% ] 02/20 VUs  0m08.9s/4m00.0s
+
+running (0m10.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   4% ] 02/20 VUs  0m09.9s/4m00.0s
+
+running (0m11.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   5% ] 02/20 VUs  0m10.9s/4m00.0s
+
+running (0m12.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   5% ] 02/20 VUs  0m11.9s/4m00.0s
+
+running (0m13.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   5% ] 02/20 VUs  0m12.9s/4m00.0s
+
+running (0m14.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   6% ] 02/20 VUs  0m13.9s/4m00.0s
+
+running (0m15.0s), 02/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   6% ] 02/20 VUs  0m14.9s/4m00.0s
+
+running (0m16.0s), 03/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   7% ] 03/20 VUs  0m15.9s/4m00.0s
+
+running (0m17.0s), 03/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   7% ] 03/20 VUs  0m16.9s/4m00.0s
+
+running (0m18.0s), 03/20 VUs, 0 complete and 0 interrupted iterations
+relay_latency   [   7% ] 03/20 VUs  0m17.9s/4m00.0s
+
+running (0m19.0s), 03/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [   8% ] 03/20 VUs  0m18.9s/4m00.0s
+
+running (0m20.0s), 03/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [   8% ] 03/20 VUs  0m19.9s/4m00.0s
+
+running (0m21.0s), 03/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [   9% ] 03/20 VUs  0m20.9s/4m00.0s
+
+running (0m22.0s), 03/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [   9% ] 03/20 VUs  0m21.9s/4m00.0s
+
+running (0m23.0s), 04/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [  10% ] 04/20 VUs  0m22.9s/4m00.0s
+
+running (0m24.0s), 04/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [  10% ] 04/20 VUs  0m23.9s/4m00.0s
+
+running (0m25.0s), 04/20 VUs, 1 complete and 0 interrupted iterations
+relay_latency   [  10% ] 04/20 VUs  0m24.9s/4m00.0s
+
+running (0m26.0s), 04/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  11% ] 04/20 VUs  0m25.9s/4m00.0s
+
+running (0m27.0s), 04/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  11% ] 04/20 VUs  0m26.9s/4m00.0s
+
+running (0m28.0s), 04/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  12% ] 04/20 VUs  0m27.9s/4m00.0s
+
+running (0m29.0s), 04/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  12% ] 04/20 VUs  0m28.9s/4m00.0s
+
+running (0m30.0s), 04/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  12% ] 04/20 VUs  0m29.9s/4m00.0s
+
+running (0m31.0s), 05/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  13% ] 05/20 VUs  0m30.9s/4m00.0s
+
+running (0m32.0s), 05/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  13% ] 05/20 VUs  0m31.9s/4m00.0s
+
+running (0m33.0s), 05/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  14% ] 05/20 VUs  0m32.9s/4m00.0s
+
+running (0m34.0s), 05/20 VUs, 2 complete and 0 interrupted iterations
+relay_latency   [  14% ] 05/20 VUs  0m33.9s/4m00.0s
+
+running (0m35.0s), 05/20 VUs, 3 complete and 0 interrupted iterations
+relay_latency   [  15% ] 05/20 VUs  0m34.9s/4m00.0s
+
+running (0m36.0s), 05/20 VUs, 3 complete and 0 interrupted iterations
+relay_latency   [  15% ] 05/20 VUs  0m35.9s/4m00.0s
+
+running (0m37.0s), 05/20 VUs, 4 complete and 0 interrupted iterations
+relay_latency   [  15% ] 05/20 VUs  0m36.9s/4m00.0s
+
+running (0m38.0s), 05/20 VUs, 4 complete and 0 interrupted iterations
+relay_latency   [  16% ] 05/20 VUs  0m37.9s/4m00.0s
+
+running (0m39.0s), 05/20 VUs, 4 complete and 0 interrupted iterations
+relay_latency   [  16% ] 05/20 VUs  0m38.9s/4m00.0s
+
+running (0m40.0s), 05/20 VUs, 4 complete and 0 interrupted iterations
+relay_latency   [  17% ] 05/20 VUs  0m39.9s/4m00.0s
+
+running (0m41.0s), 05/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  17% ] 05/20 VUs  0m40.9s/4m00.0s
+
+running (0m42.0s), 05/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  17% ] 05/20 VUs  0m41.9s/4m00.0s
+
+running (0m43.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  18% ] 06/20 VUs  0m42.9s/4m00.0s
+
+running (0m44.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  18% ] 06/20 VUs  0m43.9s/4m00.0s
+
+running (0m45.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  19% ] 06/20 VUs  0m44.9s/4m00.0s
+
+running (0m46.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  19% ] 06/20 VUs  0m45.9s/4m00.0s
+
+running (0m47.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  20% ] 06/20 VUs  0m46.9s/4m00.0s
+
+running (0m48.0s), 06/20 VUs, 5 complete and 0 interrupted iterations
+relay_latency   [  20% ] 06/20 VUs  0m47.9s/4m00.0s
+
+running (0m49.0s), 06/20 VUs, 6 complete and 0 interrupted iterations
+relay_latency   [  20% ] 06/20 VUs  0m48.9s/4m00.0s
+
+running (0m50.0s), 06/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  21% ] 06/20 VUs  0m49.9s/4m00.0s
+
+running (0m51.0s), 06/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  21% ] 06/20 VUs  0m50.9s/4m00.0s
+
+running (0m52.0s), 06/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  22% ] 06/20 VUs  0m51.9s/4m00.0s
+
+running (0m53.0s), 06/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  22% ] 06/20 VUs  0m52.9s/4m00.0s
+
+running (0m54.0s), 06/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  22% ] 06/20 VUs  0m53.9s/4m00.0s
+
+running (0m55.0s), 07/20 VUs, 7 complete and 0 interrupted iterations
+relay_latency   [  23% ] 07/20 VUs  0m54.9s/4m00.0s
+
+running (0m56.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  23% ] 07/20 VUs  0m55.9s/4m00.0s
+
+running (0m57.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  24% ] 07/20 VUs  0m56.9s/4m00.0s
+
+running (0m58.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  24% ] 07/20 VUs  0m57.9s/4m00.0s
+
+running (0m59.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  25% ] 07/20 VUs  0m58.9s/4m00.0s
+
+running (1m00.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  25% ] 07/20 VUs  0m59.9s/4m00.0s
+
+running (1m01.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  25% ] 07/20 VUs  1m00.9s/4m00.0s
+
+running (1m02.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  26% ] 07/20 VUs  1m01.9s/4m00.0s
+
+running (1m03.0s), 07/20 VUs, 8 complete and 0 interrupted iterations
+relay_latency   [  26% ] 07/20 VUs  1m02.9s/4m00.0s
+
+running (1m04.0s), 07/20 VUs, 9 complete and 0 interrupted iterations
+relay_latency   [  27% ] 07/20 VUs  1m03.9s/4m00.0s
+
+running (1m05.0s), 07/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  27% ] 07/20 VUs  1m04.9s/4m00.0s
+
+running (1m06.0s), 07/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  27% ] 07/20 VUs  1m05.9s/4m00.0s
+
+running (1m07.0s), 08/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  28% ] 08/20 VUs  1m06.9s/4m00.0s
+
+running (1m08.0s), 08/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  28% ] 08/20 VUs  1m07.9s/4m00.0s
+
+running (1m09.0s), 08/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  29% ] 08/20 VUs  1m08.9s/4m00.0s
+
+running (1m10.0s), 08/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  29% ] 08/20 VUs  1m09.9s/4m00.0s
+
+running (1m11.0s), 08/20 VUs, 10 complete and 0 interrupted iterations
+relay_latency   [  30% ] 08/20 VUs  1m10.9s/4m00.0s
+
+running (1m12.0s), 08/20 VUs, 11 complete and 0 interrupted iterations
+relay_latency   [  30% ] 08/20 VUs  1m11.9s/4m00.0s
+
+running (1m13.0s), 08/20 VUs, 11 complete and 0 interrupted iterations
+relay_latency   [  30% ] 08/20 VUs  1m12.9s/4m00.0s
+
+running (1m14.0s), 08/20 VUs, 11 complete and 0 interrupted iterations
+relay_latency   [  31% ] 08/20 VUs  1m13.9s/4m00.0s
+
+running (1m15.0s), 08/20 VUs, 11 complete and 0 interrupted iterations
+relay_latency   [  31% ] 08/20 VUs  1m14.9s/4m00.0s
+
+running (1m16.0s), 08/20 VUs, 11 complete and 0 interrupted iterations
+relay_latency   [  32% ] 08/20 VUs  1m15.9s/4m00.0s
+
+running (1m17.0s), 08/20 VUs, 12 complete and 0 interrupted iterations
+relay_latency   [  32% ] 08/20 VUs  1m16.9s/4m00.0s
+
+running (1m18.0s), 08/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  32% ] 08/20 VUs  1m17.9s/4m00.0s
+
+running (1m19.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  33% ] 09/20 VUs  1m18.9s/4m00.0s
+
+running (1m20.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  33% ] 09/20 VUs  1m19.9s/4m00.0s
+
+running (1m21.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  34% ] 09/20 VUs  1m20.9s/4m00.0s
+
+running (1m22.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  34% ] 09/20 VUs  1m21.9s/4m00.0s
+
+running (1m23.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  35% ] 09/20 VUs  1m22.9s/4m00.0s
+
+running (1m24.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  35% ] 09/20 VUs  1m23.9s/4m00.0s
+
+running (1m25.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  35% ] 09/20 VUs  1m24.9s/4m00.0s
+
+running (1m26.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  36% ] 09/20 VUs  1m25.9s/4m00.0s
+
+running (1m27.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  36% ] 09/20 VUs  1m26.9s/4m00.0s
+
+running (1m28.0s), 09/20 VUs, 13 complete and 0 interrupted iterations
+relay_latency   [  37% ] 09/20 VUs  1m27.9s/4m00.0s
+
+running (1m29.0s), 09/20 VUs, 14 complete and 0 interrupted iterations
+relay_latency   [  37% ] 09/20 VUs  1m28.9s/4m00.0s
+
+running (1m30.0s), 09/20 VUs, 14 complete and 0 interrupted iterations
+relay_latency   [  37% ] 09/20 VUs  1m29.9s/4m00.0s
+
+running (1m31.0s), 10/20 VUs, 14 complete and 0 interrupted iterations
+relay_latency   [  38% ] 10/20 VUs  1m30.9s/4m00.0s
+
+running (1m32.0s), 10/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  38% ] 10/20 VUs  1m31.9s/4m00.0s
+
+running (1m33.0s), 10/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  39% ] 10/20 VUs  1m32.9s/4m00.0s
+
+running (1m34.0s), 10/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  39% ] 10/20 VUs  1m33.9s/4m00.0s
+
+running (1m35.0s), 10/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  40% ] 10/20 VUs  1m34.9s/4m00.0s
+
+running (1m36.0s), 10/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  40% ] 10/20 VUs  1m35.9s/4m00.0s
+
+running (1m37.0s), 11/20 VUs, 15 complete and 0 interrupted iterations
+relay_latency   [  40% ] 11/20 VUs  1m36.9s/4m00.0s
+
+     █ relay_Calculator
+
+       ✓ Calculator relay ok
+
+     █ relay_Analytics
+
+       ✓ Analytics relay ok
+
+     █ relay_Advanced
+
+       ✓ Advanced relay ok
+
+     █ relay_DataExchange
+
+       ✓ DataExchange relay ok
+
+     █ relay_MonteCarlo
+
+       ✓ MonteCarlo relay ok
+
+     █ relay_Geospatial
+
+       ✓ Geospatial relay ok
+
+     █ relay_ClimateAnomaly
+
+       ✓ ClimateAnomaly relay ok
+
+     █ relay_MLTrainer
+
+       ✓ MLTrainer relay ok
+
+     checks..........................: 100.00% 190 out of 190
+     data_received...................: 675 kB  6.9 kB/s
+     data_sent.......................: 240 kB  2.4 kB/s
+     group_duration..................: avg=1.5s     min=17.01ms med=25.62ms  max=37.33s   p(90)=123.83ms p(95)=14.1s   
+     http_req_blocked................: avg=15.26µs  min=2.16µs  med=6.12µs   max=728.77µs p(90)=9.74µs   p(95)=12.7µs  
+     http_req_connecting.............: avg=5.86µs   min=0s      med=0s       max=367.49µs p(90)=0s       p(95)=0s      
+     http_req_duration...............: avg=475.18ms min=1.84ms  med=7.98ms   max=37.32s   p(90)=40.92ms  p(95)=109.29ms
+       { expected_response:true }....: avg=475.18ms min=1.84ms  med=7.98ms   max=37.32s   p(90)=40.92ms  p(95)=109.29ms
+   ✓ http_req_failed.................: 0.00%   0 out of 607
+     http_req_receiving..............: avg=111.92µs min=26.53µs med=107.68µs max=1.3ms    p(90)=155.89µs p(95)=180.06µs
+     http_req_sending................: avg=37.02µs  min=6.63µs  med=34.42µs  max=222.58µs p(90)=54.72µs  p(95)=68.66µs 
+     http_req_tls_handshaking........: avg=0s       min=0s      med=0s       max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting................: avg=475.03ms min=1.77ms  med=7.82ms   max=37.32s   p(90)=40.75ms  p(95)=109.12ms
+     http_reqs.......................: 607     6.195785/s
+     iteration_duration..............: avg=23s      min=17.06s  med=18.91s   max=41.69s   p(90)=32.48s   p(95)=36.28s  
+     iterations......................: 15      0.153108/s
+     relay_poll_ms...................: avg=4.25ms   min=2ms     med=4ms      max=12ms     p(90)=5ms      p(95)=6.54ms  
+     relay_post_ms...................: avg=1.49s    min=6ms     med=12.5ms   max=37.32s   p(90)=109.59ms p(95)=14.09s  
+     relay_success...................: 190     1.939372/s
+     relay_total_ms..................: avg=1.49s    min=10ms    med=17ms     max=37.32s   p(90)=114.39ms p(95)=14.09s  
+     ✓ { app_name:Advanced }.........: avg=15.84ms  min=11ms    med=16ms     max=19ms     p(90)=18ms     p(95)=18.79ms 
+     ✓ { app_name:Analytics }........: avg=15.32ms  min=12ms    med=15ms     max=20ms     p(90)=18.6ms   p(95)=19.79ms 
+     ✓ { app_name:Calculator }.......: avg=14.52ms  min=10ms    med=14ms     max=24ms     p(90)=17ms     p(95)=17.79ms 
+     ✓ { app_name:ClimateAnomaly }...: avg=26.32ms  min=18ms    med=27ms     max=34ms     p(90)=30.2ms   p(95)=31.79ms 
+     ✓ { app_name:DataExchange }.....: avg=16.55ms  min=12ms    med=16ms     max=23ms     p(90)=19ms     p(95)=20.59ms 
+     ✓ { app_name:Geospatial }.......: avg=15.04ms  min=10ms    med=15ms     max=18ms     p(90)=17ms     p(95)=17.79ms 
+     ✓ { app_name:MLTrainer }........: avg=18.64s   min=12.71s  med=14.58s   max=37.32s   p(90)=28.13s   p(95)=31.95s  
+     ✓ { app_name:MonteCarlo }.......: avg=78.52ms  min=35ms    med=68ms     max=134ms    p(90)=122.8ms  p(95)=129.19ms
+     vus.............................: 11      min=1          max=11
+     vus_max.........................: 20      min=20         max=20
+
+
+running (1m38.0s), 00/20 VUs, 15 complete and 11 interrupted iterations
+relay_latency ✗ [  41% ] 11/20 VUs  1m37.9s/4m00.0s
+time="2026-06-29T20:35:11Z" level=error msg="test run was aborted because k6 received a 'interrupt' signal"

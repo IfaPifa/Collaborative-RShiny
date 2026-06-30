@@ -1,0 +1,456 @@
+{
+    "setup_data": {},
+    "root_group": {
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                "baseline_Calculator_rep0": {
+                    "id": "b7b6209ba7a9cb7e0b888daab97b6c35",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Calculator_rep0",
+                    "path": "::baseline_Calculator_rep0"
+                },
+                "baseline_Calculator_rep1": {
+                    "id": "caafa6ccf9deab0964c4401c1d29851b",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Calculator_rep1",
+                    "path": "::baseline_Calculator_rep1"
+                },
+                "baseline_Calculator_rep2": {
+                    "id": "34cb3a0effc0bc9cea23cf562776c9c9",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Calculator_rep2",
+                    "path": "::baseline_Calculator_rep2"
+                },
+                "baseline_Calculator_rep3": {
+                    "path": "::baseline_Calculator_rep3",
+                    "id": "ce7f4fa583653a3a1d2fd9cfc1b669f9",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Calculator_rep3"
+                },
+                "baseline_Calculator_rep4": {
+                    "name": "baseline_Calculator_rep4",
+                    "path": "::baseline_Calculator_rep4",
+                    "id": "65226b84f5fa928fcef07cbf0e9c1398",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Analytics_rep0": {
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Analytics_rep0",
+                    "path": "::baseline_Analytics_rep0",
+                    "id": "bf2ffe2896bb4e95b33633cafd3bd512"
+                },
+                "baseline_Analytics_rep1": {
+                    "name": "baseline_Analytics_rep1",
+                    "path": "::baseline_Analytics_rep1",
+                    "id": "4ab845ed82abd84c5cc9b35ed04a79b0",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Analytics_rep2": {
+                    "path": "::baseline_Analytics_rep2",
+                    "id": "47e6ff600345d1ae48d9533ec5e9b70c",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Analytics_rep2"
+                },
+                "baseline_Analytics_rep3": {
+                    "name": "baseline_Analytics_rep3",
+                    "path": "::baseline_Analytics_rep3",
+                    "id": "69b9dc5c5dd54f7368969323f7964665",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Analytics_rep4": {
+                    "name": "baseline_Analytics_rep4",
+                    "path": "::baseline_Analytics_rep4",
+                    "id": "fbb21b960c5df9a4cea90706bbfc5e2b",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Advanced_rep0": {
+                    "name": "baseline_Advanced_rep0",
+                    "path": "::baseline_Advanced_rep0",
+                    "id": "3e6510e801ab80fd023a494c533572b3",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Advanced_rep1": {
+                    "checks": {},
+                    "name": "baseline_Advanced_rep1",
+                    "path": "::baseline_Advanced_rep1",
+                    "id": "229979b5de12d23317972e5617b162cb",
+                    "groups": {}
+                },
+                "baseline_Advanced_rep2": {
+                    "path": "::baseline_Advanced_rep2",
+                    "id": "1728ffaa9c0d81c45ea92b46f2a16bd6",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Advanced_rep2"
+                },
+                "baseline_Advanced_rep3": {
+                    "name": "baseline_Advanced_rep3",
+                    "path": "::baseline_Advanced_rep3",
+                    "id": "d9bda02daa2eff0383b5bb981f9dc950",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Advanced_rep4": {
+                    "name": "baseline_Advanced_rep4",
+                    "path": "::baseline_Advanced_rep4",
+                    "id": "292ee4211f2c17b0cc6a3b5c09d64898",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_DataExchange_rep0": {
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_DataExchange_rep0",
+                    "path": "::baseline_DataExchange_rep0",
+                    "id": "628cb60ec250d8953ac58e2731496450"
+                },
+                "baseline_DataExchange_rep1": {
+                    "name": "baseline_DataExchange_rep1",
+                    "path": "::baseline_DataExchange_rep1",
+                    "id": "2ed31f5942086264f6f2511419910d04",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_DataExchange_rep2": {
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_DataExchange_rep2",
+                    "path": "::baseline_DataExchange_rep2",
+                    "id": "03844606b1239c898141e3add1672537"
+                },
+                "baseline_DataExchange_rep3": {
+                    "id": "0a745016fbfe7053eccc82ac5873e8b0",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_DataExchange_rep3",
+                    "path": "::baseline_DataExchange_rep3"
+                },
+                "baseline_DataExchange_rep4": {
+                    "checks": {},
+                    "name": "baseline_DataExchange_rep4",
+                    "path": "::baseline_DataExchange_rep4",
+                    "id": "b5239c922e094db339bcb46b45c1b1d9",
+                    "groups": {}
+                },
+                "baseline_MonteCarlo_rep0": {
+                    "id": "b9622148c282c370fbc2c3b1dbb6cecf",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_MonteCarlo_rep0",
+                    "path": "::baseline_MonteCarlo_rep0"
+                },
+                "baseline_MonteCarlo_rep1": {
+                    "name": "baseline_MonteCarlo_rep1",
+                    "path": "::baseline_MonteCarlo_rep1",
+                    "id": "23c3c2709691aeb354dff42e0adce6b8",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_MonteCarlo_rep2": {
+                    "name": "baseline_MonteCarlo_rep2",
+                    "path": "::baseline_MonteCarlo_rep2",
+                    "id": "edefa9e3dda5af51497b64bf83e05ad5",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_MonteCarlo_rep3": {
+                    "name": "baseline_MonteCarlo_rep3",
+                    "path": "::baseline_MonteCarlo_rep3",
+                    "id": "dbcab02d96ae69b598a54206b54d084f",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_MonteCarlo_rep4": {
+                    "name": "baseline_MonteCarlo_rep4",
+                    "path": "::baseline_MonteCarlo_rep4",
+                    "id": "92d15a4204921ad75c834370cdd09978",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Geospatial_rep0": {
+                    "name": "baseline_Geospatial_rep0",
+                    "path": "::baseline_Geospatial_rep0",
+                    "id": "db72f0b876d9be602fb4eb4d87106944",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Geospatial_rep1": {
+                    "path": "::baseline_Geospatial_rep1",
+                    "id": "0d25908a142103fd005085995333f9db",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Geospatial_rep1"
+                },
+                "baseline_Geospatial_rep2": {
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_Geospatial_rep2",
+                    "path": "::baseline_Geospatial_rep2",
+                    "id": "6a78f677f1877aa6947f9e32d60d5e9d"
+                },
+                "baseline_Geospatial_rep3": {
+                    "name": "baseline_Geospatial_rep3",
+                    "path": "::baseline_Geospatial_rep3",
+                    "id": "fbc37a074f6a2c84162e201f98e66a17",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_Geospatial_rep4": {
+                    "name": "baseline_Geospatial_rep4",
+                    "path": "::baseline_Geospatial_rep4",
+                    "id": "dd4592a2ec898f10d2da2ff71b892d43",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_ClimateAnomaly_rep0": {
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_ClimateAnomaly_rep0",
+                    "path": "::baseline_ClimateAnomaly_rep0",
+                    "id": "222be298007e4e1002adc6eeccce4d5e"
+                },
+                "baseline_ClimateAnomaly_rep1": {
+                    "name": "baseline_ClimateAnomaly_rep1",
+                    "path": "::baseline_ClimateAnomaly_rep1",
+                    "id": "49b4687e31312f9307bdaf21ae8c3b94",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_ClimateAnomaly_rep2": {
+                    "path": "::baseline_ClimateAnomaly_rep2",
+                    "id": "654f526656b1f5c89145ca4cbb09c75a",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_ClimateAnomaly_rep2"
+                },
+                "baseline_ClimateAnomaly_rep3": {
+                    "name": "baseline_ClimateAnomaly_rep3",
+                    "path": "::baseline_ClimateAnomaly_rep3",
+                    "id": "64b7f4547c43717552e2738c16e2a0ca",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_ClimateAnomaly_rep4": {
+                    "id": "188929749d19da671db6ef8a1dd3d9a4",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_ClimateAnomaly_rep4",
+                    "path": "::baseline_ClimateAnomaly_rep4"
+                },
+                "baseline_MLTrainer_rep0": {
+                    "path": "::baseline_MLTrainer_rep0",
+                    "id": "2a30e589fab5210948b1cce437b1feee",
+                    "groups": {},
+                    "checks": {},
+                    "name": "baseline_MLTrainer_rep0"
+                },
+                "baseline_MLTrainer_rep1": {
+                    "name": "baseline_MLTrainer_rep1",
+                    "path": "::baseline_MLTrainer_rep1",
+                    "id": "941e972587ce376bf2e481c4eb9c7e13",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_MLTrainer_rep2": {
+                    "checks": {},
+                    "name": "baseline_MLTrainer_rep2",
+                    "path": "::baseline_MLTrainer_rep2",
+                    "id": "da13202b3b7a45d4b4cb6f070868c78a",
+                    "groups": {}
+                },
+                "baseline_MLTrainer_rep3": {
+                    "name": "baseline_MLTrainer_rep3",
+                    "path": "::baseline_MLTrainer_rep3",
+                    "id": "7b7937e5c52678f6c01c162b75a944a0",
+                    "groups": {},
+                    "checks": {}
+                },
+                "baseline_MLTrainer_rep4": {
+                    "name": "baseline_MLTrainer_rep4",
+                    "path": "::baseline_MLTrainer_rep4",
+                    "id": "4b4335a4bddd0a83b6809c18cdfda3e7",
+                    "groups": {},
+                    "checks": {}
+                }
+            },
+            "checks": {}
+        },
+    "metrics": {
+            "baseline_save_ms": {
+                "min": 4,
+                "med": 7,
+                "max": 11,
+                "p(90)": 8.100000000000001,
+                "p(95)": 9.099999999999994,
+                "avg": 6.825
+            },
+            "iterations": {
+                "rate": 0.007528210973379453,
+                "count": 1
+            },
+            "http_req_connecting": {
+                "min": 0,
+                "med": 0,
+                "max": 0.281536,
+                "p(90)": 0,
+                "p(95)": 0,
+                "avg": 0.00167752296819788
+            },
+            "baseline_get_ms": {
+                "avg": 4.425,
+                "min": 3,
+                "med": 4,
+                "max": 7,
+                "p(90)": 5,
+                "p(95)": 6
+            },
+            "http_req_receiving": {
+                "max": 0.431674,
+                "p(90)": 0.17162180000000002,
+                "p(95)": 0.2319047999999997,
+                "avg": 0.11181427561837458,
+                "min": 0.033672,
+                "med": 0.093722
+            },
+            "http_req_duration": {
+                "min": 1.985266,
+                "med": 5.550194,
+                "max": 16293.376081,
+                "p(90)": 11.809224400000003,
+                "p(95)": 24.97678429999999,
+                "avg": 271.02358962190806
+            },
+            "vus": {
+                "value": 1,
+                "min": 1,
+                "max": 1
+            },
+            "http_reqs": {
+                "count": 283,
+                "rate": 2.130483705466385
+            },
+            "baseline_total_ms": {
+                "p(90)": 13877.900000000001,
+                "p(95)": 14798.249999999998,
+                "avg": 1914.725,
+                "min": 34,
+                "med": 49.5,
+                "max": 16333
+            },
+            "http_req_sending": {
+                "p(90)": 0.0514138,
+                "p(95)": 0.07057449999999993,
+                "avg": 0.033710890459363985,
+                "min": 0.00623,
+                "med": 0.029515,
+                "max": 0.283329
+            },
+            "http_req_tls_handshaking": {
+                "p(95)": 0,
+                "avg": 0,
+                "min": 0,
+                "med": 0,
+                "max": 0,
+                "p(90)": 0
+            },
+            "baseline_restore_ms": {
+                "avg": 4.925,
+                "min": 3,
+                "med": 5,
+                "max": 9,
+                "p(90)": 6,
+                "p(95)": 7.049999999999997
+            },
+            "baseline_relay_ms": {
+                "avg": 3.825,
+                "min": 2,
+                "med": 4,
+                "max": 6,
+                "p(90)": 5,
+                "p(95)": 6
+            },
+            "baseline_post_ms": {
+                "avg": 1879.725,
+                "min": 8,
+                "med": 13,
+                "max": 16293,
+                "p(90)": 13838.1,
+                "p(95)": 14763.099999999999
+            },
+            "http_req_waiting": {
+                "max": 16293.18976,
+                "p(90)": 11.657578200000003,
+                "p(95)": 24.82384139999999,
+                "avg": 270.8780644558304,
+                "min": 1.902209,
+                "med": 5.44265
+            },
+            "data_sent": {
+                "count": 101727,
+                "rate": 765.8223176889716
+            },
+            "http_req_duration{expected_response:true}": {
+                "p(95)": 24.97678429999999,
+                "avg": 271.02358962190806,
+                "min": 1.985266,
+                "med": 5.550194,
+                "max": 16293.376081,
+                "p(90)": 11.809224400000003
+            },
+            "vus_max": {
+                "min": 1,
+                "max": 1,
+                "value": 1
+            },
+            "iteration_duration": {
+                "med": 132702.736704,
+                "max": 132702.736704,
+                "p(90)": 132702.736704,
+                "p(95)": 132702.736704,
+                "avg": 132702.736704,
+                "min": 132702.736704
+            },
+            "data_received": {
+                "count": 788798,
+                "rate": 5938.2377593797655
+            },
+            "baseline_ok": {
+                "count": 40,
+                "rate": 0.3011284389351781
+            },
+            "group_duration": {
+                "avg": 1914.9699521999999,
+                "min": 34.432302,
+                "med": 49.747512,
+                "max": 16333.37898,
+                "p(90)": 13878.1463103,
+                "p(95)": 14798.707672499999
+            },
+            "http_req_blocked": {
+                "avg": 0.009462116607773853,
+                "min": 0.001782,
+                "med": 0.005569,
+                "max": 0.480316,
+                "p(90)": 0.008559,
+                "p(95)": 0.010051
+            },
+            "http_req_failed": {
+                "passes": 0,
+                "fails": 283,
+                "value": 0
+            }
+        }
+}
