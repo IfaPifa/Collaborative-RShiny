@@ -13,3 +13,8 @@ k6/results/**/*-report.log
 k6/results/**/*-report.out
 docs/thesis/*.log
 docs/thesis/*.out
+
+# Benchmark result data and generated plots — keep local, never commit
+k6/results/
+results-*/
+analysis/plots/
