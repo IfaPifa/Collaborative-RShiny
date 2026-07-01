@@ -1,0 +1,432 @@
+{
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "isolation_Advanced": {
+                "id": "afaa92620def84b3d49b84565c6b8d94",
+                "groups": {},
+                "checks": {
+                        "Advanced session A clean": {
+                            "id": "b93197b859834b8ecde8f811b15f65a1",
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "Advanced session A clean",
+                            "path": "::isolation_Advanced::Advanced session A clean"
+                        },
+                        "Advanced session B clean": {
+                            "name": "Advanced session B clean",
+                            "path": "::isolation_Advanced::Advanced session B clean",
+                            "id": "5ab07c6da02030eedf2e5dbdec4695b8",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "Advanced DB save A clean": {
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "Advanced DB save A clean",
+                            "path": "::isolation_Advanced::Advanced DB save A clean",
+                            "id": "b87d89e1ed384d3f901daf7f58aaade2"
+                        },
+                        "Advanced DB save B clean": {
+                            "id": "fb32ef76ad26875be48b66dc0d34459a",
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "Advanced DB save B clean",
+                            "path": "::isolation_Advanced::Advanced DB save B clean"
+                        }
+                    },
+                "name": "isolation_Advanced",
+                "path": "::isolation_Advanced"
+            },
+            "isolation_Calculator": {
+                "name": "isolation_Calculator",
+                "path": "::isolation_Calculator",
+                "id": "efbbba691ed2fda4a5a7c75c533c7bb8",
+                "groups": {},
+                "checks": {
+                        "Calculator session A clean": {
+                            "path": "::isolation_Calculator::Calculator session A clean",
+                            "id": "1748794c38fb53ba7503ab8402164f22",
+                            "passes": 3,
+                            "fails": 0,
+                            "name": "Calculator session A clean"
+                        },
+                        "Calculator session B clean": {
+                            "path": "::isolation_Calculator::Calculator session B clean",
+                            "id": "367c380b8f115ab75513210f08c4dd5b",
+                            "passes": 3,
+                            "fails": 0,
+                            "name": "Calculator session B clean"
+                        },
+                        "Calculator DB save A clean": {
+                            "name": "Calculator DB save A clean",
+                            "path": "::isolation_Calculator::Calculator DB save A clean",
+                            "id": "2dc6379d0a3d234844fd8888eceb545d",
+                            "passes": 3,
+                            "fails": 0
+                        },
+                        "Calculator DB save B clean": {
+                            "id": "8b568217645a82076702b4dd01f659f9",
+                            "passes": 3,
+                            "fails": 0,
+                            "name": "Calculator DB save B clean",
+                            "path": "::isolation_Calculator::Calculator DB save B clean"
+                        }
+                    }
+            },
+            "isolation_DataExchange": {
+                "checks": {
+                    "DataExchange session A clean": {
+                        "name": "DataExchange session A clean",
+                        "path": "::isolation_DataExchange::DataExchange session A clean",
+                        "id": "7ce1100c90ee085468ef6cb963ed4f60",
+                        "passes": 4,
+                        "fails": 0
+                    },
+                    "DataExchange session B clean": {
+                        "name": "DataExchange session B clean",
+                        "path": "::isolation_DataExchange::DataExchange session B clean",
+                        "id": "d8f8df0ccf3870790dcd3a3c5a6a786a",
+                        "passes": 4,
+                        "fails": 0
+                    },
+                    "DataExchange DB save A clean": {
+                        "name": "DataExchange DB save A clean",
+                        "path": "::isolation_DataExchange::DataExchange DB save A clean",
+                        "id": "f13835ceef4241b0df64bf6feed8659f",
+                        "passes": 4,
+                        "fails": 0
+                    },
+                    "DataExchange DB save B clean": {
+                        "name": "DataExchange DB save B clean",
+                        "path": "::isolation_DataExchange::DataExchange DB save B clean",
+                        "id": "ad8ff52435d8e9de5e3e7a865f3ab85b",
+                        "passes": 4,
+                        "fails": 0
+                    }
+                },
+                "name": "isolation_DataExchange",
+                "path": "::isolation_DataExchange",
+                "id": "6aaa7e0189d7a2dbd3535ccc1dfd0aa5",
+                "groups": {}
+            },
+            "isolation_Analytics": {
+                "checks": {
+                    "Analytics session A clean": {
+                        "path": "::isolation_Analytics::Analytics session A clean",
+                        "id": "5328317ca850e4fbf645834abfd7c88b",
+                        "passes": 4,
+                        "fails": 0,
+                        "name": "Analytics session A clean"
+                    },
+                    "Analytics session B clean": {
+                        "id": "d14538d3c039ced80269c4c3dc8c89f6",
+                        "passes": 4,
+                        "fails": 0,
+                        "name": "Analytics session B clean",
+                        "path": "::isolation_Analytics::Analytics session B clean"
+                    },
+                    "Analytics DB save A clean": {
+                        "path": "::isolation_Analytics::Analytics DB save A clean",
+                        "id": "1d2677d4321fe1f33c63faa46a4f3886",
+                        "passes": 4,
+                        "fails": 0,
+                        "name": "Analytics DB save A clean"
+                    },
+                    "Analytics DB save B clean": {
+                        "name": "Analytics DB save B clean",
+                        "path": "::isolation_Analytics::Analytics DB save B clean",
+                        "id": "77d39a313ce3726033967207218c5196",
+                        "passes": 4,
+                        "fails": 0
+                    }
+                },
+                "name": "isolation_Analytics",
+                "path": "::isolation_Analytics",
+                "id": "bc9f73bbd297d1f118b83ee39f82f3f8",
+                "groups": {}
+            },
+            "isolation_Geospatial": {
+                "name": "isolation_Geospatial",
+                "path": "::isolation_Geospatial",
+                "id": "bbb8910aeba846911dd52cae88d4e7af",
+                "groups": {},
+                "checks": {
+                        "Geospatial session A clean": {
+                            "id": "c2266dcf87be05f369122026bd6648f8",
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "Geospatial session A clean",
+                            "path": "::isolation_Geospatial::Geospatial session A clean"
+                        },
+                        "Geospatial session B clean": {
+                            "name": "Geospatial session B clean",
+                            "path": "::isolation_Geospatial::Geospatial session B clean",
+                            "id": "368d8c120ae8c236eeaa073694cad69b",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "Geospatial DB save A clean": {
+                            "name": "Geospatial DB save A clean",
+                            "path": "::isolation_Geospatial::Geospatial DB save A clean",
+                            "id": "c312ca8e6157ecf675897931613e9a4c",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "Geospatial DB save B clean": {
+                            "name": "Geospatial DB save B clean",
+                            "path": "::isolation_Geospatial::Geospatial DB save B clean",
+                            "id": "7e1eb7df9a4ff21ae6eff0a8d137e19a",
+                            "passes": 4,
+                            "fails": 0
+                        }
+                    }
+            },
+            "isolation_ClimateAnomaly": {
+                "name": "isolation_ClimateAnomaly",
+                "path": "::isolation_ClimateAnomaly",
+                "id": "edfb44a5dcafc1007dd6805faa1e578d",
+                "groups": {},
+                "checks": {
+                        "ClimateAnomaly session A clean": {
+                            "name": "ClimateAnomaly session A clean",
+                            "path": "::isolation_ClimateAnomaly::ClimateAnomaly session A clean",
+                            "id": "3f97a1b3f98bde49b967b9e534edd584",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "ClimateAnomaly session B clean": {
+                            "name": "ClimateAnomaly session B clean",
+                            "path": "::isolation_ClimateAnomaly::ClimateAnomaly session B clean",
+                            "id": "a4d3e1a39b3b6e5992bb8286a1f9ae60",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "ClimateAnomaly DB save A clean": {
+                            "name": "ClimateAnomaly DB save A clean",
+                            "path": "::isolation_ClimateAnomaly::ClimateAnomaly DB save A clean",
+                            "id": "90dce2dedc135b4d028acaa70d1e49b6",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "ClimateAnomaly DB save B clean": {
+                            "id": "b3081bf6f59f4c5683f40ad5d974e2a7",
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "ClimateAnomaly DB save B clean",
+                            "path": "::isolation_ClimateAnomaly::ClimateAnomaly DB save B clean"
+                        }
+                    }
+            },
+            "isolation_MonteCarlo": {
+                "name": "isolation_MonteCarlo",
+                "path": "::isolation_MonteCarlo",
+                "id": "7a438767bcc9192c78e57eb672dfcadf",
+                "groups": {},
+                "checks": {
+                        "MonteCarlo session A clean": {
+                            "name": "MonteCarlo session A clean",
+                            "path": "::isolation_MonteCarlo::MonteCarlo session A clean",
+                            "id": "8f26beaed32caca672e42725995ed86a",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "MonteCarlo session B clean": {
+                            "name": "MonteCarlo session B clean",
+                            "path": "::isolation_MonteCarlo::MonteCarlo session B clean",
+                            "id": "5798b4d260cd5d719a180ac4310ac72f",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "MonteCarlo DB save A clean": {
+                            "name": "MonteCarlo DB save A clean",
+                            "path": "::isolation_MonteCarlo::MonteCarlo DB save A clean",
+                            "id": "0e3c5a0dc9a9c191fd3ad3d49d219050",
+                            "passes": 4,
+                            "fails": 0
+                        },
+                        "MonteCarlo DB save B clean": {
+                            "passes": 4,
+                            "fails": 0,
+                            "name": "MonteCarlo DB save B clean",
+                            "path": "::isolation_MonteCarlo::MonteCarlo DB save B clean",
+                            "id": "3bbc9eb052e1ab552ad1ec501910f0a2"
+                        }
+                    }
+            },
+            "isolation_MLTrainer": {
+                "id": "697ea8073280e02b38e713f2bd1a39a2",
+                "groups": {},
+                "checks": {
+                        "MLTrainer session A clean": {
+                            "id": "a99c947459d422f43fa38067c0880d96",
+                            "passes": 1,
+                            "fails": 0,
+                            "name": "MLTrainer session A clean",
+                            "path": "::isolation_MLTrainer::MLTrainer session A clean"
+                        },
+                        "MLTrainer session B clean": {
+                            "name": "MLTrainer session B clean",
+                            "path": "::isolation_MLTrainer::MLTrainer session B clean",
+                            "id": "a293adcfc3909d5c3e9e5895902410bf",
+                            "passes": 1,
+                            "fails": 0
+                        },
+                        "MLTrainer DB save A clean": {
+                            "name": "MLTrainer DB save A clean",
+                            "path": "::isolation_MLTrainer::MLTrainer DB save A clean",
+                            "id": "0641b98fdb0c93d4ad231a7b2c8b8fec",
+                            "passes": 1,
+                            "fails": 0
+                        },
+                        "MLTrainer DB save B clean": {
+                            "fails": 0,
+                            "name": "MLTrainer DB save B clean",
+                            "path": "::isolation_MLTrainer::MLTrainer DB save B clean",
+                            "id": "694771469a8f3029ec906882fcb3a10a",
+                            "passes": 1
+                        }
+                    },
+                "name": "isolation_MLTrainer",
+                "path": "::isolation_MLTrainer"
+            }
+        },
+        "checks": {},
+        "name": ""
+    },
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "isolation_ok": {
+            "count": 112,
+            "rate": 0.17774651981396775
+        },
+        "http_req_duration": {
+            "med": 264.909543,
+            "max": 57068.554899,
+            "p(90)": 1871.9803276000068,
+            "p(95)": 14533.551944599985,
+            "avg": 1931.303561876909,
+            "min": 1.537658
+        },
+        "http_req_sending": {
+            "max": 1.266358,
+            "p(90)": 0.05273300000000004,
+            "p(95)": 0.06639439999999995,
+            "avg": 0.03674020934411503,
+            "min": 0.004416,
+            "med": 0.029916
+        },
+        "data_sent": {
+            "count": 531447,
+            "rate": 843.4183456747653
+        },
+        "data_received": {
+            "count": 23198190,
+            "rate": 36816.04945074275
+        },
+        "contamination_events": {
+            "count": 0,
+            "rate": 0,
+            "thresholds": {
+                "count==0": false
+            }
+        },
+        "http_req_receiving": {
+            "p(90)": 0.15154080000000003,
+            "p(95)": 0.19034399999999957,
+            "avg": 0.3095497439353096,
+            "min": 0.017757,
+            "med": 0.085459,
+            "max": 66.551376
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 1871.9803276000068,
+            "p(95)": 14533.551944599985,
+            "avg": 1931.303561876909,
+            "min": 1.537658,
+            "med": 264.909543,
+            "max": 57068.554899
+        },
+        "iteration_duration": {
+            "max": 488556.729386,
+            "p(90)": 23648.2193487,
+            "p(95)": 23724.012776199997,
+            "avg": 40038.93319321429,
+            "min": 23106.177378,
+            "med": 23452.3982
+        },
+        "group_duration": {
+            "p(95)": 23340.71477595,
+            "avg": 37367.10550725,
+            "min": 18210.808007,
+            "med": 20694.3637945,
+            "max": 487063.858785,
+            "p(90)": 23003.1205184
+        },
+        "http_req_connecting": {
+            "avg": 0.015296184186882293,
+            "min": 0,
+            "med": 0,
+            "max": 1.620624,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "iterations": {
+            "count": 28,
+            "rate": 0.044436629953491937
+        },
+        "vus_max": {
+            "value": 30,
+            "min": 30,
+            "max": 30
+        },
+        "checks": {
+            "fails": 0,
+            "passes": 112,
+            "value": 1
+        },
+        "http_reqs": {
+            "count": 1113,
+            "rate": 1.7663560406513044
+        },
+        "http_req_waiting": {
+            "avg": 1930.9572719236312,
+            "min": 1.479881,
+            "med": 264.786175,
+            "max": 57068.408286,
+            "p(90)": 1871.7518272000068,
+            "p(95)": 14533.338599599987
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 1113,
+            "value": 0
+        },
+        "vus": {
+            "min": 2,
+            "max": 30,
+            "value": 2
+        },
+        "http_req_blocked": {
+            "min": 0.001162,
+            "med": 0.006059,
+            "max": 2.089483,
+            "p(90)": 0.009534,
+            "p(95)": 0.014495799999999883,
+            "avg": 0.024538973045822095
+        },
+        "isolation_checks": {
+            "count": 112,
+            "rate": 0.17774651981396775
+        }
+    },
+    "setup_data": {}
+}
