@@ -1,0 +1,157 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /root/Collaborative-RShiny/k6/06-cross-contamination.js
+        output: json (/root/Collaborative-RShiny/k6/results/kafka/run-4/06-cross-contamination.json)
+
+     scenarios: (100.00%) 1 scenario, 30 max VUs, 10m30s max duration (incl. graceful stop):
+              * isolation: 1 iterations for each of 30 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+
+running (00m01.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m00.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m02.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m01.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m03.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m02.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m04.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m03.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m05.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m04.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m06.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m05.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m07.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m06.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m08.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m07.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m09.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m08.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m10.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m09.9s/10m0s  00/30 iters, 1 per VU
+time="2026-07-01T19:53:43Z" level=info msg="VU7 MLTrainer: isolation check complete (32fd0ca7-4bdf-47d7-a361-001dbb0621c3, 49ad89a5-8cbf-4cf8-aaed-863baf349ea7)" source=console
+time="2026-07-01T19:53:43Z" level=info msg="VU15 MLTrainer: isolation check complete (5d75430b-6505-4e10-9c5c-88e7ba8895b2, 79628680-ca8e-445c-8f69-25fbbc7ff2d8)" source=console
+time="2026-07-01T19:53:43Z" level=info msg="VU22 ClimateAnomaly: isolation check complete (49ca4cf7-e1f2-45ba-962d-5b77cd126406, fe11aba9-2dd2-4640-9ca4-94782d0baa43)" source=console
+time="2026-07-01T19:53:43Z" level=info msg="VU25 Analytics: isolation check complete (616378a0-ad23-4619-9a42-ff39c48c09fe, 6c31f3bd-a2a2-4b19-9a2b-fa3f49034b1d)" source=console
+time="2026-07-01T19:53:43Z" level=info msg="VU29 Geospatial: isolation check complete (4dd333ff-7a45-46c3-bd12-1c48a8542801, 68d4f346-4072-4212-9456-b0e2b25dfb76)" source=console
+time="2026-07-01T19:53:43Z" level=info msg="VU13 Geospatial: isolation check complete (4aca0b07-1c52-4d56-ba6d-ac1b3ac65745, 331cc5e0-1efb-4668-9a56-45f786b77700)" source=console
+
+running (00m11.0s), 24/30 VUs, 6 complete and 0 interrupted iterations
+isolation   [  20% ] 30 VUs  00m10.9s/10m0s  06/30 iters, 1 per VU
+time="2026-07-01T19:53:43Z" level=info msg="VU10 Advanced: isolation check complete (521cfe63-b5fc-4565-9c7e-1970141d29e7, ec9792b0-d2aa-4da2-9bd4-fff0495d3055)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU6 ClimateAnomaly: isolation check complete (bb795a43-b0e6-4764-9f61-70f81631a0ee, d1da99e2-88e5-4e7a-97a0-73db6f8bea52)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU28 MonteCarlo: isolation check complete (a1bd35b5-0ab6-4cfe-b638-0066d9827d60, dfd6f687-83f3-4ea3-bfab-112bc7c0524f)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU5 Geospatial: isolation check complete (ed3600dc-af3d-460c-ac54-6131fce5b65f, 5c39d654-5457-4f41-9a9d-1541eec6f804)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU11 DataExchange: isolation check complete (d648ddc5-8341-4833-a667-730ad5879203, c348292b-5780-4bed-afd8-27b1fcfd0e0a)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU20 MonteCarlo: isolation check complete (8ed7f7c6-cede-4855-af40-1ca2383dd3f4, 27d0c647-4890-4f43-b207-5add9f55b927)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU17 Analytics: isolation check complete (a3c5eac8-ba5b-4217-b1cf-3ddd9f3d8601, ea9693a0-c850-4531-92ad-410b49194f40)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU14 ClimateAnomaly: isolation check complete (4fbd7d0d-1ddd-408b-9480-c51b3614fb74, d579d0b0-3e88-4bd8-9372-54b5b538d622)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU19 DataExchange: isolation check complete (ec16d9d7-0b20-42af-ba68-dff5115641e8, 836f44d1-148a-413a-aeb8-8dd373b7a7ae)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU3 DataExchange: isolation check complete (8eeee14c-2d74-450c-b47d-2b51f4acef20, e2d4c8b6-37f1-4b98-a22d-fcb5b21fab59)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU21 Geospatial: isolation check complete (5d44e630-36bf-446b-8c7d-de19b8aaa72a, 572ee439-309d-4a93-b40f-9578d2448ca7)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU8 Calculator: isolation check complete (e8b672fc-0c31-4e46-a70d-14e8e6fae540, d6259ce3-da76-47ad-a80c-9b7546e7f684)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU18 Advanced: isolation check complete (ca56e796-f5c8-4596-bffa-53ec7929bd1f, 350757ed-95ab-4139-b2d7-9ab0106ad702)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU12 MonteCarlo: isolation check complete (83213190-afd2-4cee-9ad7-9f3e0a3540df, f9405580-7b63-4229-b4c7-fbf503ac6941)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU27 DataExchange: isolation check complete (dcc59f9c-0374-4b05-a02c-79375a06eabb, ef8c9c50-d2d8-4eb8-95d6-5c79bceb6258)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU4 MonteCarlo: isolation check complete (4570824d-fcab-457a-9db6-e5cfe373d0cf, ea675f23-f5bd-4b1d-9044-be5036c7e462)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU1 Analytics: isolation check complete (9e7bcf2e-0198-4bac-952e-6796b20b0375, d3b55ecf-0b5d-4aa7-a2cc-f26288c7a507)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU26 Advanced: isolation check complete (13603f8a-8766-48b0-94aa-0ada60f3cb92, cedee58a-a2fa-4a7c-90fd-59936a193fe5)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU30 ClimateAnomaly: isolation check complete (bf55aa0b-64f1-451a-827c-eb7814e0f090, c29e371b-a99f-485e-82bd-f5eb709c862d)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU9 Analytics: isolation check complete (85b9d5fc-ef3b-4eb0-ba15-07aad2a475b1, e4ad9a55-2ad2-4c1e-98ff-12952840abdd)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU2 Advanced: isolation check complete (5daaf1fd-89e2-4376-8f2b-67338aee5817, be062642-9b75-4830-bc2a-561db099c1b1)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU24 Calculator: isolation check complete (30a2bb52-0331-421d-bbda-abf140a5f05c, 2a6bf6f8-f257-4365-aec6-766e617a9da9)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU23 MLTrainer: isolation check complete (d7c326ac-cb95-4326-a2dc-280394ce0ba0, 903c6fea-7522-43f1-9e20-1bd50932ec93)" source=console
+time="2026-07-01T19:53:44Z" level=info msg="VU16 Calculator: isolation check complete (dfa0b83b-f5b7-4a75-8755-14cefc36267e, b174eff3-9c27-4b54-bb42-3bf7bf77afa0)" source=console
+
+     █ isolation_MLTrainer
+
+       ✓ MLTrainer session A clean
+       ✓ MLTrainer session B clean
+
+     █ isolation_ClimateAnomaly
+
+       ✓ ClimateAnomaly session A clean
+       ✓ ClimateAnomaly session B clean
+       ✓ ClimateAnomaly DB save A clean
+       ✓ ClimateAnomaly DB save B clean
+
+     █ isolation_Analytics
+
+       ✓ Analytics session A clean
+       ✓ Analytics session B clean
+       ✓ Analytics DB save A clean
+       ✓ Analytics DB save B clean
+
+     █ isolation_Geospatial
+
+       ✓ Geospatial session A clean
+       ✓ Geospatial session B clean
+       ✓ Geospatial DB save A clean
+       ✓ Geospatial DB save B clean
+
+     █ isolation_Advanced
+
+       ✓ Advanced session A clean
+       ✓ Advanced session B clean
+       ✓ Advanced DB save A clean
+       ✓ Advanced DB save B clean
+
+     █ isolation_MonteCarlo
+
+       ✓ MonteCarlo session A clean
+       ✓ MonteCarlo session B clean
+       ✓ MonteCarlo DB save A clean
+       ✓ MonteCarlo DB save B clean
+
+     █ isolation_DataExchange
+
+       ✓ DataExchange session A clean
+       ✓ DataExchange session B clean
+       ✓ DataExchange DB save A clean
+       ✓ DataExchange DB save B clean
+
+     █ isolation_Calculator
+
+       ✓ Calculator session A clean
+       ✓ Calculator session B clean
+       ✓ Calculator DB save A clean
+       ✓ Calculator DB save B clean
+
+     checks.........................: 100.00% 114 out of 114
+   ✓ contamination_events...........: 0       0/s
+     data_received..................: 716 kB  63 kB/s
+     data_sent......................: 557 kB  49 kB/s
+     group_duration.................: avg=8.74s    min=7.47s   med=8.64s   max=10.31s  p(90)=9.94s    p(95)=10.23s  
+     http_req_blocked...............: avg=44.69µs  min=1.43µs  med=4.14µs  max=9.47ms  p(90)=7.61µs   p(95)=18.54µs 
+     http_req_connecting............: avg=27.93µs  min=0s      med=0s      max=9.39ms  p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=108.8ms  min=1.72ms  med=4.95ms  max=3.86s   p(90)=103.11ms p(95)=392.67ms
+       { expected_response:true }...: avg=109.28ms min=1.72ms  med=4.94ms  max=3.86s   p(90)=103.52ms p(95)=395.1ms 
+     http_req_failed................: 0.52%   6 out of 1142
+     http_req_receiving.............: avg=373.82µs min=11.97µs med=51.03µs max=65.79ms p(90)=171.81µs p(95)=289.64µs
+     http_req_sending...............: avg=53.75µs  min=5.95µs  med=17.75µs max=7.39ms  p(90)=40.19µs  p(95)=68.18µs 
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s      max=0s      p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=108.38ms min=1.67ms  med=4.84ms  max=3.86s   p(90)=102.82ms p(95)=392.48ms
+     http_reqs......................: 1142    99.924783/s
+     isolation_checks...............: 114     9.974978/s
+     isolation_ok...................: 114     9.974978/s
+     iteration_duration.............: avg=11.16s   min=10.69s  med=11.25s  max=11.34s  p(90)=11.34s   p(95)=11.34s  
+     iterations.....................: 30      2.624994/s
+     vus............................: 24      min=24         max=30
+     vus_max........................: 30      min=30         max=30
+
+
+running (00m11.4s), 00/30 VUs, 30 complete and 0 interrupted iterations
+isolation ✓ [ 100% ] 30 VUs  00m11.3s/10m0s  30/30 iters, 1 per VU

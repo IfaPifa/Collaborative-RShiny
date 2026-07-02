@@ -1,0 +1,368 @@
+{
+    "metrics": {
+        "vus_max": {
+            "value": 20,
+            "min": 20,
+            "max": 20
+        },
+        "http_req_duration{expected_response:true}": {
+            "min": 2.547267,
+            "med": 18.7757905,
+            "max": 77068.090521,
+            "p(90)": 478.31498400000095,
+            "p(95)": 10191.437358300007,
+            "avg": 1614.4931939655887
+        },
+        "group_duration": {
+            "p(95)": 34659.448685249954,
+            "avg": 4846.635588995745,
+            "min": 21.033133,
+            "med": 113.569255,
+            "max": 87512.014773,
+            "p(90)": 15506.629495700008
+        },
+        "relay_total_ms{app_name:ClimateAnomaly}": {
+            "avg": 362.75,
+            "min": 21,
+            "med": 62,
+            "max": 9099,
+            "p(90)": 442.9000000000001,
+            "p(95)": 527.6999999999999,
+            "thresholds": {
+                "p(95)<1050": false
+            }
+        },
+        "relay_total_ms{app_name:Calculator}": {
+            "avg": 977.2166666666667,
+            "min": 13,
+            "med": 56.5,
+            "max": 17855,
+            "p(90)": 300.4000000000002,
+            "p(95)": 10607.699999999999,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "http_req_waiting": {
+            "med": 18.568806000000002,
+            "max": 77067.992252,
+            "p(90)": 478.25954110000094,
+            "p(95)": 10191.307065050005,
+            "avg": 1614.1808758609961,
+            "min": 2.49674
+        },
+        "relay_success": {
+            "count": 470,
+            "rate": 1.7399415044749076
+        },
+        "checks": {
+            "passes": 470,
+            "fails": 0,
+            "value": 1
+        },
+        "iterations": {
+            "rate": 0.1776961536485012,
+            "count": 48
+        },
+        "relay_total_ms": {
+            "max": 77073,
+            "p(90)": 14989.300000000008,
+            "p(95)": 34644.349999999955,
+            "avg": 4189.4,
+            "min": 13,
+            "med": 82
+        },
+        "relay_poll_ms": {
+            "avg": 284.95531914893616,
+            "min": 3,
+            "med": 8,
+            "max": 17251,
+            "p(90)": 111.10000000000002,
+            "p(95)": 366.9999999999982
+        },
+        "http_req_blocked": {
+            "avg": 0.012663823211875825,
+            "min": 0.002073,
+            "med": 0.005989,
+            "max": 0.737307,
+            "p(90)": 0.0092339,
+            "p(95)": 0.011236500000000002
+        },
+        "relay_total_ms{app_name:Advanced}": {
+            "p(90)": 372.40000000000015,
+            "p(95)": 472.99999999999994,
+            "avg": 107.46666666666667,
+            "min": 13,
+            "med": 27,
+            "max": 530,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 20
+        },
+        "http_req_receiving": {
+            "p(95)": 0.35211105000000004,
+            "avg": 0.2780036059379212,
+            "min": 0.02015,
+            "med": 0.1113935,
+            "max": 72.796588,
+            "p(90)": 0.26858480000000007
+        },
+        "relay_total_ms{app_name:DataExchange}": {
+            "p(90)": 643.9000000000001,
+            "p(95)": 4105.399999999985,
+            "avg": 930.5166666666667,
+            "min": 14,
+            "med": 33.5,
+            "max": 17898,
+            "thresholds": {
+                "p(95)<870": true
+            }
+        },
+        "relay_total_ms{app_name:MonteCarlo}": {
+            "avg": 443.51666666666665,
+            "min": 25,
+            "med": 103.5,
+            "max": 17411,
+            "p(90)": 377.8,
+            "p(95)": 636.2499999999999,
+            "thresholds": {
+                "p(95)<1170": false
+            }
+        },
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "data_sent": {
+            "count": 585291,
+            "rate": 2166.7491555226025
+        },
+        "http_req_connecting": {
+            "avg": 0.004480487854251012,
+            "min": 0,
+            "med": 0,
+            "max": 0.547278,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "relay_post_ms": {
+            "p(90)": 13204.5,
+            "p(95)": 32365.949999999837,
+            "avg": 3904.4,
+            "min": 9,
+            "med": 43,
+            "max": 77069
+        },
+        "relay_total_ms{app_name:Geospatial}": {
+            "min": 16,
+            "med": 30,
+            "max": 15769,
+            "p(90)": 251.50000000000006,
+            "p(95)": 363.3499999999998,
+            "avg": 353.51666666666665,
+            "thresholds": {
+                "p(95)<730": false
+            }
+        },
+        "relay_total_ms{app_name:MLTrainer}": {
+            "p(95)": 65496.799999999996,
+            "avg": 34798.12,
+            "min": 10696,
+            "med": 30251.5,
+            "max": 77073,
+            "p(90)": 64162.8,
+            "thresholds": {
+                "p(95)<143000": false
+            }
+        },
+        "iteration_duration": {
+            "max": 107256.978822,
+            "p(90)": 76013.4117346,
+            "p(95)": 80360.1827545,
+            "avg": 45269.60523558333,
+            "min": 17393.488811,
+            "med": 41351.297573
+        },
+        "http_reqs": {
+            "count": 1482,
+            "rate": 5.486368743897475
+        },
+        "data_received": {
+            "count": 1664843,
+            "rate": 6163.254115179827
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 1482,
+            "thresholds": {
+                "rate<0.15": false
+            },
+            "value": 0
+        },
+        "relay_total_ms{app_name:Analytics}": {
+            "min": 14,
+            "med": 68,
+            "max": 17891,
+            "p(90)": 258.1000000000002,
+            "p(95)": 3118.7499999999977,
+            "avg": 643.55,
+            "thresholds": {
+                "p(95)<830": true
+            }
+        },
+        "http_req_duration": {
+            "p(95)": 10191.437358300007,
+            "avg": 1614.4931939655887,
+            "min": 2.547267,
+            "med": 18.7757905,
+            "max": 77068.090521,
+            "p(90)": 478.31498400000095
+        },
+        "http_req_sending": {
+            "med": 0.031118,
+            "max": 0.23192,
+            "p(90)": 0.0520849,
+            "p(95)": 0.06384300000000001,
+            "avg": 0.03431449865047233,
+            "min": 0.008343
+        }
+    },
+    "setup_data": {},
+    "root_group": {
+            "groups": {
+                "relay_Calculator": {
+                    "id": "b15cd39a80d15b7ac5e8d41fe8bed8e1",
+                    "groups": {},
+                    "checks": {
+                            "Calculator relay ok": {
+                                "name": "Calculator relay ok",
+                                "path": "::relay_Calculator::Calculator relay ok",
+                                "id": "0f42443778d6525f08544e9da519a1bb",
+                                "passes": 60,
+                                "fails": 0
+                            }
+                        },
+                    "name": "relay_Calculator",
+                    "path": "::relay_Calculator"
+                },
+                "relay_Analytics": {
+                    "groups": {},
+                    "checks": {
+                            "Analytics relay ok": {
+                                "name": "Analytics relay ok",
+                                "path": "::relay_Analytics::Analytics relay ok",
+                                "id": "b6e625cb0ee9bdce1473e69b610372f8",
+                                "passes": 60,
+                                "fails": 0
+                            }
+                        },
+                    "name": "relay_Analytics",
+                    "path": "::relay_Analytics",
+                    "id": "3f6e5c7330df17be5df28046122eaaf1"
+                },
+                "relay_Advanced": {
+                    "groups": {},
+                    "checks": {
+                            "Advanced relay ok": {
+                                "path": "::relay_Advanced::Advanced relay ok",
+                                "id": "d6b88e362e0a8d9e535bd73ae67a4fec",
+                                "passes": 60,
+                                "fails": 0,
+                                "name": "Advanced relay ok"
+                            }
+                        },
+                    "name": "relay_Advanced",
+                    "path": "::relay_Advanced",
+                    "id": "d2f8470bb6a73030e8afe1e5c458431b"
+                },
+                "relay_DataExchange": {
+                    "path": "::relay_DataExchange",
+                    "id": "2afc7dda5c4f3829b5f74104b74a6aae",
+                    "groups": {},
+                    "checks": {
+                            "DataExchange relay ok": {
+                                "name": "DataExchange relay ok",
+                                "path": "::relay_DataExchange::DataExchange relay ok",
+                                "id": "84786cb0d2c8b60407a679cd1f3a2585",
+                                "passes": 60,
+                                "fails": 0
+                            }
+                        },
+                    "name": "relay_DataExchange"
+                },
+                "relay_MonteCarlo": {
+                    "name": "relay_MonteCarlo",
+                    "path": "::relay_MonteCarlo",
+                    "id": "463f30ea0fa8c29621dc3b12ed590cbd",
+                    "groups": {},
+                    "checks": {
+                            "MonteCarlo relay ok": {
+                                "path": "::relay_MonteCarlo::MonteCarlo relay ok",
+                                "id": "e47cf37d138bb3bcfbf90558a1234757",
+                                "passes": 60,
+                                "fails": 0,
+                                "name": "MonteCarlo relay ok"
+                            }
+                        }
+                },
+                "relay_Geospatial": {
+                    "path": "::relay_Geospatial",
+                    "id": "65687095441089d06e99284df5d27ef2",
+                    "groups": {},
+                    "checks": {
+                            "Geospatial relay ok": {
+                                "id": "4173cc19bedb1f5ec3a732fe53355c71",
+                                "passes": 60,
+                                "fails": 0,
+                                "name": "Geospatial relay ok",
+                                "path": "::relay_Geospatial::Geospatial relay ok"
+                            }
+                        },
+                    "name": "relay_Geospatial"
+                },
+                "relay_ClimateAnomaly": {
+                    "name": "relay_ClimateAnomaly",
+                    "path": "::relay_ClimateAnomaly",
+                    "id": "bb360df4b5424979ea868ace1b882d7e",
+                    "groups": {},
+                    "checks": {
+                            "ClimateAnomaly relay ok": {
+                                "id": "7701ff2f5aa911a6ba1037d5da586ae6",
+                                "passes": 60,
+                                "fails": 0,
+                                "name": "ClimateAnomaly relay ok",
+                                "path": "::relay_ClimateAnomaly::ClimateAnomaly relay ok"
+                            }
+                        }
+                },
+                "relay_MLTrainer": {
+                    "name": "relay_MLTrainer",
+                    "path": "::relay_MLTrainer",
+                    "id": "dd4125415a9ee83ee19c6ec49c33bb87",
+                    "groups": {},
+                    "checks": {
+                            "MLTrainer relay ok": {
+                                "fails": 0,
+                                "name": "MLTrainer relay ok",
+                                "path": "::relay_MLTrainer::MLTrainer relay ok",
+                                "id": "093ddf7d5c4ed6b58ad4bd64fa5ba30b",
+                                "passes": 50
+                            }
+                        }
+                }
+            },
+            "checks": {},
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e"
+        }
+}

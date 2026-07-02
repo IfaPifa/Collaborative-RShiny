@@ -1,0 +1,464 @@
+{
+    "metrics": {
+        "restore_from_db_ms{app_name:DataExchange}": {
+            "max": 14,
+            "p(90)": 8,
+            "p(95)": 10.5,
+            "avg": 6.130434782608695,
+            "min": 2,
+            "med": 6,
+            "thresholds": {
+                "p(95)<60": false
+            }
+        },
+        "save_restore_ok": {
+            "count": 358,
+            "rate": 1.325314491427557
+        },
+        "http_req_duration": {
+            "max": 66697.170777,
+            "p(90)": 26.25121020000001,
+            "p(95)": 101.66684949999983,
+            "avg": 543.0309557394652,
+            "min": 1.518379,
+            "med": 7.675369
+        },
+        "data_received": {
+            "rate": 23173.590334079883,
+            "count": 6259756
+        },
+        "http_req_waiting": {
+            "min": 1.465208,
+            "med": 7.494625,
+            "max": 66697.049142,
+            "p(90)": 26.06844960000001,
+            "p(95)": 101.52898939999982,
+            "avg": 542.8716567245121
+        },
+        "vus_max": {
+            "max": 15,
+            "value": 15,
+            "min": 15
+        },
+        "restore_from_db_ms": {
+            "med": 6,
+            "max": 66,
+            "p(90)": 9,
+            "p(95)": 13.149999999999977,
+            "avg": 6.656424581005586,
+            "min": 2
+        },
+        "save_to_db_ms{app_name:Advanced}": {
+            "avg": 179.80434782608697,
+            "min": 6,
+            "med": 9,
+            "max": 2978,
+            "p(90)": 30,
+            "p(95)": 1623.75,
+            "thresholds": {
+                "p(95)<80": true
+            }
+        },
+        "http_req_sending": {
+            "max": 2.916644,
+            "p(90)": 0.0521872,
+            "p(95)": 0.0628443999999999,
+            "avg": 0.03411434073402804,
+            "min": 0.005468,
+            "med": 0.030636
+        },
+        "iterations": {
+            "count": 36,
+            "rate": 0.1332718482999778
+        },
+        "restore_from_db_ms{app_name:MLTrainer}": {
+            "avg": 8.027777777777779,
+            "min": 3,
+            "med": 6,
+            "max": 66,
+            "p(90)": 11.5,
+            "p(95)": 19,
+            "thresholds": {
+                "p(95)<50": false
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 26.25121020000001,
+            "p(95)": 101.66684949999983,
+            "avg": 543.0309557394652,
+            "min": 1.518379,
+            "med": 7.675369,
+            "max": 66697.170777
+        },
+        "restore_from_db_ms{app_name:Geospatial}": {
+            "avg": 7.6521739130434785,
+            "min": 3,
+            "med": 6,
+            "max": 46,
+            "p(90)": 9,
+            "p(95)": 13.75,
+            "thresholds": {
+                "p(95)<40": false
+            }
+        },
+        "save_to_db_ms{app_name:MLTrainer}": {
+            "avg": 386.6388888888889,
+            "min": 5,
+            "med": 9,
+            "max": 7852,
+            "p(90)": 13,
+            "p(95)": 2825.25,
+            "thresholds": {
+                "p(95)<80": true
+            }
+        },
+        "save_to_db_ms{app_name:Calculator}": {
+            "p(95)": 13,
+            "avg": 174.3913043478261,
+            "min": 5,
+            "med": 8,
+            "max": 4333,
+            "p(90)": 12,
+            "thresholds": {
+                "p(95)<70": false
+            }
+        },
+        "http_req_receiving": {
+            "avg": 0.12518467421839605,
+            "min": 0.022384,
+            "med": 0.100683,
+            "max": 20.653787,
+            "p(90)": 0.17555400000000002,
+            "p(95)": 0.2326063
+        },
+        "restore_from_db_ms{app_name:ClimateAnomaly}": {
+            "avg": 6.978260869565218,
+            "min": 3,
+            "med": 6,
+            "max": 48,
+            "p(90)": 9,
+            "p(95)": 10.75,
+            "thresholds": {
+                "p(95)<60": false
+            }
+        },
+        "save_to_db_ms{app_name:DataExchange}": {
+            "min": 4,
+            "med": 8,
+            "max": 3137,
+            "p(90)": 11.5,
+            "p(95)": 390,
+            "avg": 129.56521739130434,
+            "thresholds": {
+                "p(95)<80": true
+            }
+        },
+        "restore_from_db_ms{app_name:Calculator}": {
+            "p(90)": 7.5,
+            "p(95)": 8.75,
+            "avg": 5.3478260869565215,
+            "min": 3,
+            "med": 5,
+            "max": 15,
+            "thresholds": {
+                "p(95)<40": false
+            }
+        },
+        "save_to_db_ms": {
+            "avg": 206.36033519553072,
+            "min": 4,
+            "med": 9,
+            "max": 8668,
+            "p(90)": 13,
+            "p(95)": 1846.7999999999993
+        },
+        "http_req_failed": {
+            "fails": 2207,
+            "passes": 0,
+            "thresholds": {
+                "rate<0.2": false
+            },
+            "value": 0
+        },
+        "http_reqs": {
+            "rate": 8.170304699945861,
+            "count": 2207
+        },
+        "http_req_connecting": {
+            "avg": 0.0022938518350702312,
+            "min": 0,
+            "med": 0,
+            "max": 0.44275,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "restore_from_db_ms{app_name:MonteCarlo}": {
+            "max": 25,
+            "p(90)": 8.5,
+            "p(95)": 10.5,
+            "avg": 6.304347826086956,
+            "min": 2,
+            "med": 5.5,
+            "thresholds": {
+                "p(95)<50": false
+            }
+        },
+        "save_to_db_ms{app_name:Geospatial}": {
+            "med": 9,
+            "max": 3195,
+            "p(90)": 11.5,
+            "p(95)": 24,
+            "avg": 80.41304347826087,
+            "min": 6,
+            "thresholds": {
+                "p(95)<60": false
+            }
+        },
+        "save_to_db_ms{app_name:Analytics}": {
+            "min": 5,
+            "med": 9,
+            "max": 3655,
+            "p(90)": 12,
+            "p(95)": 24.25,
+            "avg": 135.97826086956522,
+            "thresholds": {
+                "p(95)<60": false
+            }
+        },
+        "iteration_duration": {
+            "p(90)": 74406.4742,
+            "p(95)": 75910.4360375,
+            "avg": 45182.98846469445,
+            "min": 27655.046195,
+            "med": 38816.2912025,
+            "max": 83053.669122
+        },
+        "restore_from_db_ms{app_name:Advanced}": {
+            "max": 48,
+            "p(90)": 12.5,
+            "p(95)": 14.75,
+            "avg": 7.565217391304348,
+            "min": 2,
+            "med": 5,
+            "thresholds": {
+                "p(95)<50": false
+            }
+        },
+        "restore_from_db_ms{app_name:Analytics}": {
+            "min": 2,
+            "med": 5.5,
+            "max": 11,
+            "p(90)": 8,
+            "p(95)": 8.75,
+            "avg": 5.543478260869565,
+            "thresholds": {
+                "p(95)<60": false
+            }
+        },
+        "group_duration": {
+            "avg": 4636.461160980447,
+            "min": 1530.125741,
+            "med": 1556.368543,
+            "max": 58386.565903,
+            "p(90)": 11576.662600500018,
+            "p(95)": 23759.188565149998
+        },
+        "restore_verify_ms": {
+            "med": 4,
+            "max": 69,
+            "p(90)": 7,
+            "p(95)": 9,
+            "avg": 5.432960893854749,
+            "min": 1
+        },
+        "save_to_db_ms{app_name:MonteCarlo}": {
+            "p(95)": 2703,
+            "avg": 480.5652173913044,
+            "min": 5,
+            "med": 9,
+            "max": 8668,
+            "p(90)": 232,
+            "thresholds": {
+                "p(95)<80": true
+            }
+        },
+        "vus": {
+            "max": 15,
+            "value": 1,
+            "min": 1
+        },
+        "list_states_ms": {
+            "med": 7,
+            "max": 58,
+            "p(90)": 12,
+            "p(95)": 16,
+            "avg": 8.379888268156424,
+            "min": 3
+        },
+        "checks": {
+            "passes": 358,
+            "fails": 0,
+            "value": 1
+        },
+        "http_req_blocked": {
+            "avg": 0.009865559583144551,
+            "min": 0.001663,
+            "med": 0.00574,
+            "max": 0.911049,
+            "p(90)": 0.009294,
+            "p(95)": 0.011193299999999986
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "data_sent": {
+            "rate": 3003.7105329511887,
+            "count": 811376
+        },
+        "save_to_db_ms{app_name:ClimateAnomaly}": {
+            "min": 6,
+            "med": 9,
+            "max": 3125,
+            "p(90)": 12,
+            "p(95)": 16.75,
+            "avg": 122.71739130434783,
+            "thresholds": {
+                "p(95)<80": false
+            }
+        }
+    },
+    "setup_data": {},
+    "root_group": {
+            "checks": {},
+            "name": "",
+            "path": "",
+            "id": "d41d8cd98f00b204e9800998ecf8427e",
+            "groups": {
+                    "save_restore_Calculator": {
+                        "path": "::save_restore_Calculator",
+                        "id": "b99a24a3c98dc4741cb9b34732005dc4",
+                        "groups": {},
+                        "checks": {
+                                "Calculator save+restore ok": {
+                                    "name": "Calculator save+restore ok",
+                                    "path": "::save_restore_Calculator::Calculator save+restore ok",
+                                    "id": "819896f6c2fd312eaf33cd9eead694bc",
+                                    "passes": 46,
+                                    "fails": 0
+                                }
+                            },
+                        "name": "save_restore_Calculator"
+                    },
+                    "save_restore_Analytics": {
+                        "checks": {
+                            "Analytics save+restore ok": {
+                                "name": "Analytics save+restore ok",
+                                "path": "::save_restore_Analytics::Analytics save+restore ok",
+                                "id": "03cf6dc125c671f3cf7471b51553839c",
+                                "passes": 46,
+                                "fails": 0
+                            }
+                        },
+                        "name": "save_restore_Analytics",
+                        "path": "::save_restore_Analytics",
+                        "id": "283e4783344f0d2bd71d2fe6b4121c1d",
+                        "groups": {}
+                    },
+                    "save_restore_Advanced": {
+                        "name": "save_restore_Advanced",
+                        "path": "::save_restore_Advanced",
+                        "id": "1c0c317933d2016d57a2c9d4d8befaa3",
+                        "groups": {},
+                        "checks": {
+                                "Advanced save+restore ok": {
+                                    "id": "2452fb64de7669856161602be3cb7916",
+                                    "passes": 46,
+                                    "fails": 0,
+                                    "name": "Advanced save+restore ok",
+                                    "path": "::save_restore_Advanced::Advanced save+restore ok"
+                                }
+                            }
+                    },
+                    "save_restore_DataExchange": {
+                        "groups": {},
+                        "checks": {
+                                "DataExchange save+restore ok": {
+                                    "path": "::save_restore_DataExchange::DataExchange save+restore ok",
+                                    "id": "11a99f6efc491ddd86d459752a603ecf",
+                                    "passes": 46,
+                                    "fails": 0,
+                                    "name": "DataExchange save+restore ok"
+                                }
+                            },
+                        "name": "save_restore_DataExchange",
+                        "path": "::save_restore_DataExchange",
+                        "id": "f64edbb461f86bb7504624774eef9675"
+                    },
+                    "save_restore_MonteCarlo": {
+                        "name": "save_restore_MonteCarlo",
+                        "path": "::save_restore_MonteCarlo",
+                        "id": "49a3c8c465580da641479c6df128fc24",
+                        "groups": {},
+                        "checks": {
+                                "MonteCarlo save+restore ok": {
+                                    "id": "b94d8c7d782cb973c194031faecef558",
+                                    "passes": 46,
+                                    "fails": 0,
+                                    "name": "MonteCarlo save+restore ok",
+                                    "path": "::save_restore_MonteCarlo::MonteCarlo save+restore ok"
+                                }
+                            }
+                    },
+                    "save_restore_Geospatial": {
+                        "name": "save_restore_Geospatial",
+                        "path": "::save_restore_Geospatial",
+                        "id": "1d0bef176e2bed93fafa3adefe627f74",
+                        "groups": {},
+                        "checks": {
+                                "Geospatial save+restore ok": {
+                                    "fails": 0,
+                                    "name": "Geospatial save+restore ok",
+                                    "path": "::save_restore_Geospatial::Geospatial save+restore ok",
+                                    "id": "d18c8f61d0c447075a37d9d48f9739af",
+                                    "passes": 46
+                                }
+                            }
+                    },
+                    "save_restore_ClimateAnomaly": {
+                        "name": "save_restore_ClimateAnomaly",
+                        "path": "::save_restore_ClimateAnomaly",
+                        "id": "57b53bf5fbcdd8d236ac3edc6e66426c",
+                        "groups": {},
+                        "checks": {
+                                "ClimateAnomaly save+restore ok": {
+                                    "fails": 0,
+                                    "name": "ClimateAnomaly save+restore ok",
+                                    "path": "::save_restore_ClimateAnomaly::ClimateAnomaly save+restore ok",
+                                    "id": "38a2e174efc5e9c2ab9647a20e391bbf",
+                                    "passes": 46
+                                }
+                            }
+                    },
+                    "save_restore_MLTrainer": {
+                        "name": "save_restore_MLTrainer",
+                        "path": "::save_restore_MLTrainer",
+                        "id": "0d77cdc745ff40c823a070ca217dee42",
+                        "groups": {},
+                        "checks": {
+                                "MLTrainer save+restore ok": {
+                                    "name": "MLTrainer save+restore ok",
+                                    "path": "::save_restore_MLTrainer::MLTrainer save+restore ok",
+                                    "id": "ceb45cb1ba0f76322d21ee001dfd162c",
+                                    "passes": 36,
+                                    "fails": 0
+                                }
+                            }
+                    }
+                }
+        }
+}

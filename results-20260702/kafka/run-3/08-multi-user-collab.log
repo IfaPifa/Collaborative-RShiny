@@ -1,0 +1,295 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /root/Collaborative-RShiny/k6/08-multi-user-collab.js
+        output: json (/root/Collaborative-RShiny/k6/results/kafka/run-3/08-multi-user-collab.json)
+
+     scenarios: (100.00%) 1 scenario, 3 max VUs, 5m30s max duration (incl. graceful stop):
+              * multi_user: 8 iterations for each of 3 VUs (maxDuration: 5m0s, gracefulStop: 30s)
+
+
+running (0m01.0s), 3/3 VUs, 0 complete and 0 interrupted iterations
+multi_user   [   0% ] 3 VUs  0m00.9s/5m0s  00/24 iters, 8 per VU
+
+running (0m02.0s), 3/3 VUs, 0 complete and 0 interrupted iterations
+multi_user   [   0% ] 3 VUs  0m01.9s/5m0s  00/24 iters, 8 per VU
+
+running (0m03.0s), 3/3 VUs, 1 complete and 0 interrupted iterations
+multi_user   [   4% ] 3 VUs  0m02.9s/5m0s  01/24 iters, 8 per VU
+
+running (0m04.0s), 3/3 VUs, 3 complete and 0 interrupted iterations
+multi_user   [  12% ] 3 VUs  0m03.9s/5m0s  03/24 iters, 8 per VU
+
+running (0m05.0s), 3/3 VUs, 5 complete and 0 interrupted iterations
+multi_user   [  21% ] 3 VUs  0m04.9s/5m0s  05/24 iters, 8 per VU
+
+running (0m06.0s), 3/3 VUs, 5 complete and 0 interrupted iterations
+multi_user   [  21% ] 3 VUs  0m05.9s/5m0s  05/24 iters, 8 per VU
+
+running (0m07.0s), 3/3 VUs, 8 complete and 0 interrupted iterations
+multi_user   [  33% ] 3 VUs  0m06.9s/5m0s  08/24 iters, 8 per VU
+
+running (0m08.0s), 3/3 VUs, 8 complete and 0 interrupted iterations
+multi_user   [  33% ] 3 VUs  0m07.9s/5m0s  08/24 iters, 8 per VU
+
+running (0m09.0s), 3/3 VUs, 9 complete and 0 interrupted iterations
+multi_user   [  38% ] 3 VUs  0m08.9s/5m0s  09/24 iters, 8 per VU
+
+running (0m10.0s), 3/3 VUs, 10 complete and 0 interrupted iterations
+multi_user   [  42% ] 3 VUs  0m09.9s/5m0s  10/24 iters, 8 per VU
+
+running (0m11.0s), 3/3 VUs, 12 complete and 0 interrupted iterations
+multi_user   [  50% ] 3 VUs  0m10.9s/5m0s  12/24 iters, 8 per VU
+
+running (0m12.0s), 3/3 VUs, 13 complete and 0 interrupted iterations
+multi_user   [  54% ] 3 VUs  0m11.9s/5m0s  13/24 iters, 8 per VU
+
+running (0m13.0s), 3/3 VUs, 14 complete and 0 interrupted iterations
+multi_user   [  58% ] 3 VUs  0m12.9s/5m0s  14/24 iters, 8 per VU
+
+running (0m14.0s), 3/3 VUs, 16 complete and 0 interrupted iterations
+multi_user   [  67% ] 3 VUs  0m13.9s/5m0s  16/24 iters, 8 per VU
+
+running (0m15.0s), 3/3 VUs, 17 complete and 0 interrupted iterations
+multi_user   [  71% ] 3 VUs  0m14.9s/5m0s  17/24 iters, 8 per VU
+
+running (0m16.0s), 3/3 VUs, 17 complete and 0 interrupted iterations
+multi_user   [  71% ] 3 VUs  0m15.9s/5m0s  17/24 iters, 8 per VU
+
+running (0m17.0s), 3/3 VUs, 19 complete and 0 interrupted iterations
+multi_user   [  79% ] 3 VUs  0m16.9s/5m0s  19/24 iters, 8 per VU
+
+running (0m18.0s), 3/3 VUs, 19 complete and 0 interrupted iterations
+multi_user   [  79% ] 3 VUs  0m17.9s/5m0s  19/24 iters, 8 per VU
+
+running (0m19.0s), 3/3 VUs, 19 complete and 0 interrupted iterations
+multi_user   [  79% ] 3 VUs  0m18.9s/5m0s  19/24 iters, 8 per VU
+
+running (0m20.0s), 3/3 VUs, 20 complete and 0 interrupted iterations
+multi_user   [  83% ] 3 VUs  0m19.9s/5m0s  20/24 iters, 8 per VU
+
+running (0m21.0s), 3/3 VUs, 20 complete and 0 interrupted iterations
+multi_user   [  83% ] 3 VUs  0m20.9s/5m0s  20/24 iters, 8 per VU
+
+running (0m22.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m21.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m23.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m22.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m24.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m23.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m25.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m24.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m26.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m25.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m27.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m26.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m28.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m27.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m29.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m28.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m30.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m29.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m31.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m30.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m32.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  0m31.9s/5m0s  22/24 iters, 8 per VU
+
+running (0m33.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  0m32.9s/5m0s  22/24 iters, 8 per VU
+
+running (0m34.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  0m33.9s/5m0s  22/24 iters, 8 per VU
+
+running (0m35.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m34.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m36.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m35.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m37.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m36.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m38.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m37.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m39.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m38.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m40.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m39.9s/5m0s  23/24 iters, 8 per VU
+
+     █ multi_3users_Calculator
+
+       ✓ Calculator all 3 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_5users_Calculator
+
+       ✓ Calculator all 5 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_10users_Calculator
+
+       ✓ Calculator all 10 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_3users_Analytics
+
+       ✓ Analytics all 3 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_5users_Analytics
+
+       ✓ Analytics all 5 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_10users_Analytics
+
+       ✓ Analytics all 10 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_3users_Advanced
+
+       ✓ Advanced all 3 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_5users_Advanced
+
+       ✓ Advanced all 5 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_3users_DataExchange
+
+       ✓ DataExchange all 3 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_5users_DataExchange
+
+       ✓ DataExchange all 5 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_10users_Advanced
+
+       ✓ Advanced all 10 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_3users_MonteCarlo
+
+       ✓ MonteCarlo all 3 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_5users_MonteCarlo
+
+       ✓ MonteCarlo all 5 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_3users_Geospatial
+
+       ✓ Geospatial all 3 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_DataExchange
+
+       ✓ DataExchange all 10 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_5users_Geospatial
+
+       ✓ Geospatial all 5 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_3users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 3 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_5users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 5 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_10users_MonteCarlo
+
+       ✓ MonteCarlo all 10 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_10users_Geospatial
+
+       ✓ Geospatial all 10 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 10 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_3users_MLTrainer
+
+       ✗ MLTrainer all 3 guests see update
+        ↳  0% — ✓ 0 / ✗ 1
+       ✗ MLTrainer at least one guest sees update
+        ↳  0% — ✓ 0 / ✗ 1
+
+     █ multi_5users_MLTrainer
+
+       ✗ MLTrainer all 5 guests see update
+        ↳  0% — ✓ 0 / ✗ 1
+       ✗ MLTrainer at least one guest sees update
+        ↳  0% — ✓ 0 / ✗ 1
+
+     █ multi_10users_MLTrainer
+
+       ✗ MLTrainer all 10 guests see update
+        ↳  0% — ✓ 0 / ✗ 1
+       ✗ MLTrainer at least one guest sees update
+        ↳  0% — ✓ 0 / ✗ 1
+
+     checks..........................: 87.50% 42 out of 48
+     data_received...................: 1.1 MB 28 kB/s
+     data_sent.......................: 435 kB 11 kB/s
+     group_duration..................: avg=3.4s     min=542.48ms med=1.55s   max=17.69s   p(90)=12.55s   p(95)=16.9s   
+     http_req_blocked................: avg=6.79µs   min=1.13µs   med=4.29µs  max=609.49µs p(90)=8.09µs   p(95)=9.5µs   
+     http_req_connecting.............: avg=829ns    min=0s       med=0s      max=348.18µs p(90)=0s       p(95)=0s      
+     http_req_duration...............: avg=22.53ms  min=1.22ms   med=3.13ms  max=687.27ms p(90)=72.88ms  p(95)=143.1ms 
+       { expected_response:true }....: avg=22.53ms  min=1.22ms   med=3.13ms  max=687.27ms p(90)=72.88ms  p(95)=143.1ms 
+   ✓ http_req_failed.................: 0.00%  0 out of 1386
+     http_req_receiving..............: avg=131.04µs min=14.56µs  med=76.06µs max=29.4ms   p(90)=144.24µs p(95)=186.78µs
+     http_req_sending................: avg=21.78µs  min=4.71µs   med=16.71µs max=1.43ms   p(90)=36.3µs   p(95)=44.75µs 
+     http_req_tls_handshaking........: avg=0s       min=0s       med=0s      max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting................: avg=22.37ms  min=1.17ms   med=3.02ms  max=687.16ms p(90)=72.74ms  p(95)=131.64ms
+     http_reqs.......................: 1386   34.402854/s
+     iteration_duration..............: avg=4.4s     min=1.54s    med=2.55s   max=18.69s   p(90)=13.55s   p(95)=17.9s   
+     iterations......................: 24     0.59572/s
+     multi_propagation_all_ms........: avg=2.26s    min=262ms    med=293.5ms max=16.68s   p(90)=11.05s   p(95)=15.9s   
+     ✓ { app_name:Advanced }.........: avg=271.66ms min=264ms    med=267ms   max=284ms    p(90)=280.6ms  p(95)=282.3ms 
+     ✓ { app_name:Analytics }........: avg=317.33ms min=291ms    med=293ms   max=368ms    p(90)=353ms    p(95)=360.5ms 
+     ✓ { app_name:Calculator }.......: avg=291.66ms min=279ms    med=297ms   max=299ms    p(90)=298.6ms  p(95)=298.8ms 
+     ✓ { app_name:ClimateAnomaly }...: avg=284ms    min=262ms    med=295ms   max=295ms    p(90)=295ms    p(95)=295ms   
+     ✓ { app_name:DataExchange }.....: avg=287ms    min=269ms    med=294ms   max=298ms    p(90)=297.2ms  p(95)=297.6ms 
+     ✓ { app_name:Geospatial }.......: avg=294.33ms min=280ms    med=299ms   max=304ms    p(90)=303ms    p(95)=303.5ms 
+     ✓ { app_name:MLTrainer }........: avg=16.09s   min=15.63s   med=15.95s  max=16.68s   p(90)=16.53s   p(95)=16.61s  
+     ✓ { app_name:MonteCarlo }.......: avg=274ms    min=262ms    med=267ms   max=293ms    p(90)=287.8ms  p(95)=290.39ms
+     multi_propagation_first_ms......: avg=137.66ms min=8ms      med=46ms    max=291ms    p(90)=267ms    p(95)=273ms   
+     multi_success...................: 21     0.521255/s
+     multi_timeout...................: 3      0.074465/s
+     vus.............................: 1      min=1         max=3
+     vus_max.........................: 3      min=3         max=3
+
+
+running (0m40.3s), 0/3 VUs, 24 complete and 0 interrupted iterations
+multi_user ✓ [ 100% ] 3 VUs  0m40.2s/5m0s  24/24 iters, 8 per VU

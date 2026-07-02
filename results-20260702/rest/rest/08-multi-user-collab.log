@@ -1,0 +1,540 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: ./k6/08-multi-user-collab.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 3 max VUs, 5m30s max duration (incl. graceful stop):
+              * multi_user: 8 iterations for each of 3 VUs (maxDuration: 5m0s, gracefulStop: 30s)
+
+time="2026-06-12T14:17:30Z" level=warning msg="Error from API server" error="listen tcp 127.0.0.1:6565: bind: address already in use"
+
+running (0m01.0s), 3/3 VUs, 0 complete and 0 interrupted iterations
+multi_user   [   0% ] 3 VUs  0m00.9s/5m0s  00/24 iters, 8 per VU
+
+running (0m02.0s), 3/3 VUs, 0 complete and 0 interrupted iterations
+multi_user   [   0% ] 3 VUs  0m01.9s/5m0s  00/24 iters, 8 per VU
+
+running (0m03.0s), 3/3 VUs, 1 complete and 0 interrupted iterations
+multi_user   [   4% ] 3 VUs  0m02.9s/5m0s  01/24 iters, 8 per VU
+
+running (0m04.0s), 3/3 VUs, 2 complete and 0 interrupted iterations
+multi_user   [   8% ] 3 VUs  0m03.9s/5m0s  02/24 iters, 8 per VU
+
+running (0m05.0s), 3/3 VUs, 2 complete and 0 interrupted iterations
+multi_user   [   8% ] 3 VUs  0m04.9s/5m0s  02/24 iters, 8 per VU
+
+running (0m06.0s), 3/3 VUs, 5 complete and 0 interrupted iterations
+multi_user   [  21% ] 3 VUs  0m05.9s/5m0s  05/24 iters, 8 per VU
+
+running (0m07.0s), 3/3 VUs, 5 complete and 0 interrupted iterations
+multi_user   [  21% ] 3 VUs  0m06.9s/5m0s  05/24 iters, 8 per VU
+
+running (0m08.0s), 3/3 VUs, 6 complete and 0 interrupted iterations
+multi_user   [  25% ] 3 VUs  0m07.9s/5m0s  06/24 iters, 8 per VU
+
+running (0m09.0s), 3/3 VUs, 6 complete and 0 interrupted iterations
+multi_user   [  25% ] 3 VUs  0m08.9s/5m0s  06/24 iters, 8 per VU
+
+running (0m10.0s), 3/3 VUs, 9 complete and 0 interrupted iterations
+multi_user   [  38% ] 3 VUs  0m09.9s/5m0s  09/24 iters, 8 per VU
+
+running (0m11.0s), 3/3 VUs, 11 complete and 0 interrupted iterations
+multi_user   [  46% ] 3 VUs  0m10.9s/5m0s  11/24 iters, 8 per VU
+
+running (0m12.0s), 3/3 VUs, 11 complete and 0 interrupted iterations
+multi_user   [  46% ] 3 VUs  0m11.9s/5m0s  11/24 iters, 8 per VU
+
+running (0m13.0s), 3/3 VUs, 11 complete and 0 interrupted iterations
+multi_user   [  46% ] 3 VUs  0m12.9s/5m0s  11/24 iters, 8 per VU
+
+running (0m14.0s), 3/3 VUs, 12 complete and 0 interrupted iterations
+multi_user   [  50% ] 3 VUs  0m13.9s/5m0s  12/24 iters, 8 per VU
+
+running (0m15.0s), 3/3 VUs, 14 complete and 0 interrupted iterations
+multi_user   [  58% ] 3 VUs  0m14.9s/5m0s  14/24 iters, 8 per VU
+
+running (0m16.0s), 3/3 VUs, 15 complete and 0 interrupted iterations
+multi_user   [  62% ] 3 VUs  0m15.9s/5m0s  15/24 iters, 8 per VU
+
+running (0m17.0s), 3/3 VUs, 15 complete and 0 interrupted iterations
+multi_user   [  62% ] 3 VUs  0m16.9s/5m0s  15/24 iters, 8 per VU
+
+running (0m18.0s), 3/3 VUs, 17 complete and 0 interrupted iterations
+multi_user   [  71% ] 3 VUs  0m17.9s/5m0s  17/24 iters, 8 per VU
+
+running (0m19.0s), 3/3 VUs, 18 complete and 0 interrupted iterations
+multi_user   [  75% ] 3 VUs  0m18.9s/5m0s  18/24 iters, 8 per VU
+
+running (0m20.0s), 3/3 VUs, 18 complete and 0 interrupted iterations
+multi_user   [  75% ] 3 VUs  0m19.9s/5m0s  18/24 iters, 8 per VU
+
+running (0m21.0s), 3/3 VUs, 19 complete and 0 interrupted iterations
+multi_user   [  79% ] 3 VUs  0m20.9s/5m0s  19/24 iters, 8 per VU
+
+running (0m22.0s), 3/3 VUs, 19 complete and 0 interrupted iterations
+multi_user   [  79% ] 3 VUs  0m21.9s/5m0s  19/24 iters, 8 per VU
+
+running (0m23.0s), 3/3 VUs, 20 complete and 0 interrupted iterations
+multi_user   [  83% ] 3 VUs  0m22.9s/5m0s  20/24 iters, 8 per VU
+
+running (0m24.0s), 3/3 VUs, 20 complete and 0 interrupted iterations
+multi_user   [  83% ] 3 VUs  0m23.9s/5m0s  20/24 iters, 8 per VU
+
+running (0m25.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m24.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m26.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m25.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m27.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m26.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m28.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m27.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m29.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m28.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m30.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m29.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m31.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m30.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m32.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m31.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m33.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m32.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m34.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m33.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m35.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  0m34.9s/5m0s  21/24 iters, 8 per VU
+
+running (0m36.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m35.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m37.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m36.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m38.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m37.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m39.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m38.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m40.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m39.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m41.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m40.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m42.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m41.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m43.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m42.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m44.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m43.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m45.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m44.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m46.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m45.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m47.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m46.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m48.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m47.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m49.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m48.9s/5m0s  23/24 iters, 8 per VU
+
+running (0m50.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  0m49.9s/5m0s  23/24 iters, 8 per VU
+
+     █ multi_3users_Calculator
+
+       ✓ Calculator all 3 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_5users_Calculator
+
+       ✓ Calculator all 5 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_3users_Analytics
+
+       ✓ Analytics all 3 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_10users_Calculator
+
+       ✓ Calculator all 10 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_5users_Analytics
+
+       ✓ Analytics all 5 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_3users_Advanced
+
+       ✓ Advanced all 3 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_5users_Advanced
+
+       ✓ Advanced all 5 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_3users_DataExchange
+
+       ✓ DataExchange all 3 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_10users_Analytics
+
+       ✓ Analytics all 10 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_5users_DataExchange
+
+       ✓ DataExchange all 5 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_3users_MonteCarlo
+
+       ✓ MonteCarlo all 3 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_3users_Geospatial
+
+       ✓ Geospatial all 3 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_Advanced
+
+       ✓ Advanced all 10 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_5users_MonteCarlo
+
+       ✓ MonteCarlo all 5 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_3users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 3 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_5users_Geospatial
+
+       ✓ Geospatial all 5 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_DataExchange
+
+       ✓ DataExchange all 10 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_5users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 5 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_10users_MonteCarlo
+
+       ✓ MonteCarlo all 10 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_10users_Geospatial
+
+       ✓ Geospatial all 10 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 10 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_5users_MLTrainer
+
+       ✓ MLTrainer all 5 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     █ multi_3users_MLTrainer
+
+       ✓ MLTrainer all 3 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     █ multi_10users_MLTrainer
+
+       ✓ MLTrainer all 10 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     checks..........................: 100.00% 48 out of 48
+     data_received...................: 701 kB  14 kB/s
+     data_sent.......................: 130 kB  2.6 kB/s
+     group_duration..................: avg=4.04s    min=309.14ms med=1.75s    max=24.43s   p(90)=11.96s   p(95)=18.92s  
+     http_req_blocked................: avg=9.58µs   min=1.69µs   med=5.25µs   max=656.2µs  p(90)=7.71µs   p(95)=8.23µs  
+     http_req_connecting.............: avg=2.56µs   min=0s       med=0s       max=481.77µs p(90)=0s       p(95)=0s      
+     http_req_duration...............: avg=223.36ms min=1.39ms   med=10.89ms  max=23.12s   p(90)=374.46ms p(95)=492.88ms
+       { expected_response:true }....: avg=223.36ms min=1.39ms   med=10.89ms  max=23.12s   p(90)=374.46ms p(95)=492.88ms
+   ✓ http_req_failed.................: 0.00%   0 out of 434
+     http_req_receiving..............: avg=213.56µs min=13.62µs  med=117.57µs max=33.88ms  p(90)=201.43µs p(95)=240.76µs
+     http_req_sending................: avg=30.72µs  min=5.68µs   med=28.29µs  max=204.84µs p(90)=47.46µs  p(95)=61.01µs 
+     http_req_tls_handshaking........: avg=0s       min=0s       med=0s       max=0s       p(90)=0s       p(95)=0s      
+     http_req_waiting................: avg=223.11ms min=1.35ms   med=10.66ms  max=23.12s   p(90)=374.19ms p(95)=492.53ms
+     http_reqs.......................: 434     8.652689/s
+     iteration_duration..............: avg=5.04s    min=1.31s    med=2.75s    max=25.43s   p(90)=12.96s   p(95)=19.92s  
+     iterations......................: 24      0.47849/s
+     multi_propagation_all_ms........: avg=31.87ms  min=7ms      med=21ms     max=87ms     p(90)=80.29ms  p(95)=86ms    
+     ✓ { app_name:Advanced }.........: avg=80ms     min=67ms     med=86ms     max=87ms     p(90)=86.8ms   p(95)=86.9ms  
+     ✓ { app_name:Analytics }........: avg=17.66ms  min=7ms      med=12ms     max=34ms     p(90)=29.6ms   p(95)=31.79ms 
+     ✓ { app_name:Calculator }.......: avg=24.33ms  min=7ms      med=13ms     max=53ms     p(90)=45ms     p(95)=49ms    
+     ✓ { app_name:ClimateAnomaly }...: avg=16.66ms  min=8ms      med=21ms     max=21ms     p(90)=21ms     p(95)=21ms    
+     ✓ { app_name:DataExchange }.....: avg=20ms     min=10ms     med=15ms     max=35ms     p(90)=31ms     p(95)=33ms    
+     ✓ { app_name:Geospatial }.......: avg=58ms     min=34ms     med=54ms     max=86ms     p(90)=79.59ms  p(95)=82.8ms  
+     ✓ { app_name:MLTrainer }........: avg=22ms     min=12ms     med=16ms     max=38ms     p(90)=33.6ms   p(95)=35.79ms 
+     ✓ { app_name:MonteCarlo }.......: avg=16.33ms  min=8ms      med=14ms     max=27ms     p(90)=24.4ms   p(95)=25.7ms  
+     multi_propagation_first_ms......: avg=12.75ms  min=3ms      med=5ms      max=76ms     p(90)=42.09ms  p(95)=49.84ms 
+     multi_success...................: 24      0.47849/s
+     vus.............................: 1       min=1        max=3
+     vus_max.........................: 3       min=3        max=3
+
+
+running (0m50.2s), 0/3 VUs, 24 complete and 0 interrupted iterations
+multi_user ✓ [ 100% ] 3 VUs  0m50.1s/5m0s  24/24 iters, 8 per VU
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+running (3m49.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  3m46.4s/5m0s  21/24 iters, 8 per VU
+
+running (3m50.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  3m47.4s/5m0s  21/24 iters, 8 per VU
+
+running (3m51.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  3m48.4s/5m0s  21/24 iters, 8 per VU
+
+running (3m52.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  3m49.4s/5m0s  21/24 iters, 8 per VU
+
+running (3m53.0s), 3/3 VUs, 21 complete and 0 interrupted iterations
+multi_user   [  88% ] 3 VUs  3m50.4s/5m0s  21/24 iters, 8 per VU
+
+running (3m54.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  3m51.4s/5m0s  22/24 iters, 8 per VU
+
+running (3m55.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  3m52.4s/5m0s  22/24 iters, 8 per VU
+
+running (3m56.0s), 2/3 VUs, 22 complete and 0 interrupted iterations
+multi_user   [  92% ] 3 VUs  3m53.4s/5m0s  22/24 iters, 8 per VU
+
+running (3m57.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m54.4s/5m0s  23/24 iters, 8 per VU
+
+running (3m58.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m55.4s/5m0s  23/24 iters, 8 per VU
+
+running (3m59.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m56.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m00.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m57.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m01.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m58.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m02.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  3m59.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m03.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m00.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m04.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m01.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m05.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m02.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m06.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m03.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m07.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m04.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m08.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m05.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m09.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m06.4s/5m0s  23/24 iters, 8 per VU
+
+running (4m10.0s), 1/3 VUs, 23 complete and 0 interrupted iterations
+multi_user   [  96% ] 3 VUs  4m07.4s/5m0s  23/24 iters, 8 per VU
+
+     █ multi_3users_Calculator
+
+       ✓ Calculator all 3 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_5users_Calculator
+
+       ✓ Calculator all 5 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_3users_Analytics
+
+       ✓ Analytics all 3 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_10users_Calculator
+
+       ✓ Calculator all 10 guests see update
+       ✓ Calculator at least one guest sees update
+
+     █ multi_3users_Advanced
+
+       ✓ Advanced all 3 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_5users_Analytics
+
+       ✓ Analytics all 5 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_3users_DataExchange
+
+       ✓ DataExchange all 3 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_5users_Advanced
+
+       ✓ Advanced all 5 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_3users_MonteCarlo
+
+       ✓ MonteCarlo all 3 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_10users_Analytics
+
+       ✓ Analytics all 10 guests see update
+       ✓ Analytics at least one guest sees update
+
+     █ multi_3users_Geospatial
+
+       ✓ Geospatial all 3 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_5users_DataExchange
+
+       ✓ DataExchange all 5 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_3users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 3 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_5users_MonteCarlo
+
+       ✓ MonteCarlo all 5 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_10users_Advanced
+
+       ✓ Advanced all 10 guests see update
+       ✓ Advanced at least one guest sees update
+
+     █ multi_5users_Geospatial
+
+       ✓ Geospatial all 5 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_DataExchange
+
+       ✓ DataExchange all 10 guests see update
+       ✓ DataExchange at least one guest sees update
+
+     █ multi_5users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 5 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_10users_MonteCarlo
+
+       ✓ MonteCarlo all 10 guests see update
+       ✓ MonteCarlo at least one guest sees update
+
+     █ multi_10users_Geospatial
+
+       ✓ Geospatial all 10 guests see update
+       ✓ Geospatial at least one guest sees update
+
+     █ multi_10users_ClimateAnomaly
+
+       ✓ ClimateAnomaly all 10 guests see update
+       ✓ ClimateAnomaly at least one guest sees update
+
+     █ multi_5users_MLTrainer
+
+       ✓ MLTrainer all 5 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     █ multi_3users_MLTrainer
+
+       ✓ MLTrainer all 3 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     █ multi_10users_MLTrainer
+
+       ✓ MLTrainer all 10 guests see update
+       ✓ MLTrainer at least one guest sees update
+
+     checks..........................: 100.00% 48 out of 48
+     data_received...................: 701 kB  2.8 kB/s
+     data_sent.......................: 130 kB  518 B/s
+     group_duration..................: avg=28.72s  min=1.3s    med=24.65s   max=1m40s    p(90)=1m3s    p(95)=1m18s   
+     http_req_blocked................: avg=11.15µs min=1.76µs  med=5.7µs    max=717.91µs p(90)=8.46µs  p(95)=9.78µs  
+     http_req_connecting.............: avg=2.91µs  min=0s      med=0s       max=589.71µs p(90)=0s      p(95)=0s      
+     http_req_duration...............: avg=1.59s   min=2.12ms  med=294.54ms max=29.02s   p(90)=4.77s   p(95)=7.57s   
+       { expected_response:true }....: avg=1.59s   min=2.12ms  med=294.54ms max=29.02s   p(90)=4.77s   p(95)=7.57s   
+   ✓ http_req_failed.................: 0.00%   0 out of 434
+     http_req_receiving..............: avg=287.7µs min=29.13µs med=120.65µs max=43.73ms  p(90)=252.3µs p(95)=417.91µs
+     http_req_sending................: avg=49.47µs min=5.27µs  med=28.43µs  max=3.79ms   p(90)=51.88µs p(95)=66.26µs 
+     http_req_tls_handshaking........: avg=0s      min=0s      med=0s       max=0s       p(90)=0s      p(95)=0s      
+     http_req_waiting................: avg=1.59s   min=2.05ms  med=294.43ms max=29.02s   p(90)=4.77s   p(95)=7.57s   
+     http_reqs.......................: 434     1.730415/s
+     iteration_duration..............: avg=29.72s  min=2.31s   med=25.65s   max=1m41s    p(90)=1m4s    p(95)=1m19s   
+     iterations......................: 24      0.095691/s
+     multi_propagation_all_ms........: avg=4.2s    min=9ms     med=1.19s    max=29.59s   p(90)=10.89s  p(95)=14.98s  
+     ✗ { app_name:Advanced }.........: avg=3.41s   min=440ms   med=1.59s    max=8.19s    p(90)=6.87s   p(95)=7.53s   
+     ✗ { app_name:Analytics }........: avg=11.57s  min=1.28s   med=3.84s    max=29.59s   p(90)=24.44s  p(95)=27.01s  
+     ✗ { app_name:Calculator }.......: avg=7.5s    min=1.09s   med=5.91s    max=15.5s    p(90)=13.58s  p(95)=14.54s  
+     ✗ { app_name:ClimateAnomaly }...: avg=619ms   min=33ms    med=135ms    max=1.68s    p(90)=1.37s   p(95)=1.53s   
+     ✗ { app_name:DataExchange }.....: avg=6.84s   min=296ms   med=8.19s    max=12.05s   p(90)=11.28s  p(95)=11.66s  
+     ✗ { app_name:Geospatial }.......: avg=2.41s   min=55ms    med=459ms    max=6.74s    p(90)=5.48s   p(95)=6.11s   
+     ✓ { app_name:MLTrainer }........: avg=29.66ms min=9ms     med=11ms     max=69ms     p(90)=57.4ms  p(95)=63.2ms  
+     ✗ { app_name:MonteCarlo }.......: avg=1.25s   min=126ms   med=231ms    max=3.42s    p(90)=2.78s   p(95)=3.1s    
+     multi_propagation_first_ms......: avg=912.5ms min=3ms     med=250ms    max=4.69s    p(90)=2.57s   p(95)=4.27s   
+     multi_success...................: 24      0.095691/s
+     vus.............................: 1       min=0        max=3
+     vus_max.........................: 3       min=3        max=3
+
+
+running (4m10.8s), 0/3 VUs, 24 complete and 0 interrupted iterations
+multi_user ✓ [ 100% ] 3 VUs  4m08.2s/5m0s  24/24 iters, 8 per VU
+time="2026-06-12T14:17:53Z" level=error msg="thresholds on metrics 'multi_propagation_all_ms{app_name:Advanced}, multi_propagation_all_ms{app_name:Analytics}, multi_propagation_all_ms{app_name:Calculator}, multi_propagation_all_ms{app_name:ClimateAnomaly}, multi_propagation_all_ms{app_name:DataExchange}, multi_propagation_all_ms{app_name:Geospatial}, multi_propagation_all_ms{app_name:MonteCarlo}' have been crossed"
