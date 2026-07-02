@@ -25,6 +25,13 @@ RUNS="${RUNS:-5}"
 # sweep_applies guard restricts it to rest* archs, so exporting it globally is
 # safe — Kafka ignores it.
 export POLL_SWEEP="${POLL_SWEEP:-1}"
+# Client-side observation interval (ms). MUST be exported so it reaches
+# run-suite.sh -> k6. Default 10ms keeps the instrument finer than the true
+# relay: without this, push (Kafka) latency is quantised to the old 250ms
+# default and reads ~50x too slow. REST sweep jobs override this per-interval
+# (run-suite.sh: EFF_POLL prefers the sweep value), so the sweep still runs;
+# every non-swept test observes at 10ms.
+export POLL_MS="${POLL_MS:-10}"
 REST_URL="http://localhost:30001"
 KAFKA_URL="http://localhost:30002"
 TS="$(date +%Y%m%d-%H%M%S)"

@@ -37,6 +37,18 @@ const collabHostPost    = new Trend('collab_host_post_ms', true);
 const collabSuccess     = new Counter('collab_success');
 const collabTimeout     = new Counter('collab_timeout');
 
+// Client-side poll interval (ms). The guest polls GET until it sees the host's
+// update, so the observed propagation partly reflects how often we poll. For a
+// push architecture (Kafka) this must be set finer than the true propagation
+// (e.g. POLL_MS=10) or the median is quantised to the poll step. Default 250
+// preserves prior behaviour.
+const POLL_MS = Number(__ENV.POLL_MS || 250);
+// Keep the total poll deadline constant regardless of interval so a tighter
+// interval polls more often within the same window instead of timing out
+// sooner. Prior budget was 40 iters * 250ms = 10s.
+const POLL_BUDGET_MS = Number(__ENV.POLL_BUDGET_MS || 10000);
+const POLL_MAX_ITERS = Math.max(1, Math.ceil(POLL_BUDGET_MS / POLL_MS));
+
 export const options = {
   scenarios: {
     collab_latency: {
@@ -111,13 +123,13 @@ export default function () {
     // 6. Guest polls GET until the marker appears
     const pollStart = Date.now();
     let found = false;
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < POLL_MAX_ITERS; i++) {
       const getRes = getState(guestToken, session.id, tags);
       if (getRes.status === 200 && getRes.body && getRes.body.includes(marker)) {
         found = true;
         break;
       }
-      sleep(0.25);
+      sleep(POLL_MS / 1000);
     }
     const propagation = Date.now() - pollStart;
     collabPropagation.add(propagation, tags);
