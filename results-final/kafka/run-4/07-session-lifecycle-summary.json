@@ -1,0 +1,357 @@
+{
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "lifecycle_Analytics": {
+                "path": "::lifecycle_Analytics",
+                "id": "aa2d49cef65239905dea52fdf387772c",
+                "groups": {},
+                "checks": {
+                        "Analytics lifecycle complete": {
+                            "passes": 87,
+                            "fails": 0,
+                            "name": "Analytics lifecycle complete",
+                            "path": "::lifecycle_Analytics::Analytics lifecycle complete",
+                            "id": "d84941affc01c69b039d276a9ecb377b"
+                        }
+                    },
+                "name": "lifecycle_Analytics"
+            },
+            "lifecycle_Advanced": {
+                "name": "lifecycle_Advanced",
+                "path": "::lifecycle_Advanced",
+                "id": "f333beeca5550e99727a7a3c46e312a9",
+                "groups": {},
+                "checks": {
+                        "Advanced lifecycle complete": {
+                            "passes": 92,
+                            "fails": 0,
+                            "name": "Advanced lifecycle complete",
+                            "path": "::lifecycle_Advanced::Advanced lifecycle complete",
+                            "id": "519e5c19ae9eb2814ce4042d2a5d9a02"
+                        }
+                    }
+            },
+            "lifecycle_DataExchange": {
+                "name": "lifecycle_DataExchange",
+                "path": "::lifecycle_DataExchange",
+                "id": "c5a22f376b0932307cce4e82a0911849",
+                "groups": {},
+                "checks": {
+                        "DataExchange lifecycle complete": {
+                            "id": "2ff6233482d569c5e707ded5aa15e96e",
+                            "passes": 94,
+                            "fails": 0,
+                            "name": "DataExchange lifecycle complete",
+                            "path": "::lifecycle_DataExchange::DataExchange lifecycle complete"
+                        }
+                    }
+            },
+            "lifecycle_MonteCarlo": {
+                "name": "lifecycle_MonteCarlo",
+                "path": "::lifecycle_MonteCarlo",
+                "id": "3e76de859a367dde6395ed48f105d767",
+                "groups": {},
+                "checks": {
+                        "MonteCarlo lifecycle complete": {
+                            "name": "MonteCarlo lifecycle complete",
+                            "path": "::lifecycle_MonteCarlo::MonteCarlo lifecycle complete",
+                            "id": "a30dbecd95e7d44703accea518dc586a",
+                            "passes": 92,
+                            "fails": 0
+                        }
+                    }
+            },
+            "lifecycle_Geospatial": {
+                "name": "lifecycle_Geospatial",
+                "path": "::lifecycle_Geospatial",
+                "id": "223c63f88b36785743b66f7e21d6448b",
+                "groups": {},
+                "checks": {
+                        "Geospatial lifecycle complete": {
+                            "passes": 91,
+                            "fails": 0,
+                            "name": "Geospatial lifecycle complete",
+                            "path": "::lifecycle_Geospatial::Geospatial lifecycle complete",
+                            "id": "e7c95077ecc8a45dbada2c51e236546c"
+                        }
+                    }
+            },
+            "lifecycle_ClimateAnomaly": {
+                "name": "lifecycle_ClimateAnomaly",
+                "path": "::lifecycle_ClimateAnomaly",
+                "id": "df6c85e11c884c47e5197678b885e9c8",
+                "groups": {},
+                "checks": {
+                        "ClimateAnomaly lifecycle complete": {
+                            "path": "::lifecycle_ClimateAnomaly::ClimateAnomaly lifecycle complete",
+                            "id": "58dd474e3a2bf2bb7c0622afe333dc98",
+                            "passes": 88,
+                            "fails": 0,
+                            "name": "ClimateAnomaly lifecycle complete"
+                        }
+                    }
+            },
+            "lifecycle_MLTrainer": {
+                "path": "::lifecycle_MLTrainer",
+                "id": "8a6b2e93e748225ae8d467e5cc41406f",
+                "groups": {},
+                "checks": {
+                        "MLTrainer lifecycle complete": {
+                            "name": "MLTrainer lifecycle complete",
+                            "path": "::lifecycle_MLTrainer::MLTrainer lifecycle complete",
+                            "id": "bc385bba7c6d42b3f0d8cb98ee81d40f",
+                            "passes": 89,
+                            "fails": 0
+                        }
+                    },
+                "name": "lifecycle_MLTrainer"
+            },
+            "lifecycle_Calculator": {
+                "checks": {
+                    "Calculator lifecycle complete": {
+                        "fails": 0,
+                        "name": "Calculator lifecycle complete",
+                        "path": "::lifecycle_Calculator::Calculator lifecycle complete",
+                        "id": "d01a20b3d997ac33b94196f1df2d7ede",
+                        "passes": 88
+                    }
+                },
+                "name": "lifecycle_Calculator",
+                "path": "::lifecycle_Calculator",
+                "id": "1aebeac53f8742b3b63e7fd9064653cf",
+                "groups": {}
+            }
+        },
+        "checks": {},
+        "name": ""
+    },
+    "metrics": {
+        "vus": {
+            "max": 50,
+            "value": 6,
+            "min": 1
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "http_req_receiving": {
+            "p(95)": 8.562000699999963,
+            "avg": 2.6242851250133374,
+            "min": 0.013972,
+            "med": 0.092179,
+            "max": 148.721021,
+            "p(90)": 1.325409000000002
+        },
+        "lifecycle_op_ms{app_name:Geospatial}": {
+            "med": 248,
+            "max": 4440.137867,
+            "p(90)": 1346.091541,
+            "p(95)": 1848.384866,
+            "avg": 488.99358053846066,
+            "min": 1.607699,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "checks": {
+            "passes": 721,
+            "fails": 0,
+            "value": 1
+        },
+        "lifecycle_op_ms{app_name:Advanced}": {
+            "p(90)": 1347.3527152,
+            "p(95)": 1847.5725183499999,
+            "avg": 496.6665156284586,
+            "min": 1.716773,
+            "med": 246.42543,
+            "max": 5051.740087,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "http_req_duration": {
+            "p(90)": 1654.0852942000001,
+            "p(95)": 2202.4034523999994,
+            "avg": 634.4607701002681,
+            "min": 1.348568,
+            "med": 343.504042,
+            "max": 5499.845974
+        },
+        "http_req_blocked": {
+            "max": 4.312886,
+            "p(90)": 0.007611,
+            "p(95)": 0.009269699999999987,
+            "avg": 0.009034770133333302,
+            "min": 0.001032,
+            "med": 0.004527
+        },
+        "iteration_duration": {
+            "p(90)": 15850.064397,
+            "p(95)": 17063.181487,
+            "avg": 9555.717545364772,
+            "min": 1798.188728,
+            "med": 9584.052072,
+            "max": 20243.47051
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 9375,
+            "value": 0
+        },
+        "lifecycle_op_ms{app_name:MonteCarlo}": {
+            "med": 201.15333049999998,
+            "max": 4204.860124,
+            "p(90)": 1349.1016309,
+            "p(95)": 1949.9427123,
+            "avg": 484.17399458992077,
+            "min": 1.487258,
+            "thresholds": {
+                "p(95)<1170": true
+            }
+        },
+        "lifecycle_op_ms{app_name:MLTrainer}": {
+            "avg": 521.6910393953012,
+            "min": 1.348568,
+            "med": 252,
+            "max": 4403.161002,
+            "p(90)": 1351.7181640000001,
+            "p(95)": 1943.7233609999998,
+            "thresholds": {
+                "p(95)<143000": false
+            }
+        },
+        "lifecycle_op_ms": {
+            "med": 240,
+            "max": 5499.845974,
+            "p(90)": 1347.728084,
+            "p(95)": 1863.6986080000001,
+            "avg": 497.7131788167938,
+            "min": 1.348568
+        },
+        "data_received": {
+            "count": 51389356,
+            "rate": 213293.62503085626
+        },
+        "lifecycle_op_ms{app_name:DataExchange}": {
+            "avg": 476.61159824564754,
+            "min": 2.178191,
+            "med": 204.368805,
+            "max": 5499.845974,
+            "p(90)": 1304.448273,
+            "p(95)": 1752.0166294499998,
+            "thresholds": {
+                "p(95)<870": true
+            }
+        },
+        "lifecycle_op_ms{app_name:ClimateAnomaly}": {
+            "avg": 508.6066703347106,
+            "min": 1.682262,
+            "med": 250.9933325,
+            "max": 4893.620698,
+            "p(90)": 1347.9629693000002,
+            "p(95)": 1850.9899325499998,
+            "thresholds": {
+                "p(95)<1050": true
+            }
+        },
+        "lifecycle_op_ms{app_name:Analytics}": {
+            "avg": 490.73427625182893,
+            "min": 1.491905,
+            "med": 207.01271,
+            "max": 4647.635839,
+            "p(90)": 1252.669587,
+            "p(95)": 1853.1113567999996,
+            "thresholds": {
+                "p(95)<830": true
+            }
+        },
+        "http_reqs": {
+            "count": 9375,
+            "rate": 38.91132114331764
+        },
+        "http_req_connecting": {
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0.0027080056533333335,
+            "min": 0,
+            "med": 0,
+            "max": 4.252855
+        },
+        "http_req_sending": {
+            "avg": 0.028094364693333276,
+            "min": 0.004447,
+            "med": 0.018878,
+            "max": 9.104867,
+            "p(90)": 0.04114440000000001,
+            "p(95)": 0.06053969999999996
+        },
+        "lifecycle_errors": {
+            "fails": 6489,
+            "passes": 0,
+            "thresholds": {
+                "rate<0.25": false
+            },
+            "value": 0
+        },
+        "lifecycle_op_ms{app_name:Calculator}": {
+            "p(90)": 1398.7496123,
+            "p(95)": 2047.9524216,
+            "avg": 516.2749703770662,
+            "min": 1.385303,
+            "med": 201.20351549999998,
+            "max": 3952.776873,
+            "thresholds": {
+                "p(95)<730": true
+            }
+        },
+        "group_duration": {
+            "max": 19742.79486,
+            "p(90)": 15348.896763,
+            "p(95)": 16561.963688,
+            "avg": 9054.928067736477,
+            "min": 1297.277482,
+            "med": 9083.777369
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 1654.0852942000001,
+            "p(95)": 2202.4034523999994,
+            "avg": 634.4607701002681,
+            "min": 1.348568,
+            "med": 343.504042,
+            "max": 5499.845974
+        },
+        "data_sent": {
+            "count": 3190599,
+            "rate": 13242.711715045134
+        },
+        "lifecycle_ops": {
+            "count": 7931,
+            "rate": 32.917940052016235
+        },
+        "iterations": {
+            "rate": 2.992540004728749,
+            "count": 721
+        },
+        "http_req_waiting": {
+            "med": 342.045969,
+            "max": 5499.719923,
+            "p(90)": 1653.1122842000002,
+            "p(95)": 2200.2886062,
+            "avg": 631.8083906105588,
+            "min": 1.311582
+        }
+    },
+    "setup_data": {}
+}

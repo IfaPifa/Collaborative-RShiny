@@ -1,0 +1,2014 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /root/Collaborative-RShiny/k6/06-cross-contamination.js
+        output: json (/root/Collaborative-RShiny/k6/results/rest/run-3/06-cross-contamination.json)
+
+     scenarios: (100.00%) 1 scenario, 30 max VUs, 10m30s max duration (incl. graceful stop):
+              * isolation: 1 iterations for each of 30 VUs (maxDuration: 10m0s, gracefulStop: 30s)
+
+
+running (00m01.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m00.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m02.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m01.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m03.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m02.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m04.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m03.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m05.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m04.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m06.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m05.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m07.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m06.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m08.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m07.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m09.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m08.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m10.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m09.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m11.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m10.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m12.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m11.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m13.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m12.9s/10m0s  00/30 iters, 1 per VU
+
+running (00m14.0s), 30/30 VUs, 0 complete and 0 interrupted iterations
+isolation   [   0% ] 30 VUs  00m13.9s/10m0s  00/30 iters, 1 per VU
+time="2026-10-02T16:17:24Z" level=info msg="VU2 Advanced: isolation check complete (9bee7ee0-84a3-4e8e-94dd-2b09a269ec48, d0a85898-50c9-4f4a-a86f-204c00e398cf)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU13 Geospatial: isolation check complete (35b48c66-e9b4-450d-abd4-131be07490cb, 15e9deea-72ea-4ba8-ad96-85c484b55aca)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU11 DataExchange: isolation check complete (ab03153f-71a5-4713-995d-cdc390a64e3f, ccfde738-16bd-4598-adda-7f03fdb85c6a)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU27 DataExchange: isolation check complete (d1be5079-7499-4c74-a5f4-720b3c7aa6be, 61b098fb-752d-405f-9816-e8539fb70bb1)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU3 DataExchange: isolation check complete (851bc88b-de6b-42f8-b360-ed9892f94152, fff97703-1f72-4204-a71a-80bcd023ec16)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU26 Advanced: isolation check complete (e066b541-a555-42da-b847-9dd5f3197436, 20718268-eaaa-41e6-95b0-773521121cea)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU16 Calculator: isolation check complete (807810fc-83b2-4579-aed7-d9773e9fe638, 200fe560-0d78-4df9-a828-1fc2972c4950)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU21 Geospatial: isolation check complete (f6584b9c-a782-4fb2-9956-d86497bbefd3, 5548f557-44d4-4292-83bf-952dfa6d6b87)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU8 Calculator: isolation check complete (2adab1e7-0edf-49f2-9fb6-343843aac323, 141ba45f-bce6-4a56-8580-bfec05470804)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU30 ClimateAnomaly: isolation check complete (16ede5b9-8c00-4cec-ab68-ff52a434e30d, 06f8d9ff-4ad0-47e5-82df-dc133e5172d6)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU19 DataExchange: isolation check complete (a78e534f-b294-47c6-b883-722d955bddf4, 03756b39-03f5-4f84-98a9-a4de54152768)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU29 Geospatial: isolation check complete (a434a595-c15f-4397-b425-04b81c32a269, 8e0962b6-c3a8-4470-8a9d-e17697a5f422)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU9 Analytics: isolation check complete (694ffd38-5615-4f4c-b7cc-9f43effdf04a, e8ef2738-9b7b-4d2f-9195-2da621b10a30)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU24 Calculator: isolation check complete (2c2913da-9533-495e-9fab-579eb4a708bf, fcb88db2-add8-4f9d-8104-71db5b2f6347)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU14 ClimateAnomaly: isolation check complete (483372ae-6b55-44f0-929b-4191a3342886, dd276d92-de2a-43d1-9a76-e7cf6615c0f3)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU18 Advanced: isolation check complete (ae0850f6-e781-40fd-b7d5-e674478777f2, 012c2fda-22f5-4b18-8215-ac3226a76b43)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU25 Analytics: isolation check complete (fe1bd11d-ac6c-4fa1-909d-78c918a98560, 7adc3097-a0bc-46d2-9949-8aebc00c4faa)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU5 Geospatial: isolation check complete (26306382-db8c-47d3-812b-45fddcd73ce0, 444780d4-f004-472b-bbd4-2af4c3bb7d41)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU10 Advanced: isolation check complete (0e7b98fa-bb5c-4a00-80bb-4ec57967f8c8, 43e8823d-8300-4aa9-a23d-7f3a7fb686d5)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU6 ClimateAnomaly: isolation check complete (9aba79d9-4387-413d-934e-b0054954c735, cb222b61-eec0-438b-9e5b-f6699690d30f)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU17 Analytics: isolation check complete (8c2045d1-c24e-4712-9048-b55834914393, c39ea267-f2f1-438b-b118-e84a62eb85c5)" source=console
+time="2026-10-02T16:17:24Z" level=info msg="VU1 Analytics: isolation check complete (33c7df27-2d30-4a7c-a957-e5d8a84d97ac, cd603148-b3fd-45c8-8e30-70421019bfe4)" source=console
+
+running (00m15.0s), 08/30 VUs, 22 complete and 0 interrupted iterations
+isolation   [  73% ] 30 VUs  00m14.9s/10m0s  22/30 iters, 1 per VU
+time="2026-10-02T16:17:24Z" level=info msg="VU22 ClimateAnomaly: isolation check complete (bb8c985b-77f9-436b-96dd-5fb46a3cee86, 83c4922f-15f6-49be-ada6-b6d9e76b275f)" source=console
+time="2026-10-02T16:17:25Z" level=info msg="VU12 MonteCarlo: isolation check complete (2e25c9f5-6dac-41a2-90ad-ccc948d6977c, ead7ac70-18b9-4310-a48b-9c1327108abc)" source=console
+
+running (00m16.0s), 06/30 VUs, 24 complete and 0 interrupted iterations
+isolation   [  80% ] 30 VUs  00m15.9s/10m0s  24/30 iters, 1 per VU
+time="2026-10-02T16:17:25Z" level=info msg="VU28 MonteCarlo: isolation check complete (4367ee4b-fa24-4da4-beee-3e96f1b6198d, 42515eb1-4eac-45c4-b1fd-4b313e2f400f)" source=console
+time="2026-10-02T16:17:26Z" level=info msg="VU4 MonteCarlo: isolation check complete (a5d94b67-2e90-45a3-8f50-68fc22eee7d8, a8372959-5fab-4682-87b3-0a0445c8f5d3)" source=console
+time="2026-10-02T16:17:26Z" level=info msg="VU20 MonteCarlo: isolation check complete (e78bcbdb-d2da-4249-8677-9d0ec906c8a5, 4f6914ef-334f-47c6-9c7c-c59a5d1773d9)" source=console
+
+running (00m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (00m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  00m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (01m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  01m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (02m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  02m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (03m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  03m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (04m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  04m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (05m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  05m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (06m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  06m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m11.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m13.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m12.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m14.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m13.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m15.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m14.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m16.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m15.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m17.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m16.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m18.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m17.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m19.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m18.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m20.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m19.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m21.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m20.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m22.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m21.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m23.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m22.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m24.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m23.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m25.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m24.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m26.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m25.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m27.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m26.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m28.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m27.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m29.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m28.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m30.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m29.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m31.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m30.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m32.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m31.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m33.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m32.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m34.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m33.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m35.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m34.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m36.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m35.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m37.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m36.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m38.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m37.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m39.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m38.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m40.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m39.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m41.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m40.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m42.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m41.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m43.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m42.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m44.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m43.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m45.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m44.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m46.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m45.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m47.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m46.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m48.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m47.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m49.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m48.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m50.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m49.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m51.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m50.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m52.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m51.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m53.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m52.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m54.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m53.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m55.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m54.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m56.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m55.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m57.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m56.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m58.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m57.9s/10m0s  27/30 iters, 1 per VU
+
+running (07m59.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m58.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m00.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  07m59.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m01.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m00.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m02.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m01.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m03.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m02.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m04.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m03.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m05.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m04.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m06.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m05.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m07.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m06.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m08.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m07.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m09.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m08.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m10.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m09.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m11.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m10.9s/10m0s  27/30 iters, 1 per VU
+
+running (08m12.0s), 03/30 VUs, 27 complete and 0 interrupted iterations
+isolation   [  90% ] 30 VUs  08m11.9s/10m0s  27/30 iters, 1 per VU
+time="2026-10-02T16:25:22Z" level=info msg="VU7 MLTrainer: isolation check complete (f05fc8cf-4d31-4593-9ed1-82a6d8c83843, 5d01e042-1ead-419c-99b3-61b12e08699d)" source=console
+
+running (08m13.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m12.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m14.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m13.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m15.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m14.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m16.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m15.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m17.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m16.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m18.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m17.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m19.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m18.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m20.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m19.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m21.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m20.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m22.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m21.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m23.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m22.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m24.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m23.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m25.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m24.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m26.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m25.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m27.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m26.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m28.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m27.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m29.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m28.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m30.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m29.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m31.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m30.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m32.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m31.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m33.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m32.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m34.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m33.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m35.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m34.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m36.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m35.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m37.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m36.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m38.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m37.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m39.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m38.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m40.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m39.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m41.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m40.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m42.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m41.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m43.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m42.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m44.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m43.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m45.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m44.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m46.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m45.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m47.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m46.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m48.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m47.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m49.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m48.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m50.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m49.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m51.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m50.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m52.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m51.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m53.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m52.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m54.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m53.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m55.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m54.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m56.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m55.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m57.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m56.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m58.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m57.9s/10m0s  28/30 iters, 1 per VU
+
+running (08m59.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m58.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m00.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  08m59.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m01.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m00.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m02.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m01.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m03.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m02.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m04.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m03.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m05.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m04.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m06.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m05.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m07.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m06.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m08.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m07.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m09.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m08.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m10.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m09.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m11.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m10.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m12.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m11.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m13.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m12.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m14.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m13.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m15.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m14.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m16.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m15.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m17.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m16.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m18.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m17.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m19.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m18.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m20.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m19.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m21.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m20.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m22.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m21.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m23.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m22.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m24.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m23.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m25.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m24.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m26.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m25.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m27.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m26.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m28.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m27.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m29.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m28.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m30.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m29.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m31.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m30.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m32.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m31.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m33.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m32.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m34.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m33.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m35.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m34.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m36.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m35.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m37.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m36.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m38.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m37.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m39.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m38.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m40.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m39.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m41.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m40.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m42.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m41.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m43.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m42.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m44.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m43.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m45.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m44.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m46.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m45.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m47.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m46.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m48.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m47.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m49.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m48.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m50.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m49.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m51.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m50.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m52.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m51.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m53.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m52.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m54.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m53.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m55.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m54.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m56.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m55.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m57.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m56.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m58.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m57.9s/10m0s  28/30 iters, 1 per VU
+
+running (09m59.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m58.9s/10m0s  28/30 iters, 1 per VU
+
+running (10m00.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation   [  93% ] 30 VUs  09m59.9s/10m0s  28/30 iters, 1 per VU
+
+running (10m01.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m02.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m03.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m04.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m05.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m06.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m07.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m08.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m09.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m10.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m11.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m12.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m13.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m14.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m15.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m16.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m17.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m18.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m19.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m20.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m21.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m22.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m23.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m24.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m25.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m26.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m27.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m28.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m29.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+running (10m30.0s), 02/30 VUs, 28 complete and 0 interrupted iterations
+isolation ↓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
+
+     █ isolation_Advanced
+
+       ✓ Advanced session A clean
+       ✓ Advanced session B clean
+       ✓ Advanced DB save A clean
+       ✓ Advanced DB save B clean
+
+     █ isolation_Geospatial
+
+       ✓ Geospatial session A clean
+       ✓ Geospatial session B clean
+       ✓ Geospatial DB save A clean
+       ✓ Geospatial DB save B clean
+
+     █ isolation_DataExchange
+
+       ✓ DataExchange session A clean
+       ✓ DataExchange session B clean
+       ✓ DataExchange DB save A clean
+       ✓ DataExchange DB save B clean
+
+     █ isolation_Calculator
+
+       ✓ Calculator session A clean
+       ✓ Calculator session B clean
+       ✓ Calculator DB save A clean
+       ✓ Calculator DB save B clean
+
+     █ isolation_ClimateAnomaly
+
+       ✓ ClimateAnomaly session A clean
+       ✓ ClimateAnomaly session B clean
+       ✓ ClimateAnomaly DB save A clean
+       ✓ ClimateAnomaly DB save B clean
+
+     █ isolation_Analytics
+
+       ✓ Analytics session A clean
+       ✓ Analytics session B clean
+       ✓ Analytics DB save A clean
+       ✓ Analytics DB save B clean
+
+     █ isolation_MonteCarlo
+
+       ✓ MonteCarlo session A clean
+       ✓ MonteCarlo session B clean
+       ✓ MonteCarlo DB save A clean
+       ✓ MonteCarlo DB save B clean
+
+     █ isolation_MLTrainer
+
+       ✓ MLTrainer session A clean
+       ✓ MLTrainer session B clean
+       ✓ MLTrainer DB save A clean
+       ✓ MLTrainer DB save B clean
+
+     checks.........................: 100.00% 112 out of 112
+   ✓ contamination_events...........: 0       0/s
+     data_received..................: 1.2 MB  1.8 kB/s
+     data_sent......................: 545 kB  865 B/s
+     group_duration.................: avg=28.47s   min=8.98s   med=11.37s  max=8m7s   p(90)=13.74s   p(95)=14.28s  
+     http_req_blocked...............: avg=79.26µs  min=1.41µs  med=5.46µs  max=7.46ms p(90)=9.01µs   p(95)=12.82µs 
+     http_req_connecting............: avg=69.01µs  min=0s      med=0s      max=7.36ms p(90)=0s       p(95)=0s      
+     http_req_duration..............: avg=1.71s    min=2.01ms  med=71.11ms max=40.97s p(90)=1.52s    p(95)=15.57s  
+       { expected_response:true }...: avg=1.71s    min=2.01ms  med=71.11ms max=40.97s p(90)=1.52s    p(95)=15.57s  
+     http_req_failed................: 0.00%   0 out of 1113
+     http_req_receiving.............: avg=223.49µs min=15.32µs med=74.65µs max=34.8ms p(90)=156.74µs p(95)=217.98µs
+     http_req_sending...............: avg=35.86µs  min=5.83µs  med=25.42µs max=1.09ms p(90)=51.03µs  p(95)=76.63µs 
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s      max=0s     p(90)=0s       p(95)=0s      
+     http_req_waiting...............: avg=1.71s    min=1.93ms  med=71.01ms max=40.97s p(90)=1.52s    p(95)=15.57s  
+     http_reqs......................: 1113    1.766299/s
+     isolation_checks...............: 112     0.177741/s
+     isolation_ok...................: 112     0.177741/s
+     iteration_duration.............: avg=31.84s   min=14.31s  med=14.6s   max=8m12s  p(90)=16.05s   p(95)=16.26s  
+     iterations.....................: 28      0.044435/s
+     vus............................: 2       min=2          max=30
+     vus_max........................: 30      min=30         max=30
+
+
+running (10m30.1s), 00/30 VUs, 28 complete and 2 interrupted iterations
+isolation ✓ [ 100% ] 30 VUs  10m0s  28/30 iters, 1 per VU
